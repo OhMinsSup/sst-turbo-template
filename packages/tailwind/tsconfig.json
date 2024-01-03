@@ -1,0 +1,8 @@
+{
+  "extends": "@template/tsconfig/base.json",
+  "compilerOptions": {
+    "target": "es5"
+  },
+  "include": ["."],
+  "exclude": ["node_modules"]
+}

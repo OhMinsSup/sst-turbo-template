@@ -1,0 +1,35 @@
+{
+  "allowCompoundWords": true,
+  "enableFiletypes": ["*"],
+  "enableGlobDot": true,
+  "ignorePaths": [
+    ".git",
+    ".gitignore",
+    ".vscode",
+    "pnpm-lock.yaml",
+    "*.sql",
+    "patches",
+    ".prettierignore",
+    ".env.*",
+    ".env",
+    ".eslintignore",
+    ".eslintrc.*",
+    "tsup.config.*",
+    "tsconfig.json",
+    "package.json",
+    "cspell.config.json",
+    "README.md"
+  ],
+  "numSuggestions": 0,
+  "useGitignore": true,
+  "words": [
+    "xsmall",
+    "xxsmall",
+    "xlarge",
+    "xxlarge",
+    "SNADBOX",
+    "zustand",
+    "yxxx",
+    "Turborepo"
+  ]
+}

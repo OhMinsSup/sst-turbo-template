@@ -1,0 +1,52 @@
+{
+  "name": "template-app",
+  "version": "0.0.1-beta.0",
+  "private": true,
+  "description": "template",
+  "keywords": [
+    "nextjs"
+  ],
+  "license": "ISC",
+  "author": "OhMinsSup",
+  "type": "module",
+  "workspaces": [
+    "apps/*",
+    "packages/*"
+  ],
+  "scripts": {
+    "build": "dotenv -- turbo run build",
+    "build:env": "turbo run build:env",
+    "build:libs": "turbo run build:libs",
+    "clean": "turbo clean",
+    "clean:node_modules": "find . -name 'node_modules' -type d -prune -exec rm -rf '{}' +",
+    "predev": "env-cli --env-type local",
+    "dev": "dotenv -- turbo run dev --concurrency 255",
+    "dev:admin": "dotenv -- pnpm run dev --filter @template/admin",
+    "dev:web": "dotenv -- pnpm run dev --filter @template/web",
+    "eli": "env-cli",
+    "fix:eslint": "turbo run fix:eslint",
+    "fix:prettier": "pnpm lint:prettier --write",
+    "lint": "turbo run lint",
+    "lint:prettier": "prettier --check --ignore-unknown '**/*'",
+    "lint:spellcheck": "cspell --no-progress --relative '**/*'",
+    "lint:syncpack": "syncpack lint",
+    "lint:typecheck": "turbo run lint:typecheck"
+  },
+  "devDependencies": {
+    "@template/env": "workspace:*",
+    "@template/lintconfig": "workspace:*",
+    "@template/tsconfig": "workspace:*",
+    "cspell": "^8.3.2",
+    "dotenv-cli": "^7.3.0",
+    "eslint": "^8.56.0",
+    "prettier": "^3.1.1",
+    "syncpack": "^12.3.0",
+    "turbo": "^1.11.2",
+    "typescript": "^5.3.3"
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
+  }
+}

@@ -1,0 +1,33 @@
+# nodejs
+node_modules
+
+# nextjs
+out
+.next
+public
+
+# build
+dist
+
+# vscode
+.vscode
+
+# pc
+.DS_Store
+
+# config
+next.config.*
+tailwind.config.*
+postcss.config.*
+tsup.config.*
+
+# env
+env.mjs
+
+# eslint & prettier
+.eslintrc.*
+eslint-*.*
+prettier.config.*
+prettier.*
+
+packages/env/**/*
