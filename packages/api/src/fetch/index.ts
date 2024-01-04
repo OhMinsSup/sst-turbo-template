@@ -9,14 +9,27 @@ import {
 // types
 import type { FetchHandlerOptions, FetchHandlerResponse } from './types';
 
+const GET_TIMEOUT = 30 * 1000; // 30 seconds
+const POST_TIMEOUT = 60 * 1000; // 60 seconds
+
 export async function defaultFetchHandler(
   opts: FetchHandlerOptions,
 ): Promise<FetchHandlerResponse> {
   const headers = normalizeHeaders(opts.headers);
+
+  const controller = new AbortController();
+  const to = setTimeout(
+    () => {
+      controller.abort();
+    },
+    opts.method.toLocaleLowerCase() === 'get' ? GET_TIMEOUT : POST_TIMEOUT,
+  );
+
   const reqInit: RequestInit = {
     method: opts.method,
     headers,
     body: encodeMethodCallBody(headers, opts.reqBody),
+    signal: controller.signal,
   };
 
   const request = new Request(opts.uri, reqInit);
@@ -42,5 +55,7 @@ export async function defaultFetchHandler(
       ErrorType.ResponseError,
       `Unexpected error while fetching ${opts.method} ${opts.uri}`,
     );
+  } finally {
+    clearTimeout(to);
   }
 }
