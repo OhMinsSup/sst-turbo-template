@@ -93,6 +93,7 @@ export async function httpResponseBodyParse(
         );
       }
     }
+
     if (mimeType.startsWith('text/')) {
       try {
         return res.text();
@@ -104,13 +105,15 @@ export async function httpResponseBodyParse(
       }
     }
 
-    try {
-      return res.blob();
-    } catch (error) {
-      throw new BaseError(
-        ErrorType.ResponseError,
-        `Failed to parse response body: ${String(error)}`,
-      );
+    if (mimeType.startsWith('application/octet-stream')) {
+      try {
+        return res.blob();
+      } catch (error) {
+        throw new BaseError(
+          ErrorType.ResponseError,
+          `Failed to parse response body: ${String(error)}`,
+        );
+      }
     }
   }
 

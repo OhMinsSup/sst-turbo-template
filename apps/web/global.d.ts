@@ -4,9 +4,8 @@ declare global {
       NODE_ENV: 'development' | 'production' | 'test';
       DEPLOY_GROUP: 'development' | 'production' | 'local';
 
-      NEXT_PUBLIC_SITE_URL: string;
-      NEXT_PUBLIC_API_HOST: string;
-      NEXT_PUBLIC_ROOT_DOMAIN: string;
+      SITE_URL: string;
+      API_PREFIX: string;
 
       SKIP_ENV_VALIDATION: string | undefined;
     }

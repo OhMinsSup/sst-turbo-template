@@ -3,9 +3,8 @@ import { z } from 'zod';
 
 export const env = createEnv({
   shared: {
-    NEXT_PUBLIC_SITE_URL: z.string().min(1),
-    NEXT_PUBLIC_API_HOST: z.string().min(1),
-    NEXT_PUBLIC_ROOT_DOMAIN: z.string().min(1),
+    SITE_URL: z.string().min(1).default('http://localhost:3000'),
+    API_PREFIX: z.string().default('/api'),
   },
   server: {
     NODE_ENV: z.enum(['development', 'test', 'production']),
@@ -17,9 +16,8 @@ export const env = createEnv({
     DEPLOY_GROUP: process.env.DEPLOY_GROUP,
     SKIP_ENV_VALIDATION: process.env.SKIP_ENV_VALIDATION,
     // client
-    NEXT_PUBLIC_SITE_URL: process.env.NEXT_PUBLIC_SITE_URL,
-    NEXT_PUBLIC_API_HOST: process.env.NEXT_PUBLIC_API_HOST,
-    NEXT_PUBLIC_ROOT_DOMAIN: process.env.NEXT_PUBLIC_ROOT_DOMAIN,
+    SITE_URL: process.env.SITE_URL,
+    API_PREFIX: process.env.API_PREFIX,
   },
   skipValidation:
     !!process.env.CI ||

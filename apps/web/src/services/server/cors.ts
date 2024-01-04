@@ -83,7 +83,7 @@ async function originHeadersFromReq(
   } else if (req.headers.get('host')) {
     reqOrigin = `https://${req.headers.get('host')}`;
   } else {
-    reqOrigin = env.NEXT_PUBLIC_SITE_URL;
+    reqOrigin = env.SITE_URL;
   }
 
   const value =
