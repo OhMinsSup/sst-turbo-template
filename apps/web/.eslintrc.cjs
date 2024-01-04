@@ -23,5 +23,6 @@ module.exports = {
     '@typescript-eslint/no-empty-function': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
     '@typescript-eslint/no-unnecessary-condition': 'off',
+    '@typescript-eslint/triple-slash-reference': 'off',
   },
 };
