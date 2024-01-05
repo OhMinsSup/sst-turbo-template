@@ -1,0 +1,23 @@
+{
+  "id": "template",
+  "name": "template",
+  "short_name": "template",
+  "description": "template",
+  "edge_side_panel": {
+    "preferred_width": 376
+  },
+  "start_url": "/",
+  "orientation": "landscape-primary",
+  "display": "standalone",
+  "background_color": "#ffffff",
+  "theme_color": "#ffffff",
+  "icons": [
+    {
+      "purpose": "any",
+      "src": "/icons/logo.png",
+      "sizes": "670x670",
+      "type": "image/png"
+    }
+  ],
+  "lang": "ko-KR"
+}

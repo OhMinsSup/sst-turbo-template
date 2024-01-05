@@ -30,7 +30,5 @@ eslint-*.*
 prettier.config.*
 prettier.*
 
-packages/env/**/*
-
 # types
 *.d.ts

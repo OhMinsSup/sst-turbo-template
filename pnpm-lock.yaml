@@ -54,6 +54,169 @@ importers:
         specifier: ^3.22.4
         version: 3.22.4
 
+  apps/admin:
+    dependencies:
+      '@builder.io/partytown':
+        specifier: ^0.8.1
+        version: 0.8.1
+      '@dicebear/collection':
+        specifier: ^7.0.1
+        version: 7.0.2(@dicebear/core@7.0.2)
+      '@dicebear/core':
+        specifier: ^7.0.1
+        version: 7.0.2
+      '@hookform/resolvers':
+        specifier: ^3.3.3
+        version: 3.3.3(react-hook-form@7.49.2)
+      '@sentry/nextjs':
+        specifier: ^7.91.0
+        version: 7.91.0(next@14.0.4)(react@18.2.0)
+      '@t3-oss/env-nextjs':
+        specifier: ^0.7.1
+        version: 0.7.1(typescript@5.3.3)(zod@3.22.4)
+      '@tanstack/react-query':
+        specifier: ^5.17.0
+        version: 5.17.0(react@18.2.0)
+      '@tanstack/react-query-devtools':
+        specifier: ^5.17.0
+        version: 5.17.0(@tanstack/react-query@5.17.0)(react@18.2.0)
+      '@tanstack/react-query-next-experimental':
+        specifier: ^5.17.0
+        version: 5.17.0(@tanstack/react-query@5.17.0)(next@14.0.4)(react@18.2.0)
+      '@template/api':
+        specifier: workspace:*
+        version: link:../../packages/api
+      '@template/date':
+        specifier: workspace:*
+        version: link:../../packages/date
+      '@template/error':
+        specifier: workspace:*
+        version: link:../../packages/error
+      '@template/libs':
+        specifier: workspace:*
+        version: link:../../packages/libs
+      '@template/logger':
+        specifier: workspace:*
+        version: link:../../packages/logger
+      '@template/react':
+        specifier: workspace:*
+        version: link:../../packages/react
+      '@template/react-components':
+        specifier: workspace:*
+        version: link:../../packages/components
+      '@template/react-hooks':
+        specifier: workspace:*
+        version: link:../../packages/hooks
+      clsx:
+        specifier: ^2.1.0
+        version: 2.1.0
+      lodash-es:
+        specifier: ^4.17.21
+        version: 4.17.21
+      lucide-react:
+        specifier: ^0.303.0
+        version: 0.303.0(react@18.2.0)
+      next:
+        specifier: ^14.0.4
+        version: 14.0.4(@babel/core@7.23.7)(react-dom@18.2.0)(react@18.2.0)
+      next-themes:
+        specifier: ^0.2.1
+        version: 0.2.1(next@14.0.4)(react-dom@18.2.0)(react@18.2.0)
+      react:
+        specifier: ^18.2.0
+        version: 18.2.0
+      react-dom:
+        specifier: ^18.2.0
+        version: 18.2.0(react@18.2.0)
+      react-hook-form:
+        specifier: ^7.49.2
+        version: 7.49.2(react@18.2.0)
+      react-virtuoso:
+        specifier: ^4.6.2
+        version: 4.6.2(react-dom@18.2.0)(react@18.2.0)
+      server-only:
+        specifier: ^0.0.1
+        version: 0.0.1
+      superjson:
+        specifier: ^2.2.1
+        version: 2.2.1
+      tailwind-merge:
+        specifier: ^2.2.0
+        version: 2.2.0
+      ua-parser-js:
+        specifier: ^1.0.37
+        version: 1.0.37
+      zod:
+        specifier: ^3.22.4
+        version: 3.22.4
+      zustand:
+        specifier: ^4.4.7
+        version: 4.4.7(@types/react@18.2.46)(immer@9.0.21)(react@18.2.0)
+    devDependencies:
+      '@anansi/browserslist-config':
+        specifier: ^1.4.3
+        version: 1.4.3
+      '@next/eslint-plugin-next':
+        specifier: ^14.0.4
+        version: 14.0.4
+      '@playwright/test':
+        specifier: ^1.40.1
+        version: 1.40.1
+      '@tailwindcss/forms':
+        specifier: ^0.5.7
+        version: 0.5.7(tailwindcss@3.4.0)
+      '@template/env':
+        specifier: workspace:*
+        version: link:../../packages/env
+      '@template/lintconfig':
+        specifier: workspace:*
+        version: link:../../packages/lintconfig
+      '@template/tailwind':
+        specifier: workspace:*
+        version: link:../../packages/tailwind
+      '@template/tsconfig':
+        specifier: workspace:*
+        version: link:../../packages/tsconfig
+      '@testing-library/react':
+        specifier: ^14.1.2
+        version: 14.1.2(react-dom@18.2.0)(react@18.2.0)
+      '@types/cookie':
+        specifier: ^0.6.0
+        version: 0.6.0
+      '@types/lodash-es':
+        specifier: ^4.17.12
+        version: 4.17.12
+      '@types/node':
+        specifier: ^20.10.6
+        version: 20.10.6
+      '@types/react':
+        specifier: ^18.2.46
+        version: 18.2.46
+      '@types/react-dom':
+        specifier: ^18.2.18
+        version: 18.2.18
+      '@types/ua-parser-js':
+        specifier: ^0.7.39
+        version: 0.7.39
+      autoprefixer:
+        specifier: ^10.4.16
+        version: 10.4.16(postcss@8.4.32)
+      jsdom:
+        specifier: ^23.0.1
+        version: 23.0.1
+      postcss:
+        specifier: ^8.4.32
+        version: 8.4.32
+      sst:
+        specifier: ^2.39.2
+        version: 2.39.2(@types/react@18.2.46)
+      tailwindcss:
+        specifier: ^3.4.0
+        version: 3.4.0
+      typescript:
+        specifier: ^5.3.3
+        version: 5.3.3
+
   apps/web:
     dependencies:
       '@builder.io/partytown':
