@@ -1,9 +1,13 @@
 import type { StackContext } from 'sst/constructs';
 import { NextjsSite } from 'sst/constructs';
-import { env, defaultWebNextJsConfig } from './constants';
+import { envVars, defaultWebNextJsConfig } from './constants';
 
 export function WebNextApp({ stack }: StackContext) {
-  const site = new NextjsSite(stack, env.WEB_SST_ID, defaultWebNextJsConfig);
+  const site = new NextjsSite(
+    stack,
+    envVars.WEB_SST_ID,
+    defaultWebNextJsConfig,
+  );
 
   const { cdk } = site;
 

@@ -1,13 +1,13 @@
-import { SSTConfig } from 'sst';
+import type { SSTConfig } from 'sst';
 import { WebNextApp } from './stacks/web-nextjs-app';
-import { env } from './stacks/constants';
+import { envVars } from './stacks/constants';
 
 const config: SSTConfig = {
   config(_input) {
     return {
-      name: env.WEB_SST_NAME,
-      region: env.WEB_SST_REGION,
-      stage: env.WEB_SST_DEPLOY_GROUP,
+      name: envVars.WEB_SST_NAME,
+      region: envVars.WEB_SST_REGION,
+      stage: envVars.WEB_SST_DEPLOY_GROUP,
     };
   },
   stacks(app) {

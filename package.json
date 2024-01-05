@@ -36,18 +36,13 @@
     "@template/env": "workspace:*",
     "@template/lintconfig": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "@types/node": "^20.10.6",
-    "aws-cdk-lib": "^2.118.0",
-    "constructs": "^10.3.0",
     "cspell": "^8.3.2",
     "dotenv-cli": "^7.3.0",
     "eslint": "^8.56.0",
     "prettier": "^3.1.1",
-    "sst": "^2.39.2",
     "syncpack": "^12.3.0",
     "turbo": "^1.11.2",
-    "typescript": "^5.3.3",
-    "zod": "^3.22.4"
+    "typescript": "^5.3.3"
   },
   "packageManager": "pnpm@8.12.1",
   "engines": {

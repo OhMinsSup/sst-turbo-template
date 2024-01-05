@@ -1,5 +1,6 @@
+import { env } from 'node:process';
 import { z } from 'zod';
-import { NextjsSiteProps } from 'sst/constructs';
+import type { NextjsSiteProps } from 'sst/constructs';
 
 class MissingEnvVars extends Error {
   constructor(message: string) {
@@ -19,14 +20,15 @@ const schema = z.object({
 type Schema = z.infer<typeof schema>;
 
 const processEnv = {
-  WEB_SST_ID: process.env.WEB_SST_ID,
-  WEB_SST_NAME: process.env.WEB_SST_NAME,
-  WEB_SST_REGION: process.env.WEB_SST_REGION,
-  WEB_SST_DEPLOY_GROUP: process.env.WEB_SST_DEPLOY_GROUP,
-  WEB_SST_S3_BUCKET_NAME: process.env.WEB_SST_S3_BUCKET_NAME,
+  WEB_SST_ID: env.WEB_SST_ID,
+  WEB_SST_NAME: env.WEB_SST_NAME,
+  WEB_SST_REGION: env.WEB_SST_REGION,
+  WEB_SST_DEPLOY_GROUP: env.WEB_SST_DEPLOY_GROUP,
+  WEB_SST_S3_BUCKET_NAME: env.WEB_SST_S3_BUCKET_NAME,
 };
 
-let env: Schema = {} as Schema;
+// eslint-disable-next-line import/no-mutable-exports
+let envVars = {} as Schema;
 
 const parsed = schema.safeParse(processEnv);
 if (!parsed.success) {
@@ -39,7 +41,7 @@ if (!parsed.success) {
   );
 }
 
-env = new Proxy(parsed.data, {
+envVars = new Proxy(parsed.data, {
   get(target, prop) {
     if (typeof prop !== 'string') return undefined;
     return Reflect.get(target, prop) || process.env[prop];
@@ -53,7 +55,7 @@ const MEMORY_SIZE = 1024;
 const TIMEOUT = 30;
 
 // Purpose: Constants used in the stacks
-const WEB_NEXT_JS_PROJECT_PATH = 'apps/web';
+const WEB_NEXT_JS_PROJECT_PATH = '.';
 
 const defaultWebNextJsConfig: NextjsSiteProps | undefined = {
   path: WEB_NEXT_JS_PROJECT_PATH,
@@ -62,9 +64,9 @@ const defaultWebNextJsConfig: NextjsSiteProps | undefined = {
   cdk: {
     bucket: {
       versioned: true,
-      bucketName: env.WEB_SST_S3_BUCKET_NAME,
+      bucketName: envVars.WEB_SST_S3_BUCKET_NAME,
     },
   },
 };
 
-export { env, defaultWebNextJsConfig };
+export { envVars, defaultWebNextJsConfig };
