@@ -89,16 +89,7 @@ export default async function Layout(props: RoutesProps) {
             window.__DOMAIN_INFO__ = ${JSON.stringify(info)}`,
           }}
         />
-        <Providers
-          theme={{
-            attribute: 'class',
-            defaultTheme: 'system',
-            enableSystem: true,
-            disableTransitionOnChange: true,
-          }}
-        >
-          {props.children}
-        </Providers>
+        <Providers>{props.children}</Providers>
       </body>
     </html>
   );
