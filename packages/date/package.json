@@ -28,13 +28,13 @@
   },
   "dependencies": {
     "@template/error": "workspace:*",
-    "date-fns": "^3.0.6"
+    "date-fns": "^3.5.0"
   },
   "devDependencies": {
     "@template/lintconfig": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "rimraf": "^5.0.5",
-    "tsup": "^8.0.1",
-    "typescript": "^5.3.3"
+    "tsup": "^8.0.2",
+    "typescript": "^5.4.2"
   }
 }

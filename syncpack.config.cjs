@@ -1,5 +1,9 @@
 /** @type {import("syncpack").RcFile} */
 module.exports = {
+  sortAz: [],
+  sortFirst: [],
+  sortExports: [],
+  sortPackages: false,
   customTypes: {
     engines: {
       path: 'engines',
