@@ -1,9 +1,8 @@
 'use client';
-import { ThemeProvider } from 'next-themes';
+
+import { useState } from 'react';
 import { QueryClient, QueryClientProvider } from '@tanstack/react-query';
 import { ReactQueryDevtools } from '@tanstack/react-query-devtools';
-import { useState } from 'react';
-import { AppProvider } from '~/libs/providers/app';
 
 interface ProvidersProps {
   children: React.ReactNode;
@@ -15,14 +14,8 @@ export function Providers({ children }: ProvidersProps) {
 
   return (
     <QueryClientProvider client={queryClient}>
-      <ThemeProvider
-        attribute="class"
-        defaultTheme="light"
-        disableTransitionOnChange
-        enableSystem={false}
-      >
-        <AppProvider>{children}</AppProvider>
-      </ThemeProvider>
+      {children}
+
       <ReactQueryDevtools initialIsOpen={false} />
     </QueryClientProvider>
   );

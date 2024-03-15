@@ -1,7 +1,8 @@
 {
-  "name": "@template/api",
+  "name": "@tooling/env",
   "version": "0.0.1",
   "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     ".": {
@@ -14,26 +15,33 @@
   "main": "./dist/index.cjs",
   "module": "./dist/index.js",
   "types": "./dist/index.d.ts",
+  "bin": {
+    "loadenv": "./dist/cli-default.cjs"
+  },
   "files": [
     "dist"
   ],
   "scripts": {
-    "build": "tsup",
-    "build:libs": "tsup",
+    "build:env": "tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint .",
-    "start": "node dist/main.js",
     "typecheck": "tsc --noEmit"
   },
-  "dependencies": {
-    "@template/error": "workspace:*"
+  "prettier": "@tooling/prettier-config/web",
+  "eslintConfig": {
+    "extends": [
+      "@tooling/eslint-config/base"
+    ],
+    "root": true
   },
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
+    "chalk": "^5.3.0",
+    "commander": "^12.0.0",
+    "dotenv": "^16.4.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
     "typescript": "^5.4.2"

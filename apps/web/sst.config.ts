@@ -1,18 +1,17 @@
-import type { SSTConfig } from 'sst';
-import { WebNextApp } from './stacks/web-nextjs-app';
-import { envVars } from './stacks/constants';
+import { type SSTConfig } from 'sst';
 
-const config: SSTConfig = {
-  config(_input) {
+import { modules } from './stacks/env';
+
+export default {
+  config() {
     return {
-      name: envVars.WEB_SST_NAME,
-      region: envVars.WEB_SST_REGION,
-      stage: envVars.WEB_SST_DEPLOY_GROUP,
+      name: modules.env.SST_NAME,
+      region: modules.env.AWS_REGION,
+      stage: modules.env.SST_STAGE,
     };
   },
-  stacks(app) {
-    app.stack(WebNextApp);
+  async stacks(application) {
+    const appStacks = await import('./stacks');
+    appStacks.default(application, modules.env);
   },
-};
-
-export default config;
+} satisfies SSTConfig;

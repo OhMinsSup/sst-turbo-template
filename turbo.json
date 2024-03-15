@@ -1,8 +1,11 @@
 {
   "$schema": "https://turbo.build/schema.json",
-  "globalDependencies": [".env"],
+  "globalDependencies": ["**/.env"],
   "globalEnv": ["NODE_ENV"],
   "pipeline": {
+    "topo": {
+      "dependsOn": ["^topo"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
@@ -14,22 +17,25 @@
       "dependsOn": ["^build:env"]
     },
     "dev": {
-      "cache": false,
-      "persistent": true
-    },
-    "fix:eslint": {
-      "dependsOn": ["^fix:eslint"],
+      "persistent": true,
       "cache": false
+    },
+    "format": {
+      "outputs": ["node_modules/.cache/.prettiercache"],
+      "outputMode": "new-only"
     },
     "lint": {
-      "dependsOn": ["^lint"],
-      "cache": false
+      "dependsOn": ["^topo"],
+      "outputs": ["node_modules/.cache/.eslintcache"]
     },
-    "lint:typecheck": {
-      "dependsOn": ["^lint:typecheck"],
-      "cache": false
+    "typecheck": {
+      "dependsOn": ["^topo"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
     },
     "clean": {
+      "cache": false
+    },
+    "//#clean": {
       "cache": false
     }
   }

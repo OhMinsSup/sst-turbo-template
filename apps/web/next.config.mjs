@@ -1,4 +1,9 @@
-import './env.mjs';
+import createJiti from 'jiti';
+
+const jiti = createJiti(new URL(import.meta.url).pathname);
+
+// Import env here to validate during build. Using jiti we can import .ts files :)
+jiti('./src/env');
 
 const isProduction = process.env.NODE_ENV === 'production';
 
@@ -7,7 +12,6 @@ const isProduction = process.env.NODE_ENV === 'production';
  * @type {import('next').NextConfig} */
 const nextConfig = {
   reactStrictMode: true,
-  swcMinify: true,
   experimental: {
     taint: true,
     serverActions: {
