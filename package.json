@@ -27,7 +27,8 @@
     "lint:fix": "turbo lint --continue -- --fix --cache --cache-location 'node_modules/.cache/.eslintcache' && manypkg fix",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:syncpack": "syncpack lint",
-    "typecheck": "turbo typecheck"
+    "typecheck": "turbo typecheck",
+    "ui:add": "pnpm --filter @template/ui ui:add"
   },
   "prettier": "@tooling/prettier-config/web",
   "dependencies": {
