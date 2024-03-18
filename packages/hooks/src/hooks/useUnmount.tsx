@@ -11,7 +11,7 @@ export const useUnmount = (fn: () => void) => {
     () => () => {
       fnRef.current();
     },
-    // eslint-disable-next-line react-hooks/exhaustive-deps
+    // eslint-disable-next-line react-hooks/exhaustive-deps -- ignore
     [],
   );
 };

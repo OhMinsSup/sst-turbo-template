@@ -72,8 +72,7 @@ export function normalizeResponseHeaders(
   const supportEntries =
     'entries' in headers && typeof headers.entries === 'function';
   if (supportEntries) {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment -- safe
-    const safyEntries = headers.entries() as IterableIterator<[string, string]>;
+    const safyEntries = headers.entries();
     return Object.fromEntries(safyEntries) as Record<string, string>;
   }
 

@@ -1,4 +1,4 @@
-import type { MimeTypes, MimeTypesEnum, QueryParams } from '../fetch/types';
+import type { MimeTypesEnum, QueryParams } from '../fetch/types';
 import type { AgentFetchHandler, AgentFetchHandlerResponse } from '../types';
 import type { CallOptions } from './types';
 import { defaultFetchHandler } from '../fetch';

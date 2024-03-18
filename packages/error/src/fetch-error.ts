@@ -5,7 +5,7 @@ export class FetchError extends Error {
   public request: Request;
   public options: unknown;
 
-  constructor(response: Response, request: Request, options: any) {
+  constructor(response: Response, request: Request, options: unknown) {
     const code =
       response.status || response.status === 0 ? response.status : '';
     const title = response.statusText || '';

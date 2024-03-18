@@ -9,7 +9,7 @@ export const consoleTransport: Transport = (
   timestamp,
 ) => {
   const extra = Object.keys(metadata).length
-    ? ' ' + JSON.stringify(prepareMetadata(metadata), null, '  ')
+    ? ` ${JSON.stringify(prepareMetadata(metadata), null, '  ')}`
     : '';
   const log = {
     [LogLevel.Debug]: console.debug,

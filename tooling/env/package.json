@@ -30,10 +30,7 @@
   },
   "prettier": "@tooling/prettier-config/web",
   "eslintConfig": {
-    "extends": [
-      "@tooling/eslint-config/base"
-    ],
-    "root": true
+    "extends": "@tooling/eslint-config/base"
   },
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",

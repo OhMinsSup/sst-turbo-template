@@ -49,7 +49,7 @@ type ContainerType = (Element | DocumentFragment) & {
 
 function modernRender(node: React.ReactElement, container: ContainerType) {
   toggleWarning(true);
-  const root = container[MARK] || createRoot?.(container);
+  const root = container[MARK] ?? createRoot?.(container);
   toggleWarning(false);
 
   root?.render(node);
@@ -83,6 +83,7 @@ async function modernUnmount(container: ContainerType) {
   return Promise.resolve().then(() => {
     container[MARK]?.unmount();
 
+    // eslint-disable-next-line @typescript-eslint/no-dynamic-delete -- delete property
     delete container[MARK];
   });
 }

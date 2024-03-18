@@ -30,7 +30,7 @@ export class Logger {
     debug = '',
   }: LoggerConstructorOptions = {}) {
     this.enabled = enabled;
-    this.level = debug ? LogLevel.Debug : level ?? LogLevel.Info; // default to info
+    this.level = debug ? LogLevel.Debug : level; // default to info
     this.debugContextRegexes = (debug || '').split(',').map((context) => {
       return new RegExp(context.replace(/[^\w:*]/, '').replace(/\*/g, '.*'));
     });
@@ -81,7 +81,7 @@ export class Logger {
     if (!this.enabled) return;
 
     const timestamp = Date.now();
-    const meta = metadata || {};
+    const meta = metadata;
 
     add({
       id: generateUniqueId(),

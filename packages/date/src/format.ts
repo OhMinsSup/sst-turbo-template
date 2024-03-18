@@ -10,27 +10,34 @@ export function formatDate(
   formatStr = defaultFormat,
   opts?: FormatOptions,
 ): string {
-  if (typeof date === 'string') {
-    const newDate = new Date(date);
+  let reassignDate = date;
+  if (typeof reassignDate === 'string') {
+    const newDate = new Date(reassignDate);
     if (isNaN(newDate.getTime())) {
-      throw new BaseError(ErrorType.DateError, `Invalid date string: ${date}`);
+      throw new BaseError(
+        ErrorType.DateError,
+        `Invalid date string: ${reassignDate}`,
+      );
     }
-    date = newDate;
+    reassignDate = newDate;
   }
 
-  if (typeof date === 'number') {
-    const newDate = new Date(date);
+  if (typeof reassignDate === 'number') {
+    const newDate = new Date(reassignDate);
     if (isNaN(newDate.getTime())) {
-      throw new BaseError(ErrorType.DateError, `Invalid date number: ${date}`);
+      throw new BaseError(
+        ErrorType.DateError,
+        `Invalid date number: ${reassignDate}`,
+      );
     }
-    date = newDate;
+    reassignDate = newDate;
   }
 
-  if (date instanceof Date) {
-    if (isNaN(date.getTime())) {
+  if (reassignDate instanceof Date) {
+    if (isNaN(reassignDate.getTime())) {
       throw new BaseError(ErrorType.DateError, 'Invalid date instance');
     }
   }
 
-  return format(date, formatStr, opts);
+  return format(reassignDate, formatStr, opts);
 }

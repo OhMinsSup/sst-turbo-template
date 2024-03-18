@@ -6,6 +6,7 @@ import { getTargetElement } from '@template/react';
 import { useEffectWithTarget } from './createEffectWithTarget';
 import { useLatest } from './useLatest';
 
+// eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore
 type NoopHandler = (...p: any) => void;
 
 export type Target = BasicTarget<HTMLElement | Element | Window | Document>;
@@ -79,6 +80,6 @@ export function useEventListener(
       };
     },
     [eventName, options.capture, options.once, options.passive],
-    options.target,
+    options.target as BasicTarget<never>,
   );
 }

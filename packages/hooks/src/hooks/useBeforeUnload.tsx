@@ -14,7 +14,7 @@ export function useBeforeUnload(
   callback: (event: BeforeUnloadEvent) => void,
   options?: { capture?: boolean },
 ): void {
-  const { capture } = options || {};
+  const { capture } = options ?? {};
   React.useEffect(() => {
     const opts = capture !== undefined ? { capture } : undefined;
     window.addEventListener('beforeunload', callback, opts);

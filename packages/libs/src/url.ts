@@ -1,4 +1,3 @@
-/* eslint-disable @typescript-eslint/restrict-template-expressions */
 interface InternalUrl {
   /** "http://localhost:3000" */
   origin: string;
@@ -17,7 +16,7 @@ export function parseUrl(url?: string | URL): InternalUrl {
   const defaultUrl = new URL('http://localhost:3000/api/auth');
 
   if (url && !url.toString().startsWith('http')) {
-    // eslint-disable-next-line no-param-reassign
+    // eslint-disable-next-line no-param-reassign, @typescript-eslint/restrict-template-expressions -- Mutating the input
     url = `https://${url}`;
   }
 

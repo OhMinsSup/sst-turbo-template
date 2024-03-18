@@ -24,6 +24,6 @@ export function useMutationObserver(
       };
     },
     [options],
-    target,
+    target as BasicTarget<never>,
   );
 }

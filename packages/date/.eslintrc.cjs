@@ -1,4 +1,4 @@
-const config = require('@tooling/eslint-config/base.cjs');
+const config = require('@tooling/eslint-config/base');
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {

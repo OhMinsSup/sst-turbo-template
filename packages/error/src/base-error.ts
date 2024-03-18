@@ -1,6 +1,6 @@
 import { ErrorType } from './constants';
 
-export class BaseError<Data = any, Options = any> extends Error {
+export class BaseError<Data = unknown, Options = unknown> extends Error {
   public data?: Data;
   public options?: Options;
 

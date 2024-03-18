@@ -1,8 +1,10 @@
-export function isRefObject(val: any): val is { current: any } {
+export function isRefObject<Ref = unknown>(
+  val: Record<string, unknown>,
+): val is { current: Ref } {
   return 'current' in val;
 }
 
-export function isElement(el: any): el is Element {
+export function isElement(el: unknown): el is Element {
   return (
     el !== null &&
     typeof el === 'object' &&
@@ -11,7 +13,7 @@ export function isElement(el: any): el is Element {
   );
 }
 
-export function isHTMLElement(el: any): el is HTMLElement {
+export function isHTMLElement(el: unknown): el is HTMLElement {
   if (!isElement(el)) {
     return false;
   }

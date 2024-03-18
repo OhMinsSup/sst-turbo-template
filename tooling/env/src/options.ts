@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any -- ignore */
 import type { EnvType } from './constants';
 
 export interface Options {
@@ -17,6 +18,7 @@ export interface Options {
   onError?: (...args: any) => void;
 }
 
+// eslint-disable-next-line @typescript-eslint/no-empty-function -- ignore
 const noop = () => {};
 
 export const defaultOptions: Options = {

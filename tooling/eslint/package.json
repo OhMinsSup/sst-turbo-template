@@ -5,24 +5,17 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./base.cjs": "./base.cjs",
-    "./react.cjs": "./react.cjs",
-    "./next.cjs": "./next.cjs"
+    "./base": "./base.cjs",
+    "./react": "./react.cjs",
+    "./next": "./next.cjs"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint .",
-    "typecheck": "tsc --noEmit"
+    "format": "prettier --check . --ignore-path ../../.gitignore"
   },
   "prettier": "@tooling/prettier-config/web",
-  "eslintConfig": {
-    "extends": [
-      "./base.cjs"
-    ],
-    "root": true
-  },
   "dependencies": {
+    "@next/eslint-plugin-next": "^14.1.3",
     "@vercel/style-guide": "^6.0.0",
     "eslint-config-prettier": "^9.1.0",
     "eslint-config-turbo": "^1.12.5",
@@ -33,7 +26,7 @@
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
     "@types/eslint": "^8.56.5",
-    "@types/node": "^14.14.37",
+    "@types/node": "^20.11.27",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
