@@ -1,8 +1,9 @@
-import { Agent } from './agent';
 import type { GetTestHandler, PostTestHandler } from './client/types';
+import { Agent } from './agent';
+import { type AppNamespace } from './client';
 
 export class AppAgent extends Agent {
-  get app() {
+  get app(): AppNamespace {
     return this.api.app;
   }
 

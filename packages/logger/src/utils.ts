@@ -1,5 +1,4 @@
 import type { EnabledLogLevels, Metadata } from './types';
-
 import { LogLevel } from './constants';
 
 export const enabledLogLevels: EnabledLogLevels = {

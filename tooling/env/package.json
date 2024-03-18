@@ -22,8 +22,8 @@
     "dist"
   ],
   "scripts": {
-    "build:env": "tsup",
     "clean": "rimraf .turbo node_modules dist",
+    "env:build": "tsup",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"

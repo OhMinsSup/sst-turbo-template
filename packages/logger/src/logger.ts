@@ -1,7 +1,7 @@
-import { LogLevel } from './constants';
 import type { LoggerConstructorOptions, Metadata, Transport } from './types';
-import { enabledLogLevels } from './utils';
+import { LogLevel } from './constants';
 import { add } from './transport/entries';
+import { enabledLogLevels } from './utils';
 
 let id = 1;
 const generateUniqueId = () => {

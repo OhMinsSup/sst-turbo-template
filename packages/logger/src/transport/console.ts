@@ -1,5 +1,5 @@
-import { LogLevel } from '../constants';
 import type { Transport } from '../types';
+import { LogLevel } from '../constants';
 import { formatDate, prepareMetadata } from '../utils';
 
 export const consoleTransport: Transport = (

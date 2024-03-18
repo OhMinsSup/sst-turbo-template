@@ -9,7 +9,7 @@ export type CallOptions = Partial<
 >;
 
 export type PostTestHandler = (
-  body: any,
+  body: unknown,
   opts?: CallOptions | undefined,
 ) => Promise<FetchHandlerResponse>;
 

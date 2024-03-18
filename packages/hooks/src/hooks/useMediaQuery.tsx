@@ -1,6 +1,9 @@
 'use client';
+
 import React from 'react';
+
 import { isBrowser } from '@template/react';
+
 import { useMemoizedFn } from './useMemoizedFn';
 
 export const MEDIA_QUERY = {

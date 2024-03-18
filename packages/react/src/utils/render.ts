@@ -1,7 +1,8 @@
 'use client';
+
 import type * as React from 'react';
-import * as ReactDOM from 'react-dom';
 import type { Root } from 'react-dom/client';
+import * as ReactDOM from 'react-dom';
 
 // Let compiler not to search module usage
 const fullClone = {

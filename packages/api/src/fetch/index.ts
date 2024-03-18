@@ -1,4 +1,10 @@
-import { FetchError, BaseError, ErrorType } from '@template/error';
+import { FetchError } from '@template/error';
+
+import type {
+  FetchHandlerOptions,
+  FetchHandlerResponse,
+  MimeTypes,
+} from './types';
 import {
   encodeMethodCallBody,
   httpResponseBodyParse,
@@ -6,15 +12,25 @@ import {
   normalizeResponseHeaders,
 } from './utils';
 
-// types
-import type { FetchHandlerOptions, FetchHandlerResponse } from './types';
-
 const GET_TIMEOUT = 30 * 1000; // 30 seconds
 const POST_TIMEOUT = 60 * 1000; // 60 seconds
 
-export async function defaultFetchHandler(
+export async function defaultFetchHandler<
+  Mime extends MimeTypes = MimeTypes,
+  JsonData = Record<string, undefined>,
+>(
   opts: FetchHandlerOptions,
-): Promise<FetchHandlerResponse> {
+): Promise<
+  FetchHandlerResponse<
+    Mime extends 'application/json'
+      ? JsonData
+      : Mime extends 'text/'
+        ? string
+        : Mime extends 'application/octet-stream'
+          ? Blob
+          : Response
+  >
+> {
   const headers = normalizeHeaders(opts.headers);
 
   const controller = new AbortController();
@@ -40,21 +56,13 @@ export async function defaultFetchHandler(
       throw new FetchError(res, request, opts);
     }
 
-    const contentType = res.headers.get('content-type');
+    const contentType = res.headers.get('content-type') as unknown as Mime;
+    const body = await httpResponseBodyParse<Mime, JsonData>(contentType, res);
     return {
       status: res.status,
       headers: normalizeResponseHeaders(res.headers),
-      body: httpResponseBodyParse(contentType, res),
+      body,
     };
-  } catch (e) {
-    if (e instanceof FetchError) {
-      throw e;
-    }
-
-    throw new BaseError(
-      ErrorType.ResponseError,
-      `Unexpected error while fetching ${opts.method} ${opts.uri}`,
-    );
   } finally {
     clearTimeout(to);
   }

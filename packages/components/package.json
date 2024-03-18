@@ -20,20 +20,20 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:libs": "tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "dev": "tsup --watch",
-    "fix:eslint": "eslint --max-warnings 0 --fix .",
-    "lint": "eslint --max-warnings 0 .",
-    "lint:typecheck": "tsc --noEmit"
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint .",
+    "typecheck": "tsc --noEmit"
   },
+  "prettier": "@tooling/prettier-config/web",
   "dependencies": {
     "@template/react": "workspace:*",
     "@template/react-hooks": "workspace:*"
   },
   "devDependencies": {
-    "@template/lintconfig": "workspace:*",
-    "@template/tsconfig": "workspace:*",
+    "@tooling/eslint-config": "workspace:*",
+    "@tooling/prettier-config": "workspace:*",
+    "@tooling/tsconfig": "workspace:*",
     "@types/node": "^20.11.27",
     "@types/react": "^18.2.66",
     "@types/react-dom": "^18.2.22",

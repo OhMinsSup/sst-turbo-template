@@ -1,9 +1,8 @@
 {
-  "extends": "@template/tsconfig/base.json",
+  "extends": "@tooling/tsconfig/base.json",
   "compilerOptions": {
-    "lib": ["esnext", "dom"],
-    "target": "ES2018"
+    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },
-  "include": ["next-env.d.ts", "**/*.ts", "**/*.tsx", "tsup.config.ts"],
+  "include": ["."],
   "exclude": ["node_modules"]
 }

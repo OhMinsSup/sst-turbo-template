@@ -19,14 +19,12 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:libs": "tsup",
     "clean": "rimraf .turbo node_modules dist",
-    "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint .",
-    "start": "node dist/main.js",
     "typecheck": "tsc --noEmit"
   },
+  "prettier": "@tooling/prettier-config/web",
   "dependencies": {
     "@template/error": "workspace:*"
   },

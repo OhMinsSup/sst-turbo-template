@@ -4,6 +4,6 @@ module.exports = {
   ...config,
   rules: {
     ...config.rules,
-    "eslint-comments/require-description": "off",
+    'eslint-comments/require-description': 'off',
   },
 };

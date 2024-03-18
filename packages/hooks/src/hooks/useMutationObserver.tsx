@@ -1,4 +1,6 @@
-import { type BasicTarget, getTargetElement } from '@template/react';
+import type { BasicTarget } from '@template/react';
+import { getTargetElement } from '@template/react';
+
 import { useIsomorphicLayoutEffectWithTarget } from './createEffectWithTarget';
 import { useLatest } from './useLatest';
 

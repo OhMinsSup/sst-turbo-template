@@ -37,7 +37,7 @@
     "@turbo/gen": "^1.12.5"
   },
   "devDependencies": {
-    "@template/env": "workspace:*",
+    "@tooling/env": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
     "cspell": "^8.6.0",

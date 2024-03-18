@@ -7,10 +7,10 @@ import { defaultOptions } from './options';
 export async function main() {
   return new Promise<ReturnType<typeof load>>((resolve, reject) => {
     let options: Options = defaultOptions;
-    const program = new Command().name('@template/env');
+    const program = new Command().name('@tooling/env');
 
     program
-      .description('@template/env')
+      .description('@tooling/env')
       .option(
         '--env-type <envType>',
         `Environment type. Defaults to ${options.envType}.`,

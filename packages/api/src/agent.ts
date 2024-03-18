@@ -1,14 +1,14 @@
 import { BaseError, ErrorType } from '@template/error';
-import { defaultFetchHandler } from './fetch';
-import { BaseClient } from './client';
 
 import type { ServiceClient } from './client';
-import type { FetchHandlerOptions } from './fetch/types';
+import type { FetchHandlerOptions, MimeTypes } from './fetch/types';
 import type {
   AgentConfigureOptions,
   AgentFetchHandler,
   AgentOpts,
 } from './types';
+import { BaseClient } from './client';
+import { defaultFetchHandler } from './fetch';
 
 export class Agent {
   service: URL;
@@ -19,7 +19,7 @@ export class Agent {
 
   static fetch: AgentFetchHandler | undefined = defaultFetchHandler;
 
-  static configure(opts: AgentConfigureOptions) {
+  static configure(opts: AgentConfigureOptions): void {
     Agent.fetch = opts.fetch;
   }
 
@@ -29,11 +29,15 @@ export class Agent {
     this.prefix = opts.prefix;
 
     this._baseClient = new BaseClient();
-    this._baseClient.fetch = this._fetch.bind(this); // patch its fetch implementation
+    this._baseClient.fetch = this._fetch.bind(this) as AgentFetchHandler;
     this.api = this._baseClient.service(opts.service, opts.prefix);
   }
 
-  private async _fetch(opts: FetchHandlerOptions) {
+  // eslint-disable-next-line @typescript-eslint/explicit-function-return-type -- TSCONVERSION
+  private async _fetch<
+    Mime extends MimeTypes = MimeTypes,
+    JsonData = Record<string, undefined>,
+  >(opts: FetchHandlerOptions) {
     if (!Agent.fetch) {
       throw new BaseError(
         ErrorType.AgentError,
@@ -42,7 +46,7 @@ export class Agent {
     }
 
     // send the request
-    const res = await Agent.fetch({
+    const res = await Agent.fetch<Mime, JsonData>({
       uri: opts.uri,
       method: opts.method,
       headers: opts.headers,

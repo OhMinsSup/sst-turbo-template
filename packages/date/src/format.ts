@@ -1,4 +1,6 @@
-import { format, type FormatOptions } from 'date-fns/format';
+import type { FormatOptions } from 'date-fns/format';
+import { format } from 'date-fns/format';
+
 import { BaseError, ErrorType } from '@template/error';
 
 export const defaultFormat = 'YYYY-MM-DD HH:mm:ss';

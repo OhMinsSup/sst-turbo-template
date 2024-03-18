@@ -5,9 +5,9 @@
   "license": "MIT",
   "type": "module",
   "exports": {
-    "./base.js": "./base.js",
-    "./react.js": "./react.js",
-    "./next.js": "./next.js"
+    "./base.cjs": "./base.cjs",
+    "./react.cjs": "./react.cjs",
+    "./next.cjs": "./next.cjs"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules",

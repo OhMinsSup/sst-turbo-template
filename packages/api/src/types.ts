@@ -1,7 +1,9 @@
-export interface AgentFetchHandlerResponse {
+import { type MimeTypes } from './fetch/types';
+
+export interface AgentFetchHandlerResponse<Body = unknown> {
   status: number;
   headers: Record<string, string>;
-  body: any;
+  body: Body;
 }
 
 export interface AgentFetchHandlerOptions {
@@ -11,9 +13,22 @@ export interface AgentFetchHandlerOptions {
   reqBody: unknown;
 }
 
-export type AgentFetchHandler = (
+export type AgentFetchHandler = <
+  Mime extends MimeTypes = MimeTypes,
+  JsonData = Record<string, undefined>,
+>(
   opts: AgentFetchHandlerOptions,
-) => Promise<AgentFetchHandlerResponse>;
+) => Promise<
+  AgentFetchHandlerResponse<
+    Mime extends 'application/json'
+      ? JsonData
+      : Mime extends 'text/'
+        ? string
+        : Mime extends 'application/octet-stream'
+          ? Blob
+          : Response
+  >
+>;
 
 export interface AgentConfigureOptions {
   fetch: AgentFetchHandler;

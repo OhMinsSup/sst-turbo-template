@@ -1,11 +1,10 @@
 'use client';
+
 import React from 'react';
-import {
-  depsAreSame,
-  isBrowser,
-  type BasicTarget,
-  getTargetElement,
-} from '@template/react';
+
+import type { BasicTarget } from '@template/react';
+import { depsAreSame, getTargetElement, isBrowser } from '@template/react';
+
 import { useUnmount } from './useUnmount';
 
 const createEffectWithTarget = (

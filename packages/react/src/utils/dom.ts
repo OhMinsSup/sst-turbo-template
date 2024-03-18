@@ -1,5 +1,7 @@
 'use client';
+
 import type React from 'react';
+
 import { isBrowser, isElement } from './assertion';
 
 export function getOwnerWindow(node?: Element | null): typeof globalThis {

@@ -1,7 +1,7 @@
-export interface FetchHandlerResponse {
+export interface FetchHandlerResponse<Body = unknown> {
   status: number;
   headers: Record<string, string>;
-  body: any;
+  body: Body;
 }
 
 export interface FetchHandlerOptions {
@@ -28,4 +28,12 @@ export enum ResponseType {
   UpstreamTimeout = 504,
 }
 
-export type QueryParams = Record<string, any> | URLSearchParams;
+export type QueryParams = Record<string, unknown> | URLSearchParams;
+
+export enum MimeTypesEnum {
+  ApplicationJson = 'application/json',
+  Text = 'text/',
+  ApplicationOctetStream = 'application/octet-stream',
+}
+
+export type MimeTypes = MimeTypesEnum | null;

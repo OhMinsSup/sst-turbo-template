@@ -1,5 +1,7 @@
 'use client';
+
 import React from 'react';
+
 /**
  * Setup a callback to be fired on the window's `beforeunload` event. This is
  * useful for saving some data to `window.localStorage` just before the page

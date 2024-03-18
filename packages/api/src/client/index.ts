@@ -1,8 +1,8 @@
+import type { MimeTypes, MimeTypesEnum, QueryParams } from '../fetch/types';
+import type { AgentFetchHandler, AgentFetchHandlerResponse } from '../types';
+import type { CallOptions } from './types';
 import { defaultFetchHandler } from '../fetch';
 import { constructMethodCallUri } from '../fetch/utils';
-import type { AgentFetchHandler } from '../types';
-import type { CallOptions } from './types';
-import type { QueryParams } from '../fetch/types';
 
 export class BaseClient {
   fetch: AgentFetchHandler = defaultFetchHandler;
@@ -31,7 +31,8 @@ export class ServiceClient {
     this.app = new AppNamespace(this);
   }
 
-  makePathname(pathname: string) {
+  makePathname(pathname: string): string {
+    // eslint-disable-next-line no-nested-ternary -- TSCONVERSION
     const prefix = this.prefix
       ? this.prefix.startsWith('/')
         ? this.prefix
@@ -59,22 +60,31 @@ export class TestNamespace {
     this._service = service;
   }
 
-  postTest(body: any, opts?: CallOptions | undefined) {
+  postTest(
+    body: unknown,
+    opts?: CallOptions | undefined,
+  ): Promise<AgentFetchHandlerResponse<Record<string, string>>> {
     const httpUri = constructMethodCallUri(
       this._service.makePathname('/test'),
       this._service.uri,
     );
     const httpHeaders = opts?.headers;
 
-    return this._service._baseClient.fetch({
+    return this._service._baseClient.fetch<
+      MimeTypesEnum.ApplicationJson,
+      Record<string, string>
+    >({
       uri: httpUri,
       method: 'POST',
       headers: httpHeaders,
-      reqBody: body as unknown,
+      reqBody: body,
     });
   }
 
-  getTest(params: QueryParams, opts?: CallOptions | undefined) {
+  getTest(
+    params: QueryParams,
+    opts?: CallOptions | undefined,
+  ): Promise<AgentFetchHandlerResponse<Record<string, string>>> {
     const httpUri = constructMethodCallUri(
       this._service.makePathname('/test'),
       this._service.uri,
@@ -83,7 +93,10 @@ export class TestNamespace {
     const httpHeaders = opts?.headers;
     const httpReqBody = undefined;
 
-    return this._service._baseClient.fetch({
+    return this._service._baseClient.fetch<
+      MimeTypesEnum.ApplicationJson,
+      Record<string, string>
+    >({
       uri: httpUri,
       method: 'GET',
       headers: httpHeaders,

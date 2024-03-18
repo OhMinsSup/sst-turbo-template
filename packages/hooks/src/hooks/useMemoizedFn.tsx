@@ -1,4 +1,5 @@
 'use client';
+
 import React from 'react';
 
 type NoopHandler = (this: any, ...args: any[]) => any;

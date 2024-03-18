@@ -1,16 +1,13 @@
-const config = require('@template/lintconfig/eslint-react');
+const config = require('@tooling/eslint-config/react.cjs');
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
   ...config,
   rules: {
     ...config.rules,
-    'func-names': 'off',
-    'unicorn/filename-case': 'off',
-    'eslint-comments/require-description': 'off',
+    'import/order': 'off',
     'import/no-named-as-default-member': 'off',
-    '@typescript-eslint/no-explicit-any': 'off',
-    '@typescript-eslint/no-dynamic-delete': 'off',
+    '@typescript-eslint/no-unsafe-call': 'off',
     '@typescript-eslint/explicit-function-return-type': 'off',
   },
 };
