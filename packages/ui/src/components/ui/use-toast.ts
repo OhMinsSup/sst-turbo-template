@@ -1,9 +1,8 @@
 'use client';
 
 // Inspired by react-hot-toast library
+import type { ToastActionElement, ToastProps } from '@ui/components/ui/toast';
 import * as React from 'react';
-
-import type { ToastActionElement, ToastProps } from '~/components/ui/toast';
 
 const TOAST_LIMIT = 1;
 const TOAST_REMOVE_DELAY = 1000000;
@@ -64,7 +63,7 @@ const addToRemoveQueue = (toastId: string) => {
     toastTimeouts.delete(toastId);
     dispatch({
       type: 'REMOVE_TOAST',
-      toastId: toastId,
+      toastId,
     });
   }, TOAST_REMOVE_DELAY);
 
@@ -126,7 +125,7 @@ export const reducer = (state: State, action: Action): State => {
   }
 };
 
-const listeners: Array<(state: State) => void> = [];
+const listeners: ((state: State) => void)[] = [];
 
 let memoryState: State = { toasts: [] };
 
@@ -142,12 +141,15 @@ type Toast = Omit<ToasterToast, 'id'>;
 function toast({ ...props }: Toast) {
   const id = genId();
 
-  const update = (props: ToasterToast) =>
+  const update = (props: ToasterToast) => {
     dispatch({
       type: 'UPDATE_TOAST',
       toast: { ...props, id },
     });
-  const dismiss = () => dispatch({ type: 'DISMISS_TOAST', toastId: id });
+  };
+  const dismiss = () => {
+    dispatch({ type: 'DISMISS_TOAST', toastId: id });
+  };
 
   dispatch({
     type: 'ADD_TOAST',
@@ -162,7 +164,7 @@ function toast({ ...props }: Toast) {
   });
 
   return {
-    id: id,
+    id,
     dismiss,
     update,
   };
@@ -184,7 +186,9 @@ function useToast() {
   return {
     ...state,
     toast,
-    dismiss: (toastId?: string) => dispatch({ type: 'DISMISS_TOAST', toastId }),
+    dismiss: (toastId?: string) => {
+      dispatch({ type: 'DISMISS_TOAST', toastId });
+    },
   };
 }
 
