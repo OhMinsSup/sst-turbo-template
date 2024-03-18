@@ -6,6 +6,9 @@
     "topo": {
       "dependsOn": ["^topo"]
     },
+    "env:build": {
+      "dependsOn": ["^env:build"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]

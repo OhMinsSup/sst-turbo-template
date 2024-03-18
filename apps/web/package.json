@@ -12,14 +12,15 @@
   "license": "ISC",
   "type": "module",
   "scripts": {
-    "build": "next build",
-    "dev": "next",
+    "build": "pnpm with-env next build",
+    "dev": "pnpm with-env next",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "dotenv -v SKIP_ENV_VALIDATION=1 next lint",
     "sst:dev": "sst bind next dev",
     "start": "next start",
     "test": "echo \"Error: no test specified\" && exit 1",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit",
+    "with-env": "dotenv -e ../../.env --"
   },
   "browserslist": [
     "extends @anansi/browserslist-config"
