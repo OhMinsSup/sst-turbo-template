@@ -61,13 +61,6 @@ function legacyRender(node: React.ReactElement, container: ContainerType) {
   reactRender(node, container);
 }
 
-/** Test usage. Not work in prod */
-export function _r(node: React.ReactElement, container: ContainerType) {
-  if (process.env.NODE_ENV !== 'production') {
-    legacyRender(node, container);
-  }
-}
-
 export function render(node: React.ReactElement, container: ContainerType) {
   if (createRoot as unknown as CreateRoot | undefined) {
     modernRender(node, container);
@@ -90,13 +83,6 @@ async function modernUnmount(container: ContainerType) {
 
 function legacyUnmount(container: ContainerType) {
   unmountComponentAtNode(container);
-}
-
-/** Test usage. Not work in prod */
-export function _u(container: ContainerType) {
-  if (process.env.NODE_ENV !== 'production') {
-    legacyUnmount(container);
-  }
 }
 
 export async function unmount(container: ContainerType) {

@@ -1,4 +1,4 @@
-import { Button } from '@template/ui/components/ui/button';
+import { Button } from '@template/ui';
 
 export default function Routes() {
   return (

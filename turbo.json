@@ -9,6 +9,9 @@
     "env:build": {
       "dependsOn": ["^env:build"]
     },
+    "build:packages": {
+      "dependsOn": ["^build:packages"]
+    },
     "build": {
       "dependsOn": ["^build"],
       "outputs": ["dist/**", ".next/**", "!.next/cache/**"]
