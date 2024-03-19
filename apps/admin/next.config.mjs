@@ -17,7 +17,12 @@ const nextConfig = {
   typescript: {
     ignoreBuildErrors: true,
   },
-  transpilePackages: ['@template/ui'],
+  transpilePackages: [
+    '@template/ui',
+    '@template/react-components',
+    '@template/react-hooks',
+    '@template/react',
+  ],
 };
 
 export default nextConfig;

@@ -32,4 +32,6 @@ export * from '@ui/components/ui/toggle';
 export * from '@ui/components/ui/toggle-group';
 export * from '@ui/components/ui/tooltip';
 export * from '@ui/components/ui/use-toast';
+// custom
+export * from '@ui/components/custom/input-password';
 export * from '@ui/lib/utils';
