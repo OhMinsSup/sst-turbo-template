@@ -35,7 +35,10 @@
     "ianvs",
     "Turborepo",
     "TSCONVERSION",
+    "Elipssis",
     "topo",
-    "tsbuildinfo"
+    "tsbuildinfo",
+    "cmdk",
+    "vaul"
   ]
 }

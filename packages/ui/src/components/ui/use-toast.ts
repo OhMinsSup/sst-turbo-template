@@ -48,6 +48,7 @@ type Action =
       toastId?: ToasterToast['id'];
     };
 
+// eslint-disable-next-line @typescript-eslint/naming-convention -- We want to use `dispatch` as a function name
 interface State {
   toasts: ToasterToast[];
 }
@@ -94,6 +95,7 @@ export const reducer = (state: State, action: Action): State => {
       if (toastId) {
         addToRemoveQueue(toastId);
       } else {
+        // eslint-disable-next-line @typescript-eslint/no-shadow -- We want to shadow the `addToRemoveQueue` function
         state.toasts.forEach((toast) => {
           addToRemoveQueue(toast.id);
         });
@@ -141,6 +143,7 @@ type Toast = Omit<ToasterToast, 'id'>;
 function toast({ ...props }: Toast) {
   const id = genId();
 
+  // eslint-disable-next-line @typescript-eslint/no-shadow -- We want to shadow the `update` function
   const update = (props: ToasterToast) => {
     dispatch({
       type: 'UPDATE_TOAST',
