@@ -8,6 +8,7 @@ import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
 import { Icons } from '../icons';
 import Logo from './logo';
 import Nav from './nav';
+import Overlay from './overlay';
 
 type SidebarProps = React.HTMLAttributes<HTMLElement>;
 
@@ -39,17 +40,7 @@ export default function Sidebar2({ className }: SidebarProps) {
       )}
     >
       {/* Overlay in mobile */}
-      <div
-        role="presentation"
-        onClick={() => {
-          setNavOpened(false);
-        }}
-        className={cn(
-          'absolute inset-0 w-full bg-black transition-[opacity] delay-100 duration-700 md:hidden',
-          isNavOpened ? 'h-svh opacity-50' : 'h-0 opacity-0',
-        )}
-      />
-
+      <Overlay />
       <Layout>
         <LayoutHeader className="sticky top-0 justify-between px-4 py-3 shadow md:px-4">
           <Logo />
