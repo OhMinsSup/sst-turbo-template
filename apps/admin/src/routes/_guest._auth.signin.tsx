@@ -1,7 +1,7 @@
 import React from 'react';
 
 import { SigninForm } from '~/components/auth/signin-form';
-import AuthLayout from './_auth';
+import AuthLayout from './_guest._auth';
 
 export default function SigninPage() {
   return (

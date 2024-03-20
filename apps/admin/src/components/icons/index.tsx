@@ -5,6 +5,7 @@ import {
   ArrowLeftRight,
   ArrowRight,
   Check,
+  ChevronDown,
   ChevronLeft,
   ChevronRight,
   Command,
@@ -16,7 +17,9 @@ import {
   Home,
   Image,
   Laptop,
+  LayoutDashboard,
   Loader2,
+  Menu,
   MessageSquare,
   Moon,
   MoreHorizontal,
@@ -36,11 +39,14 @@ import {
 } from 'lucide-react';
 
 export const Icons = {
+  dashboard: LayoutDashboard,
   logo: Command,
   close: X,
+  menu: Menu,
   spinner: Loader2,
   chevronLeft: ChevronLeft,
   chevronRight: ChevronRight,
+  chevronDown: ChevronDown,
   trash: Trash,
   post: FileText,
   page: File,

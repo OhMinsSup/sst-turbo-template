@@ -3,7 +3,7 @@ import Link from 'next/link';
 
 import { SignupForm } from '~/components/auth/siupin-form';
 import { PAGE_ENDPOINTS } from '~/constants/constants';
-import AuthLayout from './_auth';
+import AuthLayout from './_guest._auth';
 
 export default function SignupPage() {
   return (
