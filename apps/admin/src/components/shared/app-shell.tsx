@@ -1,9 +1,11 @@
 'use client';
 
+import { useEffect } from 'react';
+
 import { cn } from '@template/ui';
 
+import Sidebar from '~/components/shared/sidebar';
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
-import Sidebar from './sidebar';
 
 interface AppShellProps {
   children: React.ReactNode;
@@ -11,6 +13,17 @@ interface AppShellProps {
 
 export default function AppShell({ children }: AppShellProps) {
   const { isCollapsed } = useAdminConfigStore();
+
+  useEffect(() => {
+    return useAdminConfigStore.subscribe((state) => {
+      if (state.isNavOpened) {
+        document.body.classList.add('overflow-hidden');
+      } else {
+        document.body.classList.remove('overflow-hidden');
+      }
+    });
+  }, []);
+
   return (
     <div className="bg-background relative h-full overflow-hidden">
       <Sidebar />

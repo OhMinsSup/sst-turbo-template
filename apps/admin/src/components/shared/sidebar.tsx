@@ -1,8 +1,7 @@
-import { useCallback, useEffect, useState } from 'react';
+import { useCallback } from 'react';
 
-import { cn, CustomButton } from '@template/ui';
+import { cn, CustomButton, Layout, LayoutHeader } from '@template/ui';
 
-import { Layout, LayoutHeader } from '~/components/shared/layout';
 import { navigations } from '~/constants/navigations';
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
 import { Icons } from '../icons';
@@ -12,24 +11,13 @@ import Overlay from './overlay';
 
 type SidebarProps = React.HTMLAttributes<HTMLElement>;
 
-export default function Sidebar2({ className }: SidebarProps) {
-  const [navOpened, setNavOpened] = useState(false);
-
+export default function Sidebar({ className }: SidebarProps) {
   const { isCollapsed, changeIsCollapsed, isNavOpened, changeNavOpened } =
     useAdminConfigStore();
 
   const onToggleNav = useCallback(() => {
     changeNavOpened(!isNavOpened);
   }, [changeNavOpened, isNavOpened]);
-
-  /* Make body not scrollable when navBar is opened */
-  useEffect(() => {
-    if (navOpened) {
-      document.body.classList.add('overflow-hidden');
-    } else {
-      document.body.classList.remove('overflow-hidden');
-    }
-  }, [navOpened]);
 
   return (
     <aside
@@ -63,7 +51,7 @@ export default function Sidebar2({ className }: SidebarProps) {
           id="sidebar-menu"
           className={`h-full flex-1 overflow-auto ${isNavOpened ? 'max-h-screen' : 'max-h-0 py-0 md:max-h-screen md:py-2'}`}
           closeNav={() => {
-            setNavOpened(false);
+            changeNavOpened(false);
           }}
           isCollapsed={isCollapsed}
           links={navigations}
@@ -79,7 +67,8 @@ export default function Sidebar2({ className }: SidebarProps) {
           className="absolute -right-5 top-1/2 hidden rounded-full md:inline-flex"
         >
           <Icons.chevronLeft
-            stroke="1.5"
+            stroke="currentColor"
+            strokeWidth="1.5"
             className={`h-5 w-5 ${isCollapsed ? 'rotate-180' : ''}`}
           />
         </CustomButton>

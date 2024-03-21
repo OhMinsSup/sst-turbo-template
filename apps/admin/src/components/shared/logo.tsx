@@ -2,6 +2,7 @@
 
 import React from 'react';
 
+import { ClientOnly } from '@template/react-components';
 import { cn } from '@template/ui';
 
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
@@ -40,7 +41,9 @@ export default function Logo() {
           strokeLinejoin="round"
           strokeWidth="16"
         />
-        <span className="sr-only">Website Name</span>
+        <ClientOnly>
+          <span className="sr-only">Website Name</span>
+        </ClientOnly>
       </svg>
       <div
         className={cn(
@@ -87,7 +90,9 @@ Logo.Icon = function Item() {
         strokeLinejoin="round"
         strokeWidth="16"
       />
-      <span className="sr-only">Website Name</span>
+      <ClientOnly>
+        <span className="sr-only">Website Name</span>
+      </ClientOnly>
     </svg>
   );
 };

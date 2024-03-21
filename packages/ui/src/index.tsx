@@ -35,5 +35,6 @@ export * from '@ui/components/ui/use-toast';
 // custom
 export * from '@ui/components/custom/input-password';
 export * from '@ui/components/custom/custom-button';
+export * from '@ui/components/custom/layout';
 
 export * from '@ui/lib/utils';
