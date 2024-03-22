@@ -1,13 +1,15 @@
 import { useCallback } from 'react';
 
-import { cn, CustomButton, Layout, LayoutHeader } from '@template/ui';
+import { CustomButton } from '@template/ui/custom-button';
+import { Layout, LayoutHeader } from '@template/ui/layout';
+import { cn } from '@template/ui/utils';
 
+import { Icons } from '~/components/icons';
+import Logo from '~/components/shared/logo';
+import Nav from '~/components/shared/nav';
+import Overlay from '~/components/shared/overlay';
 import { navigations } from '~/constants/navigations';
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
-import { Icons } from '../icons';
-import Logo from './logo';
-import Nav from './nav';
-import Overlay from './overlay';
 
 type SidebarProps = React.HTMLAttributes<HTMLElement>;
 

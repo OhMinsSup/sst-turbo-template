@@ -1,17 +1,15 @@
 import Link from 'next/link';
 
+import { CustomButton } from '@template/ui/custom-button';
 import {
-  cn,
-  CustomButton,
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuTrigger,
-} from '@template/ui';
+} from '@template/ui/dropdown-menu';
+import { cn } from '@template/ui/utils';
 
 import { Icons } from '~/components/icons';
-
-console.log(cn);
 
 interface TopNavProps extends React.HTMLAttributes<HTMLElement> {
   links: {

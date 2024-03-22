@@ -3,7 +3,7 @@
 import React from 'react';
 
 import { ClientOnly } from '@template/react-components';
-import { cn } from '@template/ui';
+import { cn } from '@template/ui/utils';
 
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
 

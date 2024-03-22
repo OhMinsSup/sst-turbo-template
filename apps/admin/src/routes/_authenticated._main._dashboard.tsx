@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Layout, LayoutBody, LayoutHeader } from '@template/ui';
+import { Layout, LayoutBody, LayoutHeader } from '@template/ui/layout';
 
 import TopNav from '~/components/shared/top-nav';
 

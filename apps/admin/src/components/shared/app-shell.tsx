@@ -2,7 +2,7 @@
 
 import { useEffect } from 'react';
 
-import { cn } from '@template/ui';
+import { cn } from '@template/ui/utils';
 
 import Sidebar from '~/components/shared/sidebar';
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';

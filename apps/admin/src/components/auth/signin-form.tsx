@@ -5,17 +5,17 @@ import Link from 'next/link';
 import { zodResolver } from '@hookform/resolvers/zod';
 import { useForm } from 'react-hook-form';
 
+import { Button } from '@template/ui/button';
 import {
-  Button,
   Form,
   FormControl,
   FormField,
   FormItem,
   FormLabel,
   FormMessage,
-  Input,
-  PasswordInput,
-} from '@template/ui';
+} from '@template/ui/form';
+import { Input } from '@template/ui/input';
+import { PasswordInput } from '@template/ui/input-password';
 
 import type { FormFieldValues } from '~/services/validate/auth/signin';
 import { Icons } from '~/components/icons';

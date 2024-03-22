@@ -2,23 +2,26 @@ import { useId } from 'react';
 import Link from 'next/link';
 
 import {
-  cn,
   Collapsible,
   CollapsibleContent,
   CollapsibleTrigger,
-  CustomButton,
-  customButtonVariants,
+} from '@template/ui/collapsible';
+import { CustomButton, customButtonVariants } from '@template/ui/custom-button';
+import {
   DropdownMenu,
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuLabel,
   DropdownMenuSeparator,
   DropdownMenuTrigger,
+} from '@template/ui/dropdown-menu';
+import {
   Tooltip,
   TooltipContent,
   TooltipProvider,
   TooltipTrigger,
-} from '@template/ui';
+} from '@template/ui/tooltip';
+import { cn } from '@template/ui/utils';
 
 import type { Navigation } from '~/constants/navigations';
 import { Icons } from '~/components/icons';
@@ -92,7 +95,6 @@ function NavLink({
       href={href}
       onClick={closeNav}
       className={cn(
-        // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
         customButtonVariants({
           variant: isActive(href) ? 'secondary' : 'ghost',
           size: 'sm',
@@ -124,7 +126,6 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
     <Collapsible defaultOpen={isChildActive}>
       <CollapsibleTrigger
         className={cn(
-          // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
           customButtonVariants({ variant: 'ghost', size: 'sm' }),
           'group h-12 w-full justify-start rounded-none px-6',
         )}
@@ -166,7 +167,6 @@ function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
         <Link
           href={href}
           className={cn(
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-argument, @typescript-eslint/no-unsafe-call
             customButtonVariants({
               variant: isActive(href) ? 'secondary' : 'ghost',
               size: 'icon',

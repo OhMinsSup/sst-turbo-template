@@ -1,6 +1,6 @@
 import React from 'react';
 
-import { Card } from '@template/ui';
+import { Card } from '@template/ui/card';
 
 interface AuthLayoutProps {
   children: React.ReactNode;
