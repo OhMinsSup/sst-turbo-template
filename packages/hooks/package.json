@@ -5,16 +5,118 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "module": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+    "./package.json": "./package.json",
+    "./context": {
+      "import": {
+        "types": "./dist/context.d.ts",
+        "default": "./dist/context.js"
+      },
+      "require": {
+        "types": "./dist/context.d.cts",
+        "default": "./dist/context.cjs"
+      }
+    },
+    "./useBeforeUnload": {
+      "import": {
+        "types": "./dist/useBeforeUnload.d.ts",
+        "default": "./dist/useBeforeUnload.js"
+      },
+      "require": {
+        "types": "./dist/useBeforeUnload.d.cts",
+        "default": "./dist/useBeforeUnload.cjs"
+      }
+    },
+    "./useEventListener": {
+      "import": {
+        "types": "./dist/useEventListener.d.ts",
+        "default": "./dist/useEventListener.js"
+      },
+      "require": {
+        "types": "./dist/useEventListener.d.cts",
+        "default": "./dist/useEventListener.cjs"
+      }
+    },
+    "./useIsFirstRender": {
+      "import": {
+        "types": "./dist/useIsFirstRender.d.ts",
+        "default": "./dist/useIsFirstRender.js"
+      },
+      "require": {
+        "types": "./dist/useIsFirstRender.d.cts",
+        "default": "./dist/useIsFirstRender.cjs"
+      }
+    },
+    "./useIsHydrating": {
+      "import": {
+        "types": "./dist/useIsHydrating.d.ts",
+        "default": "./dist/useIsHydrating.js"
+      },
+      "require": {
+        "types": "./dist/useIsHydrating.d.cts",
+        "default": "./dist/useIsHydrating.cjs"
+      }
+    },
+    "./useLatest": {
+      "import": {
+        "types": "./dist/useLatest.d.ts",
+        "default": "./dist/useLatest.js"
+      },
+      "require": {
+        "types": "./dist/useLatest.d.cts",
+        "default": "./dist/useLatest.cjs"
+      }
+    },
+    "./useMediaQuery": {
+      "import": {
+        "types": "./dist/useMediaQuery.d.ts",
+        "default": "./dist/useMediaQuery.js"
+      },
+      "require": {
+        "types": "./dist/useMediaQuery.d.cts",
+        "default": "./dist/useMediaQuery.cjs"
+      }
+    },
+    "./useMemoizedFn": {
+      "import": {
+        "types": "./dist/useMemoizedFn.d.ts",
+        "default": "./dist/useMemoizedFn.js"
+      },
+      "require": {
+        "types": "./dist/useMemoizedFn.d.cts",
+        "default": "./dist/useMemoizedFn.cjs"
+      }
+    },
+    "./useMutationObserver": {
+      "import": {
+        "types": "./dist/useMutationObserver.d.ts",
+        "default": "./dist/useMutationObserver.js"
+      },
+      "require": {
+        "types": "./dist/useMutationObserver.d.cts",
+        "default": "./dist/useMutationObserver.cjs"
+      }
+    },
+    "./useUnmount": {
+      "import": {
+        "types": "./dist/useUnmount.d.ts",
+        "default": "./dist/useUnmount.js"
+      },
+      "require": {
+        "types": "./dist/useUnmount.d.cts",
+        "default": "./dist/useUnmount.cjs"
+      }
+    },
+    "./useUpdate": {
+      "import": {
+        "types": "./dist/useUpdate.d.ts",
+        "default": "./dist/useUpdate.js"
+      },
+      "require": {
+        "types": "./dist/useUpdate.d.cts",
+        "default": "./dist/useUpdate.cjs"
+      }
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],

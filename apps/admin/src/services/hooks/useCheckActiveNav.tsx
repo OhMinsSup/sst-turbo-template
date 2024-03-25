@@ -1,6 +1,6 @@
 import { usePathname } from 'next/navigation';
 
-import { useMemoizedFn } from '@template/react-hooks';
+import { useMemoizedFn } from '@template/react-hooks/useMemoizedFn';
 
 export function useCheckActiveNav() {
   const pathname = usePathname();

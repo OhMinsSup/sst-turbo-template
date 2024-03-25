@@ -1,7 +1,7 @@
 import React, { useRef } from 'react';
 
-import { getTargetElement } from '@template/react';
-import { useEventListener } from '@template/react-hooks';
+import { useEventListener } from '@template/react-hooks/useEventListener';
+import { getTargetElement } from '@template/react/dom';
 import { cn } from '@template/ui/utils';
 
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';

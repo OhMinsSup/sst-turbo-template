@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { isBrowser } from '@template/react';
+import { isBrowser } from '@template/react/assertion';
 
 import { useMemoizedFn } from './useMemoizedFn';
 

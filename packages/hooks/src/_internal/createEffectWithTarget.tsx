@@ -2,10 +2,12 @@
 
 import React from 'react';
 
-import type { BasicTarget } from '@template/react';
-import { depsAreSame, getTargetElement, isBrowser } from '@template/react';
+import type { BasicTarget } from '@template/react/dom';
+import { isBrowser } from '@template/react/assertion';
+import { depsAreSame } from '@template/react/depsAreSame';
+import { getTargetElement } from '@template/react/dom';
 
-import { useUnmount } from './useUnmount';
+import { useUnmount } from '../useUnmount';
 
 const createEffectWithTarget = (
   useEffectType: typeof React.useEffect | typeof React.useLayoutEffect,

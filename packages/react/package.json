@@ -5,16 +5,48 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "module": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
+    "./package.json": "./package.json",
+    "./assertion": {
+      "import": {
+        "types": "./dist/assertion.d.ts",
+        "default": "./dist/assertion.js"
+      },
+      "require": {
+        "types": "./dist/assertion.d.cts",
+        "default": "./dist/assertion.cjs"
+      }
+    },
+    "./render": {
+      "import": {
+        "types": "./dist/render.d.ts",
+        "default": "./dist/render.js"
+      },
+      "require": {
+        "types": "./dist/render.d.cts",
+        "default": "./dist/render.cjs"
+      }
+    },
+    "./depsAreSame": {
+      "import": {
+        "types": "./dist/depsAreSame.d.ts",
+        "default": "./dist/depsAreSame.js"
+      },
+      "require": {
+        "types": "./dist/depsAreSame.d.cts",
+        "default": "./dist/depsAreSame.cjs"
+      }
+    },
+    "./dom": {
+      "import": {
+        "types": "./dist/dom.d.ts",
+        "default": "./dist/dom.js"
+      },
+      "require": {
+        "types": "./dist/dom.d.cts",
+        "default": "./dist/dom.cjs"
+      }
     }
   },
-  "main": "./dist/index.cjs",
-  "module": "./dist/index.js",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],

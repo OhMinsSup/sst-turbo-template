@@ -2,7 +2,7 @@
 
 import React from 'react';
 
-import { ClientOnly } from '@template/react-components';
+import { ClientOnly } from '@template/react-components/client-only';
 import { cn } from '@template/ui/utils';
 
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
