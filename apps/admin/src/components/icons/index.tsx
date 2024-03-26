@@ -2,9 +2,7 @@ import type { LucideProps } from 'lucide-react';
 import {
   AlertTriangle,
   AlignLeft,
-  ArrowLeftRight,
   ArrowRight,
-  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
@@ -107,3 +105,5 @@ export const Icons = {
     </svg>
   ),
 };
+
+export type IconType = keyof typeof Icons;

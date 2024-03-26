@@ -39,12 +39,12 @@
     },
     "./avatar": {
       "import": {
-        "types": "./dist/components/ui/aspect-ratio.d.ts",
-        "default": "./dist/components/ui/aspect-ratio.js"
+        "types": "./dist/components/ui/avatar.d.ts",
+        "default": "./dist/components/ui/avatar.js"
       },
       "require": {
-        "types": "./dist/components/ui/aspect-ratio.d.cts",
-        "default": "./dist/components/ui/aspect-ratio.cjs"
+        "types": "./dist/components/ui/avatar.d.cts",
+        "default": "./dist/components/ui/avatar.cjs"
       }
     },
     "./badge": {

@@ -1,3 +1,5 @@
+'use client';
+
 import { useCallback } from 'react';
 
 import { CustomButton } from '@template/ui/custom-button';
@@ -8,14 +10,16 @@ import { Icons } from '~/components/icons';
 import Logo from '~/components/shared/logo';
 import Nav from '~/components/shared/nav';
 import Overlay from '~/components/shared/overlay';
-import { navigations } from '~/constants/navigations';
 import { useAdminConfigStore } from '~/services/store/useAdminConfigStore';
+import { useAdminNavigationStore } from '~/services/store/useAdminNavigationStore';
 
 type SidebarProps = React.HTMLAttributes<HTMLElement>;
 
 export default function Sidebar({ className }: SidebarProps) {
   const { isCollapsed, changeIsCollapsed, isNavOpened, changeNavOpened } =
     useAdminConfigStore();
+
+  const { navigations } = useAdminNavigationStore();
 
   const onToggleNav = useCallback(() => {
     changeNavOpened(!isNavOpened);
@@ -32,7 +36,7 @@ export default function Sidebar({ className }: SidebarProps) {
       {/* Overlay in mobile */}
       <Overlay />
       <Layout>
-        <LayoutHeader className="sticky top-0 justify-between px-4 py-3 shadow md:px-4">
+        <LayoutHeader className="sticky top-0 justify-between px-4 py-3 shadow md:px-4 md:shadow-none">
           <Logo />
           {/* Toggle Button in mobile */}
           <CustomButton

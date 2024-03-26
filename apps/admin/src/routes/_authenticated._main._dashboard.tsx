@@ -1,8 +1,14 @@
+'use client';
+
 import React from 'react';
 
+import { ClientOnly } from '@template/react-components/client-only';
 import { Layout, LayoutBody, LayoutHeader } from '@template/ui/layout';
 
-import TopNav from '~/components/shared/top-nav';
+import BreadcrumbGroup from '~/components/shared/breadcrumb-group';
+import InputSearch from '~/components/shared/input-search';
+import ThemeSwitch from '~/components/shared/theme-switch';
+import UserNav from '~/components/shared/user-nav';
 
 interface DashboardLayoutProps {
   children: React.ReactNode;
@@ -10,42 +16,23 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <Layout>
-      {/* ===== Top Heading ===== */}
-      <LayoutHeader>
-        <TopNav links={topNav} />
-        <div className="ml-auto flex items-center space-x-4">
-          {/* <Search />
-          <ThemeSwitch />
-          <UserNav /> */}
-        </div>
-      </LayoutHeader>
+    <ClientOnly>
+      <Layout>
+        {/* ===== Top Heading ===== */}
+        <LayoutHeader>
+          <InputSearch />
+          <div className="ml-auto flex items-center space-x-4">
+            <ThemeSwitch />
+            <UserNav />
+          </div>
+        </LayoutHeader>
 
-      {/* ===== Main ===== */}
-      <LayoutBody className="space-y-4">{children}</LayoutBody>
-    </Layout>
+        {/* ===== Main ===== */}
+        <LayoutBody className="space-y-4">
+          <BreadcrumbGroup />
+          {children}
+        </LayoutBody>
+      </Layout>
+    </ClientOnly>
   );
 }
-
-const topNav = [
-  {
-    title: 'Overview',
-    href: 'dashboard/overview',
-    isActive: true,
-  },
-  {
-    title: 'Customers',
-    href: 'dashboard/customers',
-    isActive: false,
-  },
-  {
-    title: 'Products',
-    href: 'dashboard/products',
-    isActive: false,
-  },
-  {
-    title: 'Settings',
-    href: 'dashboard/settings',
-    isActive: false,
-  },
-];
