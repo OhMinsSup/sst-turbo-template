@@ -16,23 +16,21 @@ interface DashboardLayoutProps {
 
 export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
-    <ClientOnly>
-      <Layout>
-        {/* ===== Top Heading ===== */}
-        <LayoutHeader>
+    <Layout>
+      <LayoutHeader>
+        <ClientOnly fallback={<></>}>
           <InputSearch />
           <div className="ml-auto flex items-center space-x-4">
             <ThemeSwitch />
             <UserNav />
           </div>
-        </LayoutHeader>
+        </ClientOnly>
+      </LayoutHeader>
 
-        {/* ===== Main ===== */}
-        <LayoutBody className="space-y-4">
-          <BreadcrumbGroup />
-          {children}
-        </LayoutBody>
-      </Layout>
-    </ClientOnly>
+      <LayoutBody className="space-y-4">
+        <BreadcrumbGroup />
+        {children}
+      </LayoutBody>
+    </Layout>
   );
 }

@@ -90,7 +90,6 @@ interface NavLinkProps extends Navigation {
 function NavLink({
   title,
   icon,
-  label,
   href,
   closeNav,
   subLink = false,
@@ -115,19 +114,14 @@ function NavLink({
       aria-current={isActive(to) ? 'page' : undefined}
     >
       <div className="mr-2">
-        <IconComponent className="size-6" />
+        <IconComponent className="size-4" />
       </div>
       {title}
-      {label ? (
-        <div className="bg-primary text-primary-foreground ml-2 rounded-lg px-1 text-[0.625rem]">
-          {label}
-        </div>
-      ) : null}
     </Link>
   );
 }
 
-function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
+function NavLinkDropdown({ title, icon, sub, closeNav }: NavLinkProps) {
   const { isActive } = useCheckActiveNav();
   const params = useParams();
 
@@ -150,14 +144,9 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
         )}
       >
         <div className="mr-2">
-          <IconComponent className="size-6" />
+          <IconComponent className="size-4" />
         </div>
         {title}
-        {label ? (
-          <div className="bg-primary text-primary-foreground ml-2 rounded-lg px-1 text-[0.625rem]">
-            {label}
-          </div>
-        ) : null}
         <span
           className={cn(
             'ml-auto transition-all group-data-[state="open"]:-rotate-180',
@@ -182,7 +171,7 @@ function NavLinkDropdown({ title, icon, label, sub, closeNav }: NavLinkProps) {
   );
 }
 
-function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
+function NavLinkIcon({ title, icon, href }: NavLinkProps) {
   const { isActive } = useCheckActiveNav();
   const params = useParams();
 
@@ -208,15 +197,12 @@ function NavLinkIcon({ title, icon, label, href }: NavLinkProps) {
       </TooltipTrigger>
       <TooltipContent side="right" className="flex items-center gap-4">
         {title}
-        {label ? (
-          <span className="text-muted-foreground ml-auto">{label}</span>
-        ) : null}
       </TooltipContent>
     </Tooltip>
   );
 }
 
-function NavLinkIconDropdown({ title, icon, label, sub }: NavLinkProps) {
+function NavLinkIconDropdown({ title, icon, sub }: NavLinkProps) {
   const { isActive } = useCheckActiveNav();
   const params = useParams();
 
@@ -238,22 +224,17 @@ function NavLinkIconDropdown({ title, icon, label, sub }: NavLinkProps) {
               size="icon"
               className="h-12 w-12"
             >
-              <IconComponent className="size-6" />
+              <IconComponent className="size-4" />
             </CustomButton>
           </DropdownMenuTrigger>
         </TooltipTrigger>
         <TooltipContent side="right" className="flex items-center gap-4">
-          {title}{' '}
-          {label ? (
-            <span className="text-muted-foreground ml-auto">{label}</span>
-          ) : null}
+          {title}
           <Icons.chevronDown className="text-muted-foreground size-5 -rotate-90" />
         </TooltipContent>
       </Tooltip>
       <DropdownMenuContent side="right" align="start" sideOffset={4}>
-        <DropdownMenuLabel>
-          {title} {label ? `(${label})` : ''}
-        </DropdownMenuLabel>
+        <DropdownMenuLabel>{title}</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {sub.map((target) => {
           const SubIcon = target.icon ? Icons[target.icon] : Fragment;
@@ -264,11 +245,8 @@ function NavLinkIconDropdown({ title, icon, label, sub }: NavLinkProps) {
           return (
             <DropdownMenuItem key={`navlink-${target.id}`} asChild>
               <Link href={to} className={isActive(to) ? 'bg-secondary' : ''}>
-                <SubIcon />
+                <SubIcon className="size-4" />
                 <span className="ml-2 max-w-52 text-wrap">{target.title}</span>
-                {target.label ? (
-                  <span className="ml-auto text-xs">{target.label}</span>
-                ) : null}
               </Link>
             </DropdownMenuItem>
           );

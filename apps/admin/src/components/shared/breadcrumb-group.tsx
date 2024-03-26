@@ -33,7 +33,12 @@ export default function BreadcrumbGroup() {
 
   return (
     <div className="flex items-center justify-between space-y-2">
-      <BreadcrumbGroup.Title navigation={navigation} />
+      <div className="flex flex-col justify-center">
+        <BreadcrumbGroup.Title navigation={navigation} />
+        {navigation?.label ? (
+          <p className="text-muted-foreground leading-7">{navigation.label}</p>
+        ) : null}
+      </div>
       <div className="flex items-center">
         <BreadcrumbGroup.Breadcrumbs navigation={navigation} />
       </div>
