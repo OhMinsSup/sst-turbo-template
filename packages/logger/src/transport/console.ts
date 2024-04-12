@@ -1,6 +1,6 @@
-import type { Transport } from '../types';
-import { LogLevel } from '../constants';
-import { formatDate, prepareMetadata } from '../utils';
+import type { Transport } from '../_internal/types';
+import { LogLevel } from '../_internal/constants';
+import { formatDate, prepareMetadata } from '../_internal/utils';
 
 export const consoleTransport: Transport = (
   level,

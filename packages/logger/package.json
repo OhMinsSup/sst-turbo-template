@@ -2,8 +2,10 @@
   "name": "@template/logger",
   "version": "0.0.1",
   "private": true,
+  "sideEffects": false,
   "type": "module",
   "exports": {
+    "./package.json": "./package.json",
     ".": {
       "import": "./dist/index.js",
       "module": "./dist/index.js",
@@ -25,13 +27,53 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "prettier": "@tooling/prettier-config/web",
+  "prettier": "@tooling/prettier-config/base",
   "devDependencies": {
+    "@sentry/node": "^7.110.0",
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "@sentry/node": "^7.0.0",
+    "typescript": "^5.4.4"
+  },
+  "peerDependenciesMeta": {
+    "@sentry/node": {
+      "optional": true
+    },
+    "typescript": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
+  },
+  "./transport/console": {
+    "import": {
+      "types": "./dist/transport/console.d.ts",
+      "default": "./dist/transport/console.js"
+    },
+    "require": {
+      "types": "./dist/transport/console.d.cts",
+      "default": "./dist/transport/console.cjs"
+    }
+  },
+  "./transport/sentry": {
+    "import": {
+      "types": "./dist/transport/sentry.d.ts",
+      "default": "./dist/transport/sentry.js"
+    },
+    "require": {
+      "types": "./dist/transport/sentry.d.cts",
+      "default": "./dist/transport/sentry.cjs"
+    }
   }
 }

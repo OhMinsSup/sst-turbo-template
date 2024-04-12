@@ -1,7 +1,7 @@
 import type { FormatOptions } from 'date-fns/format';
 import { format } from 'date-fns/format';
 
-import { BaseError, ErrorType } from '@template/error';
+import { DateError } from './error';
 
 export const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
 
@@ -14,10 +14,11 @@ export function formatDate(
   if (typeof reassignDate === 'string') {
     const newDate = new Date(reassignDate);
     if (isNaN(newDate.getTime())) {
-      throw new BaseError(
-        ErrorType.DateError,
-        `Invalid date string: ${reassignDate}`,
-      );
+      throw new DateError(`Invalid date string: ${reassignDate}`, {
+        dateValue: reassignDate,
+        errorType: 'string',
+        formatStr,
+      });
     }
     reassignDate = newDate;
   }
@@ -25,17 +26,22 @@ export function formatDate(
   if (typeof reassignDate === 'number') {
     const newDate = new Date(reassignDate);
     if (isNaN(newDate.getTime())) {
-      throw new BaseError(
-        ErrorType.DateError,
-        `Invalid date number: ${reassignDate}`,
-      );
+      throw new DateError(`Invalid date number: ${reassignDate.toString()}`, {
+        dateValue: reassignDate,
+        errorType: 'number',
+        formatStr,
+      });
     }
     reassignDate = newDate;
   }
 
   if (reassignDate instanceof Date) {
     if (isNaN(reassignDate.getTime())) {
-      throw new BaseError(ErrorType.DateError, 'Invalid date instance');
+      throw new DateError('Invalid date instance', {
+        dateValue: reassignDate,
+        errorType: 'instance',
+        formatStr,
+      });
     }
   }
 

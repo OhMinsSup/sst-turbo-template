@@ -1,11 +1,9 @@
-import type { MimeTypesEnum, QueryParams } from '../fetch/types';
-import type { AgentFetchHandler, AgentFetchHandlerResponse } from '../types';
-import type { CallOptions } from './types';
-import { defaultFetchHandler } from '../fetch';
-import { constructMethodCallUri } from '../fetch/utils';
+import type { FetchHandler } from '../fetch/types';
+import { fetchHandler } from '../fetch';
+import { TestNamespace } from './test';
 
 export class BaseClient {
-  fetch: AgentFetchHandler = defaultFetchHandler;
+  fetch: FetchHandler = fetchHandler;
 
   service(serviceUri: string | URL, prefix?: string): ServiceClient {
     return new ServiceClient(this, serviceUri, prefix);
@@ -30,17 +28,6 @@ export class ServiceClient {
     this.prefix = prefix;
     this.app = new AppNamespace(this);
   }
-
-  makePathname(pathname: string): string {
-    // eslint-disable-next-line no-nested-ternary -- TSCONVERSION
-    const prefix = this.prefix
-      ? this.prefix.startsWith('/')
-        ? this.prefix
-        : `/${this.prefix}`
-      : '';
-    const pathnamePrefix = pathname.startsWith('/') ? pathname : `/${pathname}`;
-    return `${prefix}${pathnamePrefix}`;
-  }
 }
 
 export class AppNamespace {
@@ -50,57 +37,5 @@ export class AppNamespace {
   constructor(service: ServiceClient) {
     this._service = service;
     this.test = new TestNamespace(service);
-  }
-}
-
-export class TestNamespace {
-  _service: ServiceClient;
-
-  constructor(service: ServiceClient) {
-    this._service = service;
-  }
-
-  postTest(
-    body: unknown,
-    opts?: CallOptions | undefined,
-  ): Promise<AgentFetchHandlerResponse<Record<string, string>>> {
-    const httpUri = constructMethodCallUri(
-      this._service.makePathname('/test'),
-      this._service.uri,
-    );
-    const httpHeaders = opts?.headers;
-
-    return this._service._baseClient.fetch<
-      MimeTypesEnum.ApplicationJson,
-      Record<string, string>
-    >({
-      uri: httpUri,
-      method: 'POST',
-      headers: httpHeaders,
-      reqBody: body,
-    });
-  }
-
-  getTest(
-    params: QueryParams,
-    opts?: CallOptions | undefined,
-  ): Promise<AgentFetchHandlerResponse<Record<string, string>>> {
-    const httpUri = constructMethodCallUri(
-      this._service.makePathname('/test'),
-      this._service.uri,
-      params,
-    );
-    const httpHeaders = opts?.headers;
-    const httpReqBody = undefined;
-
-    return this._service._baseClient.fetch<
-      MimeTypesEnum.ApplicationJson,
-      Record<string, string>
-    >({
-      uri: httpUri,
-      method: 'GET',
-      headers: httpHeaders,
-      reqBody: httpReqBody,
-    });
   }
 }

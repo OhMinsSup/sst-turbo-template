@@ -1,26 +1,4 @@
-import type React from 'react';
-
-import { isBrowser, isElement } from './assertion';
-
-export function getOwnerWindow(node?: Element | null): typeof globalThis {
-  return isElement(node)
-    ? getOwnerDocument(node).defaultView ?? window
-    : window;
-}
-
-export function getOwnerDocument(node?: Element | null): Document {
-  if (isElement(node)) {
-    if ('ownerDocument' in node) {
-      return node.ownerDocument;
-    }
-    return document;
-  }
-  return document;
-}
-
-export const IS_APPLE: boolean = isBrowser
-  ? /Mac|iPod|iPhone|iPad/.test(navigator.platform)
-  : false;
+import type { MutableRefObject } from 'react';
 
 export const getScrollTop = (el: Document | Element) => {
   if (el === document || el === document.body) {
@@ -48,7 +26,7 @@ export const getClientHeight = (el: Document | Element) => {
 };
 
 export const getWindowScrollTop = () => {
-  if (!isBrowser) {
+  if (typeof window === 'undefined') {
     return 0;
   }
 
@@ -69,13 +47,13 @@ type TargetType = HTMLElement | Element | Window | Document;
 export type BasicTarget<T extends TargetType = Element> =
   | (() => TargetValue<T>)
   | TargetValue<T>
-  | React.MutableRefObject<TargetValue<T>>;
+  | MutableRefObject<TargetValue<T>>;
 
 export function getTargetElement<T extends TargetType>(
   target: BasicTarget<T>,
   defaultElement?: T,
 ) {
-  if (!isBrowser) {
+  if (typeof window === 'undefined') {
     return undefined;
   }
 

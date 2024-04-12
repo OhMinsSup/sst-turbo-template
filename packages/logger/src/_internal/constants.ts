@@ -5,3 +5,5 @@ export enum LogLevel {
   Warn = 'warn',
   Error = 'error',
 }
+
+export type LogLevelType = keyof typeof LogLevel;

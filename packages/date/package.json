@@ -2,6 +2,7 @@
   "name": "@template/date",
   "version": "0.0.1",
   "private": true,
+  "sideEffects": false,
   "type": "module",
   "exports": {
     ".": {
@@ -25,17 +26,30 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "prettier": "@tooling/prettier-config/web",
-  "dependencies": {
-    "@template/error": "workspace:*",
-    "date-fns": "^3.5.0"
-  },
+  "prettier": "@tooling/prettier-config/base",
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
+    "date-fns": "^3.6.0",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "date-fns": "^3.6.0",
+    "typescript": "^5.4.4"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
   }
 }

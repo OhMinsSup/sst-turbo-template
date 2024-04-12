@@ -2,18 +2,11 @@
   "name": "@template/libs",
   "version": "0.0.1",
   "private": true,
+  "sideEffects": false,
   "type": "module",
   "exports": {
-    ".": {
-      "import": "./dist/index.js",
-      "module": "./dist/index.js",
-      "require": "./dist/index.cjs",
-      "types": "./dist/index.d.ts"
-    }
+    "./package.json": "./package.json"
   },
-  "main": "./dist/index.js",
-  "module": "./dist/index.mjs",
-  "types": "./dist/index.d.ts",
   "files": [
     "dist"
   ],
@@ -25,16 +18,38 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "prettier": "@tooling/prettier-config/web",
-  "dependencies": {
-    "@template/error": "workspace:*"
-  },
+  "prettier": "@tooling/prettier-config/base",
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
+  },
+  "peerDependencies": {
+    "typescript": "^5.4.4"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
+  },
+  "./assertion": {
+    "import": {
+      "types": "./dist/assertion.d.ts",
+      "default": "./dist/assertion.js"
+    },
+    "require": {
+      "types": "./dist/assertion.d.cts",
+      "default": "./dist/assertion.cjs"
+    }
   }
 }

@@ -7,7 +7,7 @@ import { isBrowser } from '@template/react/assertion';
 import { depsAreSame } from '@template/react/depsAreSame';
 import { getTargetElement } from '@template/react/dom';
 
-import { useUnmount } from '../useUnmount';
+import { useUnmount } from '../hooks/useUnmount';
 
 const createEffectWithTarget = (
   useEffectType: typeof React.useEffect | typeof React.useLayoutEffect,

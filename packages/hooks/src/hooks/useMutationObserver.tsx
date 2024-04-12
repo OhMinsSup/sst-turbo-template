@@ -1,7 +1,7 @@
 import type { BasicTarget } from '@template/react/dom';
 import { getTargetElement } from '@template/react/dom';
 
-import { useIsomorphicLayoutEffectWithTarget } from './_internal/createEffectWithTarget';
+import { useIsomorphicLayoutEffectWithTarget } from '../_internal/createEffectWithTarget';
 import { useLatest } from './useLatest';
 
 export function useMutationObserver(

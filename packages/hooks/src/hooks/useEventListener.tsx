@@ -3,7 +3,7 @@
 import type { BasicTarget } from '@template/react/dom';
 import { getTargetElement } from '@template/react/dom';
 
-import { useEffectWithTarget } from './_internal/createEffectWithTarget';
+import { useEffectWithTarget } from '../_internal/createEffectWithTarget';
 import { useLatest } from './useLatest';
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any -- ignore

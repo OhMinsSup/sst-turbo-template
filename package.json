@@ -29,22 +29,23 @@
     "lint:fix": "turbo lint --continue -- --fix --cache --cache-location 'node_modules/.cache/.eslintcache' && manypkg fix",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:syncpack": "syncpack lint",
+    "ncu:deep": "npx ncu --deep",
     "typecheck": "turbo typecheck",
     "ui:add": "pnpm --filter @template/ui ui:add"
   },
-  "prettier": "@tooling/prettier-config/web",
+  "prettier": "@tooling/prettier-config/base",
   "dependencies": {
     "@manypkg/cli": "^0.21.3",
     "@tooling/env": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
-    "@turbo/gen": "^1.12.5",
-    "cspell": "^8.6.0",
+    "@turbo/gen": "^1.13.2",
+    "cspell": "^8.7.0",
     "dotenv-cli": "^7.4.1",
     "prettier": "^3.2.5",
     "syncpack": "^12.3.0",
-    "turbo": "^1.13.0",
-    "typescript": "^5.4.2"
+    "turbo": "^1.13.2",
+    "typescript": "^5.4.5"
   },
   "packageManager": "pnpm@8.12.1",
   "engines": {

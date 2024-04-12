@@ -1,227 +1,112 @@
-import { BaseError, ErrorType } from '@template/error';
+import type { FetchOptions, ResponseMapType } from './types';
 
-import type { MimeTypes, QueryParams } from './types';
+export function mergeFetchOptions<R extends ResponseMapType = 'json'>(
+  input: FetchOptions<R> | undefined,
+  defaults: FetchOptions<R> | undefined,
+  Headers = globalThis.Headers,
+): FetchOptions<R> {
+  const merged: FetchOptions<R> = {
+    ...defaults,
+    ...input,
+  };
 
-export const getSearchParams = (
-  url: URL | string,
-  params?: URLSearchParams | string,
-): string | URL => {
-  if (!params) {
-    return url;
+  // Merge params and query
+  if (defaults?.params && input?.params) {
+    merged.params = {
+      ...defaults.params,
+      ...input.params,
+    };
   }
-  const textSearchParams =
-    typeof params === 'string'
-      ? params.replace(/^\?/, '')
-      : new URLSearchParams(params).toString();
-  const searchParams = `?${textSearchParams}`;
-  const toStringUrl = typeof url === 'string' ? url : url.toString();
-  return toStringUrl.replace(/(?:\?.*?)?(?=#|$)/, searchParams);
-};
+  if (defaults?.query && input?.query) {
+    const inputQuery =
+      input.query instanceof URLSearchParams
+        ? input.query
+        : new URLSearchParams(input.query);
 
-export function normalizeHeaders(
-  headers: Headers | Record<string, string> | undefined,
-): Headers | undefined {
-  if (typeof headers === 'undefined') {
-    return undefined;
-  }
+    const defaultQuery =
+      defaults.query instanceof URLSearchParams
+        ? defaults.query
+        : new URLSearchParams(defaults.query);
 
-  const safyHeaders =
-    headers instanceof Headers ? headers : new Headers(headers);
-  const normalized: Headers = new Headers();
-  const entries = Object.entries(safyHeaders) as [string, string][];
-
-  for (const [header, value] of entries) {
-    normalized.set(header.toLowerCase(), value as unknown as string);
-  }
-  return normalized;
-}
-
-export function encodeMethodCallBody<Data = unknown>(
-  headers: Headers | undefined,
-  data?: Data,
-): ArrayBuffer | undefined {
-  if (typeof headers === 'undefined') {
-    return undefined;
+    merged.query = {
+      ...Object.fromEntries(defaultQuery),
+      ...Object.fromEntries(inputQuery),
+    };
   }
 
-  const contentType = headers.get('content-type');
-  if (!contentType || typeof data === 'undefined') {
-    return undefined;
-  }
-
-  if (data instanceof ArrayBuffer) {
-    return data;
-  }
-
-  if (contentType.startsWith('text/')) {
-    return new TextEncoder().encode((data as string).toString());
-  }
-
-  if (contentType.startsWith('application/json')) {
-    return new TextEncoder().encode(JSON.stringify(data));
-  }
-
-  return undefined;
-}
-
-export function normalizeResponseHeaders(
-  headers: Headers,
-): Record<string, string> {
-  // headers.entries() returns an iterator of key, value pairs
-  // Object.fromEntries() turns this into an object
-  const supportEntries =
-    'entries' in headers && typeof headers.entries === 'function';
-  if (supportEntries) {
-    const safyEntries = headers.entries();
-    return Object.fromEntries(safyEntries) as Record<string, string>;
-  }
-
-  const normalized: Record<string, string> = {};
-  const entries = Object.entries(headers) as [string, string][];
-  for (const [header, value] of entries) {
-    normalized[header.toLowerCase()] = value as unknown as string;
-  }
-  return normalized;
-}
-
-export async function httpResponseBodyParse<
-  Mime extends MimeTypes,
-  JsonData = Record<string, unknown>,
->(
-  mimeType: Mime,
-  res: Response,
-): Promise<
-  Mime extends 'application/json'
-    ? JsonData
-    : Mime extends 'text/'
-      ? string
-      : Mime extends 'application/octet-stream'
-        ? Blob
-        : Response
-> {
-  if (mimeType) {
-    if (mimeType.includes('application/json')) {
-      try {
-        const body = (await res.json()) as JsonData;
-        return body as Mime extends 'application/json' ? JsonData : never;
-      } catch (e) {
-        throw new BaseError(
-          ErrorType.ResponseError,
-          `Failed to parse response body: ${String(e)}`,
-        );
-      }
-    }
-
-    if (mimeType.startsWith('text/')) {
-      try {
-        const body = await res.text();
-        return body as Mime extends 'application/json'
-          ? never
-          : Mime extends 'text/'
-            ? string
-            : never;
-      } catch (e) {
-        throw new BaseError(
-          ErrorType.ResponseError,
-          `Failed to parse response body: ${String(e)}`,
-        );
-      }
-    }
-
-    if (mimeType.startsWith('application/octet-stream')) {
-      try {
-        const body = await res.blob();
-        return body as Mime extends 'application/json'
-          ? never
-          : Mime extends 'text/'
-            ? never
-            : Mime extends 'application/octet-stream'
-              ? Blob
-              : never;
-      } catch (error) {
-        throw new BaseError(
-          ErrorType.ResponseError,
-          `Failed to parse response body: ${String(error)}`,
-        );
-      }
+  // Merge headers
+  if (defaults?.headers && input?.headers) {
+    const _defaultHeaders = new Headers(defaults.headers ?? {});
+    const _merged = new Headers(input.headers ?? {});
+    merged.headers = _defaultHeaders;
+    for (const [key, value] of _merged) {
+      merged.headers.set(key, value);
     }
   }
 
-  return res as Mime extends 'application/json'
-    ? never
-    : Mime extends 'text/'
-      ? never
-      : Mime extends 'application/octet-stream'
-        ? never
-        : Response;
+  return merged;
 }
 
-export function constructMethodCallUri(
-  pathname: string,
-  serviceUri: URL,
-  params?: QueryParams,
-): string {
-  const uri = new URL(serviceUri);
-  uri.pathname = pathname;
-
-  if (params) {
-    const entries = Object.entries(params) as [string, unknown][];
-    for (const [key, value] of entries) {
-      if (value !== null || typeof value !== 'undefined') {
-        if (Array.isArray(value)) {
-          uri.searchParams.append(
-            key,
-            value.map((v) => encodeQueryParam('unknown', v)).join(','),
-          );
-        } else {
-          const hasToString = Object.prototype.hasOwnProperty.call(
-            value,
-            'toString',
-          );
-
-          if (hasToString) {
-            const data = value as { toString: () => string };
-            uri.searchParams.append(
-              key,
-              encodeQueryParam('unknown', data.toString()),
-            );
-          } else {
-            uri.searchParams.append(key, encodeQueryParam('unknown', value));
-          }
-        }
-      }
-    }
+export function isJSONSerializable(value: unknown): boolean {
+  if (value === undefined) {
+    return false;
   }
 
-  return uri.toString();
+  if (
+    typeof value === 'string' ||
+    typeof value === 'number' ||
+    typeof value === 'boolean' ||
+    value === null
+  ) {
+    return true;
+  }
+
+  if (typeof value !== 'object') {
+    return false; // bigint, function, symbol, undefined
+  }
+
+  if (Array.isArray(value)) {
+    return true;
+  }
+
+  if (value instanceof ArrayBuffer) {
+    return false;
+  }
+
+  if (value instanceof FormData) {
+    return false;
+  }
+
+  return (
+    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- safe
+    (value.constructor && value.constructor.name === 'Object') ||
+    ('toJSON' in value && typeof value.toJSON === 'function')
+  );
 }
 
-export function encodeQueryParam<Value = unknown>(
-  type:
-    | 'string'
-    | 'float'
-    | 'integer'
-    | 'boolean'
-    | 'datetime'
-    | 'array'
-    | 'unknown',
-  value: Value,
-): string {
-  if (type === 'string' || type === 'unknown') {
-    return String(value);
+const textTypes = new Set([
+  'image/svg',
+  'application/xml',
+  'application/xhtml',
+  'application/html',
+]);
+
+const JSON_RE = /^application\/(?:[\w!#$%&*.^`~-]*\+)?json(?<temp1>;.+)?$/i;
+
+export function detectResponseType(_contentType = ''): ResponseMapType {
+  if (!_contentType) {
+    return 'json';
   }
-  if (type === 'float') {
-    return String(Number(value));
-  } else if (type === 'integer') {
-    // eslint-disable-next-line no-bitwise -- bitwise operation
-    return String(Number(value) | 0);
-  } else if (type === 'boolean') {
-    return value ? 'true' : 'false';
-  } else if (type === 'datetime') {
-    if (value instanceof Date) {
-      return value.toISOString();
-    }
-    return String(value);
+
+  const contentType = _contentType.split(';').shift() || '';
+
+  if (JSON_RE.test(contentType)) {
+    return 'json';
   }
-  throw new Error(`Unsupported query param type: ${type}`);
+
+  if (textTypes.has(contentType) || contentType.startsWith('text/')) {
+    return 'text';
+  }
+
+  return 'blob';
 }

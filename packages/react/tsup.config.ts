@@ -9,6 +9,5 @@ export default defineConfig((options: Options) => ({
   minify: !options.watch,
   minifyWhitespace: true,
   clean: true,
-  external: ['react'],
   ...options,
 }));

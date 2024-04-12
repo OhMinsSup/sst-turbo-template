@@ -25,11 +25,6 @@ export interface Metadata {
     string,
     number | string | boolean | bigint | symbol | null | undefined
   >;
-
-  /**
-   * Any additional data, passed through to Sentry as `extra` param on
-   * exceptions, or the `data` param on breadcrumbs.
-   */
   [key: string]: unknown;
 }
 

@@ -68,7 +68,6 @@ module.exports = {
       dependencies: [
         '@template/api',
         '@template/date',
-        '@template/error',
         '@template/libs',
         '@template/logger',
         '@template/react',
@@ -83,7 +82,6 @@ module.exports = {
       packages: [
         '@template/api',
         '@template/date',
-        '@template/error',
         '@template/libs',
         '@template/logger',
         '@template/react',

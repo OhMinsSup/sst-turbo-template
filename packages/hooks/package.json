@@ -8,112 +8,112 @@
     "./package.json": "./package.json",
     "./context": {
       "import": {
-        "types": "./dist/context.d.ts",
-        "default": "./dist/context.js"
+        "types": "./dist/contexts/index.d.ts",
+        "default": "./dist/contexts/index.js"
       },
       "require": {
-        "types": "./dist/context.d.cts",
-        "default": "./dist/context.cjs"
+        "types": "./dist/contexts/index.d.cts",
+        "default": "./dist/contexts/index.cjs"
       }
     },
     "./useBeforeUnload": {
       "import": {
-        "types": "./dist/useBeforeUnload.d.ts",
-        "default": "./dist/useBeforeUnload.js"
+        "types": "./dist/hooks/useBeforeUnload.d.ts",
+        "default": "./dist/hooks/useBeforeUnload.js"
       },
       "require": {
-        "types": "./dist/useBeforeUnload.d.cts",
-        "default": "./dist/useBeforeUnload.cjs"
+        "types": "./dist/hooks/useBeforeUnload.d.cts",
+        "default": "./dist/hooks/useBeforeUnload.cjs"
       }
     },
     "./useEventListener": {
       "import": {
-        "types": "./dist/useEventListener.d.ts",
-        "default": "./dist/useEventListener.js"
+        "types": "./dist/hooks/useEventListener.d.ts",
+        "default": "./dist/hooks/useEventListener.js"
       },
       "require": {
-        "types": "./dist/useEventListener.d.cts",
-        "default": "./dist/useEventListener.cjs"
+        "types": "./dist/hooks/useEventListener.d.cts",
+        "default": "./dist/hooks/useEventListener.cjs"
       }
     },
     "./useIsFirstRender": {
       "import": {
-        "types": "./dist/useIsFirstRender.d.ts",
-        "default": "./dist/useIsFirstRender.js"
+        "types": "./dist/hooks/useIsFirstRender.d.ts",
+        "default": "./dist/hooks/useIsFirstRender.js"
       },
       "require": {
-        "types": "./dist/useIsFirstRender.d.cts",
-        "default": "./dist/useIsFirstRender.cjs"
+        "types": "./dist/hooks/useIsFirstRender.d.cts",
+        "default": "./dist/hooks/useIsFirstRender.cjs"
       }
     },
     "./useIsHydrating": {
       "import": {
-        "types": "./dist/useIsHydrating.d.ts",
-        "default": "./dist/useIsHydrating.js"
+        "types": "./dist/hooks/useIsHydrating.d.ts",
+        "default": "./dist/hooks/useIsHydrating.js"
       },
       "require": {
-        "types": "./dist/useIsHydrating.d.cts",
-        "default": "./dist/useIsHydrating.cjs"
+        "types": "./dist/hooks/useIsHydrating.d.cts",
+        "default": "./dist/hooks/useIsHydrating.cjs"
       }
     },
     "./useLatest": {
       "import": {
-        "types": "./dist/useLatest.d.ts",
-        "default": "./dist/useLatest.js"
+        "types": "./dist/hooks/useLatest.d.ts",
+        "default": "./dist/hooks/useLatest.js"
       },
       "require": {
-        "types": "./dist/useLatest.d.cts",
-        "default": "./dist/useLatest.cjs"
+        "types": "./dist/hooks/useLatest.d.cts",
+        "default": "./dist/hooks/useLatest.cjs"
       }
     },
     "./useMediaQuery": {
       "import": {
-        "types": "./dist/useMediaQuery.d.ts",
-        "default": "./dist/useMediaQuery.js"
+        "types": "./dist/hooks/useMediaQuery.d.ts",
+        "default": "./dist/hooks/useMediaQuery.js"
       },
       "require": {
-        "types": "./dist/useMediaQuery.d.cts",
-        "default": "./dist/useMediaQuery.cjs"
+        "types": "./dist/hooks/useMediaQuery.d.cts",
+        "default": "./dist/hooks/useMediaQuery.cjs"
       }
     },
     "./useMemoizedFn": {
       "import": {
-        "types": "./dist/useMemoizedFn.d.ts",
-        "default": "./dist/useMemoizedFn.js"
+        "types": "./dist/hooks/useMemoizedFn.d.ts",
+        "default": "./dist/hooks/useMemoizedFn.js"
       },
       "require": {
-        "types": "./dist/useMemoizedFn.d.cts",
-        "default": "./dist/useMemoizedFn.cjs"
+        "types": "./dist/hooks/useMemoizedFn.d.cts",
+        "default": "./dist/hooks/useMemoizedFn.cjs"
       }
     },
     "./useMutationObserver": {
       "import": {
-        "types": "./dist/useMutationObserver.d.ts",
-        "default": "./dist/useMutationObserver.js"
+        "types": "./dist/hooks/useMutationObserver.d.ts",
+        "default": "./dist/hooks/useMutationObserver.js"
       },
       "require": {
-        "types": "./dist/useMutationObserver.d.cts",
-        "default": "./dist/useMutationObserver.cjs"
+        "types": "./dist/hooks/useMutationObserver.d.cts",
+        "default": "./dist/hooks/useMutationObserver.cjs"
       }
     },
     "./useUnmount": {
       "import": {
-        "types": "./dist/useUnmount.d.ts",
-        "default": "./dist/useUnmount.js"
+        "types": "./dist/hooks/useUnmount.d.ts",
+        "default": "./dist/hooks/useUnmount.js"
       },
       "require": {
-        "types": "./dist/useUnmount.d.cts",
-        "default": "./dist/useUnmount.cjs"
+        "types": "./dist/hooks/useUnmount.d.cts",
+        "default": "./dist/hooks/useUnmount.cjs"
       }
     },
     "./useUpdate": {
       "import": {
-        "types": "./dist/useUpdate.d.ts",
-        "default": "./dist/useUpdate.js"
+        "types": "./dist/hooks/useUpdate.d.ts",
+        "default": "./dist/hooks/useUpdate.js"
       },
       "require": {
-        "types": "./dist/useUpdate.d.cts",
-        "default": "./dist/useUpdate.cjs"
+        "types": "./dist/hooks/useUpdate.d.cts",
+        "default": "./dist/hooks/useUpdate.cjs"
       }
     }
   },
@@ -136,17 +136,29 @@
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
-    "@types/node": "^20.11.27",
-    "@types/react": "^18.2.66",
-    "@types/react-dom": "^18.2.22",
+    "@types/node": "^20.12.7",
+    "@types/react": "^18.2.77",
+    "@types/react-dom": "^18.2.25",
+    "eslint": "^9.0.0",
+    "prettier": "^3.2.5",
     "react": "^18.2.0",
     "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
-    "typescript": "^5.4.2"
+    "typescript": "^5.4.5"
   },
   "peerDependencies": {
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0"
+    "react": "^18.0.0",
+    "typescript": "^5.4.4"
+  },
+  "peerDependenciesMeta": {
+    "typescript": {
+      "optional": true
+    }
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
   }
 }

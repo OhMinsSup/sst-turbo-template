@@ -1,6 +1,6 @@
 import type { LoggerConstructorOptions, Metadata, Transport } from './types';
 import { LogLevel } from './constants';
-import { add } from './transport/entries';
+import { add } from './entries';
 import { enabledLogLevels } from './utils';
 
 let id = 1;
@@ -12,7 +12,7 @@ const generateUniqueId = () => {
       return v.toString(16);
     });
   };
-  return `${Date.now()}:${prefixRandomUUID()}:${id++}`;
+  return `${Date.now().toString()}:${prefixRandomUUID()}:${(id++).toString()}`;
 };
 
 export class Logger {

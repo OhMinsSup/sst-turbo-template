@@ -6,7 +6,11 @@
   "files": [
     "base.json",
     "nextjs.json",
-    "react-library.json",
-    "server.json"
-  ]
+    "react-library.json"
+  ],
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
+  }
 }

@@ -1,2 +1,2 @@
-export { Logger } from './logger';
-export { LogLevel } from './constants';
+export { Logger } from './_internal/logger';
+export { LogLevel } from './_internal/constants';
