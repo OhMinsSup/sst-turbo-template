@@ -20,6 +20,7 @@
     "clean:workspaces": "turbo clean",
     "dev": "turbo dev --parallel",
     "dev:admin": "pnpm run dev --filter @template/admin",
+    "dev:lambda": "pnpm run dev --filter @template/lambda-ai",
     "env:build": "turbo env:build",
     "format": "turbo format --continue -- --cache --cache-location='node_modules/.cache/.prettiercache'",
     "format:fix": "turbo format --continue -- --write --cache --cache-location='node_modules/.cache/.prettiercache'",
@@ -35,7 +36,6 @@
   "prettier": "@tooling/prettier-config/base",
   "dependencies": {
     "@manypkg/cli": "^0.21.3",
-    "@tooling/env": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
     "@turbo/gen": "^1.13.2",

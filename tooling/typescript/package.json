@@ -6,7 +6,8 @@
   "files": [
     "base.json",
     "nextjs.json",
-    "react-library.json"
+    "react-library.json",
+    "hono-node.json"
   ],
   "packageManager": "pnpm@8.12.1",
   "engines": {
