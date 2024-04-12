@@ -20,7 +20,7 @@
     "clean:workspaces": "turbo clean",
     "dev": "turbo dev --parallel",
     "dev:admin": "pnpm run dev --filter @template/admin",
-    "dev:lambda": "pnpm run dev --filter @template/lambda-ai",
+    "dev:lambda-ai": "pnpm run dev --filter @template/lambda-ai",
     "env:build": "turbo env:build",
     "format": "turbo format --continue -- --cache --cache-location='node_modules/.cache/.prettiercache'",
     "format:fix": "turbo format --continue -- --write --cache --cache-location='node_modules/.cache/.prettiercache'",
