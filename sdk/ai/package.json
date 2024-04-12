@@ -1,29 +1,29 @@
 {
-  "name": "@template/react-components",
+  "name": "@sdk/ai",
   "version": "0.0.1",
   "private": true,
   "sideEffects": false,
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    "./client-only": {
+    "./openai": {
       "import": {
-        "types": "./dist/client-only.d.ts",
-        "default": "./dist/client-only.js"
+        "types": "./dist/openai/index.d.ts",
+        "default": "./dist/openai/index.js"
       },
       "require": {
-        "types": "./dist/client-only.d.cts",
-        "default": "./dist/client-only.cjs"
+        "types": "./dist/openai/index.d.cts",
+        "default": "./dist/openai/index.cjs"
       }
     },
-    "./error-boundary": {
+    "./gemini": {
       "import": {
-        "types": "./dist/error-boundary.d.ts",
-        "default": "./dist/error-boundary.js"
+        "types": "./dist/gemini/index.d.ts",
+        "default": "./dist/gemini/index.js"
       },
       "require": {
-        "types": "./dist/error-boundary.d.cts",
-        "default": "./dist/error-boundary.cjs"
+        "types": "./dist/gemini/index.d.cts",
+        "default": "./dist/gemini/index.cjs"
       }
     }
   },
@@ -38,28 +38,21 @@
     "lint": "eslint .",
     "typecheck": "tsc --noEmit"
   },
-  "prettier": "@tooling/prettier-config/web",
+  "prettier": "@tooling/prettier-config/base",
   "dependencies": {
-    "@template/react": "workspace:*",
-    "@template/react-hooks": "workspace:*"
+    "ai": "^3.0.21"
   },
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
-    "@types/node": "^20.12.7",
-    "@types/react": "^18.2.77",
-    "@types/react-dom": "^18.2.25",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
-    "react": "^18.2.0",
-    "react-dom": "^18.2.0",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",
     "typescript": "^5.4.5"
   },
   "peerDependencies": {
-    "react": "^18.0.0",
     "typescript": "^5.4.4"
   },
   "peerDependenciesMeta": {

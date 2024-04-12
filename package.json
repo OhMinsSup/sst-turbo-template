@@ -20,7 +20,6 @@
     "clean:workspaces": "turbo clean",
     "dev": "turbo dev --parallel",
     "dev:admin": "pnpm run dev --filter @template/admin",
-    "dev:web": "pnpm run dev --filter @template/web",
     "env:build": "turbo env:build",
     "format": "turbo format --continue -- --cache --cache-location='node_modules/.cache/.prettiercache'",
     "format:fix": "turbo format --continue -- --write --cache --cache-location='node_modules/.cache/.prettiercache'",
@@ -29,7 +28,7 @@
     "lint:fix": "turbo lint --continue -- --fix --cache --cache-location 'node_modules/.cache/.eslintcache' && manypkg fix",
     "lint:spellcheck": "cspell --no-progress --relative '**/*'",
     "lint:syncpack": "syncpack lint",
-    "ncu:deep": "npx ncu --deep",
+    "ncu:deep": "npx ncu --deep -u",
     "typecheck": "turbo typecheck",
     "ui:add": "pnpm --filter @template/ui ui:add"
   },

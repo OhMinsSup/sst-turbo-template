@@ -69,6 +69,16 @@ const initialNavigations: Navigation[] = [
     matchHref: /^\/components/,
     sub: [
       {
+        id: 'components-chatbot',
+        title: 'Chatbot',
+        icon: 'message',
+        href: '/chatbot',
+        label: 'This is a chatbot page.',
+        matchHref: /^\/chatbot/,
+        depth: 1,
+        sub: [],
+      },
+      {
         id: 'components-form',
         title: 'Form',
         icon: 'form',
