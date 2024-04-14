@@ -1,15 +1,23 @@
-import { type SSTConfig } from 'sst';
+/// <reference path="./.sst/platform/config.d.ts" />
 
-export default {
-  config() {
+export default $config({
+  app(input) {
     return {
-      name: '@templates/lambda-ai',
-      region: 'ap-northeast-2',
-      stage: 'dev',
+      name: 'lambda-ai',
+      removal: input?.stage === 'production' ? 'retain' : 'remove',
+      home: 'aws',
     };
   },
-  async stacks(application) {
-    const appStacks = await import('./stacks');
-    appStacks.default(application);
+  async run() {
+    const hono = new sst.aws.Function('LambdaAiServer', {
+      url: true,
+      handler: 'index.handler',
+    });
+
+    return {
+      // 한국 리전에서 실행
+      reigon: aws.getRegionOutput().name,
+      api: hono.url,
+    };
   },
-} satisfies SSTConfig;
+});

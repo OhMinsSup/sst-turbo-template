@@ -1,18 +1,25 @@
 {
   "name": "@template/lambda-ai",
+  "main": "index.js",
   "scripts": {
-    "dev": "sst dev"
+    "dev": "pnpm with-env sst dev",
+    "with-env": "dotenv -e ../../env/.env --"
   },
   "dependencies": {
-    "hono": "^4.2.3"
+    "hono": "^4.2.3",
+    "sst": "ion"
   },
   "devDependencies": {
     "@hono/node-server": "^1.10.0",
     "@tsconfig/node18": "^18.2.4",
+    "@types/aws-lambda": "8.10.137",
     "@types/node": "^20.12.7",
-    "aws-cdk-lib": "2.137.0",
-    "constructs": "10.3.0",
-    "sst": "^2.41.4",
+    "sst": "^3.0.13",
     "tsx": "^4.7.2"
+  },
+  "packageManager": "pnpm@8.12.1",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
   }
 }

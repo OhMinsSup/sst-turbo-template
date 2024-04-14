@@ -1,6 +1,7 @@
 import { Hono } from 'hono';
+import { handle } from 'hono/aws-lambda';
 
-export const app = new Hono();
+const app = new Hono();
 
 app.get('/', (c) => {
   return c.text('Hello Hono!');
@@ -9,3 +10,5 @@ app.get('/', (c) => {
 app.post('/api', (c) => {
   return c.json({ message: 'Hello Hono!' });
 });
+
+export const handler = handle(app);
