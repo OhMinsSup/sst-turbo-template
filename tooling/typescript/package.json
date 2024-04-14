@@ -6,9 +6,12 @@
   "files": [
     "base.json",
     "nextjs.json",
-    "react-library.json",
-    "hono-node.json"
+    "react.json",
+    "nest.json"
   ],
+  "dependencies": {
+    "@vercel/style-guide": "^6.0.0"
+  },
   "packageManager": "pnpm@8.12.1",
   "engines": {
     "bun": ">=1.0",

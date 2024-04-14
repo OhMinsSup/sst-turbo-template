@@ -98,6 +98,7 @@ export function detectResponseType(_contentType = ''): ResponseMapType {
     return 'json';
   }
 
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- safe
   const contentType = _contentType.split(';').shift() || '';
 
   if (JSON_RE.test(contentType)) {

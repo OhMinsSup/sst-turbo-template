@@ -1,6 +1,7 @@
 const { resolve } = require('node:path');
 
 const project = resolve(process.cwd(), 'tsconfig.json');
+const { defaultRules, importResolver, ignorePatterns } = require('./share.cjs');
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
@@ -12,6 +13,7 @@ module.exports = {
     '@vercel/style-guide/eslint/next',
     'eslint-config-turbo',
   ].map(require.resolve),
+  root: true,
   parserOptions: {
     project,
   },
@@ -20,25 +22,9 @@ module.exports = {
     JSX: true,
   },
   settings: {
-    'import/resolver': {
-      typescript: {
-        project,
-      },
-      node: {
-        extensions: ['.mjs', '.js', '.jsx', '.ts', '.tsx'],
-      },
-    },
+    'import/resolver': importResolver(project),
   },
-  ignorePatterns: [
-    '**/*.config.js',
-    '**/*.config.cjs',
-    '**/.eslintrc.cjs',
-    '.next',
-    'dist',
-    'pnpm-lock.yaml',
-  ],
-  rules: {
-    'import/no-default-export': 'off',
-  },
+  ignorePatterns,
+  rules: defaultRules,
   reportUnusedDisableDirectives: true,
 };

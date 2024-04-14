@@ -1,9 +1,0 @@
-{
-  "extends": "@tooling/tsconfig/base.json",
-  "compilerOptions": {
-    "downlevelIteration": true,
-    "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
-  },
-  "include": ["."],
-  "exclude": ["node_modules"]
-}

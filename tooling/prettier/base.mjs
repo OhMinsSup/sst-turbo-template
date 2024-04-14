@@ -12,12 +12,7 @@ import { fileURLToPath } from 'node:url';
 /** @typedef {import("prettier-plugin-tailwindcss").PluginOptions} TailwindConfig */
 /** @typedef {import("@ianvs/prettier-plugin-sort-imports").PluginConfig} SortImportsConfig */
 
-const overridableDefaults = {
-  endOfLine: 'lf',
-  tabWidth: 2,
-  printWidth: 80,
-  useTabs: false,
-};
+import { overridableDefaults } from './share.mjs';
 
 /** @type { PrettierConfig | SortImportsConfig | TailwindConfig } */
 const config = Object.assign({}, overridableDefaults, {

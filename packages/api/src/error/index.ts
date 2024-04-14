@@ -28,7 +28,9 @@ export type FetchErrorType<T = any> = IFetchError<T>;
 export function createFetchError<T = any, R extends ResponseMapType = 'json'>(
   ctx: FetchContext<T, R>,
 ): IFetchError<T> {
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `ctx.error` can be `null`
   const errorMessage = ctx.error?.message || ctx.error?.toString() || '';
+  // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing -- `ctx.request` can be `null`
   const method = (ctx.request as Request).method || ctx.options.method || 'GET';
   const url = (ctx.request as Request).url || String(ctx.request) || '/';
   const requestStr = `[${method}] ${JSON.stringify(url)}`;

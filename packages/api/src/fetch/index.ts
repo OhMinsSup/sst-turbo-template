@@ -90,7 +90,6 @@ export async function fetchHandler<T = any, R extends ResponseMapType = 'json'>(
     // Only available on V8 based runtimes (https://v8.dev/docs/stack-trace-api)
     if (
       'captureStackTrace' in Error &&
-      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition -- ignore
       Error.captureStackTrace &&
       typeof Error.captureStackTrace === 'function'
     ) {

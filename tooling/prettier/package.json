@@ -6,7 +6,8 @@
   "exports": {
     "./web": "./web.mjs",
     "./admin": "./admin.mjs",
-    "./base": "./base.mjs"
+    "./base": "./base.mjs",
+    "./nest": "./nest.cjs"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules",

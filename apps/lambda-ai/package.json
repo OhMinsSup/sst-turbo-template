@@ -8,11 +8,11 @@
   },
   "devDependencies": {
     "@hono/node-server": "^1.10.0",
-    "@tsconfig/node18": "^18.2.2",
-    "@types/node": "^20.11.17",
+    "@tsconfig/node18": "^18.2.4",
+    "@types/node": "^20.12.7",
     "aws-cdk-lib": "2.137.0",
     "constructs": "10.3.0",
     "sst": "^2.41.4",
-    "tsx": "^4.7.1"
+    "tsx": "^4.7.2"
   }
 }

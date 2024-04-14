@@ -4,15 +4,8 @@ const { resolve } = require('node:path');
 const project = resolve(process.cwd(), 'tsconfig.json');
 
 /** @type {import("eslint").Linter.Config} */
-module.exports = {
-  ...config,
-  parserOptions: {
-    ...config.parserOptions,
+module.exports = Object.assign({}, config, {
+  parserOptions: Object.assign({}, config.parserOptions, {
     project,
-  },
-  rules: {
-    ...config.rules,
-    'import/order': 'off',
-    '@typescript-eslint/no-unsafe-call': 'off',
-  },
-};
+  }),
+});
