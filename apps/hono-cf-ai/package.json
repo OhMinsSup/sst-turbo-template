@@ -1,0 +1,24 @@
+{
+  "name": "@template/hono-cf-ai",
+  "version": "1.0.0",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "main": "index.js",
+  "scripts": {
+    "dev": "pnpm with-env sst dev",
+    "with-env": "dotenv -e ../../.env --"
+  },
+  "dependencies": {
+    "@hono/zod-validator": "^0.2.1",
+    "ai": "^3.0.22",
+    "hono": "^4.2.3",
+    "openai": "^4.33.1",
+    "sst": "^3.0.13",
+    "zod": "^3.22.4"
+  },
+  "devDependencies": {
+    "@cloudflare/workers-types": "^4.20240405.0"
+  }
+}
