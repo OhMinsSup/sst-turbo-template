@@ -69,16 +69,6 @@ const initialNavigations: Navigation[] = [
     matchHref: /^\/components/,
     sub: [
       {
-        id: 'components-chatbot',
-        title: 'Chatbot',
-        icon: 'message',
-        href: '/chatbot',
-        label: 'This is a chatbot page.',
-        matchHref: /^\/chatbot/,
-        depth: 1,
-        sub: [],
-      },
-      {
         id: 'components-form',
         title: 'Form',
         icon: 'form',
@@ -245,11 +235,10 @@ const storage: PersistStorage<AdminNavigationStore> = {
   getItem: (name) => {
     const str = localStorage.getItem(name);
     if (!str) return null;
-    // eslint-disable-next-line import/no-named-as-default-member
+
     return superjson.parse(str);
   },
   setItem: (name, value) => {
-    // eslint-disable-next-line import/no-named-as-default-member
     localStorage.setItem(name, superjson.stringify(value));
   },
   removeItem: (name) => {

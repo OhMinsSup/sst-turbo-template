@@ -1,4 +1,4 @@
-const config = require('@tooling/eslint-config/next');
+const config = require('./base.cjs');
 const { resolve } = require('node:path');
 
 const project = resolve(process.cwd(), 'tsconfig.json');
@@ -7,10 +7,5 @@ const project = resolve(process.cwd(), 'tsconfig.json');
 module.exports = Object.assign({}, config, {
   parserOptions: Object.assign({}, config.parserOptions, {
     project,
-  }),
-  rules: Object.assign({}, config.rules, {
-    'unicorn/filename-case': 'off',
-    'react/jsx-pascal-case': 'off',
-    'eslint-comments/require-description': 'off',
   }),
 });
