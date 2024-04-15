@@ -115,6 +115,16 @@
         "types": "./dist/hooks/useUpdate.d.cts",
         "default": "./dist/hooks/useUpdate.cjs"
       }
+    },
+    "./useCopyToClipboard": {
+      "import": {
+        "types": "./dist/hooks/useCopyToClipboard.d.ts",
+        "default": "./dist/hooks/useCopyToClipboard.js"
+      },
+      "require": {
+        "types": "./dist/hooks/useCopyToClipboard.d.cts",
+        "default": "./dist/hooks/useCopyToClipboard.cjs"
+      }
     }
   },
   "files": [

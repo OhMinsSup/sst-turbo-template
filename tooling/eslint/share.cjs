@@ -26,6 +26,7 @@ const importResolver = (project) => {
 
 const defaultRules = {
   'import/order': 'off',
+  'import/default': 'off',
   'import/no-default-export': 'off',
   'import/no-named-as-default-member': 'off',
   '@typescript-eslint/interface-name-prefix': 'off',
@@ -33,6 +34,7 @@ const defaultRules = {
   '@typescript-eslint/explicit-module-boundary-types': 'off',
   '@typescript-eslint/no-unsafe-assignment': 'off',
   '@typescript-eslint/no-explicit-any': 'off',
+  '@typescript-eslint/no-unsafe-member-access': 'off',
 };
 
 module.exports = {

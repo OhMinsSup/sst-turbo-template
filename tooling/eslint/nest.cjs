@@ -5,7 +5,6 @@ const { defaultRules, importResolver, ignorePatterns } = require('./share.cjs');
 
 /** @type {import("eslint").Linter.Config} */
 module.exports = {
-  parser: '@typescript-eslint/parser',
   extends: [
     '@vercel/style-guide/eslint/node',
     '@vercel/style-guide/eslint/typescript',
@@ -25,4 +24,10 @@ module.exports = {
   ignorePatterns,
   rules: defaultRules,
   reportUnusedDisableDirectives: true,
+  overrides: [
+    {
+      files: ['*.ts', '*.tsx'],
+      parser: '@typescript-eslint/parser',
+    },
+  ],
 };

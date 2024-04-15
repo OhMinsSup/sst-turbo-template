@@ -9,11 +9,7 @@ import { z } from 'zod';
 
 import { openaiApiKey } from './middlewares/openai-api-key';
 
-type Bindings = {
-  OPENAI_API_KEY: string | undefined;
-};
-
-const app = new Hono<{ Bindings: Bindings }>();
+const app = new Hono();
 
 const schema = z.object({
   messages: z.array(
