@@ -29,6 +29,8 @@ const defaultRules = {
   'import/default': 'off',
   'import/no-default-export': 'off',
   'import/no-named-as-default-member': 'off',
+  '@typescript-eslint/no-floating-promises': 'off',
+  '@typescript-eslint/no-misused-promises': 'off',
   '@typescript-eslint/interface-name-prefix': 'off',
   '@typescript-eslint/explicit-function-return-type': 'off',
   '@typescript-eslint/explicit-module-boundary-types': 'off',

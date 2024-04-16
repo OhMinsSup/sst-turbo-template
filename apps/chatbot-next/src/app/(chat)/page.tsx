@@ -1,7 +1,7 @@
 import React from 'react';
 
-import { AI } from '~/components/chat-rsc/ai';
 import { Chat } from '~/components/chat-rsc/chat';
+import { AI } from '~/services/agents/ai';
 import { nanoid } from '~/utils';
 
 export default function Page() {

@@ -6,10 +6,11 @@ import { useActions, useAIState, useUIState } from 'ai/rsc';
 import { toast } from '@template/ui/use-toast';
 import { cn } from '@template/ui/utils';
 
-import { UserMessage } from '~/components/chat-rsc/message';
 import { PromptForm } from '~/components/chat-rsc/prompt-form';
 import { ButtonScrollToBottom } from '~/components/shared/button-scroll-to-bottom';
 import { FooterText } from '~/components/shared/footer';
+import { UserMessage } from '~/components/shared/message';
+import { type AIType } from '~/services/agents/ai';
 import { nanoid } from '~/utils';
 
 interface ExampleMessageType {
@@ -25,9 +26,9 @@ interface ExampleMessageProps {
 }
 
 function ExampleMessage({ example, index }: ExampleMessageProps) {
-  const { submitUserMessage } = useActions();
+  const { submit } = useActions<AIType>();
 
-  const [_, setMessages] = useUIState();
+  const [messages, setMessages] = useUIState();
 
   const sendMessage = async () => {
     setMessages((old: ExampleMessageType[]) => [
@@ -39,7 +40,7 @@ function ExampleMessage({ example, index }: ExampleMessageProps) {
     ]);
 
     try {
-      const responseMessage = await submitUserMessage(example.message);
+      const responseMessage = await submit(example.message);
       setMessages((old: ExampleMessageType[]) => [...old, responseMessage]);
     } catch {
       toast(
@@ -67,8 +68,8 @@ function ExampleMessage({ example, index }: ExampleMessageProps) {
         'cursor-pointer rounded-2xl bg-zinc-50 p-4 text-zinc-950 transition-colors hover:bg-zinc-100 sm:p-6',
         index > 1 && 'hidden md:block',
       )}
-      onClick={void sendMessage}
-      onKeyDown={void sendMessage}
+      onClick={sendMessage}
+      onKeyDown={sendMessage}
     >
       <div className="font-medium">{example.heading}</div>
       <div className="text-sm text-zinc-800">{example.subheading}</div>
@@ -88,8 +89,7 @@ export function ChatPanel({
   scrollToBottom,
 }: ChatPanelProps) {
   const [aiState] = useAIState();
-  const [messages, setMessages] = useUIState();
-  const { submitUserMessage } = useActions();
+  const [messages] = useUIState();
 
   const exampleMessages: ExampleMessageType[] = [
     {
@@ -126,7 +126,6 @@ export function ChatPanel({
             </>
           ) : null}
         </div>
-
         <div className="grid gap-4 sm:pb-4">
           <PromptForm />
           <FooterText className="hidden sm:block" />

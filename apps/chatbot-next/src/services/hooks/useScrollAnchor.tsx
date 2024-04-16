@@ -84,7 +84,7 @@ export const useScrollAnchor = () => {
     messagesRef,
     scrollRef,
     visibilityRef,
-    scrollToBottom: useMemoizedFn(scrollToBottom),
+    scrollToBottom: useMemoizedFn(scrollToBottom) as unknown as () => void,
     isAtBottom,
     isVisible,
   };

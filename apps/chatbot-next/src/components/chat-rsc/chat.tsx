@@ -1,7 +1,7 @@
 'use client';
 
 import React, { useEffect } from 'react';
-import { usePathname, useRouter } from 'next/navigation';
+import { useRouter } from 'next/navigation';
 import { useAIState, useUIState } from 'ai/rsc';
 
 import { ChatList } from '~/components/chat-rsc/chat-list';
@@ -16,20 +16,24 @@ interface InternalChatProps {
 }
 
 function InternalChat({ chatId }: InternalChatProps) {
-  const router = useRouter();
-  const path = usePathname();
   const [messages] = useUIState();
   const [aiState] = useAIState();
 
-  console.log('Chat', { chatId, path, messages, aiState });
+  const router = useRouter();
 
   const { messagesRef, scrollRef, visibilityRef, isAtBottom, scrollToBottom } =
     useScrollAnchor();
 
   useEffect(() => {
-    console.log('ChatId', chatId);
     useChatStore.getState().setChatId(chatId);
   }, [chatId]);
+
+  useEffect(() => {
+    const messagesLength = aiState.messages?.length;
+    if (messagesLength === 2) {
+      router.refresh();
+    }
+  }, [aiState.messages, router]);
 
   return (
     <div
