@@ -1,36 +1,38 @@
-import type { ExperimentalMessage } from 'ai';
-import { openai } from '@ai-sdk/openai';
-import { experimental_streamText } from 'ai';
 import {
   createStreamableUI,
   createStreamableValue,
   getMutableAIState,
 } from 'ai/rsc';
 import { nanoid } from 'nanoid';
-import { z } from 'zod';
 
 import { SpinnerMessage } from '~/components/shared/spinner-message';
 import { type AIType, type Message } from '~/services/agents/ai';
-import { researcher } from './researcher';
+import { airlines } from './airlines';
 
 async function submit(content: string) {
   'use server';
 
+  console.log('submit', content);
+
   const aiState = getMutableAIState<AIType>();
   const spinnerStream = createStreamableUI(<SpinnerMessage />);
-  const messageStream = createStreamableUI(null);
-  const uiStream = createStreamableUI();
+  const uiStream = createStreamableUI(null);
 
   const oldState = aiState.get();
 
   const interactions = oldState.interactions ?? [];
   const messages = oldState.messages;
 
+  console.log('oldState', oldState);
+  console.log('messages', messages);
+
   const newMessage: Message = {
     id: nanoid(),
     role: 'user',
     content: `${interactions.join('\n\n')}\n\n${content}`,
   };
+
+  console.log('newMessage', newMessage);
 
   messages.push(newMessage);
 
@@ -42,20 +44,35 @@ async function submit(content: string) {
   async function processEvents() {
     //  Generate the answer
     let answer = '';
-    let errorOccurred = false;
-    const streamText = createStreamableValue<string>();
-    while (answer.length === 0) {
-      // Search the web and generate the answer
-      const { fullResponse, hasError } = await researcher({
+    const textStream = createStreamableValue<string>();
+    try {
+      const { fullResponse, hasError } = await airlines({
+        aiState,
         uiStream,
         spinnerStream,
-        streamText,
+        textStream,
         messages,
       });
+
       answer = fullResponse;
-      errorOccurred = hasError;
+
+      console.log('fullResponse', fullResponse, answer);
+
+      if (hasError) {
+        const error = new Error();
+        error.name = 'AIError';
+        error.message = 'Error occurred while executing the tool';
+        throw error;
+      }
+
+      uiStream.done();
+      textStream.done();
+    } catch (e) {
+      // eslint-disable-next-line no-console
+      console.error(e);
+      uiStream.error(e);
+      aiState.done(oldState);
     }
-    streamText.done();
   }
 
   processEvents();
@@ -63,7 +80,7 @@ async function submit(content: string) {
   return {
     id: nanoid(),
     spinner: spinnerStream.value,
-    display: messageStream.value,
+    display: uiStream.value,
   };
 }
 

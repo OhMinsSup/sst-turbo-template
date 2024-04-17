@@ -11,8 +11,8 @@ import { Tooltip, TooltipContent, TooltipTrigger } from '@template/ui/tooltip';
 import { toast } from '@template/ui/use-toast';
 
 import { Icons } from '~/components/icons';
-import { UserMessage } from '~/components/shared/message';
-import { type AIType, type Message } from '~/services/agents/ai';
+import { UserMessage } from '~/components/shared/user-message';
+import { type AIType } from '~/services/agents/ai';
 import { useChatContext } from '~/services/context/useChatProvider';
 import { useEnterSubmit } from '~/services/hooks/useEnterSubmit';
 
@@ -21,7 +21,7 @@ export function PromptForm() {
   const { formRef, onKeyDown } = useEnterSubmit();
   const inputRef = useRef<HTMLTextAreaElement>(null);
   const { submit } = useActions<AIType>();
-  const [_, setMessages] = useUIState();
+  const [_, setMessages] = useUIState<AIType>();
 
   useEffect(() => {
     const $ele = getTargetElement(inputRef);
@@ -40,10 +40,11 @@ export function PromptForm() {
     changeInput({
       input: '',
     });
+
     if (!value) return;
 
     // Optimistically add user message UI
-    setMessages((old: Message[]) => [
+    setMessages((old) => [
       ...old,
       {
         id: nanoid(),
@@ -54,7 +55,7 @@ export function PromptForm() {
     try {
       // Submit and get response message
       const responseMessage = await submit(value);
-      setMessages((old: any[]) => [...old, responseMessage]);
+      setMessages((old) => [...old, responseMessage]);
     } catch {
       toast(
         <div className="text-red-600">
@@ -83,7 +84,7 @@ export function PromptForm() {
   );
 
   return (
-    <form ref={formRef} onSubmit={void onSubmit}>
+    <form ref={formRef} onSubmit={onSubmit}>
       <div className="relative flex max-h-60 w-full grow flex-col overflow-hidden bg-zinc-100 px-12 sm:rounded-full sm:px-12">
         <Textarea
           ref={inputRef}

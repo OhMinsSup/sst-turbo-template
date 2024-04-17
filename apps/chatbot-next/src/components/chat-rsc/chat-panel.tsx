@@ -9,8 +9,8 @@ import { cn } from '@template/ui/utils';
 import { PromptForm } from '~/components/chat-rsc/prompt-form';
 import { ButtonScrollToBottom } from '~/components/shared/button-scroll-to-bottom';
 import { FooterText } from '~/components/shared/footer';
-import { UserMessage } from '~/components/shared/message';
-import { type AIType } from '~/services/agents/ai';
+import { UserMessage } from '~/components/shared/user-message';
+import { type AIType, type Message } from '~/services/agents/ai';
 import { nanoid } from '~/utils';
 
 interface ExampleMessageType {
@@ -28,10 +28,10 @@ interface ExampleMessageProps {
 function ExampleMessage({ example, index }: ExampleMessageProps) {
   const { submit } = useActions<AIType>();
 
-  const [messages, setMessages] = useUIState();
+  const [, setMessages] = useUIState();
 
   const sendMessage = async () => {
-    setMessages((old: ExampleMessageType[]) => [
+    setMessages((old: Message[]) => [
       ...old,
       {
         id: nanoid(),
@@ -83,12 +83,7 @@ export interface ChatPanelProps {
   scrollToBottom: () => void;
 }
 
-export function ChatPanel({
-  title,
-  isAtBottom,
-  scrollToBottom,
-}: ChatPanelProps) {
-  const [aiState] = useAIState();
+export function ChatPanel({ isAtBottom, scrollToBottom }: ChatPanelProps) {
   const [messages] = useUIState();
 
   const exampleMessages: ExampleMessageType[] = [

@@ -1,20 +1,24 @@
+'use client';
+
 /* eslint-disable react/no-unstable-nested-components */
+import type { StreamableValue } from 'ai/rsc';
 import React from 'react';
 import { useStreamableValue } from 'ai/rsc';
 import remarkGfm from 'remark-gfm';
 import remarkMath from 'remark-math';
 
-import { type PartialInquirySchema } from '~/services/schema/inquiry';
 import { MemoizedReactMarkdown } from './markdown';
 
-interface CopilotMessageProps {
-  inquiry?: PartialInquirySchema;
+interface BotMessageProps {
+  streamableValue: string | StreamableValue<string>;
   className?: string;
 }
 
-export function CopilotMessage({ inquiry }: CopilotMessageProps) {
-  const [data, error, pending] =
-    useStreamableValue<PartialInquirySchema>(inquiry);
+export function BotMessage({ streamableValue }: BotMessageProps) {
+  console.log(streamableValue);
+  const [data, error, pending] = useStreamableValue<string>(streamableValue);
+
+  console.log(data, error, pending);
 
   return (
     <div className="group relative flex items-start md:-ml-12">
@@ -33,12 +37,10 @@ export function CopilotMessage({ inquiry }: CopilotMessageProps) {
               },
             }}
           >
-            {data?.question}
+            {data}
           </MemoizedReactMarkdown>
         </div>
       </div>
     </div>
   );
 }
-
-CopilotMessage.Card = function Item() {};

@@ -2,12 +2,12 @@ import React from 'react';
 
 import { cn } from '@template/ui/utils';
 
-interface CopilotCardProps {
+interface BotCardProps {
   showAvatar?: boolean;
   children: React.ReactNode;
 }
 
-export function CopilotCard({ showAvatar, children }: CopilotCardProps) {
+export function BotCard({ showAvatar, children }: BotCardProps) {
   return (
     <div className="group relative flex items-start md:-ml-12">
       <div
