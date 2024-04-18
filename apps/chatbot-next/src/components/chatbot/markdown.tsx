@@ -1,13 +1,10 @@
+import type { FC } from 'react';
 import type { Options } from 'react-markdown';
-import React from 'react';
+import { memo } from 'react';
 import ReactMarkdown from 'react-markdown';
 
-function InternalMemoizedReactMarkdown(props: Options) {
-  return <ReactMarkdown {...props} />;
-}
-
-export const MemoizedReactMarkdown = React.memo(
-  InternalMemoizedReactMarkdown,
+export const MemoizedReactMarkdown: FC<Options> = memo(
+  ReactMarkdown,
   (prevProps, nextProps) =>
     prevProps.children === nextProps.children &&
     prevProps.className === nextProps.className,

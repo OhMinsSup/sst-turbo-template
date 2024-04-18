@@ -1,15 +1,9 @@
-import React from 'react';
+'use client';
 
-import { Chat } from '~/components/chat-rsc/chat';
-import { AI } from '~/services/agents/ai';
-import { nanoid } from '~/utils';
+import { Chat } from '~/components/chatbot/chat';
+
+// export const runtime = 'edge';
 
 export default function Page() {
-  const chatId = nanoid();
-
-  return (
-    <AI initialAIState={{ chatId, interactions: [], messages: [] }}>
-      <Chat chatId={chatId} />
-    </AI>
-  );
+  return <Chat />;
 }

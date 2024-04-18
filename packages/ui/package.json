@@ -386,6 +386,16 @@
         "types": "./dist/components/ui/use-toast.d.cts",
         "default": "./dist/components/ui/use-toast.cjs"
       }
+    },
+    "./carousel": {
+      "import": {
+        "types": "./dist/components/ui/carousel.d.ts",
+        "default": "./dist/components/ui/carousel.js"
+      },
+      "require": {
+        "types": "./dist/components/ui/carousel.d.cts",
+        "default": "./dist/components/ui/carousel.cjs"
+      }
     }
   },
   "files": [
@@ -428,6 +438,7 @@
     "class-variance-authority": "^0.7.0",
     "clsx": "^2.1.0",
     "cmdk": "^1.0.0",
+    "embla-carousel-react": "^8.0.2",
     "lucide-react": "^0.368.0",
     "tailwind-merge": "^2.2.2",
     "tailwindcss-animate": "^1.0.7",

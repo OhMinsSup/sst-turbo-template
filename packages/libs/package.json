@@ -5,7 +5,17 @@
   "sideEffects": false,
   "type": "module",
   "exports": {
-    "./package.json": "./package.json"
+    "./package.json": "./package.json",
+    "./assertion": {
+      "import": {
+        "types": "./dist/assertion.d.ts",
+        "default": "./dist/assertion.js"
+      },
+      "require": {
+        "types": "./dist/assertion.d.cts",
+        "default": "./dist/assertion.cjs"
+      }
+    }
   },
   "files": [
     "dist"
@@ -41,15 +51,5 @@
   "engines": {
     "bun": ">=1.0",
     "node": ">=18.0"
-  },
-  "./assertion": {
-    "import": {
-      "types": "./dist/assertion.d.ts",
-      "default": "./dist/assertion.js"
-    },
-    "require": {
-      "types": "./dist/assertion.d.cts",
-      "default": "./dist/assertion.cjs"
-    }
   }
 }

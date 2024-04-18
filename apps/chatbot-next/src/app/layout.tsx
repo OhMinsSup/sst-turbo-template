@@ -7,7 +7,6 @@ import { GeistSans } from 'geist/font/sans';
 import { cn } from '@template/ui/utils';
 
 import { Providers } from '~/app/providers';
-import { Header } from '~/components/shared/header';
 import { env } from '~/env';
 
 interface RoutesProps {
@@ -68,12 +67,7 @@ export default function Layout(props: RoutesProps) {
             })};`,
           }}
         />
-        <Providers>
-          <div className="flex min-h-screen flex-col">
-            <Header />
-            <main className="flex flex-1 flex-col">{props.children}</main>
-          </div>
-        </Providers>
+        <Providers>{props.children}</Providers>
       </body>
     </html>
   );

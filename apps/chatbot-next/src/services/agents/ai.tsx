@@ -1,40 +1,30 @@
 import 'server-only';
 
+import type { StreamableValue } from 'ai/rsc';
 import { createAI } from 'ai/rsc';
-import { nanoid } from 'nanoid';
 
 import { submit } from '~/services/agents/action';
 
-export interface Message {
-  role: 'user' | 'assistant' | 'system' | 'function' | 'data' | 'tool';
+export interface AIState {
+  role: 'user' | 'assistant' | 'system' | 'function' | 'tool';
   content: string;
   id?: string;
   name?: string;
-  display?: {
+  meta?: {
     name: string;
     props: Record<string, any>;
   };
 }
 
-export interface AIState {
-  chatId: string;
-  interactions?: string[];
-  messages: Message[];
+const initialAIState: AIState[] = [];
+
+export interface UIState {
+  id: string;
+  component: React.ReactNode;
+  isGenerating: StreamableValue<boolean>;
 }
 
-const initialAIState: AIState = {
-  chatId: nanoid(),
-  interactions: [],
-  messages: [],
-};
-
-export type UIState = {
-  id: string;
-  display: React.ReactNode;
-  spinner?: React.ReactNode;
-}[];
-
-const initialUIState: UIState = [];
+const initialUIState: UIState[] = [];
 
 const actions = {
   submit,
@@ -42,7 +32,7 @@ const actions = {
 
 export type AIActions = typeof actions;
 
-export const AI = createAI<AIState, UIState, AIActions>({
+export const AI = createAI<AIState[], UIState[], AIActions>({
   actions,
   initialUIState,
   initialAIState,

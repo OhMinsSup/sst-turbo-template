@@ -8,7 +8,8 @@ export type FilterType = 'ADD' | 'REMOVE' | 'NONE';
 enum Action {
   INITIALIZE = 'INITIALIZE',
   CHANGE_INPUT = 'CHANGE_INPUT',
-  CHANGE_DIALOG_STATE = 'CHANGE_DIALOG_STATE',
+  CHANGE_SCREEN_STATE = 'CHANGE_SCREEN_STATE',
+  CHANGE_ASK_SCREEN_STATE = 'CHANGE_ASK_SCREEN_STATE',
 }
 
 interface InitializeAction {
@@ -22,10 +23,17 @@ interface ChangeInputAction {
   };
 }
 
-interface ChangeDialogStateAction {
-  type: Action.CHANGE_DIALOG_STATE;
+interface ChangeScreenStateAction {
+  type: Action.CHANGE_SCREEN_STATE;
   payload: {
-    key: keyof DialogState;
+    key: keyof ScreenState;
+    value: boolean;
+  };
+}
+
+interface ChangeAskScreenStateAction {
+  type: Action.CHANGE_ASK_SCREEN_STATE;
+  payload: {
     value: boolean;
   };
 }
@@ -33,28 +41,34 @@ interface ChangeDialogStateAction {
 export type ActionType =
   | InitializeAction
   | ChangeInputAction
-  | ChangeDialogStateAction;
+  | ChangeScreenStateAction
+  | ChangeAskScreenStateAction;
 
-interface DialogState {
-  share: boolean;
+interface ScreenState {
+  empty: boolean;
+  ask: boolean;
 }
 
 interface ChatState {
   input: string;
-  dialog: DialogState;
+  screen: ScreenState;
 }
 
 interface ChatContext extends ChatState {
   initialize: () => void;
   changeInput: (payload: ChangeInputAction['payload']) => void;
-  changeDialogState: (payload: ChangeDialogStateAction['payload']) => void;
+  changeScreenState: (payload: ChangeScreenStateAction['payload']) => void;
+  changeAskScreenState: (
+    payload: ChangeAskScreenStateAction['payload'],
+  ) => void;
   dispatch: React.Dispatch<ActionType>;
 }
 
 const initialState: ChatState = {
   input: '',
-  dialog: {
-    share: false,
+  screen: {
+    ask: false,
+    empty: false,
   },
 };
 
@@ -76,12 +90,22 @@ function reducer(state = initialState, action: ActionType) {
         input: action.payload.input,
       };
     }
-    case Action.CHANGE_DIALOG_STATE: {
+    case Action.CHANGE_SCREEN_STATE: {
       return {
         ...state,
-        dialog: {
-          ...state.dialog,
+        screen: {
+          ...state.screen,
           [action.payload.key]: action.payload.value,
+        },
+      };
+    }
+    case Action.CHANGE_ASK_SCREEN_STATE: {
+      return {
+        ...state,
+        screen: {
+          ...state.screen,
+          empty: false,
+          ask: action.payload.value,
         },
       };
     }
@@ -106,8 +130,14 @@ function ChatProvider({ children }: Props) {
     dispatch({ type: Action.CHANGE_INPUT, payload });
   };
 
-  const changeDialogState = (payload: ChangeDialogStateAction['payload']) => {
-    dispatch({ type: Action.CHANGE_DIALOG_STATE, payload });
+  const changeScreenState = (payload: ChangeScreenStateAction['payload']) => {
+    dispatch({ type: Action.CHANGE_SCREEN_STATE, payload });
+  };
+
+  const changeAskScreenState = (
+    payload: ChangeAskScreenStateAction['payload'],
+  ) => {
+    dispatch({ type: Action.CHANGE_ASK_SCREEN_STATE, payload });
   };
 
   const actions = useMemo(
@@ -115,7 +145,8 @@ function ChatProvider({ children }: Props) {
       ...state,
       initialize,
       changeInput,
-      changeDialogState,
+      changeAskScreenState,
+      changeScreenState,
       dispatch,
     }),
     [state],

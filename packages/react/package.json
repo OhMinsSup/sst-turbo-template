@@ -45,6 +45,16 @@
         "types": "./dist/dom.d.cts",
         "default": "./dist/dom.cjs"
       }
+    },
+    "./form": {
+      "import": {
+        "types": "./dist/form.d.ts",
+        "default": "./dist/form.js"
+      },
+      "require": {
+        "types": "./dist/form.d.cts",
+        "default": "./dist/form.cjs"
+      }
     }
   },
   "files": [

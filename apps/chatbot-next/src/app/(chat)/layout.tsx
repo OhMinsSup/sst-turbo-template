@@ -1,4 +1,6 @@
-import { SidebarDesktop } from '~/components/shared/sidebar-desktop';
+import { Footer } from '~/components/chatbot/footer';
+import { Header } from '~/components/chatbot/header';
+import { ChatProvider } from '~/services/context/useChatProvider';
 
 interface RoutesProps {
   children: React.ReactNode;
@@ -6,9 +8,10 @@ interface RoutesProps {
 
 export default function Layout(props: RoutesProps) {
   return (
-    <div className="relative flex h-[calc(100vh_-_theme(spacing.16))] overflow-hidden">
-      <SidebarDesktop />
+    <ChatProvider>
+      <Header />
       {props.children}
-    </div>
+      <Footer />
+    </ChatProvider>
   );
 }
