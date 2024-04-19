@@ -3,7 +3,7 @@ import { format } from 'date-fns/format';
 
 import { DateError } from './error';
 
-export const defaultFormat = 'YYYY-MM-DD HH:mm:ss';
+export const defaultFormat = 'yyyy-MM-dd HH:mm:ss';
 
 export function formatDate(
   date: Date | number | string,

@@ -7,7 +7,8 @@
     "base.json",
     "nextjs.json",
     "react.json",
-    "nest.json"
+    "nest.json",
+    "fastify.json"
   ],
   "dependencies": {
     "@vercel/style-guide": "^6.0.0"

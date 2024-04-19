@@ -1,5 +1,5 @@
 {
-  "name": "@template/hono-cf-ai",
+  "name": "@template/server-hono",
   "version": "1.0.0",
   "description": "",
   "keywords": [],
@@ -22,6 +22,7 @@
   "devDependencies": {
     "@cloudflare/workers-types": "^4.20240405.0",
     "@tooling/eslint-config": "workspace:*",
-    "@tooling/prettier-config": "workspace:*"
+    "@tooling/prettier-config": "workspace:*",
+    "eslint": "^8.57.0"
   }
 }
