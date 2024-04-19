@@ -5,7 +5,7 @@ import { experimental_streamObject } from 'ai';
 import { createStreamableValue } from 'ai/rsc';
 
 import type { PartialInquirySchema } from '~/services/schema/inquiry';
-import { Copilot } from '~/components/chatbot/copilot.next';
+import { Copilot } from '~/components/chatbot/copilot';
 import { inquirySchema } from '~/services/schema/inquiry';
 
 export async function inquire(

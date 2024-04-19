@@ -1,6 +1,6 @@
 'use client';
 
-import React, { useCallback, useEffect, useState } from 'react';
+import React, { useEffect, useState } from 'react';
 import { useActions, useStreamableValue, useUIState } from 'ai/rsc';
 
 import { Button } from '@template/ui/button';
