@@ -10,6 +10,7 @@
     "dev": "pnpm with-env sst dev",
     "with-env": "dotenv -e ../../.env --"
   },
+  "prettier": "@tooling/prettier-config/base",
   "dependencies": {
     "@hono/zod-validator": "^0.2.1",
     "ai": "^3.0.24",
@@ -19,6 +20,8 @@
     "zod": "^3.22.5"
   },
   "devDependencies": {
-    "@cloudflare/workers-types": "^4.20240405.0"
+    "@cloudflare/workers-types": "^4.20240405.0",
+    "@tooling/eslint-config": "workspace:*",
+    "@tooling/prettier-config": "workspace:*"
   }
 }
