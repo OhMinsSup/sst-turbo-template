@@ -29,7 +29,7 @@
   },
   "prettier": "@tooling/prettier-config/base",
   "devDependencies": {
-    "@sentry/node": "^7.110.0",
+    "@sentry/node": "^7.111.0",
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",

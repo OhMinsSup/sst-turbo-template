@@ -36,7 +36,7 @@
   },
   "prettier": "@tooling/prettier-config/base",
   "dependencies": {
-    "@manypkg/cli": "^0.21.3",
+    "@manypkg/cli": "^0.21.4",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
     "@turbo/gen": "^1.13.2",
