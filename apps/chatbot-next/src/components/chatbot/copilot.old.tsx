@@ -200,25 +200,3 @@ function CopilotError({ error }: CopilotErrorProps) {
     </Card>
   );
 }
-
-function CopilotComplete() {
-  const updatedQuery = useCallback(() => {
-    // const selectedOptions = Object.entries(checkedOptions)
-    //   .filter(([, checked]) => checked)
-    //   .map(([option]) => option);
-    // return [...selectedOptions, query].filter(Boolean).join(', ');
-    return '';
-  }, []);
-
-  return (
-    <Card className="flex w-full items-center justify-between p-3 md:p-4">
-      <div className="flex min-w-0 flex-1 items-center space-x-2">
-        <Icons.logo className="h-4 w-4 flex-shrink-0" />
-        <h5 className="text-muted-foreground truncate text-xs">
-          {updatedQuery()}
-        </h5>
-      </div>
-      <Icons.check size={16} className="h-4 w-4 text-green-500" />
-    </Card>
-  );
-}
