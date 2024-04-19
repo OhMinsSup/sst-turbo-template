@@ -8,6 +8,7 @@ import { cn } from '@template/ui/utils';
 
 import { Providers } from '~/app/providers';
 import { env } from '~/env';
+import { AI } from '~/services/agents/ai';
 
 interface RoutesProps {
   children: React.ReactNode;
@@ -67,7 +68,9 @@ export default function Layout(props: RoutesProps) {
             })};`,
           }}
         />
-        <Providers>{props.children}</Providers>
+        <AI>
+          <Providers>{props.children}</Providers>
+        </AI>
       </body>
     </html>
   );

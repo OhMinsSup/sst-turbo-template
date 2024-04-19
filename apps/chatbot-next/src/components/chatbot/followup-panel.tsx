@@ -123,7 +123,7 @@ function InputField() {
       render={({ field }) => {
         const { onChange, ...resetFields } = field;
         return (
-          <FormItem>
+          <FormItem className="w-full">
             <FormControl>
               <Input
                 type="text"

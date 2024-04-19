@@ -8,7 +8,13 @@ export function ChatMessages() {
   return (
     <>
       {messages.map((message) => (
-        <div key={`message-${message.id}`}>{message.component}</div>
+        <div
+          key={`message-${message.id}`}
+          data-name="message"
+          data-message-id={message.id}
+        >
+          {message.component}
+        </div>
       ))}
     </>
   );

@@ -1,7 +1,7 @@
-import { ArrowRight } from 'lucide-react';
-
 import { Button } from '@template/ui/button';
 import { cn } from '@template/ui/utils';
+
+import { Icons } from '~/components/icons';
 
 const exampleMessages = [
   {
@@ -21,13 +21,13 @@ const exampleMessages = [
     message: 'Tesla vs Rivian',
   },
 ];
-export function EmptyScreen({
-  submitMessage,
-  className,
-}: {
+
+interface EmptyScreenProps {
   submitMessage: (message: string) => void;
   className?: string;
-}) {
+}
+
+export function EmptyScreen({ submitMessage, className }: EmptyScreenProps) {
   return (
     <div className={cn('mx-auto w-full transition-all', className)}>
       <div className="bg-background p-2">
@@ -42,7 +42,10 @@ export function EmptyScreen({
                 submitMessage(message.message);
               }}
             >
-              <ArrowRight size={16} className="text-muted-foreground mr-2" />
+              <Icons.arrowRight
+                size={16}
+                className="text-muted-foreground mr-2"
+              />
               {message.heading}
             </Button>
           ))}

@@ -1,3 +1,5 @@
+'use client';
+
 /* eslint-disable @typescript-eslint/naming-convention */
 import React, { useMemo, useReducer } from 'react';
 

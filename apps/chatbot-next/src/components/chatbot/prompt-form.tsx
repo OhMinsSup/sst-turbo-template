@@ -126,7 +126,7 @@ function InputField() {
       render={({ field }) => {
         const { onChange, onBlur, ...resetFields } = field;
         return (
-          <FormItem>
+          <FormItem className="w-full">
             <FormControl>
               <Input
                 type="text"

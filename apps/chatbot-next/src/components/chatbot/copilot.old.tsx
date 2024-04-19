@@ -1,8 +1,7 @@
 'use client';
 
-import React, { useEffect, useState } from 'react';
+import React, { useCallback, useEffect, useState } from 'react';
 import { useActions, useStreamableValue, useUIState } from 'ai/rsc';
-import { ArrowRight, Check, FastForward, Sparkles } from 'lucide-react';
 
 import { Button } from '@template/ui/button';
 import { Card } from '@template/ui/card';
@@ -10,6 +9,7 @@ import { Checkbox } from '@template/ui/checkbox';
 import { Input } from '@template/ui/input';
 import { cn } from '@template/ui/utils';
 
+import { Icons } from '~/components/icons';
 import { type AIType } from '~/services/agents/ai';
 import { type PartialInquirySchema } from '~/services/schema/inquiry';
 
@@ -26,12 +26,13 @@ export function Copilot({ inquiry }: CopilotProps) {
   const [checkedOptions, setCheckedOptions] = useState<Record<string, boolean>>(
     {},
   );
+
   const [isButtonDisabled, setIsButtonDisabled] = useState(true);
-  const [messages, setMessages] = useUIState<AIType>();
+  const [, setMessages] = useUIState<AIType>();
   const { submit } = useActions<AIType>();
 
-  const handleInputChange = (event: React.ChangeEvent<HTMLInputElement>) => {
-    setQuery(event.target.value);
+  const handleInputChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+    setQuery(e.target.value);
     checkIfButtonShouldBeEnabled();
   };
 
@@ -69,14 +70,14 @@ export function Copilot({ inquiry }: CopilotProps) {
   ) => {
     e.preventDefault();
     setCompleted(true);
-    setSkipped(skip || false);
+    setSkipped(skip ?? false);
 
     const formData = skip
       ? undefined
       : new FormData(e.target as HTMLFormElement);
 
-    const responseMessage = await submit(formData, skip);
-    setMessages((currentMessages) => [...currentMessages, responseMessage]);
+    const result = await submit(formData, skip);
+    setMessages((old) => [...old, result]);
   };
 
   const handleSkip = (e: React.MouseEvent<HTMLButtonElement>) => {
@@ -84,16 +85,7 @@ export function Copilot({ inquiry }: CopilotProps) {
   };
 
   if (error) {
-    return (
-      <Card className="flex w-full items-center justify-between p-4">
-        <div className="flex items-center space-x-2">
-          <Sparkles className="h-4 w-4" />
-          <h5 className="text-muted-foreground truncate text-xs">
-            {`error: ${error}`}
-          </h5>
-        </div>
-      </Card>
-    );
+    return <CopilotError error={error} />;
   }
 
   if (skipped) {
@@ -104,25 +96,24 @@ export function Copilot({ inquiry }: CopilotProps) {
     return (
       <Card className="flex w-full items-center justify-between p-3 md:p-4">
         <div className="flex min-w-0 flex-1 items-center space-x-2">
-          {/* <IconLogo className="h-4 w-4 flex-shrink-0" /> */}
-          {/* eslint-disable-next-line @next/next/no-img-element */}
-          <img className="size-4" src="/images/gemini.png" alt="gemini logo" />
+          <Icons.logo className="h-4 w-4 flex-shrink-0" />
           <h5 className="text-muted-foreground truncate text-xs">
             {updatedQuery()}
           </h5>
         </div>
-        <Check size={16} className="h-4 w-4 text-green-500" />
+        <Icons.check size={16} className="h-4 w-4 text-green-500" />
       </Card>
     );
   }
+
   return (
     <Card className="mx-auto w-full rounded-lg p-4">
       <div className="mb-4 flex items-center">
-        {/* <IconLogo
-          className={cn('h-4 w-4 flex-shrink-0', { 'animate-spin': pending })}
-        /> */}
-        {/* eslint-disable-next-line @next/next/no-img-element */}
-        <img className="size-4" src="/images/gemini.png" alt="gemini logo" />
+        <Icons.logo
+          className={cn('h-4 w-4 flex-shrink-0', {
+            'animate-spin': pending,
+          })}
+        />
         <p className="text-foreground text-semibold ml-2 text-lg">
           {data?.question}
         </p>
@@ -138,7 +129,9 @@ export function Copilot({ inquiry }: CopilotProps) {
                 id={option?.value}
                 name={option?.value}
                 onCheckedChange={() => {
-                  handleOptionChange(option?.label!);
+                  if (option?.label) {
+                    handleOptionChange(option.label);
+                  }
                 }}
               />
               <label
@@ -173,15 +166,59 @@ export function Copilot({ inquiry }: CopilotProps) {
             onClick={handleSkip}
             disabled={pending}
           >
-            <FastForward size={16} className="mr-1" />
+            <Icons.fastForward size={16} className="mr-1" />
             Skip
           </Button>
           <Button type="submit" disabled={isButtonDisabled || pending}>
-            <ArrowRight size={16} className="mr-1" />
+            <Icons.arrowRight size={16} className="mr-1" />
             Send
           </Button>
         </div>
       </form>
+    </Card>
+  );
+}
+
+interface CopilotErrorProps {
+  error: unknown;
+}
+
+function CopilotError({ error }: CopilotErrorProps) {
+  const text =
+    typeof error === 'string'
+      ? error
+      : `An error occurred (${JSON.stringify(error)})`;
+
+  return (
+    <Card className="flex w-full items-center justify-between p-4">
+      <div className="flex items-center space-x-2">
+        <Icons.sparkles className="h-4 w-4" />
+        <h5 className="text-muted-foreground truncate text-xs">
+          {`error: ${text}`}
+        </h5>
+      </div>
+    </Card>
+  );
+}
+
+function CopilotComplete() {
+  const updatedQuery = useCallback(() => {
+    // const selectedOptions = Object.entries(checkedOptions)
+    //   .filter(([, checked]) => checked)
+    //   .map(([option]) => option);
+    // return [...selectedOptions, query].filter(Boolean).join(', ');
+    return '';
+  }, []);
+
+  return (
+    <Card className="flex w-full items-center justify-between p-3 md:p-4">
+      <div className="flex min-w-0 flex-1 items-center space-x-2">
+        <Icons.logo className="h-4 w-4 flex-shrink-0" />
+        <h5 className="text-muted-foreground truncate text-xs">
+          {updatedQuery()}
+        </h5>
+      </div>
+      <Icons.check size={16} className="h-4 w-4 text-green-500" />
     </Card>
   );
 }

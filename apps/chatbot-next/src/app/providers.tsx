@@ -7,8 +7,6 @@ import { ThemeProvider } from 'next-themes';
 import { Toaster } from '@template/ui/toaster';
 import { TooltipProvider } from '@template/ui/tooltip';
 
-import { AI } from '~/services/agents/ai';
-
 interface ProvidersProps {
   children: React.ReactNode;
 }
@@ -23,12 +21,10 @@ export function Providers({ children }: ProvidersProps) {
       enableSystem
       disableTransitionOnChange
     >
-      <AI>
-        <QueryClientProvider client={queryClient}>
-          <TooltipProvider>{children}</TooltipProvider>
-          <Toaster />
-        </QueryClientProvider>
-      </AI>
+      <QueryClientProvider client={queryClient}>
+        <TooltipProvider>{children}</TooltipProvider>
+        <Toaster />
+      </QueryClientProvider>
     </ThemeProvider>
   );
 }

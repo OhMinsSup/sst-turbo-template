@@ -3,8 +3,14 @@ import { OpenAI } from '@ai-sdk/openai';
 import { experimental_streamText } from 'ai';
 import { type createStreamableUI, type createStreamableValue } from 'ai/rsc';
 
+import { Card } from '@template/ui/card';
+
 import { BotMessage } from '~/components/chatbot/message';
+import { SearchResults } from '~/components/chatbot/search-results';
+import { SearchResultsImageSection } from '~/components/chatbot/search-results-image';
+import { SearchSkeleton } from '~/components/chatbot/search-skeleton';
 import { Section } from '~/components/chatbot/section';
+import { ToolBadge } from '~/components/chatbot/tool-badge';
 import { env } from '~/env';
 import { searchSchema } from '~/services/schema/search';
 
@@ -45,7 +51,70 @@ export async function researcher({
       search: {
         description: 'Search the web for information',
         parameters: searchSchema,
-        execute: async ({}) => {},
+        execute: async ({
+          query,
+          max_results,
+          search_depth,
+        }: {
+          query: string;
+          max_results: number;
+          search_depth: 'basic' | 'advanced';
+        }) => {
+          uiStream.update(
+            <Section>
+              <ToolBadge tool="search">{query}</ToolBadge>
+            </Section>,
+          );
+
+          uiStream.append(
+            <Section>
+              <SearchSkeleton />
+            </Section>,
+          );
+
+          // Tavily API requires a minimum of 5 characters in the query
+          const filledQuery =
+            query.length < 5 ? query + ' '.repeat(5 - query.length) : query;
+          let searchResult;
+          try {
+            searchResult = await tavilySearch(
+              filledQuery,
+              max_results,
+              search_depth,
+            );
+          } catch (error) {
+            console.error('Search API error:', error);
+            hasError = true;
+          }
+
+          if (hasError) {
+            fullResponse += `\nAn error occurred while searching for "${query}.`;
+            uiStream.update(
+              <Card className="mt-2 p-4 text-sm">
+                {`An error occurred while searching for "${query}".`}
+              </Card>,
+            );
+            return searchResult;
+          }
+
+          uiStream.update(
+            <Section title="Images">
+              <SearchResultsImageSection
+                images={searchResult.images}
+                query={searchResult.query}
+              />
+            </Section>,
+          );
+          uiStream.append(
+            <Section title="Sources">
+              <SearchResults results={searchResult.results} />
+            </Section>,
+          );
+
+          uiStream.append(answerSection);
+
+          return searchResult;
+        },
       },
     },
   });

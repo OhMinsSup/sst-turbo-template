@@ -4,12 +4,14 @@ import {
   AlignLeft,
   ArrowRight,
   BookCheck,
+  Check,
   ChevronDown,
   ChevronLeft,
   ChevronRight,
   Command,
   Component,
   CreditCard,
+  FastForward,
   File,
   FileText,
   Heart,
@@ -41,6 +43,7 @@ import {
   Send,
   Settings,
   Share,
+  Sparkles,
   SunMedium,
   Table,
   Trash,
@@ -50,6 +53,9 @@ import {
 } from 'lucide-react';
 
 export const Icons = {
+  check: Check,
+  sparkles: Sparkles,
+  fastForward: FastForward,
   plusCircle: PlusCircle,
   repeat2: Repeat2,
   newspaper: Newspaper,
@@ -62,7 +68,7 @@ export const Icons = {
   dialog: MessageCircleCode,
   dashboard: LayoutDashboard,
   component: Component,
-  logo: Command,
+  command: Command,
   close: X,
   menu: Menu,
   spinner: Loader2,
@@ -145,6 +151,19 @@ export const Icons = {
         fillRule="evenodd"
         clipRule="evenodd"
       />
+    </svg>
+  ),
+  logo: (props: LucideProps) => (
+    <svg
+      fill="currentColor"
+      viewBox="0 0 256 256"
+      role="img"
+      xmlns="http://www.w3.org/2000/svg"
+      {...props}
+    >
+      <circle cx="128" cy="128" r="128" fill="black" />
+      <circle cx="102" cy="128" r="18" fill="white" />
+      <circle cx="154" cy="128" r="18" fill="white" />
     </svg>
   ),
 };
