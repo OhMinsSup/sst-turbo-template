@@ -10,10 +10,7 @@
     "nest.json",
     "fastify.json"
   ],
-  "dependencies": {
-    "@vercel/style-guide": "^6.0.0"
-  },
-  "packageManager": "pnpm@8.12.1",
+  "packageManager": "pnpm@9.0.5",
   "engines": {
     "bun": ">=1.0",
     "node": ">=18.0"
