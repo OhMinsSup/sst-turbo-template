@@ -1,0 +1,27 @@
+{
+  "name": "@tooling/rsbuild-remix",
+  "version": "0.0.1",
+  "description": "",
+  "keywords": [],
+  "license": "ISC",
+  "author": "",
+  "type": "module",
+  "scripts": {
+    "test": "echo \"Error: no test specified\" && exit 1"
+  },
+  "prettier": "@tooling/prettier-config/base",
+  "devDependencies": {
+    "@rsbuild/core": "^0.6.5",
+    "@rsbuild/shared": "^0.6.5",
+    "@tooling/eslint-config": "workspace:*",
+    "@tooling/prettier-config": "workspace:*",
+    "@tooling/tsconfig": "workspace:*",
+    "eslint": "^8.57.0",
+    "typescript": "^5.4.4"
+  },
+  "packageManager": "pnpm@9.0.5",
+  "engines": {
+    "bun": ">=1.0",
+    "node": ">=18.0"
+  }
+}
