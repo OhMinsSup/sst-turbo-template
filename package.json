@@ -24,6 +24,7 @@
     "dev:node-typescript": "pnpm run dev --filter @template/node-typescript",
     "dev:server-hono": "pnpm run dev --filter @template/server-hono",
     "dev:server-nest": "pnpm run dev --filter @template/server-nest",
+    "dev:server-nest-with-solana": "pnpm run dev --filter @template/server-nest-with-solana",
     "env:build": "turbo env:build",
     "format": "turbo format --continue -- --cache --cache-location='node_modules/.cache/.prettiercache'",
     "format:fix": "turbo format --continue -- --write --cache --cache-location='node_modules/.cache/.prettiercache'",

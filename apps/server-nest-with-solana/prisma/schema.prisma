@@ -1,0 +1,118 @@
+datasource db {
+    provider = "sqlite"
+    url      = "file:./dev.db"
+}
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+model User {
+    id            String     @id @default(cuid())
+    email         String     @unique
+    username      String     @unique
+    name          String?
+    createdAt     DateTime   @default(now())
+    updatedAt     DateTime   @updatedAt
+    nonce         String     @unique @default(uuid())
+    emailVerified DateTime?
+    wallets       Wallet[]
+    roles         Role[]
+    password      Password?
+    image         UserImage?
+    session       Session[]
+
+    @@map("users")
+}
+
+model UserImage {
+    id          String   @id @default(cuid())
+    altText     String?
+    contentType String
+    blob        Bytes
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId      String   @unique
+
+    @@map("user_images")
+}
+
+model Password {
+    hash   String
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String @unique
+
+    @@map("passwords")
+}
+
+model Session {
+    id             String   @id @default(cuid())
+    expirationDate DateTime
+    createdAt      DateTime @default(now())
+    updatedAt      DateTime @updatedAt
+    user           User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId         String
+
+    @@index([userId])
+    @@map("sessions")
+}
+
+model Permission {
+    id          String   @id @default(cuid())
+    action      String // e.g. create, read, update, delete
+    entity      String // e.g. note, user, etc.
+    access      String // e.g. own or any
+    description String   @default("")
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    roles       Role[]
+
+    @@unique([action, entity, access])
+    @@map("permissions")
+}
+
+model Role {
+    id          String       @id @default(cuid())
+    name        String       @unique
+    description String       @default("")
+    createdAt   DateTime     @default(now())
+    updatedAt   DateTime     @updatedAt
+    users       User[]
+    permissions Permission[]
+
+    @@map("roles")
+}
+
+model Wallet {
+    address     String    @id
+    userId      String    @map("user_id")
+    createdAt   DateTime  @default(now()) @map("created_at")
+    connectedAt DateTime? @map("connected_at")
+    user        User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+    nfts        Nft[]
+
+    @@map("wallets")
+}
+
+model Metadata {
+    uri            String  @id
+    nfts           Nft[]
+    collectionName String
+    isUsed         Boolean
+    isSigned       Boolean
+
+    @@map("metadata")
+}
+
+model Nft {
+    address        String   @id
+    metadata       Metadata @relation(fields: [url], references: [uri])
+    url            String
+    name           String
+    owner          Wallet   @relation(fields: [ownerAddress], references: [address])
+    ownerAddress   String
+    ownerChangedAt DateTime
+
+    @@map("nfts")
+}
