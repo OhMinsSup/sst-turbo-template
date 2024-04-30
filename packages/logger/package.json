@@ -29,7 +29,7 @@
   },
   "prettier": "@tooling/prettier-config/base",
   "devDependencies": {
-    "@sentry/node": "^7.111.0",
+    "@sentry/node": "^7.112.2",
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
@@ -41,7 +41,7 @@
   },
   "peerDependencies": {
     "@sentry/node": "^7.0.0",
-    "typescript": "^5.4.4"
+    "typescript": "^5.4.5"
   },
   "peerDependenciesMeta": {
     "@sentry/node": {

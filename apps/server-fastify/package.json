@@ -23,7 +23,7 @@
     "pino-pretty": "^11.0.0",
     "reflect-metadata": "^0.2.2",
     "tsyringe": "^4.8.0",
-    "zod": "^3.22.5"
+    "zod": "^3.23.5"
   },
   "devDependencies": {
     "@tooling/eslint-config": "workspace:*",
@@ -32,7 +32,7 @@
     "@types/node": "^20.12.7",
     "eslint": "^8.57.0",
     "tsup": "^8.0.2",
-    "tsx": "^4.7.2",
+    "tsx": "^4.7.3",
     "typescript": "^5.4.5"
   },
   "packageManager": "pnpm@9.0.5",
