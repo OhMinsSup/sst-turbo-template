@@ -1,0 +1,11 @@
+# Node.js
+node_modules/**/*
+
+# Remix
+public/build/**/*
+build/**/*
+.cache/**/*
+.wrangler/**/*
+
+# cloudflare
+functions/**/*
