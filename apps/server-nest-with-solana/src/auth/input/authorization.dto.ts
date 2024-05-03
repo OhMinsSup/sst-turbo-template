@@ -1,4 +1,4 @@
-import { type User } from '@prisma/client';
+import { type SerializeExternalUser } from '../../serialize/serialize.interface';
 
 export class Authorization {
   accessToken: string;
@@ -12,12 +12,5 @@ export interface BaseJwtPayload {
   exp: number;
 }
 
-export interface UserPayload {
-  type: 'user';
-  id: User['id'];
-  email: User['email'];
-  name: User['username'];
-}
-
-export type JwtPayload = UserPayload;
+export type JwtPayload = SerializeExternalUser;
 export type JwtDto = JwtPayload & BaseJwtPayload;

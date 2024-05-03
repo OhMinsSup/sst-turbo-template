@@ -58,28 +58,13 @@ model Session {
     @@map("sessions")
 }
 
-model Permission {
+model Role {
     id          String   @id @default(cuid())
-    action      String // e.g. create, read, update, delete
-    entity      String // e.g. note, user, etc.
-    access      String // e.g. own or any
+    name        String   @unique
     description String   @default("")
     createdAt   DateTime @default(now())
     updatedAt   DateTime @updatedAt
-    roles       Role[]
-
-    @@unique([action, entity, access])
-    @@map("permissions")
-}
-
-model Role {
-    id          String       @id @default(cuid())
-    name        String       @unique
-    description String       @default("")
-    createdAt   DateTime     @default(now())
-    updatedAt   DateTime     @updatedAt
     users       User[]
-    permissions Permission[]
 
     @@map("roles")
 }

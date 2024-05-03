@@ -11,11 +11,13 @@ import { SerializeModule } from './serialize/serialize.module';
 import { UsersController } from './users/controllers/users.controller';
 import { UsersService } from './users/services/users.service';
 import { UsersModule } from './users/users.module';
+import { Web3Module } from './web3/web3.module';
 
 @Module({
   imports: [
     EnvironmentModule.forRoot({}),
     SerializeModule.forRoot({}),
+    Web3Module.forRoot({}),
     PassportModule.register({ defaultStrategy: 'jwt' }),
     JwtModule.registerAsync({
       useFactory: async (environment: EnvironmentService) => {
