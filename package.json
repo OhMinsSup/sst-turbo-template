@@ -20,7 +20,7 @@
     "clean:workspaces": "turbo clean",
     "dev": "turbo dev --parallel",
     "dev:admin": "pnpm run dev --filter @template/admin",
-    "dev:chatbot-next": "pnpm run dev --filter @template/chatbot-next",
+    "dev:client-next-chatbot": "pnpm run dev --filter @template/client-next-chatbot",
     "dev:node-typescript": "pnpm run dev --filter @template/node-typescript",
     "dev:server-hono": "pnpm run dev --filter @template/server-hono",
     "dev:server-nest": "pnpm run dev --filter @template/server-nest",

@@ -1,5 +1,5 @@
 {
-  "name": "@template/chatbot-next",
+  "name": "@template/client-next-chatbot",
   "version": "0.0.1-beta.0",
   "private": true,
   "description": "nextjs sst template project",
