@@ -18,14 +18,6 @@ export const getUserImageSelector = () =>
     altText: true,
   });
 
-export const getPermissionsSelector = () =>
-  Prisma.validator<Prisma.PermissionSelect>()({
-    action: true,
-    entity: true,
-    access: true,
-    description: true,
-  });
-
 export const getRolesSelector = () =>
   Prisma.validator<Prisma.RoleSelect>()({
     name: true,

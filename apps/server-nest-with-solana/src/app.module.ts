@@ -1,6 +1,7 @@
 import { Module } from '@nestjs/common';
 import { JwtModule } from '@nestjs/jwt';
 import { PassportModule } from '@nestjs/passport';
+import { loggingMiddleware, PrismaModule } from 'nestjs-prisma';
 
 import { AppController } from './app.controller';
 import { AppService } from './app.service';
@@ -28,6 +29,14 @@ import { Web3Module } from './web3/web3.module';
         };
       },
       inject: [EnvironmentService],
+    }),
+    PrismaModule.forRoot({
+      isGlobal: true,
+
+      prismaServiceOptions: {
+        middlewares: [loggingMiddleware()],
+        prismaOptions: { errorFormat: 'pretty' },
+      },
     }),
     AuthModule,
     UsersModule,

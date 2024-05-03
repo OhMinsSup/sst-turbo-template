@@ -1,6 +1,5 @@
 import {
   type Password,
-  type Permission,
   type Role,
   type User,
   type UserImage,
@@ -15,11 +14,6 @@ export type SerializeImage = Pick<
 export type SerializePassword = Pick<Password, 'hash'>;
 
 export type SerializeWallet = Pick<Wallet, 'address' | 'connectedAt'>;
-
-export type SerializePermissions = Pick<
-  Permission,
-  'action' | 'entity' | 'access' | 'description'
->;
 
 export type SerializeRoles = Pick<Role, 'name' | 'description'>;
 
