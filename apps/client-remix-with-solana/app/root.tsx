@@ -22,6 +22,8 @@ import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { toast as showToast, Toaster } from 'sonner';
 
+import { cn } from '@template/ui/utils';
+
 import type { RoutesLoaderData } from '~/.server/routes/root.server';
 import type { Toast } from '~/.server/utils/toast.server';
 import { rootLoader } from '~/.server/routes/root.server';
@@ -29,7 +31,6 @@ import {
   NonFlashOfWrongThemeEls,
   ThemeProvider,
 } from '~/context/useThemeContext';
-import { cn } from '~/utils/utils';
 
 export const loader = rootLoader;
 

@@ -1,4 +1,5 @@
 const { resolve } = require('node:path');
+const { ignorePatterns } = require('./share.cjs');
 
 const project = resolve(process.cwd(), 'tsconfig.json');
 
@@ -24,7 +25,7 @@ module.exports = {
     commonjs: true,
     es6: true,
   },
-  ignorePatterns: ['!**/.server', '!**/.client'],
+  ignorePatterns: ['!**/.server', '!**/.client'].concat(ignorePatterns),
 
   // Base config
   extends: ['eslint:recommended'],

@@ -4,7 +4,7 @@ import { defineConfig } from 'vite';
 import envOnly from 'vite-env-only';
 import tsconfigPaths from 'vite-tsconfig-paths';
 
-installGlobals();
+installGlobals({ nativeFetch: true });
 
 export default defineConfig({
   plugins: [
