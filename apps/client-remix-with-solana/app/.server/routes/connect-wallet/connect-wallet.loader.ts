@@ -1,6 +1,8 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { requireUserId } from "~/.server/auth.server";
-import { prisma } from "~/.server/db.server";
+import type { LoaderFunctionArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
+
+import { requireUserId } from '~/.server/utils/auth.server';
+import { prisma } from '~/.server/utils/db.server';
 
 export const connectWalletLoader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
@@ -12,11 +14,11 @@ export const connectWalletLoader = async ({ request }: LoaderFunctionArgs) => {
     select: {
       address: true,
     },
-    orderBy: { address: "asc" },
+    orderBy: { address: 'asc' },
   });
 
   return json({
-    status: "success",
+    status: 'success',
     result: { userId, wallets },
     message: null,
   });

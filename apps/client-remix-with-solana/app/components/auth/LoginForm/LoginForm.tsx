@@ -1,12 +1,14 @@
-import { cn } from "~/utils/utils";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { buttonVariants } from "~/components/ui/button";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { useActionData, Form } from "@remix-run/react";
-import { schema } from "~/services/validate/sigin.validate";
-import { type RoutesActionData } from "~/.server/routes/login/login.action";
+import { Form, useActionData } from '@remix-run/react';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
+import { buttonVariants } from '@template/ui/button';
+import { Input } from '@template/ui/input';
+import { Label } from '@template/ui/label';
+import { cn } from '@template/ui/utils';
+
+import { type RoutesActionData } from '~/.server/routes/login/login.action';
+import { schema } from '~/services/validate/sigin.validate';
 
 export default function LoginForm() {
   // Last submission returned by the server
@@ -20,8 +22,8 @@ export default function LoginForm() {
       return parseWithZod(formData, { schema });
     },
     // Validate the form on blur event triggered
-    shouldValidate: "onSubmit",
-    shouldRevalidate: "onSubmit",
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onSubmit',
   });
 
   return (
@@ -105,12 +107,12 @@ export default function LoginForm() {
           <span className="w-full border-t" />
         </div>
         <div className="relative flex justify-center text-xs uppercase">
-          <span className="bg-background px-2 text-muted-foreground">또는</span>
+          <span className="bg-background text-muted-foreground px-2">또는</span>
         </div>
       </div>
       <button
         type="button"
-        className={cn(buttonVariants({ variant: "outline" }))}
+        className={cn(buttonVariants({ variant: 'outline' }))}
         // onClick={() => {
         //   setIsGitHubLoading(true)
         //   signIn("github")

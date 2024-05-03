@@ -1,59 +1,39 @@
-import { createId as cuid } from "@paralleldrive/cuid2";
-import { createCookieSessionStorage, redirect } from "@remix-run/cloudflare";
-import { z } from "zod";
-import { combineHeaders } from "./request.server.js";
-import type {
-  LoaderFunctionArgs,
-  SessionData,
-  SessionStorage,
-} from "@remix-run/cloudflare";
+import type { SessionData, SessionStorage } from '@remix-run/node';
+import { createId as cuid } from '@paralleldrive/cuid2';
+import { createCookieSessionStorage, redirect } from '@remix-run/node';
+import { z } from 'zod';
 
-export const NAME = "solana.toast";
+import { combineHeaders } from './request.server.js';
 
-export const toastKey = "toast";
+export const NAME = 'client-remix-with-solana.toast';
+
+export const toastKey = 'toast';
 
 const ToastSchema = z.object({
   description: z.string(),
   id: z.string().default(() => cuid()),
   title: z.string().optional(),
-  type: z.enum(["message", "success", "error"]).default("message"),
+  type: z.enum(['message', 'success', 'error']).default('message'),
 });
 
 export type Toast = z.infer<typeof ToastSchema>;
 export type ToastInput = z.input<typeof ToastSchema>;
 
-export let toastSessionStorage: SessionStorage<SessionData, SessionData>;
-
-export function initializeToast(cookieSecret: string) {
-  if (toastSessionStorage) {
-    return toastSessionStorage;
-  }
-
-  toastSessionStorage = createCookieSessionStorage({
+export const toastSessionStorage: SessionStorage<SessionData, SessionData> =
+  createCookieSessionStorage({
     cookie: {
       name: NAME,
-      sameSite: "lax",
-      path: "/",
+      sameSite: 'lax',
+      path: '/',
       httpOnly: true,
-      secrets: [cookieSecret],
+      secrets: [process.env.TOAST_SECRET],
     },
   });
-
-  return toastSessionStorage;
-}
-
-export function getToastSessionStorage() {
-  if (!toastSessionStorage) {
-    throw new Error("You must initialize the toast session storage first");
-  }
-
-  return toastSessionStorage;
-}
 
 export async function redirectWithToast(
   url: string,
   toast: ToastInput,
-  init?: ResponseInit
+  init?: ResponseInit,
 ) {
   return redirect(url, {
     ...init,
@@ -62,25 +42,24 @@ export async function redirectWithToast(
 }
 
 export async function createToastHeaders(toastInput: ToastInput) {
-  const toastStore = getToastSessionStorage();
-
-  const session = await toastStore.getSession();
+  const session = await toastSessionStorage.getSession();
   const toast = ToastSchema.parse(toastInput);
   session.flash(toastKey, toast);
-  const cookie = await toastStore.commitSession(session);
-  return new Headers({ "set-cookie": cookie });
+  const cookie = await toastSessionStorage.commitSession(session);
+  return new Headers({ 'set-cookie': cookie });
 }
 
 export async function getToast(request: Request) {
-  const toastStore = getToastSessionStorage();
-  const session = await toastStore.getSession(request.headers.get("cookie"));
+  const session = await toastSessionStorage.getSession(
+    request.headers.get('cookie'),
+  );
   const result = ToastSchema.safeParse(session.get(toastKey));
   const toast = result.success ? result.data : null;
   return {
     toast,
     headers: toast
       ? new Headers({
-          "set-cookie": await toastStore.destroySession(session),
+          'set-cookie': await toastSessionStorage.destroySession(session),
         })
       : null,
   };

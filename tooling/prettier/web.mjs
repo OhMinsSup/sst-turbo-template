@@ -33,6 +33,8 @@ const config = Object.assign({}, overridableDefaults, {
     '<TYPES>',
     '^(react/(.*)$)|^(react$)|^(react-native(.*)$)',
     '^(next/(.*)$)|^(next$)',
+    '^(@remix-run(.*)$)|^(@remix-run$)',
+    '^(remix(.*)$)|^(remix$)',
     '^(expo(.*)$)|^(expo$)',
     '<THIRD_PARTY_MODULES>',
     '',

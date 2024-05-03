@@ -1,32 +1,23 @@
 {
+  "extends": "@tooling/tsconfig/remix",
   "include": [
-    "env.d.ts",
     "**/*.ts",
     "**/*.tsx",
     "**/.server/**/*.ts",
     "**/.server/**/*.tsx",
     "**/.client/**/*.ts",
     "**/.client/**/*.tsx",
-    "load-context.ts"
+    "node_modules/@remix-run/react/future/single-fetch.d.ts"
   ],
   "compilerOptions": {
-    "lib": ["DOM", "DOM.Iterable", "ES2022"],
-    "isolatedModules": true,
-    "esModuleInterop": true,
-    "jsx": "react-jsx",
-    "module": "ESNext",
-    "moduleResolution": "Bundler",
-    "resolveJsonModule": true,
-    "target": "ES2022",
-    "strict": true,
-    "allowJs": true,
-    "skipLibCheck": true,
-    "forceConsistentCasingInFileNames": true,
+    "types": [
+      "@remix-run/node",
+      "@remix-run/react/future/single-fetch.d.ts",
+      "vite/client"
+    ],
     "baseUrl": ".",
     "paths": {
       "~/*": ["./app/*"]
-    },
-    // Vite takes care of building everything, not tsc.
-    "noEmit": true
+    }
   }
 }

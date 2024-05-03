@@ -1,13 +1,15 @@
-import { json, type LoaderFunctionArgs } from "@remix-run/cloudflare";
-import { initializeTheme, getTheme } from "~/.server/utils/theme.server";
-import { getToast } from "~/.server/utils/toast.server";
-import { combineHeaders } from "~/.server/utils/request.server";
-import { getUserId } from "~/.server/auth.server";
-import { prisma } from "~/.server/db.server";
+import os from 'node:os';
+import type { LoaderFunctionArgs } from '@remix-run/node';
+import { json } from '@remix-run/node';
 
-export const rootLoader = async ({ request, context }: LoaderFunctionArgs) => {
-  initializeTheme(context.env.THEME_SECRET);
+import { getUserId } from '~/.server/utils/auth.server';
+import { prisma } from '~/.server/utils/db.server';
+import { getEnv } from '~/.server/utils/env.server';
+import { combineHeaders } from '~/.server/utils/request.server';
+import { getTheme } from '~/.server/utils/theme.server';
+import { getToast } from '~/.server/utils/toast.server';
 
+export const rootLoader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
 
   const userId = await getUserId(request);
@@ -22,9 +24,11 @@ export const rootLoader = async ({ request, context }: LoaderFunctionArgs) => {
     : null;
 
   const loaderData = {
-    theme: await getTheme(request),
+    username: os.userInfo().username,
     user,
     toast,
+    theme: await getTheme(request),
+    ENV: getEnv(),
   };
 
   return json(loaderData, {

@@ -1,22 +1,23 @@
-import { parseWithZod } from "@conform-to/zod";
-import { json, redirect } from "@remix-run/cloudflare";
-import type { ActionFunctionArgs } from "@remix-run/cloudflare";
-import { requireUserId } from "~/.server/auth.server";
-import { prisma } from "~/.server/db.server";
-import { z } from "zod";
-import { validateWallet } from "~/.server/utils/password.server";
-import { safeRedirect } from "remix-utils/safe-redirect";
-import { navigation } from "~/constants/navigation";
+import type { ActionFunctionArgs } from '@remix-run/node';
+import { parseWithZod } from '@conform-to/zod';
+import { json, redirect } from '@remix-run/node';
+import { safeRedirect } from 'remix-utils/safe-redirect';
+import { z } from 'zod';
+
+import { requireUserId } from '~/.server/utils/auth.server';
+import { prisma } from '~/.server/utils/db.server';
+import { validateWallet } from '~/.server/utils/password.server';
+import { navigation } from '~/constants/navigation';
 
 export const schema = z.object({
   address: z.string().min(1, {
-    message: "잘못된 주소 형식입니다. 주소를 확인해주세요.",
+    message: '잘못된 주소 형식입니다. 주소를 확인해주세요.',
   }),
   encoding: z.string().min(1, {
-    message: "잘못된 서명 형식입니다. 서명을 확인해주세요.",
+    message: '잘못된 서명 형식입니다. 서명을 확인해주세요.',
   }),
   signature: z.string().min(1, {
-    message: "잘못된 서명 형식입니다. 서명을 확인해주세요.",
+    message: '잘못된 서명 형식입니다. 서명을 확인해주세요.',
   }),
 });
 
@@ -30,11 +31,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const submission = parseWithZod(formData, { schema });
 
   // Report the submission to client if it is not successful
-  if (submission.status !== "success") {
+  if (submission.status !== 'success') {
     return json({
-      status: "error" as const,
+      status: 'error' as const,
       result: submission.reply(),
-      message: "잘못된 요청입니다. 주소와 서명을 확인해주세요.",
+      message: '잘못된 요청입니다. 주소와 서명을 확인해주세요.',
     });
   }
 
@@ -61,40 +62,40 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // });
     return redirect(safeRedirect(navigation.emailVerification));
   } catch (error) {
-    console.error("error", error);
+    console.error('error', error);
     if (error instanceof Response) {
       const message = await error.text();
       return json(
         {
-          status: "error" as const,
+          status: 'error' as const,
           result: null,
           message,
         },
         {
           status: error.status,
-        }
+        },
       );
     }
 
     return json(
       {
-        status: "error" as const,
+        status: 'error' as const,
         result: null,
-        message: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',
       },
       {
         status: 500,
-      }
+      },
     );
   }
 };
 
 export type RoutesActionData = typeof action;
 
-export const loader = () => redirect("/", { status: 404 });
+export const loader = () => redirect('/', { status: 404 });
 
 export const getPath = () => {
-  return "/api/v1/auth/wallet/connect";
+  return '/api/v1/auth/wallet/connect';
 };
 
 export default function Routes() {

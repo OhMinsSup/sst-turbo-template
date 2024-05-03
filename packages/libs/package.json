@@ -15,6 +15,16 @@
         "types": "./dist/assertion.d.cts",
         "default": "./dist/assertion.cjs"
       }
+    },
+    "./misc": {
+      "import": {
+        "types": "./dist/misc.d.ts",
+        "default": "./dist/misc.js"
+      },
+      "require": {
+        "types": "./dist/misc.d.cts",
+        "default": "./dist/misc.cjs"
+      }
     }
   },
   "files": [

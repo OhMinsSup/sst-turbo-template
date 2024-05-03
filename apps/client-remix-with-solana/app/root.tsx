@@ -5,29 +5,31 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
-} from "@remix-run/react";
-import "~/styles/globals.css";
-import {
-  type RoutesLoaderData,
-  rootLoader,
-} from "~/.server/routes/root.server";
-import {
-  NonFlashOfWrongThemeEls,
-  ThemeProvider,
-} from "~/context/useThemeContext";
+} from '@remix-run/react';
+
+import '@template/ui/globals.css';
+import '@solana/wallet-adapter-react-ui/styles.css';
+import '~/styles/globals.css';
+
+import { useEffect, useMemo } from 'react';
+import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
 import {
   ConnectionProvider,
   WalletProvider,
-} from "@solana/wallet-adapter-react";
-import { PhantomWalletAdapter } from "@solana/wallet-adapter-wallets";
-import { WalletModalProvider } from "@solana/wallet-adapter-react-ui";
-import { WalletAdapterNetwork } from "@solana/wallet-adapter-base";
-import { cn } from "~/utils/utils";
-import { clusterApiUrl } from "@solana/web3.js";
-import { useMemo, useEffect } from "react";
-import type { Toast } from "~/.server/utils/toast.server";
-import { Toaster, toast as showToast } from "sonner";
-import "@solana/wallet-adapter-react-ui/styles.css";
+} from '@solana/wallet-adapter-react';
+import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
+import { clusterApiUrl } from '@solana/web3.js';
+import { toast as showToast, Toaster } from 'sonner';
+
+import type { RoutesLoaderData } from '~/.server/routes/root.server';
+import type { Toast } from '~/.server/utils/toast.server';
+import { rootLoader } from '~/.server/routes/root.server';
+import {
+  NonFlashOfWrongThemeEls,
+  ThemeProvider,
+} from '~/context/useThemeContext';
+import { cn } from '~/utils/utils';
 
 export const loader = rootLoader;
 
@@ -88,7 +90,7 @@ export default function App() {
       new PhantomWalletAdapter(),
     ],
     // eslint-disable-next-line react-hooks/exhaustive-deps
-    [network]
+    [network],
   );
 
   return (

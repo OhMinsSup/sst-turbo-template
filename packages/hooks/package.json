@@ -125,6 +125,26 @@
         "types": "./dist/hooks/useCopyToClipboard.d.cts",
         "default": "./dist/hooks/useCopyToClipboard.cjs"
       }
+    },
+    "./useDebounce": {
+      "import": {
+        "types": "./dist/hooks/useDebounce.d.ts",
+        "default": "./dist/hooks/useDebounce.js"
+      },
+      "require": {
+        "types": "./dist/hooks/useDebounce.d.cts",
+        "default": "./dist/hooks/useDebounce.cjs"
+      }
+    },
+    "./useDoubleCheck": {
+      "import": {
+        "types": "./dist/hooks/useDoubleCheck.d.ts",
+        "default": "./dist/hooks/useDoubleCheck.js"
+      },
+      "require": {
+        "types": "./dist/hooks/useDoubleCheck.d.cts",
+        "default": "./dist/hooks/useDoubleCheck.cjs"
+      }
     }
   },
   "files": [
@@ -140,6 +160,7 @@
   },
   "prettier": "@tooling/prettier-config/web",
   "dependencies": {
+    "@template/libs": "workspace:*",
     "@template/react": "workspace:*"
   },
   "devDependencies": {

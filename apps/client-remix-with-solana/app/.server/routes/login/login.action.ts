@@ -1,27 +1,29 @@
-import { redirect, type ActionFunctionArgs } from "@remix-run/cloudflare";
-import { parseWithZod } from "@conform-to/zod";
-import { validateMethods } from "~/.server/utils/request.server";
-import { navigation } from "~/constants/navigation";
-import { schema } from "~/services/validate/sigin.validate";
-import { prisma } from "~/.server/db.server";
-import { comparePassword } from "~/.server/utils/password.server";
+import type { ActionFunctionArgs } from '@remix-run/node';
+import { redirect } from '@remix-run/node';
+import { safeRedirect } from 'remix-utils/safe-redirect';
+import { parseWithZod } from '@conform-to/zod';
+
+import { sessionKey } from '~/.server/utils/auth.server';
+import { prisma } from '~/.server/utils/db.server';
+import { comparePassword } from '~/.server/utils/password.server';
+import { validateMethods } from '~/.server/utils/request.server';
 import {
   getSessionExpirationDate,
-  getSessionStorage,
-} from "~/.server/session.server";
-import { sessionKey } from "~/.server/auth.server";
-import { safeRedirect } from "remix-utils/safe-redirect";
+  sessionStorage,
+} from '~/.server/utils/session.server';
+import { navigation } from '~/constants/navigation';
+import { schema } from '~/services/validate/sigin.validate';
 
 export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
   // 유효성 검사
-  validateMethods(request, ["POST"], navigation.login);
+  validateMethods(request, ['POST'], navigation.login);
 
   const formData = await request.formData();
 
   const submission = parseWithZod(formData, { schema });
 
   // Report the submission to client if it is not successful
-  if (submission.status !== "success") {
+  if (submission.status !== 'success') {
     return submission.reply();
   }
 
@@ -43,7 +45,7 @@ export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
     if (!user) {
       return submission.reply({
         fieldErrors: {
-          email: ["존재하지 않는 이메일입니다."],
+          email: ['존재하지 않는 이메일입니다.'],
         },
       });
     }
@@ -52,7 +54,7 @@ export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
     if (!hash) {
       return submission.reply({
         fieldErrors: {
-          password: ["비밀번호가 일치하지 않습니다."],
+          password: ['비밀번호가 일치하지 않습니다.'],
         },
       });
     }
@@ -60,13 +62,13 @@ export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
     const validate = await comparePassword(
       submission.value.password,
       hash,
-      "salt"
+      'salt',
     );
 
     if (!validate) {
       return submission.reply({
         fieldErrors: {
-          password: ["비밀번호가 일치하지 않습니다."],
+          password: ['비밀번호가 일치하지 않습니다.'],
         },
       });
     }
@@ -86,23 +88,21 @@ export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
       },
     });
 
-    const sessionStorage = getSessionStorage();
-
     const cookieSession = await sessionStorage.getSession(
-      request.headers.get("cookie")
+      request.headers.get('cookie'),
     );
 
     cookieSession.set(sessionKey, session.id);
 
     return redirect(safeRedirect(navigation.home), {
       headers: {
-        "set-cookie": await sessionStorage.commitSession(cookieSession),
+        'set-cookie': await sessionStorage.commitSession(cookieSession),
       },
     });
   } catch (e) {
     console.error(e);
     return submission.reply({
-      formErrors: ["로그인에 실패했습니다. 다시 시도해주세요."],
+      formErrors: ['로그인에 실패했습니다. 다시 시도해주세요.'],
     });
   }
 };

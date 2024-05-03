@@ -1,4 +1,4 @@
-import { ChevronLeft, ChevronRight, Loader2 } from "lucide-react";
+import { ChevronLeft, ChevronRight, Loader2 } from 'lucide-react';
 
 type IconProps = React.SVGProps<SVGSVGElement>;
 

@@ -18,21 +18,20 @@ generator client {
 }
 
 model User {
-    id              Int       @id @default(autoincrement())
-    email           String    @unique
-    name            String    @unique
-    avatar          String    @default("")
-    nonce           String    @unique @default(uuid())
-    deletedAt       DateTime? @map("deleted_at")
-    lastLoginAt     DateTime? @map("last_login_at")
-    lastActiveAt    DateTime? @map("last_active_at")
-    emailVerifiedAt DateTime? @map("email_verified_at")
-    createdAt       DateTime  @default(now()) @map("created_at")
-
-    wallets  Wallet[]
-    password UserPassword?
-    sessions Session[]
-    roles    Role[]
+    id              Int           @id @default(autoincrement())
+    email           String        @unique
+    name            String        @unique
+    avatar          String        @default("")
+    nonce           String        @unique @default(uuid())
+    deletedAt       DateTime?     @map("deleted_at")
+    lastLoginAt     DateTime?     @map("last_login_at")
+    lastActiveAt    DateTime?     @map("last_active_at")
+    emailVerifiedAt DateTime?     @map("email_verified_at")
+    createdAt       DateTime      @default(now()) @map("created_at")
+    wallets         Wallet[]
+    password        UserPassword?
+    sessions        Session[]
+    roles           Role[]
 
     @@index([email], map: "users_email")
     @@index([name], map: "users_user")
@@ -42,8 +41,7 @@ model User {
 model UserPassword {
     hash   String
     userId Int    @unique @map("user_id")
-
-    user User @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    user   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
     @@index([userId], name: "user_passwords_user_id")
     @@map("user_passwords")
@@ -55,8 +53,7 @@ model Wallet {
     userId      Int?      @map("user_id")
     createdAt   DateTime  @default(now()) @map("created_at")
     connectedAt DateTime? @map("connected_at")
-
-    user User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    user        User?     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
     @@index([userId], name: "wallets_user_id")
     @@index([address], name: "wallets_address")
@@ -69,8 +66,7 @@ model Session {
     createdAt      DateTime @default(now()) @map("created_at")
     updatedAt      DateTime @updatedAt @map("updated_at")
     userId         Int?
-
-    user User? @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
+    user           User?    @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: NoAction)
 
     @@index([userId], name: "sessions_user_id")
     @@map("sessions")
@@ -81,8 +77,7 @@ model Role {
     role      String   @unique @default("USER")
     createdAt DateTime @default(now()) @map("created_at")
     updatedAt DateTime @updatedAt @map("updated_at")
-
-    users User[]
+    users     User[]
 
     @@map("roles")
 }

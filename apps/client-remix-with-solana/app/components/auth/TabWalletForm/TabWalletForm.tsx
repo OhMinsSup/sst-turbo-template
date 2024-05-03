@@ -1,37 +1,35 @@
+import { useCallback, useEffect, useMemo } from 'react';
+import { useFetcher, useLoaderData, useNavigate } from '@remix-run/react';
+import { useConnection, useWallet } from '@solana/wallet-adapter-react';
+import { BaseWalletMultiButton } from '@solana/wallet-adapter-react-ui';
+import { PublicKey, Transaction } from '@solana/web3.js';
+import bs58 from 'bs58';
+
+import { isEmpty } from '@template/libs/assertion';
+import { ClientOnly } from '@template/react-components/client-only';
+import { Button } from '@template/ui/button';
 import {
   Card,
   CardContent,
   CardDescription,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { BaseWalletMultiButton } from "@solana/wallet-adapter-react-ui";
-import { WALLET_LABELS } from "~/constants/wallets";
-import { Button } from "~/components/ui/button";
-import { useFetcher, useLoaderData, useNavigate } from "@remix-run/react";
-import { type RoutesLoaderData as R0 } from "~/.server/routes/connect-wallet/connect-wallet.loader";
-import ClientOnly from "~/components/client-only";
-import {
-  type RoutesLoaderData as R1,
-  getPath,
-} from "~/routes/api.v1.auth.wallet.request-password.$address";
-import {
-  type RoutesActionData as R2,
-  getPath as getR2Path,
-} from "~/routes/api.v1.auth.wallet.connect";
-import { useConnection, useWallet } from "@solana/wallet-adapter-react";
-import bs58 from "bs58";
-import { PublicKey, Transaction } from "@solana/web3.js";
-import { useCallback, useEffect, useMemo } from "react";
-import { isEmpty } from "~/utils/assertion";
-import { navigation } from "~/constants/navigation";
+} from '@template/ui/card';
+
+import type { RoutesActionData as R2 } from '~/routes/api.v1.auth.wallet.connect';
+import type { RoutesLoaderData as R1 } from '~/routes/api.v1.auth.wallet.request-password.$address';
+import { type RoutesLoaderData as R0 } from '~/.server/routes/connect-wallet/connect-wallet.loader';
+import { navigation } from '~/constants/navigation';
+import { WALLET_LABELS } from '~/constants/wallets';
+import { getPath as getR2Path } from '~/routes/api.v1.auth.wallet.connect';
+import { getPath } from '~/routes/api.v1.auth.wallet.request-password.$address';
 
 export default function TabWalletForm() {
   const { result } = useLoaderData<R0>();
   const navigate = useNavigate();
   const connectedWalletAddresses = useMemo(
     () => result?.wallets?.map((wallet) => wallet.address) ?? [],
-    [result]
+    [result],
   );
   const $requestPassword = useFetcher<R1>();
   const $connectWallet = useFetcher<R2>();
@@ -45,14 +43,14 @@ export default function TabWalletForm() {
 
   const onAuthorizeWallet = async () => {
     const { data, state } = $requestPassword;
-    if (state === "idle" && data !== null && walletAddress) {
+    if (state === 'idle' && data !== null && walletAddress) {
       const signature = data?.result?.signature;
       if (signature) {
         const message = new TextEncoder().encode(signature);
 
-        let encoding = "";
+        let encoding = '';
         // 지갑 서명을 지원하는 경우
-        if (signMessage && wallet?.adapter.name !== "Ledger") {
+        if (signMessage && wallet?.adapter.name !== 'Ledger') {
           const signedMessage = await signMessage(message);
           encoding = bs58.encode(signedMessage);
         } else if (signTransaction) {
@@ -74,19 +72,19 @@ export default function TabWalletForm() {
           encoding = bs58.encode(signedTransaction.serialize());
         } else {
           throw new Error(
-            "지갑이 메시지 또는 트랜잭션 서명을 지원하지 않습니다."
+            '지갑이 메시지 또는 트랜잭션 서명을 지원하지 않습니다.',
           );
         }
 
         const formData = new FormData();
-        formData.append("address", walletAddress);
-        formData.append("encoding", encoding);
-        formData.append("signature", signature);
+        formData.append('address', walletAddress);
+        formData.append('encoding', encoding);
+        formData.append('signature', signature);
 
         $connectWallet.submit(formData, {
           navigate: false,
           action: getR2Path(),
-          method: "post",
+          method: 'post',
         });
       }
     }
@@ -100,7 +98,7 @@ export default function TabWalletForm() {
   }, [$requestPassword, walletAddress]);
 
   const isSignature =
-    $requestPassword.state === "idle" &&
+    $requestPassword.state === 'idle' &&
     !isEmpty($requestPassword.data) &&
     !isEmpty($requestPassword.data?.result?.signature) &&
     walletAddress !== null;
@@ -120,8 +118,8 @@ export default function TabWalletForm() {
           있습니다.
         </CardDescription>
       </CardHeader>
-      <CardContent className="wallet-form justify-between flex">
-        <ClientOnly>
+      <CardContent className="wallet-form flex justify-between">
+        <ClientOnly fallback={<></>}>
           <BaseWalletMultiButton labels={WALLET_LABELS} />
         </ClientOnly>
         <div className="space-x-2">

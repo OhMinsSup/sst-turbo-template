@@ -1,6 +1,0 @@
-name = "reddit-client-remix"
-node_compat = true
-compatibility_date = "2023-12-01"
-compatibility_flags = ["nodejs_compat"]
-
-kv_namespaces = [{ binding = "cache", id = "cache" }]

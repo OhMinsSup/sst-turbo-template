@@ -8,7 +8,8 @@
     "./base": "./base.cjs",
     "./react": "./react.cjs",
     "./next": "./next.cjs",
-    "./nest": "./nest.cjs"
+    "./nest": "./nest.cjs",
+    "./remix": "./remix.cjs"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules"

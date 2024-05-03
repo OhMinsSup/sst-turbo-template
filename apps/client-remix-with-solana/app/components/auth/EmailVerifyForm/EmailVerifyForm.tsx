@@ -1,5 +1,6 @@
-import { Form } from "@remix-run/react";
-import { Button } from "~/components/ui/button";
+import { Form } from '@remix-run/react';
+
+import { Button } from '@template/ui/button';
 import {
   Card,
   CardContent,
@@ -7,7 +8,7 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
+} from '@template/ui/card';
 
 export default function EmailVerifyForm() {
   return (

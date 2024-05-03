@@ -1,7 +1,8 @@
-import { Form, useActionData } from "@remix-run/react";
-import { useForm } from "@conform-to/react";
-import { parseWithZod } from "@conform-to/zod";
-import { Button } from "~/components/ui/button";
+import { Form, useActionData } from '@remix-run/react';
+import { useForm } from '@conform-to/react';
+import { parseWithZod } from '@conform-to/zod';
+
+import { Button } from '@template/ui/button';
 import {
   Card,
   CardContent,
@@ -9,18 +10,19 @@ import {
   CardFooter,
   CardHeader,
   CardTitle,
-} from "~/components/ui/card";
-import { Input } from "~/components/ui/input";
-import { Label } from "~/components/ui/label";
-import { schema } from "~/services/validate/register.validate";
-import { type RoutesActionData } from "~/.server/routes/register/register.action";
+} from '@template/ui/card';
+import { Input } from '@template/ui/input';
+import { Label } from '@template/ui/label';
+
+import { type RoutesActionData } from '~/.server/routes/register/register.action';
+import { schema } from '~/services/validate/register.validate';
 
 export default function TabAccountForm() {
   // Last submission returned by the server
   const lastResult = useActionData<RoutesActionData>();
 
   const [form, fields] = useForm({
-    id: "account-form",
+    id: 'account-form',
     // Sync the result of last submission
     lastResult,
     // Reuse the validation logic on the client
@@ -28,8 +30,8 @@ export default function TabAccountForm() {
       return parseWithZod(formData, { schema });
     },
     // Validate the form on blur event triggered
-    shouldValidate: "onSubmit",
-    shouldRevalidate: "onSubmit",
+    shouldValidate: 'onSubmit',
+    shouldRevalidate: 'onSubmit',
   });
 
   return (

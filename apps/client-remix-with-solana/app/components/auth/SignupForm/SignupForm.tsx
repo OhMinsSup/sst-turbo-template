@@ -1,6 +1,8 @@
-import { useLocation } from "@remix-run/react";
-import { Tabs, TabsContent, TabsList, TabsTrigger } from "~/components/ui/tabs";
-import { navigation } from "~/constants/navigation";
+import { useLocation } from '@remix-run/react';
+
+import { Tabs, TabsContent, TabsList, TabsTrigger } from '@template/ui/tabs';
+
+import { navigation } from '~/constants/navigation';
 
 interface SignupFormProps {
   children: React.ReactNode;
