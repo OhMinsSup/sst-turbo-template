@@ -1,6 +1,13 @@
 import { redirect } from '@remix-run/node';
 import { safeRedirect } from 'remix-utils/safe-redirect';
 
+export type SearchParams =
+  | string
+  | string[][]
+  | Record<string, string>
+  | URLSearchParams
+  | undefined;
+
 export function combineHeaders(
   ...headers: Array<ResponseInit['headers'] | null>
 ) {

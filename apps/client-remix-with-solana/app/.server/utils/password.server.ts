@@ -1,3 +1,4 @@
+import crypto from 'node:crypto';
 import { Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';

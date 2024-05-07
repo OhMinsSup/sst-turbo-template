@@ -1,5 +1,5 @@
-import { Form, useActionData } from '@remix-run/react';
-import { useForm } from '@conform-to/react';
+import { Form, useActionData, useNavigation } from '@remix-run/react';
+import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 
 import { Button } from '@template/ui/button';
@@ -15,16 +15,22 @@ import { Input } from '@template/ui/input';
 import { Label } from '@template/ui/label';
 
 import { type RoutesActionData } from '~/.server/routes/register/register.action';
+import { Icons } from '~/components/icons';
+import { ValidationMessage } from '~/components/shared/ValidationMessage';
 import { schema } from '~/services/validate/register.validate';
 
 export default function TabAccountForm() {
   // Last submission returned by the server
   const lastResult = useActionData<RoutesActionData>();
 
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === 'submitting';
+
   const [form, fields] = useForm({
-    id: 'account-form',
     // Sync the result of last submission
     lastResult,
+    id: 'account-form',
     // Reuse the validation logic on the client
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
@@ -41,103 +47,68 @@ export default function TabAccountForm() {
         <CardDescription>계정을 생성하고, 지갑을 연결하세요.</CardDescription>
       </CardHeader>
       <CardContent>
-        <Form
-          className="space-y-2"
-          method="post"
-          id={form.id}
-          onSubmit={form.onSubmit}
-          aria-invalid={form.errors ? true : undefined}
-          aria-describedby={form.errors ? form.errorId : undefined}
-        >
+        <Form className="space-y-2" method="post" {...getFormProps(form)}>
           <div className="space-y-1">
             <Label htmlFor={fields.email.id}>이메일</Label>
             <Input
-              id={fields.email.id}
-              name={fields.email.name}
+              {...getInputProps(fields.email, { type: 'email' })}
               placeholder="name@example.com"
-              type="email"
               autoCapitalize="none"
               autoComplete="off"
               autoCorrect="off"
-              required={fields.email.required}
               aria-label="Email address"
-              aria-invalid={!fields.email.valid ? true : undefined}
-              aria-describedby={
-                !fields.email.valid
-                  ? `${fields.email.errorId} ${fields.email.descriptionId}`
-                  : fields.email.descriptionId
-              }
-              // disabled={isLoading || isGitHubLoading}
+              disabled={isLoading}
             />
             {fields?.email.errors && (
-              <p
-                id={fields.email.errorId}
-                className="px-1 text-xs text-red-600"
-              >
-                {fields.email.errors}
-              </p>
+              <ValidationMessage
+                error={fields.email.errors[0] ?? null}
+                isSubmitting={isLoading}
+              />
             )}
           </div>
           <div className="space-y-1">
             <Label htmlFor={fields.password.id}>비밀번호</Label>
             <Input
-              id={fields.password.id}
-              name={fields.password.name}
+              {...getInputProps(fields.password, { type: 'password' })}
               placeholder="********"
-              type="password"
               autoCapitalize="none"
               autoComplete="off"
               autoCorrect="off"
-              required={fields.password.required}
               aria-label="Password"
-              aria-invalid={!fields.password.valid ? true : undefined}
-              aria-describedby={
-                !fields.password.valid
-                  ? `${fields.password.errorId} ${fields.password.descriptionId}`
-                  : fields.password.descriptionId
-              }
-              // disabled={isLoading || isGitHubLoading}
+              disabled={isLoading}
             />
             {fields?.password.errors && (
-              <p
-                id={fields.password.errorId}
-                className="px-1 text-xs text-red-600"
-              >
-                {fields.password.errors}
-              </p>
+              <ValidationMessage
+                error={fields.password.errors[0] ?? null}
+                isSubmitting={isLoading}
+              />
             )}
           </div>
           <div className="space-y-1">
             <Label htmlFor={fields.name.id}>이름</Label>
             <Input
-              id={fields.name.id}
-              name={fields.name.name}
+              {...getInputProps(fields.name, { type: 'text' })}
               placeholder="exapmle"
               type="text"
               autoCapitalize="none"
               autoComplete="off"
               autoCorrect="off"
-              required={fields.name.required}
               aria-label="Password"
-              aria-invalid={!fields.name.valid ? true : undefined}
-              aria-describedby={
-                !fields.name.valid
-                  ? `${fields.name.errorId} ${fields.name.descriptionId}`
-                  : fields.name.descriptionId
-              }
-              // disabled={isLoading || isGitHubLoading}
+              disabled={isLoading}
             />
             {fields?.name.errors && (
-              <p id={fields.name.errorId} className="px-1 text-xs text-red-600">
-                {fields.name.errors}
-              </p>
+              <ValidationMessage
+                error={fields.name.errors[0] ?? null}
+                isSubmitting={isLoading}
+              />
             )}
           </div>
         </Form>
       </CardContent>
       <CardFooter>
         <Button type="submit" form={form.id}>
-          회원가입
+          {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
+          <span>회원가입</span>
         </Button>
       </CardFooter>
     </Card>

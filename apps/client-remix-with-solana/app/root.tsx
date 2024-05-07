@@ -13,12 +13,12 @@ import '~/styles/globals.css';
 
 import { useEffect, useMemo } from 'react';
 import { WalletAdapterNetwork } from '@solana/wallet-adapter-base';
+import { PhantomWalletAdapter } from '@solana/wallet-adapter-phantom';
 import {
   ConnectionProvider,
   WalletProvider,
 } from '@solana/wallet-adapter-react';
 import { WalletModalProvider } from '@solana/wallet-adapter-react-ui';
-import { PhantomWalletAdapter } from '@solana/wallet-adapter-wallets';
 import { clusterApiUrl } from '@solana/web3.js';
 import { toast as showToast, Toaster } from 'sonner';
 
@@ -26,13 +26,15 @@ import { cn } from '@template/ui/utils';
 
 import type { RoutesLoaderData } from '~/.server/routes/root.server';
 import type { Toast } from '~/.server/utils/toast.server';
-import { rootLoader } from '~/.server/routes/root.server';
+import { rootAction, rootLoader } from '~/.server/routes/root.server';
 import {
   NonFlashOfWrongThemeEls,
   ThemeProvider,
 } from '~/context/useThemeContext';
 
 export const loader = rootLoader;
+
+export const action = rootAction;
 
 function Routes() {
   const data = useLoaderData<RoutesLoaderData>();

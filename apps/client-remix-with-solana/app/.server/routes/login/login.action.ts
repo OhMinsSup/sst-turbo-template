@@ -14,7 +14,7 @@ import {
 import { navigation } from '~/constants/navigation';
 import { schema } from '~/services/validate/sigin.validate';
 
-export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
+export const loginAction = async ({ request }: ActionFunctionArgs) => {
   // 유효성 검사
   validateMethods(request, ['POST'], navigation.login);
 
@@ -37,6 +37,11 @@ export const loginAction = async ({ request, context }: ActionFunctionArgs) => {
         password: {
           select: {
             hash: true,
+          },
+        },
+        wallets: {
+          select: {
+            address: true,
           },
         },
       },

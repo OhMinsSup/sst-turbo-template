@@ -8,20 +8,37 @@ interface SignupFormProps {
   children: React.ReactNode;
 }
 
+const navigationTabs = [
+  {
+    name: '계정 생성',
+    value: navigation.register,
+  },
+  {
+    name: '지갑 연결',
+    value: navigation.connectWallet,
+  },
+  {
+    name: '이메일 확인',
+    value: navigation.emailVerification,
+  },
+];
+
 export default function SignupForm({ children }: SignupFormProps) {
   const location = useLocation();
   return (
     <Tabs value={location.pathname}>
       <TabsList className="grid w-full grid-cols-3">
-        <TabsTrigger value={navigation.register}>계정 생성</TabsTrigger>
-        <TabsTrigger value={navigation.connectWallet}>지갑 연결</TabsTrigger>
-        <TabsTrigger value={navigation.emailVerification}>
-          이메일 확인
-        </TabsTrigger>
+        {navigationTabs.map((tab) => (
+          <TabsTrigger key={tab.value} value={tab.value}>
+            {tab.name}
+          </TabsTrigger>
+        ))}
       </TabsList>
-      <TabsContent value={navigation.register}>{children}</TabsContent>
-      <TabsContent value={navigation.connectWallet}>{children}</TabsContent>
-      <TabsContent value={navigation.emailVerification}>{children}</TabsContent>
+      {navigationTabs.map((tab) => (
+        <TabsContent key={tab.value} value={tab.value}>
+          {children}
+        </TabsContent>
+      ))}
     </Tabs>
   );
 }

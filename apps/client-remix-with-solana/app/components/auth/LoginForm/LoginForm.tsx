@@ -1,22 +1,28 @@
-import { Form, useActionData } from '@remix-run/react';
-import { useForm } from '@conform-to/react';
+import { Form, useActionData, useNavigation } from '@remix-run/react';
+import { getFormProps, getInputProps, useForm } from '@conform-to/react';
 import { parseWithZod } from '@conform-to/zod';
 
-import { buttonVariants } from '@template/ui/button';
+import { Button } from '@template/ui/button';
 import { Input } from '@template/ui/input';
 import { Label } from '@template/ui/label';
-import { cn } from '@template/ui/utils';
 
 import { type RoutesActionData } from '~/.server/routes/login/login.action';
+import { Icons } from '~/components/icons';
+import { ValidationMessage } from '~/components/shared/ValidationMessage';
 import { schema } from '~/services/validate/sigin.validate';
 
 export default function LoginForm() {
   // Last submission returned by the server
   const lastResult = useActionData<RoutesActionData>();
 
+  const navigation = useNavigation();
+
+  const isLoading = navigation.state === 'submitting';
+
   const [form, fields] = useForm({
     // Sync the result of last submission
     lastResult,
+    id: 'login-form',
     // Reuse the validation logic on the client
     onValidate({ formData }) {
       return parseWithZod(formData, { schema });
@@ -28,78 +34,52 @@ export default function LoginForm() {
 
   return (
     <div className="grid gap-6">
-      <Form
-        method="post"
-        id={form.id}
-        onSubmit={form.onSubmit}
-        aria-invalid={form.errors ? true : undefined}
-        aria-describedby={form.errors ? form.errorId : undefined}
-      >
+      <Form method="post" {...getFormProps(form)}>
         <div className="grid gap-2 space-y-3">
           <div className="grid gap-1">
             <Label htmlFor={fields.email.id}>이메일</Label>
             <Input
-              id={fields.email.id}
-              name={fields.email.name}
+              {...getInputProps(fields.email, {
+                type: 'email',
+              })}
               placeholder="name@example.com"
-              type="email"
               autoCapitalize="none"
               autoComplete="email"
               autoCorrect="off"
-              required={fields.email.required}
               aria-label="Email address"
-              aria-invalid={!fields.email.valid ? true : undefined}
-              aria-describedby={
-                !fields.email.valid
-                  ? `${fields.email.errorId} ${fields.email.descriptionId}`
-                  : fields.email.descriptionId
-              }
-              // disabled={isLoading || isGitHubLoading}
+              disabled={isLoading}
             />
             {fields?.email.errors && (
-              <p
-                id={fields.email.errorId}
-                className="px-1 text-xs text-red-600"
-              >
-                {fields.email.errors}
-              </p>
+              <ValidationMessage
+                error={fields.email.errors[0] ?? null}
+                isSubmitting={isLoading}
+              />
             )}
           </div>
           <div className="grid gap-1">
             <Label htmlFor={fields.password.id}>비밀번호</Label>
             <Input
-              id={fields.password.id}
-              name={fields.password.name}
+              {...getInputProps(fields.password, {
+                type: 'password',
+              })}
               placeholder="********"
-              type="password"
               autoCapitalize="none"
               autoComplete="current-password"
               autoCorrect="off"
-              required={fields.password.required}
               aria-label="Password"
-              aria-invalid={!fields.password.valid ? true : undefined}
-              aria-describedby={
-                !fields.password.valid
-                  ? `${fields.password.errorId} ${fields.password.descriptionId}`
-                  : fields.password.descriptionId
-              }
-              // disabled={isLoading || isGitHubLoading}
+              disabled={isLoading}
             />
             {fields?.password.errors && (
-              <p
-                id={fields.password.errorId}
-                className="px-1 text-xs text-red-600"
-              >
-                {fields.password.errors}
-              </p>
+              <ValidationMessage
+                error={fields.password.errors[0] ?? null}
+                isSubmitting={isLoading}
+              />
             )}
           </div>
-          <button type="submit" className={cn(buttonVariants())}>
-            {/* {isLoading && (
-               <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
-             )} */}
-            로그인
-          </button>
+          <Button type="submit" className="space-x-2">
+            {isLoading && <Icons.spinner className="h-4 w-4 animate-spin" />}
+            <span>로그인</span>
+          </Button>
         </div>
       </Form>
       <div className="relative">
@@ -110,14 +90,14 @@ export default function LoginForm() {
           <span className="bg-background text-muted-foreground px-2">또는</span>
         </div>
       </div>
-      <button
+      <Button
         type="button"
-        className={cn(buttonVariants({ variant: 'outline' }))}
+        variant="outline"
         // onClick={() => {
         //   setIsGitHubLoading(true)
         //   signIn("github")
         // }}
-        // disabled={isLoading || isGitHubLoading}
+        disabled={isLoading}
       >
         {/* {isGitHubLoading ? (
            <Icons.spinner className="mr-2 h-4 w-4 animate-spin" />
@@ -125,7 +105,7 @@ export default function LoginForm() {
            <Icons.gitHub className="mr-2 h-4 w-4" />
          )}{" "} */}
         Github
-      </button>
+      </Button>
     </div>
   );
 }

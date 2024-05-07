@@ -1,13 +1,15 @@
 import os from 'node:os';
-import type { LoaderFunctionArgs } from '@remix-run/node';
+import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
 import { getUserId } from '~/.server/utils/auth.server';
 import { prisma } from '~/.server/utils/db.server';
 import { getEnv } from '~/.server/utils/env.server';
 import { combineHeaders } from '~/.server/utils/request.server';
-import { getTheme } from '~/.server/utils/theme.server';
+import { commit, getTheme, setTheme } from '~/.server/utils/theme.server';
 import { getToast } from '~/.server/utils/toast.server';
+import { isTheme } from '~/context/useThemeContext';
+import { invariantResponse } from '~/services/misc';
 
 export const rootLoader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
@@ -37,3 +39,28 @@ export const rootLoader = async ({ request }: LoaderFunctionArgs) => {
 };
 
 export type RoutesLoaderData = typeof rootLoader;
+
+export async function rootAction({ request }: ActionFunctionArgs) {
+  const requestText = await request.text();
+  const form = new URLSearchParams(requestText);
+  const theme = form.get('theme');
+
+  invariantResponse(isTheme(theme), 'Invalid theme received');
+
+  const session = await setTheme(request, theme);
+
+  const responseInit = {
+    headers: { 'set-cookie': await commit(request, session) },
+  };
+
+  return json(
+    {
+      status: 'success' as const,
+      result: null,
+      message: null,
+    },
+    responseInit,
+  );
+}
+
+export type RoutesActionData = typeof rootAction;

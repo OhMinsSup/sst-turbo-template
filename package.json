@@ -21,6 +21,7 @@
     "dev": "turbo dev --parallel",
     "dev:client-next-admin": "pnpm run dev --filter @template/client-next-admin",
     "dev:client-next-chatbot": "pnpm run dev --filter @template/client-next-chatbot",
+    "dev:client-remix-with-solana": "pnpm run dev --filter @template/client-remix-with-solana",
     "dev:node-typescript": "pnpm run dev --filter @template/node-typescript",
     "dev:server-hono": "pnpm run dev --filter @template/server-hono",
     "dev:server-nest": "pnpm run dev --filter @template/server-nest",
