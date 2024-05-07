@@ -85,9 +85,9 @@ export default function TabAccountForm() {
             )}
           </div>
           <div className="space-y-1">
-            <Label htmlFor={fields.name.id}>이름</Label>
+            <Label htmlFor={fields.username.id}>유저명</Label>
             <Input
-              {...getInputProps(fields.name, { type: 'text' })}
+              {...getInputProps(fields.username, { type: 'text' })}
               placeholder="exapmle"
               type="text"
               autoCapitalize="none"
@@ -96,9 +96,9 @@ export default function TabAccountForm() {
               aria-label="Password"
               disabled={isLoading}
             />
-            {fields?.name.errors && (
+            {fields?.username.errors && (
               <ValidationMessage
-                error={fields.name.errors[0] ?? null}
+                error={fields.username.errors[0] ?? null}
                 isSubmitting={isLoading}
               />
             )}

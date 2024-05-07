@@ -9,7 +9,7 @@ export const schema = z.object({
     .regex(/^(?=.*[a-zA-Z])(?=.*[!@#$%&^*+=-\d])(?=.*[0-9]).{6,10}$/, {
       message: '비밀번호는 6~10자리의 영문, 숫자, 특수문자 조합이어야 합니다.',
     }),
-  name: z.string().min(2, {
+  username: z.string().min(2, {
     message: '이름은 2자 이상이어야 합니다.',
   }),
 });

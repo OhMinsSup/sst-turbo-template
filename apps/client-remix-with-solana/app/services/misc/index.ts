@@ -139,3 +139,19 @@ export async function downloadFile(url: string, retries: number = 0) {
     return downloadFile(url, retries + 1);
   }
 }
+
+export const generatorName = (seed: string) => {
+  const makeRandomString = (length: number) => {
+    let text = '';
+    const possible =
+      'ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789';
+
+    for (let i = 0; i < length; i++) {
+      text += possible.charAt(Math.floor(Math.random() * possible.length));
+    }
+
+    return text;
+  };
+
+  return `${seed}_${makeRandomString(10)}`;
+};

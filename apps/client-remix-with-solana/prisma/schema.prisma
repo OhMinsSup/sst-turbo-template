@@ -20,22 +20,32 @@ generator client {
 model User {
     id              Int           @id @default(autoincrement())
     email           String        @unique
-    name            String        @unique
-    avatar          String        @default("")
+    name            String
+    username        String        @unique
     nonce           String        @unique @default(uuid())
     deletedAt       DateTime?     @map("deleted_at")
     lastLoginAt     DateTime?     @map("last_login_at")
     lastActiveAt    DateTime?     @map("last_active_at")
     emailVerifiedAt DateTime?     @map("email_verified_at")
     createdAt       DateTime      @default(now()) @map("created_at")
-    wallets         Wallet[]
+    profile         UserProfile?
     password        UserPassword?
+    image           UserImage?
     sessions        Session[]
     roles           Role[]
+    wallets         Wallet[]
 
-    @@index([email], map: "users_email")
-    @@index([name], map: "users_user")
     @@map("users")
+}
+
+model UserProfile {
+    id      Int     @id @default(autoincrement())
+    bio     String?
+    website String?
+    userId  Int     @unique @map(name: "user_id")
+    user    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("user_profiles")
 }
 
 model UserPassword {
@@ -45,6 +55,19 @@ model UserPassword {
 
     @@index([userId], name: "user_passwords_user_id")
     @@map("user_passwords")
+}
+
+model UserImage {
+    id          Int      @id @default(autoincrement())
+    altText     String?
+    contentType String
+    blob        Bytes
+    userId      Int      @unique
+    createdAt   DateTime @default(now())
+    updatedAt   DateTime @updatedAt
+    user        User     @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+
+    @@map("user_images")
 }
 
 model Wallet {

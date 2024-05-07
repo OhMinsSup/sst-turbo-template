@@ -12,6 +12,7 @@ import {
   sessionStorage,
 } from '~/.server/utils/session.server';
 import { navigation } from '~/constants/navigation';
+import { generatorName } from '~/services/misc';
 import { schema } from '~/services/validate/register.validate';
 
 export const registerAction = async ({ request }: ActionFunctionArgs) => {
@@ -28,24 +29,24 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
   }
 
   try {
-    const { email, name, password } = submission.value;
+    const { email, username, password } = submission.value;
 
     const exitsUser = await prisma.user.findFirst({
-      select: { id: true, email: true, name: true },
+      select: { id: true, email: true, username: true },
       where: {
         email,
-        name,
+        username,
       },
     });
 
     // 이메일이 이미 존재하는 경우
     if (exitsUser) {
       const isEmail = exitsUser.email === email;
-      const isName = exitsUser.name === name;
+      const isUsername = exitsUser.username === username;
       return submission.reply({
         fieldErrors: {
           ...(isEmail && { email: ['이미 존재하는 이메일입니다.'] }),
-          ...(isName && { name: ['이미 존재하는 이름입니다.'] }),
+          ...(isUsername && { username: ['이미 존재하는 이름입니다.'] }),
         },
       });
     }
@@ -58,7 +59,8 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
         user: {
           create: {
             email: email.toLowerCase(),
-            name: name.toLowerCase(),
+            username: username.toLowerCase(),
+            name: generatorName(username.toLowerCase()),
             roles: {
               connectOrCreate: {
                 where: { role: 'USER' },
@@ -69,6 +71,9 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
               create: {
                 hash,
               },
+            },
+            profile: {
+              create: {},
             },
           },
         },

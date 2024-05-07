@@ -8,6 +8,7 @@
     "db:dev": "prisma migrate dev",
     "db:generate": "prisma generate --no-engine",
     "db:push": "prisma db push",
+    "db:reset": "prisma migrate reset",
     "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
