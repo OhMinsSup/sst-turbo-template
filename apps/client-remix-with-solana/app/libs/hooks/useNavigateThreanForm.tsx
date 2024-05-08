@@ -46,7 +46,7 @@ export function useNavigateThreanForm() {
 
     popupOpen('THREAD', meta);
 
-    navigate(navigation.threads.root, {
+    navigate(navigation.write.root, {
       unstable_viewTransition: true,
     });
   };

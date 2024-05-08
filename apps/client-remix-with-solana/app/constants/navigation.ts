@@ -16,8 +16,8 @@ export const navigation = {
     },
     id: (id: string) => `/${id}/profile`,
   },
-  threads: {
-    root: '/threads',
+  write: {
+    root: '/write',
   },
   profile: {
     edit: '/profile/edit',
@@ -87,7 +87,7 @@ export const NAV_CONFIG = {
       id: 'thread',
       type: 'thread',
       title: 'New Thread',
-      href: navigation.threads.root,
+      href: navigation.write.root,
       icon: Icons.pen,
     },
     {

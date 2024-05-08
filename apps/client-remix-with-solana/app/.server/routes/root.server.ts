@@ -4,6 +4,7 @@ import { json } from '@remix-run/node';
 
 import { getUserId } from '~/.server/auth/auth.server';
 import { prisma } from '~/.server/db/db.server';
+import { getUserSelector } from '~/.server/db/selectors/users';
 import { combineHeaders } from '~/.server/http/request.server';
 import { getEnv } from '~/.server/utils/env.server';
 import { commit, getTheme, setTheme } from '~/.server/utils/theme.server';
@@ -17,10 +18,7 @@ export const rootLoader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await getUserId(request);
   const user = userId
     ? await prisma.user.findUniqueOrThrow({
-        select: {
-          id: true,
-          name: true,
-        },
+        select: getUserSelector(),
         where: { id: userId },
       })
     : null;
