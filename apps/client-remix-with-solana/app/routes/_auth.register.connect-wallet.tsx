@@ -1,7 +1,6 @@
-import { connectWalletLoader } from '~/.server/routes/connect-wallet.loader';
 import { TabWalletForm } from '~/components/auth/TabWalletForm';
 
-export const loader = connectWalletLoader;
+export { loader } from '~/.server/routes/connect-wallet.loader';
 
 export default function Routes() {
   return <TabWalletForm />;

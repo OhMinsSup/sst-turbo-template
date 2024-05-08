@@ -21,7 +21,7 @@ export default function LoginForm() {
 
   const [form, fields] = useForm({
     // Sync the result of last submission
-    lastResult,
+    lastResult: lastResult?.message,
     id: 'login-form',
     // Reuse the validation logic on the client
     onValidate({ formData }) {

@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { safeRedirect } from 'remix-utils/safe-redirect';
 import { parseWithZod } from '@conform-to/zod';
 
@@ -14,7 +14,7 @@ import { validateMethods } from '~/.server/http/request.server';
 import { navigation } from '~/constants/navigation';
 import { schema } from '~/services/validate/sigin.validate';
 
-export const loginAction = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   // 유효성 검사
   validateMethods(request, ['POST'], navigation.login);
 
@@ -24,7 +24,11 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
 
   // Report the submission to client if it is not successful
   if (submission.status !== 'success') {
-    return submission.reply();
+    return json({
+      status: 'error' as const,
+      result: null,
+      message: submission.reply(),
+    });
   }
 
   try {
@@ -48,19 +52,27 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
     });
 
     if (!user) {
-      return submission.reply({
-        fieldErrors: {
-          email: ['존재하지 않는 이메일입니다.'],
-        },
+      return json({
+        status: 'error' as const,
+        result: null,
+        message: submission.reply({
+          fieldErrors: {
+            email: ['존재하지 않는 이메일입니다.'],
+          },
+        }),
       });
     }
 
     const hash = user.password?.hash;
     if (!hash) {
-      return submission.reply({
-        fieldErrors: {
-          password: ['비밀번호가 일치하지 않습니다.'],
-        },
+      return json({
+        status: 'error' as const,
+        result: null,
+        message: submission.reply({
+          fieldErrors: {
+            password: ['비밀번호가 일치하지 않습니다.'],
+          },
+        }),
       });
     }
 
@@ -71,10 +83,14 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
     );
 
     if (!validate) {
-      return submission.reply({
-        fieldErrors: {
-          password: ['비밀번호가 일치하지 않습니다.'],
-        },
+      return json({
+        status: 'error' as const,
+        result: null,
+        message: submission.reply({
+          fieldErrors: {
+            password: ['비밀번호가 일치하지 않습니다.'],
+          },
+        }),
       });
     }
 
@@ -106,10 +122,14 @@ export const loginAction = async ({ request }: ActionFunctionArgs) => {
     });
   } catch (e) {
     console.error(e);
-    return submission.reply({
-      formErrors: ['로그인에 실패했습니다. 다시 시도해주세요.'],
+    return json({
+      status: 'error' as const,
+      result: null,
+      message: submission.reply({
+        formErrors: ['로그인에 실패했습니다. 다시 시도해주세요.'],
+      }),
     });
   }
 };
 
-export type RoutesActionData = typeof loginAction;
+export type RoutesActionData = typeof action;

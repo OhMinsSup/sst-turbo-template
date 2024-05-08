@@ -29,7 +29,7 @@ export default function TabAccountForm() {
 
   const [form, fields] = useForm({
     // Sync the result of last submission
-    lastResult,
+    lastResult: lastResult?.message,
     id: 'account-form',
     // Reuse the validation logic on the client
     onValidate({ formData }) {

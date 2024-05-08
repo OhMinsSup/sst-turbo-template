@@ -4,7 +4,6 @@ import { json } from '@remix-run/node';
 
 import { requireUserId } from '~/.server/auth/auth.server';
 import { prisma } from '~/.server/db/db.server';
-import { internalServerResponse } from '../http/response.server';
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
@@ -29,7 +28,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     });
   } catch (error) {
     console.error(error);
-    internalServerResponse({
+    return json({
       status: 'error',
       result: null,
       message: '서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.',

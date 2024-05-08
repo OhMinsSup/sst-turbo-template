@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from '@remix-run/node';
-import { redirect } from '@remix-run/node';
+import { json, redirect } from '@remix-run/node';
 import { safeRedirect } from 'remix-utils/safe-redirect';
 import { parseWithZod } from '@conform-to/zod';
 
@@ -15,7 +15,7 @@ import { navigation } from '~/constants/navigation';
 import { generatorName } from '~/services/misc';
 import { schema } from '~/services/validate/register.validate';
 
-export const registerAction = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   // 유효성 검사
   validateMethods(request, ['POST'], navigation.register);
 
@@ -25,7 +25,11 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
 
   // Report the submission to client if it is not successful
   if (submission.status !== 'success') {
-    return submission.reply();
+    return json({
+      status: 'error' as const,
+      result: null,
+      message: submission.reply(),
+    });
   }
 
   try {
@@ -43,11 +47,15 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
     if (exitsUser) {
       const isEmail = exitsUser.email === email;
       const isUsername = exitsUser.username === username;
-      return submission.reply({
-        fieldErrors: {
-          ...(isEmail && { email: ['이미 존재하는 이메일입니다.'] }),
-          ...(isUsername && { username: ['이미 존재하는 이름입니다.'] }),
-        },
+      return json({
+        status: 'error' as const,
+        result: null,
+        message: submission.reply({
+          fieldErrors: {
+            ...(isEmail && { email: ['이미 존재하는 이메일입니다.'] }),
+            ...(isUsername && { username: ['이미 존재하는 이름입니다.'] }),
+          },
+        }),
       });
     }
 
@@ -94,12 +102,14 @@ export const registerAction = async ({ request }: ActionFunctionArgs) => {
     });
   } catch (e) {
     console.error(e);
-    return submission.reply({
-      fieldErrors: {
-        email: ['회원가입에 실패했습니다. 다시 시도해주세요.'],
-      },
+    return json({
+      status: 'error' as const,
+      result: null,
+      message: submission.reply({
+        formErrors: ['로그인에 실패했습니다. 다시 시도해주세요.'],
+      }),
     });
   }
 };
 
-export type RoutesActionData = typeof registerAction;
+export type RoutesActionData = typeof action;
