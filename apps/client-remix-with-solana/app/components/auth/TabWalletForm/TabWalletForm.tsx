@@ -5,7 +5,6 @@ import { BaseWalletMultiButton } from '@solana/wallet-adapter-react-ui';
 import { PublicKey, Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 
-import { isEmpty } from '@template/libs/assertion';
 import { ClientOnly } from '@template/react-components/client-only';
 import { Button } from '@template/ui/button';
 import {
@@ -18,7 +17,7 @@ import {
 
 import type { RoutesActionData as R2 } from '~/routes/api.v1.auth.wallet.connect';
 import type { RoutesLoaderData as R1 } from '~/routes/api.v1.auth.wallet.request-password.$address';
-import { type RoutesLoaderData as R0 } from '~/.server/routes/connect-wallet/connect-wallet.loader';
+import { type RoutesLoaderData as R0 } from '~/.server/routes/connect-wallet.loader';
 import { navigation } from '~/constants/navigation';
 import { WALLET_LABELS } from '~/constants/wallets';
 import { getPath as getR2Path } from '~/routes/api.v1.auth.wallet.connect';
@@ -99,8 +98,7 @@ export default function TabWalletForm() {
 
   const isSignature =
     $requestPassword.state === 'idle' &&
-    !isEmpty($requestPassword.data) &&
-    !isEmpty($requestPassword.data?.result?.signature) &&
+    $requestPassword.data?.result?.signature &&
     walletAddress !== null;
 
   useEffect(() => {

@@ -1,13 +1,9 @@
-import type { ActionFunctionArgs } from '@remix-run/node';
 import { redirect } from '@remix-run/node';
 
-import { logout } from '~/.server/utils/auth.server';
-
-export const action = async ({ request }: ActionFunctionArgs) => {
-  throw await logout({ request });
-};
-
-export type RoutesActionData = typeof action;
+export {
+  action,
+  type RoutesActionData,
+} from '~/.server/api/auth.wallet.connect.action';
 
 export const loader = () => redirect('/', { status: 404 });
 

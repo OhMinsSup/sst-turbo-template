@@ -3,7 +3,7 @@ import { Transaction } from '@solana/web3.js';
 import bs58 from 'bs58';
 import nacl from 'tweetnacl';
 
-import { prisma } from '~/.server/utils/db.server';
+import { prisma } from '~/.server/db/db.server';
 import { invariantResponse } from '~/services/misc';
 
 export const hash = (str: string, salt: string) => {
@@ -44,69 +44,82 @@ export const validateWallet = async (
   userId: number,
   address: string,
   encoding: string,
-  message: string,
 ) => {
   const user = await prisma.user.findUnique({ where: { id: userId } });
 
-  if (!user) {
-    invariantResponse(false, '회원을 찾을 수 없습니다. 다시 로그인해주세요.', {
+  invariantResponse(
+    user,
+    JSON.stringify({
+      status: 'error',
+      result: null,
+      message: '사용자를 찾을 수 없습니다. 다시 로그인해주세요.',
+    }),
+    {
       status: 404,
-    });
-  }
+    },
+  );
 
-  const messageBytes = new TextEncoder().encode(message);
+  const oneTimePassword = `${process.env.SIGN_MESSAGE}${user.nonce}`;
+  const oneTimePasswordBytes = new TextEncoder().encode(oneTimePassword);
 
   const publicKeyBytes = bs58.decode(address);
   const signatureBytes = bs58.decode(encoding);
 
   try {
     const isVerified = nacl.sign.detached.verify(
-      messageBytes,
+      oneTimePasswordBytes,
       signatureBytes,
       publicKeyBytes,
     );
 
-    if (!isVerified) {
-      invariantResponse(false, '잘못된 서명입니다. 다시 시도해주세요.', {
+    invariantResponse(
+      isVerified,
+      JSON.stringify({
+        status: 'error',
+        result: null,
+        message: '잘못된 서명입니다. 다시 시도해주세요.',
+      }),
+      {
         status: 400,
-      });
-    }
+      },
+    );
 
     return true;
   } catch (e) {
     console.error('Failed to construct a Message object: ', e);
   }
 
-  try {
-    const clone = [...signatureBytes];
-    const transaction = Transaction.from(signatureBytes);
-    const txHasOnlyOneSigner = transaction.signatures.length === 1;
-    const txSignerMatchesPublicKey = transaction.signatures[0].publicKey
-      .toBuffer()
-      .equals(publicKeyBytes);
-    const txInstructionMatchesOTP = transaction.instructions
-      ?.at(-1)
-      ?.data.equals(messageBytes);
+  console.log('Trying fallback for the ledger');
+  const transaction = Transaction.from(signatureBytes);
+  const txHasOnlyOneSigner = transaction.signatures.length === 1;
+  const txSignerMatchesPublicKey = transaction.signatures[0].publicKey
+    .toBuffer()
+    .equals(publicKeyBytes);
+  const txInstructionMatchesOTP = transaction.instructions
+    ?.at(-1)
+    ?.data.equals(oneTimePasswordBytes);
 
-    console.log('before if condition');
-    if (
-      txHasOnlyOneSigner &&
-      txSignerMatchesPublicKey &&
-      txInstructionMatchesOTP
-    ) {
-      const isVerified = transaction.verifySignatures();
+  console.log('before if condition');
 
-      if (!isVerified) {
-        invariantResponse(false, '잘못된 서명입니다. 다시 시도해주세요.', {
-          status: 400,
-        });
-      }
-      return true;
-    }
-  } catch (e) {
-    console.error('Failed to construct a Transaction object: ', e);
-    invariantResponse(false, '지갑 연결에 실패했습니다. 다시 시도해주세요.', {
-      status: 403,
-    });
+  if (
+    txHasOnlyOneSigner &&
+    txSignerMatchesPublicKey &&
+    txInstructionMatchesOTP
+  ) {
+    const isVerified = transaction.verifySignatures();
+
+    invariantResponse(
+      isVerified,
+      JSON.stringify({
+        status: 'error',
+        result: null,
+        message: '잘못된 서명입니다. 다시 시도해주세요.',
+      }),
+      {
+        status: 400,
+      },
+    );
+
+    return true;
   }
 };

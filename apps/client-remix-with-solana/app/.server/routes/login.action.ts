@@ -3,14 +3,14 @@ import { redirect } from '@remix-run/node';
 import { safeRedirect } from 'remix-utils/safe-redirect';
 import { parseWithZod } from '@conform-to/zod';
 
-import { sessionKey } from '~/.server/utils/auth.server';
-import { prisma } from '~/.server/utils/db.server';
-import { comparePassword } from '~/.server/utils/password.server';
-import { validateMethods } from '~/.server/utils/request.server';
+import { sessionKey } from '~/.server/auth/auth.server';
+import { comparePassword } from '~/.server/auth/password.server';
 import {
   getSessionExpirationDate,
   sessionStorage,
-} from '~/.server/utils/session.server';
+} from '~/.server/auth/session.server';
+import { prisma } from '~/.server/db/db.server';
+import { validateMethods } from '~/.server/http/request.server';
 import { navigation } from '~/constants/navigation';
 import { schema } from '~/services/validate/sigin.validate';
 

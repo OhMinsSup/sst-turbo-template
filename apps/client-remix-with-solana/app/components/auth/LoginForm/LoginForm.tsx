@@ -6,7 +6,7 @@ import { Button } from '@template/ui/button';
 import { Input } from '@template/ui/input';
 import { Label } from '@template/ui/label';
 
-import { type RoutesActionData } from '~/.server/routes/login/login.action';
+import { type RoutesActionData } from '~/.server/routes/login.action';
 import { Icons } from '~/components/icons';
 import { ValidationMessage } from '~/components/shared/ValidationMessage';
 import { schema } from '~/services/validate/sigin.validate';

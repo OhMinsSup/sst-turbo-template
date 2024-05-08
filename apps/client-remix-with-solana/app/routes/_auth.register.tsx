@@ -3,7 +3,7 @@ import { Link, Outlet } from '@remix-run/react';
 import { buttonVariants } from '@template/ui/button';
 import { cn } from '@template/ui/utils';
 
-import { registerAction } from '~/.server/routes/register/register.action';
+import { registerAction } from '~/.server/routes/register.action';
 import { SignupForm } from '~/components/auth/SignupForm';
 import { Icons } from '~/components/icons';
 import { navigation } from '~/constants/navigation';

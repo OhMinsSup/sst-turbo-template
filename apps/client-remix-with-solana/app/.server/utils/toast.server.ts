@@ -1,9 +1,9 @@
 import type { SessionData, SessionStorage } from '@remix-run/node';
-import { createId as cuid } from '@paralleldrive/cuid2';
 import { createCookieSessionStorage, redirect } from '@remix-run/node';
+import { createId as cuid } from '@paralleldrive/cuid2';
 import { z } from 'zod';
 
-import { combineHeaders } from './request.server.js';
+import { combineHeaders } from '../http/request.server.js';
 
 export const NAME = 'client-remix-with-solana.toast';
 

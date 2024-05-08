@@ -1,5 +1,4 @@
 import { redirect } from '@remix-run/node';
-import { safeRedirect } from 'remix-utils/safe-redirect';
 
 export type SearchParams =
   | string
@@ -43,7 +42,7 @@ export function readHeaderCookie(request: Request) {
 export function validateMethods(
   request: Request,
   methods: string[],
-  redirectUrl: string,
+  redirectTo?: string | null,
 ) {
   const method = request.method;
   const methodLowerCase = method.toLowerCase();
@@ -51,7 +50,16 @@ export function validateMethods(
     (item) => item.toLowerCase() === methodLowerCase,
   );
   if (!checkMethod) {
-    throw redirect(safeRedirect(redirectUrl));
+    const requestUrl = new URL(request.url);
+    redirectTo =
+      redirectTo === null
+        ? null
+        : redirectTo ?? `${requestUrl.pathname}${requestUrl.search}`;
+    const loginParams = redirectTo ? new URLSearchParams({ redirectTo }) : null;
+    const loginRedirect = ['/login', loginParams?.toString()]
+      .filter(Boolean)
+      .join('?');
+    throw redirect(loginRedirect);
   }
 }
 

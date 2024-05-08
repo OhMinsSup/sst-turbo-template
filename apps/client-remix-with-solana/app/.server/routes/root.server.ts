@@ -2,10 +2,10 @@ import os from 'node:os';
 import type { ActionFunctionArgs, LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
-import { getUserId } from '~/.server/utils/auth.server';
-import { prisma } from '~/.server/utils/db.server';
+import { getUserId } from '~/.server/auth/auth.server';
+import { prisma } from '~/.server/db/db.server';
+import { combineHeaders } from '~/.server/http/request.server';
 import { getEnv } from '~/.server/utils/env.server';
-import { combineHeaders } from '~/.server/utils/request.server';
 import { commit, getTheme, setTheme } from '~/.server/utils/theme.server';
 import { getToast } from '~/.server/utils/toast.server';
 import { isTheme } from '~/context/useThemeContext';

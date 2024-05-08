@@ -1,5 +1,5 @@
-import { TabAccountForm } from "~/components/auth/TabAccountForm";
-import { registerAction } from "~/.server/routes/register/register.action";
+import { registerAction } from '~/.server/routes/register.action';
+import { TabAccountForm } from '~/components/auth/TabAccountForm';
 
 export const action = registerAction;
 

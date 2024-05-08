@@ -79,8 +79,8 @@ export function invariant(
  *
  * @throws {Response} if condition is falsey
  */
-export function invariantResponse(
-  condition: any,
+export function invariantResponse<Value = any>(
+  condition: Value,
   message: string | (() => string),
   responseInit?: ResponseInit,
 ): asserts condition {

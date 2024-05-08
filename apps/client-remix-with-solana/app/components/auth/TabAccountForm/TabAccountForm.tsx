@@ -14,7 +14,7 @@ import {
 import { Input } from '@template/ui/input';
 import { Label } from '@template/ui/label';
 
-import { type RoutesActionData } from '~/.server/routes/register/register.action';
+import { type RoutesActionData } from '~/.server/routes/register.action';
 import { Icons } from '~/components/icons';
 import { ValidationMessage } from '~/components/shared/ValidationMessage';
 import { schema } from '~/services/validate/register.validate';

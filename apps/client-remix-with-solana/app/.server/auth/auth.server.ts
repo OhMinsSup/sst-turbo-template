@@ -1,10 +1,11 @@
 import { redirect } from '@remix-run/node';
 import { safeRedirect } from 'remix-utils/safe-redirect';
 
-import { sessionStorage } from '~/.server/utils/session.server';
+import { sessionStorage } from '~/.server/auth/session.server';
 import { navigation } from '~/constants/navigation';
-import { prisma } from './db.server';
-import { combineResponseInits } from './request.server';
+import { prisma } from '../db/db.server';
+import { getUserInternalSelector } from '../db/selectors/users';
+import { combineResponseInits } from '../http/request.server';
 
 export const sessionKey = 'solana.sessionId';
 
@@ -87,6 +88,18 @@ export async function requireUser(request: Request) {
   const userId = await requireUserId(request);
   const user = await prisma.user.findUnique({
     select: { id: true, name: true },
+    where: { id: userId },
+  });
+  if (!user) {
+    throw await logout({ request });
+  }
+  return user;
+}
+
+export async function requireInternalUser(request: Request) {
+  const userId = await requireUserId(request);
+  const user = await prisma.user.findUnique({
+    select: getUserInternalSelector(),
     where: { id: userId },
   });
   if (!user) {

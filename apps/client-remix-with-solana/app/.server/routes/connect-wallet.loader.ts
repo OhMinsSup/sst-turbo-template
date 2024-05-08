@@ -1,8 +1,8 @@
 import type { LoaderFunctionArgs } from '@remix-run/node';
 import { json } from '@remix-run/node';
 
-import { requireUserId } from '~/.server/utils/auth.server';
-import { prisma } from '~/.server/utils/db.server';
+import { requireUserId } from '~/.server/auth/auth.server';
+import { prisma } from '~/.server/db/db.server';
 
 export const connectWalletLoader = async ({ request }: LoaderFunctionArgs) => {
   const userId = await requireUserId(request);
