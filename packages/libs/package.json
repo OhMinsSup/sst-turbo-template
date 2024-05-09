@@ -43,7 +43,7 @@
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
-    "eslint": "^8.57.0",
+    "eslint": "^9.2.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "tsup": "^8.0.2",

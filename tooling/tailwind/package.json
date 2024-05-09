@@ -18,7 +18,7 @@
   },
   "prettier": "@tooling/prettier-config/base",
   "dependencies": {
-    "@tailwindcss/typography": "^0.5.12",
+    "@tailwindcss/typography": "^0.5.13",
     "autoprefixer": "^10.4.19",
     "postcss": "^8.4.38",
     "tailwindcss": "^3.4.3",
@@ -28,7 +28,7 @@
     "@tooling/eslint-config": "workspace:*",
     "@tooling/prettier-config": "workspace:*",
     "@tooling/tsconfig": "workspace:*",
-    "eslint": "^8.57.0",
+    "eslint": "^9.2.0",
     "prettier": "^3.2.5",
     "rimraf": "^5.0.5",
     "typescript": "^5.4.5"

@@ -85,7 +85,7 @@ export const NAV_CONFIG = {
     },
     {
       id: 'thread',
-      type: 'thread',
+      type: 'link',
       title: 'New Thread',
       href: navigation.write.root,
       icon: Icons.pen,
