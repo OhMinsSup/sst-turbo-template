@@ -1,7 +1,7 @@
-import type { FormFieldsSchema } from "@veloss/validators/signup";
 import { remember } from "@epic-web/remember";
+
+import type { FormFieldsSignupSchema } from "@veloss/validators/auth";
 import { prisma } from "@veloss/db";
-import { getBaseUserSelector } from "@veloss/db/selectors";
 import { HttpStatus } from "@veloss/enum/http-status";
 import { createError } from "@veloss/error/http";
 import { generateHash, generateSalt } from "@veloss/shared/password";
@@ -10,9 +10,9 @@ import { generatorName } from "@veloss/shared/utils";
 export class UsersService {
   /**
    * @description 회원가입
-   * @param {FormFieldsSchema} input - 회원가입 정보
+   * @param {FormFieldsSignupSchema} input - 회원가입 정보
    */
-  async signup(input: FormFieldsSchema) {
+  async signup(input: FormFieldsSignupSchema) {
     const user = await prisma.user.findFirst({
       where: {
         username: input.username,
@@ -45,25 +45,6 @@ export class UsersService {
             website: undefined,
           },
         },
-      },
-    });
-  }
-
-  /**
-   * @description 멘션 팝업 리스트에서 보여주기 위한 유저 리스트 조회
-   * @param {string} keyword - 검색 키워드
-   */
-  async getSimpleUsers(keyword: string) {
-    return prisma.user.findMany({
-      where: {
-        username: {
-          contains: keyword,
-        },
-      },
-      take: 10,
-      select: getBaseUserSelector(),
-      orderBy: {
-        createdAt: "asc",
       },
     });
   }

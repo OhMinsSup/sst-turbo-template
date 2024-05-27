@@ -1,6 +1,8 @@
-import type { User, UserProfile } from "@veloss/db";
 import type { NextAuthConfig } from "next-auth";
 import { PrismaAdapter } from "@auth/prisma-adapter";
+import Credentials from "next-auth/providers/credentials";
+
+import type { User, UserProfile } from "@veloss/db";
 import { prisma } from "@veloss/db";
 import {
   getFullExternalUserSelector,
@@ -9,8 +11,7 @@ import {
 import { HttpStatus } from "@veloss/enum/http-status";
 import { createError } from "@veloss/error/http";
 import { secureCompare } from "@veloss/shared/password";
-import { schema } from "@veloss/validators/signin";
-import Credentials from "next-auth/providers/credentials";
+import { schema } from "@veloss/validators/auth";
 
 declare module "next-auth" {
   interface Session {
@@ -28,7 +29,7 @@ export const authConfig = {
   providers: [
     Credentials({
       authorize: async (credentials) => {
-        const input = await schema.safeParseAsync(credentials);
+        const input = await schema.signin.safeParseAsync(credentials);
         if (!input.success) {
           throw createError({
             message: "잘못된 입력값",
