@@ -1,5 +1,5 @@
 {
-  "name": "template-app",
+  "name": "thread-app",
   "version": "0.0.1-beta.0",
   "private": true,
   "description": "template",
@@ -15,45 +15,32 @@
   ],
   "scripts": {
     "build": "turbo build",
-    "build:packages": "turbo build:packages",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
+    "db:push": "pnpm -F @veloss/db db:push",
+    "db:studio": "pnpm -F @veloss/db db:studio",
     "dev": "turbo dev --parallel",
-    "dev:client-next-admin": "pnpm run dev --filter @template/client-next-admin",
-    "dev:client-next-chatbot": "pnpm run dev --filter @template/client-next-chatbot",
-    "dev:client-remix-with-solana": "pnpm run dev --filter @template/client-remix-with-solana",
-    "dev:node-typescript": "pnpm run dev --filter @template/node-typescript",
-    "dev:server-hono": "pnpm run dev --filter @template/server-hono",
-    "dev:server-nest": "pnpm run dev --filter @template/server-nest",
-    "dev:server-nest-with-solana": "pnpm run dev --filter @template/server-nest-with-solana",
-    "env:build": "turbo env:build",
-    "format": "turbo format --continue -- --cache --cache-location='node_modules/.cache/.prettiercache'",
-    "format:fix": "turbo format --continue -- --write --cache --cache-location='node_modules/.cache/.prettiercache'",
-    "postinstall": "turbo build:packages",
-    "lint": "turbo lint --continue -- --cache --cache-location 'node_modules/.cache/.eslintcache' && manypkg check",
-    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location 'node_modules/.cache/.eslintcache' && manypkg fix",
-    "lint:spellcheck": "cspell --no-progress --relative '**/*'",
-    "lint:syncpack": "syncpack lint",
-    "ncu:deep": "npx ncu --deep -u",
+    "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
+    "format:fix": "turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
+    "lint": "turbo lint --continue -- --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:fix": "turbo lint --continue -- --fix --cache --cache-location node_modules/.cache/.eslintcache",
+    "lint:ws": "pnpm dlx sherif@latest",
+    "postinstall": "pnpm lint:ws",
     "typecheck": "turbo typecheck",
-    "ui:add": "pnpm --filter @template/ui ui:add"
+    "ui:add": "pnpm -F @veloss/ui ui-add"
   },
-  "prettier": "@tooling/prettier-config/base",
-  "dependencies": {
-    "@manypkg/cli": "^0.21.4",
-    "@tooling/prettier-config": "workspace:*",
-    "@tooling/tsconfig": "workspace:*",
+  "prettier": "@veloss/prettier-config",
+  "devDependencies": {
+    "@veloss/prettier-config": "workspace:*",
     "@turbo/gen": "^1.13.3",
-    "cspell": "^8.8.0",
     "dotenv-cli": "^7.4.2",
     "prettier": "^3.2.5",
-    "syncpack": "^12.3.2",
     "turbo": "^1.13.3",
     "typescript": "^5.4.5"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {
     "bun": ">=1.0",
-    "node": ">=18.0"
+    "node": ">=20.0"
   }
 }

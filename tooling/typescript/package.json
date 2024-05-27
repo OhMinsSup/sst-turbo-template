@@ -1,18 +1,13 @@
 {
-  "name": "@tooling/tsconfig",
+  "name": "@veloss/tsconfig",
   "version": "0.0.1",
   "private": true,
-  "license": "MIT",
   "files": [
-    "base.json",
-    "nextjs.json",
-    "react.json",
-    "nest.json",
-    "fastify.json"
+    "*.json"
   ],
   "packageManager": "pnpm@9.0.5",
   "engines": {
     "bun": ">=1.0",
-    "node": ">=18.0"
+    "node": ">=20.0"
   }
 }

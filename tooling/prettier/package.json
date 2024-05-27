@@ -1,36 +1,31 @@
 {
-  "name": "@tooling/prettier-config",
+  "name": "@veloss/prettier-config",
   "version": "0.0.1",
   "private": true,
   "type": "module",
   "exports": {
-    "./web": "./web.mjs",
-    "./admin": "./admin.mjs",
-    "./base": "./base.mjs",
-    "./nest": "./nest.cjs"
+    ".": "./index.js"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules",
-    "format": "prettier --check . --ignore-path ../../.gitignore"
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "typecheck": "tsc --noEmit"
   },
-  "prettier": "@tooling/prettier-config/base",
+  "prettier": "@veloss/prettier-config",
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.2.1",
+    "prettier": "^3.2.5",
     "prettier-plugin-packagejson": "^2.5.0",
     "prettier-plugin-tailwindcss": "^0.5.14"
   },
   "devDependencies": {
-    "@tooling/tsconfig": "workspace:*",
-    "eslint": "^9.2.0",
-    "prettier": "^3.2.5",
-    "rimraf": "^5.0.5"
-  },
-  "peerDependencies": {
-    "prettier": "^3.0.0"
+    "@veloss/tsconfig": "workspace:*",
+    "rimraf": "^5.0.7",
+    "typescript": "^5.4.5"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {
     "bun": ">=1.0",
-    "node": ">=18.0"
+    "node": ">=20.0"
   }
 }
