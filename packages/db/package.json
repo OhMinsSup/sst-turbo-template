@@ -5,7 +5,8 @@
   "type": "module",
   "exports": {
     ".": "./src/client.ts",
-    "./selectors": "./src/selectors.ts"
+    "./selectors": "./src/selectors.ts",
+    "./env": "./env.ts"
   },
   "license": "MIT",
   "scripts": {
@@ -24,8 +25,10 @@
   },
   "dependencies": {
     "@auth/prisma-adapter": "^2.1.0",
+    "@prisma/adapter-pg": "^5.14.0",
     "@prisma/client": "^5.14.0",
     "@t3-oss/env-core": "^0.10.1",
+    "@vercel/postgres": "^0.8.0",
     "zod": "^3.23.8"
   },
   "devDependencies": {
@@ -33,11 +36,11 @@
     "@veloss/prettier-config": "workspace:*",
     "@veloss/tsconfig": "workspace:*",
     "dotenv-cli": "^7.4.2",
-    "prisma": "^5.14.0",
     "eslint": "^8.57.0",
     "prettier": "^3.2.5",
-    "typescript": "^5.4.5",
-    "tsx": "^4.10.5"
+    "prisma": "^5.14.0",
+    "tsx": "^4.10.5",
+    "typescript": "^5.4.5"
   },
   "prettier": "@veloss/prettier-config",
   "prisma": {

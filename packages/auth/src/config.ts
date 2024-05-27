@@ -4,10 +4,7 @@ import Credentials from "next-auth/providers/credentials";
 
 import type { User, UserProfile } from "@veloss/db";
 import { prisma } from "@veloss/db";
-import {
-  getFullExternalUserSelector,
-  getInternalUserSelector,
-} from "@veloss/db/selectors";
+import { getUserSelector } from "@veloss/db/selectors";
 import { HttpStatus } from "@veloss/enum/http-status";
 import { createError } from "@veloss/error/http";
 import { secureCompare } from "@veloss/shared/password";
@@ -45,7 +42,7 @@ export const authConfig = {
           where: {
             username: input.data.username,
           },
-          select: getInternalUserSelector(),
+          select: getUserSelector(),
         });
 
         if (!user1) {
@@ -58,10 +55,10 @@ export const authConfig = {
           });
         }
 
-        if (user1.password && user1.salt) {
+        if (user1.Password.hash) {
           const isMatch = await secureCompare(
             input.data.password,
-            user1.password,
+            user1.Password.hash,
           );
 
           if (!isMatch) {
@@ -76,7 +73,7 @@ export const authConfig = {
           where: {
             id: user1.id,
           },
-          select: getFullExternalUserSelector({ userId: user1.id }),
+          select: getUserSelector(),
         });
 
         return user2;
