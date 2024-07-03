@@ -3,23 +3,20 @@ import { createEnv } from "@t3-oss/env-nextjs";
 import { vercel } from "@t3-oss/env-nextjs/presets";
 import { z } from "zod";
 
-import { env as authEnv } from "@veloss/auth/env";
-import { env as dbEnv } from "@veloss/db/env";
+import { env as authEnv } from "@template/auth/env";
 
 export const env = createEnv({
-  extends: [authEnv, vercel(), dbEnv],
+  extends: [authEnv, vercel()],
   shared: {
     NODE_ENV: z
       .enum(["development", "production", "test"])
       .default("development"),
   },
-  // /**
-  //  * Specify your server-side environment variables schema here.
-  //  * This way you can ensure the app isn't built with invalid env vars.
-  //  */
-  // server: {
-  //   DATABASE_URL: z.string().url(),
-  // },
+  /**
+   * Specify your server-side environment variables schema here.
+   * This way you can ensure the app isn't built with invalid env vars.
+   */
+  server: {},
 
   /**
    * Specify your client-side environment variables schema here.

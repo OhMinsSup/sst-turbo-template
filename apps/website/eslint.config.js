@@ -1,6 +1,6 @@
-import baseConfig, { restrictEnvAccess } from "@veloss/eslint-config/base";
-import nextjsConfig from "@veloss/eslint-config/nextjs";
-import reactConfig from "@veloss/eslint-config/react";
+import baseConfig, { restrictEnvAccess } from "@template/eslint-config/base";
+import nextjsConfig from "@template/eslint-config/nextjs";
+import reactConfig from "@template/eslint-config/react";
 
 /** @type {import('typescript-eslint').Config} */
 export default [
@@ -11,4 +11,9 @@ export default [
   ...reactConfig,
   ...nextjsConfig,
   ...restrictEnvAccess,
+  {
+    rules: {
+      "@typescript-eslint/no-unsafe-enum-comparison": "off",
+    },
+  },
 ];

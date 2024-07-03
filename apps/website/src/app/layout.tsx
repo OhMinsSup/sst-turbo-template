@@ -1,34 +1,13 @@
-import type { Metadata, Viewport } from "next";
-import { cn } from "@veloss/ui";
-import { ThemeProvider } from "@veloss/ui/theme";
-import { Toaster } from "@veloss/ui/toaster";
+import type { Viewport } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
-import { TRPCReactProvider } from "~/trpc/react";
+import { cn } from "@template/ui";
+import { Toaster } from "@template/ui/toaster";
 
 import "~/app/globals.css";
 
-import { headers } from "next/headers";
-
-import { SITE_CONFIG } from "~/constants/constants";
-import { getRequestInfo } from "~/utils/request";
-
-export async function generateMetadata(): Promise<Metadata> {
-  const info = getRequestInfo(headers());
-  const metadataBase = new URL(info.domainUrl);
-  const manifestURL = new URL(SITE_CONFIG.manifest, metadataBase);
-
-  return {
-    title: "veloss - website",
-    description: "veloss personal website",
-    metadataBase,
-    manifest: manifestURL,
-    alternates: {
-      canonical: metadataBase,
-    },
-  };
-}
+import RootProvider from "~/contexts/root";
 
 export const viewport: Viewport = {
   themeColor: [
@@ -37,7 +16,11 @@ export const viewport: Viewport = {
   ],
 };
 
-export default function Layout(props: { children: React.ReactNode }) {
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export default function Layout(props: LayoutProps) {
   return (
     <html lang="ko" suppressHydrationWarning>
       <body
@@ -47,10 +30,10 @@ export default function Layout(props: { children: React.ReactNode }) {
           GeistMono.variable,
         )}
       >
-        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
-          <TRPCReactProvider>{props.children}</TRPCReactProvider>
+        <RootProvider>
+          {props.children}
           <Toaster />
-        </ThemeProvider>
+        </RootProvider>
       </body>
     </html>
   );

@@ -1,5 +1,5 @@
 {
-  "extends": "@veloss/tsconfig/base.json",
+  "extends": "@template/tsconfig/base.json",
   "compilerOptions": {
     "tsBuildInfoFile": "node_modules/.cache/tsbuildinfo.json"
   },

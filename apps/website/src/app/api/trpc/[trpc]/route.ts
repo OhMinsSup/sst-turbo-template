@@ -1,6 +1,9 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
-import { auth } from "@veloss/auth";
-import { appRouter, createTRPCContext } from "@veloss/trpc";
+
+import { auth } from "@template/auth";
+import { appRouter, createTRPCContext } from "@template/trpc";
+
+import { env } from "~/env";
 
 /**
  * Configure basic CORS headers
@@ -28,6 +31,7 @@ const handler = auth(async (req) => {
     req,
     createContext: () =>
       createTRPCContext({
+        url: env.NEXT_PUBLIC_SERVER_URL,
         session: req.auth,
         headers: req.headers,
       }),

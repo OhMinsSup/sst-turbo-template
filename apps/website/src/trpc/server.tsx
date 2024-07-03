@@ -1,7 +1,10 @@
 import { cache } from "react";
 import { headers } from "next/headers";
-import { auth } from "@veloss/auth";
-import { createCaller, createTRPCContext } from "@veloss/trpc";
+
+import { auth } from "@template/auth";
+import { createCaller, createTRPCContext } from "@template/trpc";
+
+import { env } from "~/env";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
@@ -14,6 +17,7 @@ const createContext = cache(async () => {
   return createTRPCContext({
     session: await auth(),
     headers: heads,
+    url: env.NEXT_PUBLIC_SERVER_URL,
   });
 });
 

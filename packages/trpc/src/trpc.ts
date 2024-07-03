@@ -6,11 +6,12 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import type { Session } from "@veloss/auth";
+import type { Session } from "@template/auth";
 import { initTRPC, TRPCError } from "@trpc/server";
-import { prisma } from "@veloss/db";
 import superjson from "superjson";
 import { ZodError } from "zod";
+
+import { createClient } from "@template/sdk";
 
 /**
  * 1. CONTEXT
@@ -27,15 +28,17 @@ import { ZodError } from "zod";
 export const createTRPCContext = (opts: {
   headers: Headers;
   session: Session | null;
+  url: string;
 }) => {
   const session = opts.session;
   const source = opts.headers.get("x-trpc-source") ?? "unknown";
+  const client = createClient(opts.url);
 
   console.log(">>> tRPC Request from", source, "by", session?.user);
 
   return {
     session,
-    prisma,
+    client,
   };
 };
 
@@ -99,7 +102,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: { ...ctx.session, user: ctx.session.user },
+      session: ctx.session,
     },
   });
 });

@@ -2,7 +2,8 @@
 
 import * as React from "react";
 import * as AlertDialogPrimitive from "@radix-ui/react-alert-dialog";
-import { cn } from "@veloss/ui";
+
+import { cn } from "@template/ui";
 
 import { buttonVariants } from "./button";
 

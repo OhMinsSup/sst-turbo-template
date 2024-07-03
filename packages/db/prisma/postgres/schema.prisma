@@ -1,0 +1,93 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id            String        @id @default(cuid())
+    email         String        @unique
+    emailVerified DateTime?
+    name          String
+    avatarUrl     String?
+    createdAt     DateTime      @default(now()) @db.Timestamptz(6)
+    updatedAt     DateTime      @updatedAt @db.Timestamptz(6)
+    deletedAt     DateTime? // 삭제 시간
+    lastActiveAt  DateTime? // 마지막 활동 시간
+    isSuspended   Boolean       @default(false) // true: 정지, false: 활성 
+    Password      Password?
+    UserProfile   UserProfile?
+    UserSettings  UserSettings?
+    Account       Account[]
+    Token         Token[]
+
+    @@map(name: "users")
+}
+
+model Password {
+    hash   String //  비밀번호 해시
+    salt   String // 비밀번호 솔트
+    User   User   @relation(fields: [userId], references: [id], onDelete: Cascade, onUpdate: Cascade)
+    userId String @unique
+
+    @@map(name: "passwords")
+}
+
+model UserProfile {
+    bio     String? // default: null, 자기소개
+    website String? // default: null, 웹사이트
+    User    User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId  String  @unique
+
+    @@map("user_profiles")
+}
+
+model UserSettings {
+    privacySettings Boolean @default(false) // true: private, false: public
+    User            User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+    userId          String  @unique
+
+    @@map("user_settings")
+}
+
+model Account {
+    userId            String
+    type              String
+    provider          String
+    providerAccountId String
+    refreshToken      String?
+    accessToken       String?
+    expiresAt         Int?
+    tokenType         String?
+    scope             String?
+    idToken           String?
+    sessionState      String?
+    createdAt         DateTime @default(now()) @db.Timestamptz(6)
+    updatedAt         DateTime @updatedAt @db.Timestamptz(6)
+    user              User     @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@id([provider, providerAccountId])
+    @@map("accounts")
+}
+
+model Token {
+    id        String    @id @default(cuid())
+    type      TokenType
+    userId    String
+    expires   DateTime
+    createdAt DateTime  @default(now()) @db.Timestamptz(6)
+    updatedAt DateTime  @updatedAt @db.Timestamptz(6)
+    User      User      @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@map("tokens")
+}
+
+enum TokenType {
+    RefreshToken
+}

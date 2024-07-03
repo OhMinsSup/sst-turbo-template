@@ -1,5 +1,5 @@
 {
-  "name": "thread-app",
+  "name": "turbo-template-app",
   "version": "0.0.1-beta.0",
   "private": true,
   "description": "template",
@@ -17,8 +17,8 @@
     "build": "turbo build",
     "clean": "git clean -xdf node_modules",
     "clean:workspaces": "turbo clean",
-    "db:push": "pnpm -F @veloss/db db:push",
-    "db:studio": "pnpm -F @veloss/db db:studio",
+    "db:push": "pnpm -F @template/db db:push",
+    "db:studio": "pnpm -F @template/db db:studio",
     "dev": "turbo dev --parallel",
     "format": "turbo format --continue -- --cache --cache-location node_modules/.cache/.prettiercache",
     "format:fix": "turbo format --continue -- --write --cache --cache-location node_modules/.cache/.prettiercache",
@@ -27,16 +27,16 @@
     "lint:ws": "pnpm dlx sherif@latest",
     "postinstall": "pnpm lint:ws",
     "typecheck": "turbo typecheck",
-    "ui:add": "pnpm -F @veloss/ui ui-add"
+    "ui:add": "pnpm -F @template/ui ui-add"
   },
-  "prettier": "@veloss/prettier-config",
+  "prettier": "@template/prettier-config",
   "devDependencies": {
-    "@veloss/prettier-config": "workspace:*",
-    "@turbo/gen": "^1.13.3",
+    "@template/prettier-config": "workspace:*",
+    "@turbo/gen": "^2.0.6",
     "dotenv-cli": "^7.4.2",
-    "prettier": "^3.2.5",
-    "turbo": "^1.13.3",
-    "typescript": "^5.4.5"
+    "prettier": "^3.3.2",
+    "turbo": "^2.0.6",
+    "typescript": "^5.5.3"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {

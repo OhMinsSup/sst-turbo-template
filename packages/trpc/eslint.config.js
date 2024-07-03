@@ -1,4 +1,4 @@
-import baseConfig from "@veloss/eslint-config/base";
+import baseConfig from "@template/eslint-config/base";
 
 /** @type {import('typescript-eslint').Config} */
 export default [

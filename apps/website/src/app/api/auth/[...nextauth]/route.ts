@@ -1,1 +1,3 @@
-export { GET, POST } from "@veloss/auth";
+import { handlers } from "@template/auth";
+
+export const { GET, POST } = handlers;

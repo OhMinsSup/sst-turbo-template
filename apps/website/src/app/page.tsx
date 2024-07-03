@@ -1,7 +1,16 @@
-import React from 'react'
+import React from "react";
 
-export default function Page() {
+import { auth } from "@template/auth";
+
+import { AuthSample } from "~/components/shared/AuthSample";
+
+export default async function Page() {
+  const session = await auth();
+
+  console.log(session);
   return (
-    <div>Page</div>
-  )
+    <React.Suspense fallback={<></>}>
+      <AuthSample />
+    </React.Suspense>
+  );
 }

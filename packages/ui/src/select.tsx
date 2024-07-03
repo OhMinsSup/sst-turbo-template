@@ -8,7 +8,8 @@ import {
   ChevronUpIcon,
 } from "@radix-ui/react-icons";
 import * as SelectPrimitive from "@radix-ui/react-select";
-import { cn } from "@veloss/ui";
+
+import { cn } from "@template/ui";
 
 const Select = SelectPrimitive.Root;
 

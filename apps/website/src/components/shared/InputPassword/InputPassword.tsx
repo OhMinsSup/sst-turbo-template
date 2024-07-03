@@ -1,8 +1,9 @@
 "use client";
 
 import * as React from "react";
-import { Button } from "@veloss/ui/button";
-import { Input } from "@veloss/ui/input";
+
+import { Button } from "@template/ui/button";
+import { Input } from "@template/ui/input";
 
 import { Icons } from "~/components/icons";
 

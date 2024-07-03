@@ -1,4 +1,4 @@
-import baseConfig, { restrictEnvAccess } from "@veloss/eslint-config/base";
+import baseConfig, { restrictEnvAccess } from "@template/eslint-config/base";
 
 /** @type {import('typescript-eslint').Config} */
 export default [
@@ -7,4 +7,9 @@ export default [
   },
   ...baseConfig,
   ...restrictEnvAccess,
+  {
+    rules: {
+      "@typescript-eslint/no-unsafe-enum-comparison": "off",
+    },
+  },
 ];
