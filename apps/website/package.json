@@ -22,7 +22,7 @@
     "@tanstack/react-query": "^5.49.2",
     "@template/auth": "workspace:*",
     "@template/db": "workspace:*",
-    "@template/date": "workspace:*",
+    "@template/utils": "workspace:*",
     "@template/hooks": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/trpc": "workspace:*",

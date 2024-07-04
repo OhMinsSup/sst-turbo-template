@@ -2,7 +2,10 @@ import type { Options } from "tsup";
 import { defineConfig } from "tsup";
 
 export default defineConfig((options: Options) => ({
-  entry: ["src/index.ts"],
+  entry: {
+    assertion: "src/assertion/index.ts",
+    date: "src/date/index.ts",
+  },
   format: ["esm", "cjs"],
   dts: true,
   minify: !options.watch,

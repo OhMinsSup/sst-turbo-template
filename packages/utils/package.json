@@ -1,5 +1,5 @@
 {
-  "name": "@template/date",
+  "name": "@template/utils",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -8,25 +8,35 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    ".": {
+    "./date": {
       "import": {
-        "types": "./dist/index.d.ts",
-        "default": "./dist/index.js"
+        "types": "./dist/date.d.ts",
+        "default": "./dist/date.js"
       },
       "require": {
-        "types": "./dist/index.d.cts",
-        "default": "./dist/index.cjs"
+        "types": "./dist/date.d.cts",
+        "default": "./dist/date.cjs"
+      }
+    },
+    "./assertion": {
+      "import": {
+        "types": "./dist/assertion.d.ts",
+        "default": "./dist/assertion.js"
+      },
+      "require": {
+        "types": "./dist/assertion.d.cts",
+        "default": "./dist/assertion.cjs"
       }
     }
   },
   "license": "MIT",
   "scripts": {
     "build": "tsup",
+    "build:lib": "tsup",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit",
-    "postinstall": "tsup"
+    "typecheck": "tsc --noEmit"
   },
   "dependencies": {
     "date-fns": "^3.6.0"

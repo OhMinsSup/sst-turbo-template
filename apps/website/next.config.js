@@ -13,7 +13,6 @@ const config = {
     "@template/hooks",
     "@template/trpc",
     "@template/auth",
-    "@template/db",
     "@template/ui",
   ],
 

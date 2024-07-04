@@ -3,9 +3,9 @@
 import React, { useEffect } from "react";
 import { signOut, useSession } from "next-auth/react";
 
-import { isSessionExpireDate } from "@template/date";
 import { useRafInterval } from "@template/hooks/useRafInterval";
 import { HttpResultStatus } from "@template/sdk/enum";
+import { isSessionExpireDate } from "@template/utils/date";
 
 import { useApiClient } from "./api";
 
