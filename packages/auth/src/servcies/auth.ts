@@ -2,12 +2,13 @@ import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import type { JWT as NextAuthJWT } from "next-auth/jwt";
 
 import { isAccessTokenExpireDate } from "@template/date";
-import { createClient, FetchError } from "@template/sdk";
+import { createClient } from "@template/sdk";
 import { HttpResultStatus, HttpStatus } from "@template/sdk/enum";
 import {
-  createThreadError,
+  createAppError,
+  FetchError,
+  isAppError,
   isHttpError,
-  isThreadError,
 } from "@template/sdk/error";
 
 import type { JWTParams, SessionParams, User } from "./types";
@@ -36,7 +37,7 @@ class AuthService {
     const response = await this._client.rpc("signIn").post(unsafeInput);
 
     if (response.resultCode !== HttpResultStatus.OK) {
-      throw createThreadError({
+      throw createAppError({
         message: "Failed to sign in",
         data: response.message,
       });
@@ -116,7 +117,7 @@ class AuthService {
         if (this._isDebug) {
           console.log("[JWT] token - missing refresh token", token);
         }
-        throw createThreadError({
+        throw createAppError({
           message: "MissingRefreshToken",
         });
       }
@@ -130,7 +131,7 @@ class AuthService {
       }
 
       if (response.error) {
-        throw createThreadError({
+        throw createAppError({
           message: "InvalidRefreshToken",
           data: response.error,
         });
@@ -157,7 +158,7 @@ class AuthService {
       if (this._isDebug) {
         console.log("[JWT] token - error", error);
         console.log("[JWT] token - error isHttpError", isHttpError(error));
-        console.log("[JWT] token - error isError", isThreadError(error));
+        console.log("[JWT] token - error isError", isAppError(error));
       }
       // console.error(error);
       if (isHttpError(error) || error instanceof FetchError) {
@@ -187,7 +188,7 @@ class AuthService {
         }
       }
 
-      if (isThreadError(error)) {
+      if (isAppError(error)) {
         return {
           ...token,
           error: error.message,
