@@ -1,6 +1,6 @@
+import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import type { JWT as NextAuthJWT } from "next-auth/jwt";
 
-import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import { isAccessTokenExpireDate } from "@template/date";
 import { createClient, FetchError } from "@template/sdk";
 import { HttpResultStatus, HttpStatus } from "@template/sdk/enum";
@@ -33,7 +33,7 @@ class AuthService {
   // authorize 로그인
   authorize = async (credentials: unknown) => {
     const unsafeInput = credentials as FormFieldSignInSchema;
-    const response = await this._client.auth.rpc("signIn").call(unsafeInput);
+    const response = await this._client.rpc("signIn").post(unsafeInput);
 
     if (response.resultCode !== HttpResultStatus.OK) {
       throw createThreadError({
@@ -121,9 +121,7 @@ class AuthService {
         });
       }
 
-      const client = createClient(env.NEXT_PUBLIC_SERVER_URL);
-
-      const response = await client.auth.rpc("refresh").call({
+      const response = await this._client.rpc("refresh").patch({
         refreshToken: token.refreshToken,
       });
 

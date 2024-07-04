@@ -1,10 +1,10 @@
 "use server";
 
+import type { ClientResponse } from "@template/sdk";
+import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import type { FieldErrors } from "react-hook-form";
 import { redirect } from "next/navigation";
 
-import type { CoreClientResponse } from "@template/sdk";
-import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import { signIn } from "@template/auth";
 import { HttpResultStatus } from "@template/sdk/enum";
 import { isHttpError, isThreadError } from "@template/sdk/error";
@@ -45,23 +45,24 @@ export async function serverAction(
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const error = e.cause?.err;
       if (isThreadError<ZodValidateError>(error) && error.data) {
-        return error.data;
+        return error.data as PreviousState;
       }
 
-      if (isHttpError<CoreClientResponse>(error) && error.data) {
+      if (isHttpError<ClientResponse>(error) && error.data) {
         switch (error.data.resultCode) {
           case HttpResultStatus.INVALID: {
-            // eslint-disable-next-line @typescript-eslint/no-unsafe-return
-            return Array.isArray(error.data.message)
-              ? error.data.message.at(0)
-              : defaultErrorMessage;
+            return (
+              Array.isArray(error.data.message)
+                ? error.data.message.at(0)
+                : defaultErrorMessage
+            ) as PreviousState;
           }
           case HttpResultStatus.INCORRECT_PASSWORD:
           case HttpResultStatus.NOT_EXIST: {
-            return error.data.message;
+            return error.data.message as PreviousState;
           }
           default: {
-            return defaultErrorMessage;
+            return defaultErrorMessage as PreviousState;
           }
         }
       }

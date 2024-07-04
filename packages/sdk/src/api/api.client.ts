@@ -2,17 +2,15 @@ import type { $Fetch } from "ofetch";
 import { ofetch } from "ofetch";
 import { withBase, withoutTrailingSlash } from "ufo";
 
-import type { ClientOptions } from "./types";
-import CoreClientBuilder from "./core.builder";
+import type { FnNameKey, Options, RpcOptions } from "./types";
+import { ApiFilterBuilder } from "./api.filter.builder";
 
-export class CoreClient {
+export class ApiClient {
   protected url: string;
   protected prefix = "/api/v1";
   protected fetchClient: $Fetch;
 
-  protected _client: CoreClientBuilder;
-
-  constructor(url: string, options?: ClientOptions) {
+  constructor(url: string, otps?: Options) {
     if (!url) {
       const error = new Error();
       error.name = "ThreadClientError";
@@ -20,7 +18,7 @@ export class CoreClient {
       throw error;
     }
 
-    const { $fetchOptions, prefix, $fetchClient } = options ?? {};
+    const { options, prefix, fetchClient } = otps ?? {};
 
     if (prefix) {
       this.prefix = prefix;
@@ -28,29 +26,30 @@ export class CoreClient {
 
     this.url = withBase(this.prefix, withoutTrailingSlash(url));
 
-    if ($fetchClient) {
-      this.fetchClient = $fetchClient.create({
-        ...$fetchOptions,
+    if (fetchClient) {
+      this.fetchClient = fetchClient.create({
+        ...options,
         baseURL: this.url,
       });
     } else {
       this.fetchClient = ofetch.create({
-        ...$fetchOptions,
+        ...options,
         baseURL: this.url,
       });
     }
+  }
 
-    this._client = new CoreClientBuilder({
-      $url: this.url,
-      $fetch: this.fetchClient,
+  rpc<FnKey extends FnNameKey>(fnKey: FnKey, options: RpcOptions = {}) {
+    return new ApiFilterBuilder<FnKey>({
+      fnKey,
+      fetchClient: this.fetchClient,
+      url: this.url,
+      headers: options.headers,
+      method: options.method,
     });
   }
 
-  get auth() {
-    return this._client.auth;
-  }
-
-  get users() {
-    return this._client.users;
+  get fetch() {
+    return this.fetchClient;
   }
 }
