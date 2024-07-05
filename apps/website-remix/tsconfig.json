@@ -1,0 +1,20 @@
+{
+  "extends": "@template/tsconfig/remix.json",
+  "include": [
+    "**/*.ts",
+    "**/*.tsx",
+    "**/.server/**/*.ts",
+    "**/.server/**/*.tsx",
+    "**/.client/**/*.ts",
+    "**/.client/**/*.tsx"
+  ],
+  "compilerOptions": {
+    "types": ["@remix-run/node", "vite/client"],
+    "baseUrl": ".",
+    "paths": {
+      "~/*": ["./app/*"]
+    },
+    // Vite takes care of building everything, not tsc.
+    "noEmit": true
+  }
+}
