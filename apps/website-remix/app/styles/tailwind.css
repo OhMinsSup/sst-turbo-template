@@ -33,14 +33,6 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
-
-    --app-desktop-header-height: 74px;
-    --app-mobile-header-height: 60px;
-    --app-medium-screen-max-width: 520px;
-    --app-large-screen-max-width: 620px;
-    --app-small-screen-nav-height: 68px;
-    --app-side-navigation-width: 76px;
-    --app-column-layout-max-width: 640px;
   }
 
   .dark {

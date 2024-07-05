@@ -1,12 +1,11 @@
 "use client";
 
+import type { FormFieldSignUpSchema } from "@template/sdk/schema";
 import React, { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import { isBoolean, isUndefined } from "@template/sdk/assertion";
 import { authSchema } from "@template/sdk/schema";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
@@ -19,6 +18,7 @@ import {
   FormMessage,
 } from "@template/ui/form";
 import { Input } from "@template/ui/input";
+import { isBoolean, isUndefined } from "@template/utils/assertion";
 
 import type { PreviousState } from "~/actions/signup";
 import { serverAction } from "~/actions/signup";

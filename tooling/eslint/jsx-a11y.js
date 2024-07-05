@@ -9,7 +9,7 @@ export default [
       "jsx-a11y": jsxA11yPlugin,
     },
     rules: {
-      ...jsxA11yPlugin.configs.recommended.rules,
+      ...jsxA11yPlugin.flatConfigs.recommended.rules,
     },
   },
 ];

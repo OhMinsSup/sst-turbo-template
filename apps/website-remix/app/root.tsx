@@ -6,11 +6,25 @@ import {
   ScrollRestoration,
 } from "@remix-run/react";
 
-import "./tailwind.css";
+import "./styles/fonts.css";
+import "./styles/tailwind.css";
 
-export function Layout({ children }: { children: React.ReactNode }) {
+export const loader = async () => {
+  try {
+    return {};
+  } catch (error) {
+    console.error(error);
+    return {};
+  }
+};
+
+interface LayoutProps {
+  children: React.ReactNode;
+}
+
+export function Layout({ children }: LayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" className="__variable_geistSans __variable_geistMono">
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />
