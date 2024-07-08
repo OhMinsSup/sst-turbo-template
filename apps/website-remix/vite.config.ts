@@ -2,11 +2,18 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
-import { envValidatePlugin } from "./vite-plugins";
+import { t3EnvPlugin } from "@template/vite/t3-env";
+
+import { t3EnvFn } from "./app/env";
+
+// import { t3EnvPlugin } from "./vite-plugins";
 
 export default defineConfig({
   plugins: [
-    envValidatePlugin(),
+    t3EnvPlugin({
+      envFile: "../../.env",
+      t3EnvFn,
+    }),
     remix({
       future: {
         v3_fetcherPersist: true,

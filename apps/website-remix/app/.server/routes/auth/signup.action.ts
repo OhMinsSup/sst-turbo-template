@@ -1,5 +1,6 @@
+import type { ActionFunctionArgs } from "@remix-run/node";
 import { parseWithZod } from "@conform-to/zod";
-import { unstable_defineAction as defineAction, json } from "@remix-run/node";
+import { json } from "@remix-run/node";
 
 import {
   ErrorDisplayType,
@@ -9,9 +10,12 @@ import {
 import { createHttpError } from "@template/sdk/error";
 import { authSchema } from "@template/sdk/schema";
 
-import { errorJsonDataResponse } from "~/.server/utils/response";
+import {
+  errorJsonDataResponse,
+  successJsonDataResponse,
+} from "~/.server/utils/response";
 
-export const action = defineAction(async ({ request }) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method.toUpperCase() !== RequestMethod.POST) {
     throw createHttpError({
       statusMessage: "Method Not Allowed",
@@ -30,7 +34,7 @@ export const action = defineAction(async ({ request }) => {
     return json(errorJsonDataResponse(submittedData.error));
   }
 
-  return {};
-});
+  return json(successJsonDataResponse(null));
+};
 
 export type RoutesActionData = typeof action;

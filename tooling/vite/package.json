@@ -4,6 +4,7 @@
   "private": true,
   "type": "module",
   "scripts": {
+    "build:lib": "tsup",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
@@ -28,5 +29,21 @@
   },
   "peerDependencies": {
     "vite": "^5.0.0"
+  },
+  "files": [
+    "dist"
+  ],
+  "exports": {
+    "./package.json": "./package.json",
+    "./t3-env": {
+      "import": {
+        "types": "./dist/t3-env.d.ts",
+        "default": "./dist/t3-env.js"
+      },
+      "require": {
+        "types": "./dist/t3-env.d.js",
+        "default": "./dist/t3-env.js"
+      }
+    }
   }
 }

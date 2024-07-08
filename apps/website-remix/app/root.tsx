@@ -11,6 +11,7 @@ import "./styles/tailwind.css";
 
 export const loader = async () => {
   try {
+    console.log("loader", import.meta.env.NEXT_PUBLIC_SERVER_URL);
     return {};
   } catch (error) {
     console.error(error);
