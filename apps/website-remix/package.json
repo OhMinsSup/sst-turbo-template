@@ -11,9 +11,11 @@
     "typecheck": "tsc"
   },
   "dependencies": {
+    "@conform-to/zod": "^1.1.5",
     "@remix-run/node": "^2.10.2",
     "@remix-run/react": "^2.10.2",
     "@remix-run/serve": "^2.10.2",
+    "@t3-oss/env-core": "^0.10.1",
     "@template/hooks": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/ui": "workspace:*",
