@@ -2,8 +2,11 @@ import { vitePlugin as remix } from "@remix-run/dev";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
+import { envValidatePlugin } from "./vite-plugins";
+
 export default defineConfig({
   plugins: [
+    envValidatePlugin(),
     remix({
       future: {
         v3_fetcherPersist: true,
