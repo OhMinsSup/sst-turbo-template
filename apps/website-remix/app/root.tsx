@@ -14,6 +14,7 @@ import { cn } from "@template/ui";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { ShowToast, Toaster } from "./components/shared/Toast";
+import AppProvider from "./store/app";
 import { EnvStoreProvider } from "./store/env-store-provider";
 import {
   NonFlashOfWrongThemeEls,
@@ -72,10 +73,12 @@ function App() {
 export default function AppWithProviders() {
   const data = useLoaderData<RoutesLoaderData>();
   return (
-    <EnvStoreProvider apiHost={data.env.NEXT_PUBLIC_SERVER_URL}>
-      <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}>
-        <App />
-      </TRPCReactProvider>
-    </EnvStoreProvider>
+    <AppProvider>
+      <EnvStoreProvider apiHost={data.env.NEXT_PUBLIC_SERVER_URL}>
+        <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}>
+          <App />
+        </TRPCReactProvider>
+      </EnvStoreProvider>
+    </AppProvider>
   );
 }

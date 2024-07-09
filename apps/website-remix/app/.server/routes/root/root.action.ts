@@ -8,6 +8,7 @@ import {
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
 import { isTheme } from "~/store/theme-store";
+import { combineHeaders, removeAuthTokenCookie } from "~/utils/misc";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   return namedAction(request, {
@@ -22,6 +23,14 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         headers: {
           "Set-Cookie": setTheme(theme),
         },
+      });
+    },
+    async logout() {
+      const headers = await Promise.resolve(
+        combineHeaders(removeAuthTokenCookie()),
+      );
+      return json(successJsonDataResponse(true), {
+        headers,
       });
     },
   });

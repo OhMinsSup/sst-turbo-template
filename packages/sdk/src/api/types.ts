@@ -1,6 +1,5 @@
-import type { $Fetch, FetchOptions } from "ofetch";
-
 import type { UserExternalPayload } from "@template/db/selectors";
+import type { $Fetch, FetchOptions } from "ofetch";
 
 import type {
   FormFieldRefreshTokenSchema,
@@ -118,6 +117,8 @@ export interface AuthResponse
   tokens: TokenResponse;
 }
 
+export type UserResponse = UserExternalPayload;
+
 // api.builder.ts -----------------------------------
 
 export type ApiBuilderReturnValue<Fn extends FnNameKey> = ClientResponse<
@@ -129,5 +130,9 @@ export type ApiBuilderReturnValue<Fn extends FnNameKey> = ClientResponse<
         ? AuthResponse
         : Fn extends "verify"
           ? boolean
-          : unknown
+          : Fn extends "me"
+            ? UserResponse
+            : Fn extends "byUserId"
+              ? UserResponse
+              : never
 >;

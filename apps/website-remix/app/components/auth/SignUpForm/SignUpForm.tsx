@@ -1,6 +1,6 @@
 import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import React, { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { useForm } from "react-hook-form";
 
 import { authSchema } from "@template/sdk/schema";
@@ -15,12 +15,18 @@ import {
   FormMessage,
 } from "@template/ui/form";
 import { Input } from "@template/ui/input";
-import { isBoolean, isUndefined } from "@template/utils/assertion";
 
+import type { RoutesActionData } from "~/.server/routes/auth/signup.action";
 import { Icons } from "~/components/icons";
 import { InputPassword } from "~/components/shared/InputPassword";
 
 export default function SignUpForm() {
+  const navigation = useNavigation();
+  const submit = useSubmit();
+  const actionData = useActionData<RoutesActionData>();
+
+  const isSubmittingForm = navigation.state !== "idle";
+
   const form = useForm<FormFieldSignUpSchema>({
     resolver: zodResolver(authSchema.signUp),
     defaultValues: {
@@ -28,9 +34,17 @@ export default function SignUpForm() {
       password: "",
       confirmPassword: "",
     },
-    // errors: isUndefined(state) || isBoolean(state) ? undefined : state,
+    errors: actionData?.errors ?? undefined,
+    criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
+
+  const onSubmit = (input: FormFieldSignUpSchema) =>
+    submit(input, {
+      method: "post",
+      replace: true,
+      encType: "application/json",
+    });
 
   return (
     <div className="grid gap-6">
@@ -38,11 +52,7 @@ export default function SignUpForm() {
         <form
           id="signup-form"
           data-testid="signup-form"
-          onSubmit={form.handleSubmit((input) => {
-            //   startTransition(() => {
-            //     formAction(input);
-            //   });
-          })}
+          onSubmit={form.handleSubmit(onSubmit)}
         >
           <div className="grid gap-5">
             <FormField
@@ -106,13 +116,13 @@ export default function SignUpForm() {
             />
             <Button
               type="submit"
-              // disabled={isPending}
-              // aria-disabled={isPending}
+              disabled={isSubmittingForm}
+              aria-disabled={isSubmittingForm}
               data-testid="signup-button"
             >
-              {/* {isPending ? (
-              <Icons.spinner className="mr-2 size-4 animate-spin" />
-            ) : null} */}
+              {isSubmittingForm ? (
+                <Icons.spinner className="mr-2 size-4 animate-spin" />
+              ) : null}
               <span>회원가입</span>
             </Button>
           </div>

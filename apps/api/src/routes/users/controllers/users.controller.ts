@@ -1,8 +1,8 @@
+import type { UserExternalPayload } from "@template/db/selectors";
 import { Controller, Get, UseGuards } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AuthUser } from "src/decorators/auth-user.decorator";
 
-import type { UserExternalPayload } from "@template/db/selectors";
 import { HttpResultStatus } from "@template/sdk/enum";
 
 import { JwtAuthGuard } from "../../../guards/jwt.auth.guard";
@@ -20,9 +20,7 @@ export class UsersController {
       resultCode: HttpResultStatus.OK,
       message: null,
       error: null,
-      result: {
-        user,
-      },
+      result: user,
     };
   }
 }

@@ -19,3 +19,8 @@ export const SITE_CONFIG = {
   apple256x256: "/icons/icon_256x256.png",
   manifest: "/manifest.webmanifest",
 };
+
+export const CONSTANT_KEY = {
+  ACCESS_TOKEN: "template.access_token",
+  REFRESH_TOKEN: "template.refresh_token",
+};

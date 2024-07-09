@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
+import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
@@ -27,8 +27,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   }
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const input: Awaited<FormFieldSignUpSchema> = await request.json();
-  const response = await createApiClient().rpc("signUp").post(input);
+  const input: Awaited<FormFieldSignInSchema> = await request.json();
+  const response = await createApiClient().rpc("signIn").post(input);
   if (response.error) {
     return json(errorJsonDataResponse(response.error));
   }

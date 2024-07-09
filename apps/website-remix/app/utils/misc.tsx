@@ -1,3 +1,9 @@
+import cookie from "cookie";
+
+import { TokenResponse } from "@template/sdk";
+
+import { CONSTANT_KEY } from "~/constants/constants";
+
 export function getDomainUrl(request: Request) {
   const host =
     request.headers.get("X-Forwarded-Host") ??
@@ -68,4 +74,41 @@ export function combineResponseInits(
     };
   }
   return combined;
+}
+
+export function setAuthTokenCookie(token: TokenResponse) {
+  const { accessToken, refreshToken } = token;
+
+  const accessTokenCookie = cookie.serialize(
+    CONSTANT_KEY.ACCESS_TOKEN,
+    accessToken.token,
+    {
+      httpOnly: true,
+      sameSite: "lax",
+      expires: new Date(accessToken.expiresAt),
+    },
+  );
+
+  const refreshTokenCookie = cookie.serialize(
+    CONSTANT_KEY.REFRESH_TOKEN,
+    refreshToken.token,
+    {
+      httpOnly: true,
+      sameSite: "lax",
+      expires: new Date(refreshToken.expiresAt),
+    },
+  );
+
+  const headers = new Headers();
+  headers.append("Set-Cookie", accessTokenCookie);
+  headers.append("Set-Cookie", refreshTokenCookie);
+
+  return headers;
+}
+
+export function removeAuthTokenCookie() {
+  const headers = new Headers();
+  headers.append("Set-Cookie", "template.access_token=; Max-Age=0; Path=/");
+  headers.append("Set-Cookie", "template.refresh_token=; Max-Age=0; Path=/");
+  return headers;
 }
