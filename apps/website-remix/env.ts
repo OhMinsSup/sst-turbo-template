@@ -1,19 +1,17 @@
 import { createEnv } from "@t3-oss/env-core";
 import { z } from "zod";
 
-export const t3EnvFn = (
+export const t3EnvFn = <TPrefix extends string | undefined = "NEXT_PUBLIC_">(
   runtimeEnv: Record<string, string | boolean | number | undefined>,
+  clientPrefix: TPrefix,
 ) =>
-  createEnv({
-    clientPrefix: "NEXT_PUBLIC_",
+  createEnv<TPrefix>({
+    clientPrefix,
     server: {
-      AUTH_SECRET:
-        runtimeEnv.NODE_ENV === "production"
-          ? z.string().min(1)
-          : z.string().min(1).optional(),
       NODE_ENV: z
         .enum(["development", "production", "test"])
         .default("development"),
+      SESSION_SECRET: z.string().min(1),
     },
     client: {
       NEXT_PUBLIC_SERVER_URL: z.string().url(),

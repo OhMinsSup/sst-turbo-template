@@ -4,9 +4,7 @@ import tsconfigPaths from "vite-tsconfig-paths";
 
 import { t3EnvPlugin } from "@template/vite/t3-env";
 
-import { t3EnvFn } from "./app/env";
-
-// import { t3EnvPlugin } from "./vite-plugins";
+import { t3EnvFn } from "./env";
 
 export default defineConfig({
   plugins: [

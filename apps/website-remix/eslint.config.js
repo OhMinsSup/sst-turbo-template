@@ -32,6 +32,7 @@ export default [
       },
     },
     rules: {
+      "no-restricted-properties": "off",
       "@typescript-eslint/no-unsafe-enum-comparison": "off",
     },
   },

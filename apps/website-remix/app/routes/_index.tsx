@@ -1,4 +1,9 @@
-import type { MetaFunction } from "@remix-run/node";
+import type { LoaderFunctionArgs, MetaFunction } from "@remix-run/node";
+import { invariant } from "@epic-web/invariant";
+import { useLoaderData } from "@remix-run/react";
+
+import { createTrpcServer } from "~/.server/trpc";
+import { api } from "~/store/trpc-react";
 
 export const meta: MetaFunction = () => {
   return [
@@ -7,10 +12,31 @@ export const meta: MetaFunction = () => {
   ];
 };
 
+export const loader = async (ctx: LoaderFunctionArgs) => {
+  invariant(ctx.response, "response is required");
+
+  const trpcServer = createTrpcServer(ctx.request, ctx.response.headers);
+  const message = await trpcServer.etc.hello();
+  console.log("message", message);
+  return {
+    message,
+  };
+};
+
 export default function Index() {
+  const data = useLoaderData<typeof loader>();
+  const messageQuery = api.etc.hello.useQuery(undefined, {
+    initialData: data.message,
+  });
+
   return (
     <div className="p-4 font-sans">
       <h1 className="text-3xl">Welcome to Remix</h1>
+      <p className="mt-4">
+        Remix is a full-stack web framework for React. It's designed to make
+        building production-ready applications faster and easier. -
+        {messageQuery.data}
+      </p>
       <ul className="mt-4 list-disc space-y-2 pl-6">
         <li>
           <a
