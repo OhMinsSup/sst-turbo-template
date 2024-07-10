@@ -2,11 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import {
-  clearAuthTokens,
-  getAuthFromRequest,
-  refreshTokenFromRequest,
-} from "~/.server/utils/auth";
+import { clearAuthTokens, refreshTokenFromRequest } from "~/.server/utils/auth";
 import {
   errorJsonDataResponse,
   successJsonDataResponse,

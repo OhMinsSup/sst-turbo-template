@@ -29,6 +29,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       headers: combineHeaders(toastHeaders, headers),
     });
   } catch (error) {
+    console.error("[loader] error", error);
     return json(data, {
       headers: combineHeaders(toastHeaders, headers),
     });

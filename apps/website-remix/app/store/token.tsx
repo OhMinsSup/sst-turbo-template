@@ -15,22 +15,18 @@ export default function TokenProvider({ children }: TokenProviderProps) {
   const data = useLoaderData<RoutesLoaderData>();
   const fetcher = useFetcher<RoutesActionData>();
 
-  console.log("[TokenProvider] fetcher", fetcher);
-
   const updateSession = () => {
-    console.log("[updateSession] call", data);
     if (isEmpty(data)) {
       return;
     }
 
     switch (data.loggedInStatus) {
-      case "action:loggedIn":
       case "action:refreshed":
-      case "action:notLogin": {
+      case "action:loggedIn": {
+        fetcher.submit("?/refresh", { method: "post" });
         return;
       }
       default: {
-        fetcher.submit("/?refresh", { method: "post" });
         return;
       }
     }

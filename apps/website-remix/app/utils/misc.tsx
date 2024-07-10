@@ -1,8 +1,3 @@
-import type { TokenResponse } from "@template/sdk";
-import cookie from "cookie";
-
-import { CONSTANT_KEY } from "~/constants/constants";
-
 export function getDomainUrl(request: Request) {
   const host =
     request.headers.get("X-Forwarded-Host") ??

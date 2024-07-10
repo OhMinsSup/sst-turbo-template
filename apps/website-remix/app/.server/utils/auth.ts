@@ -97,26 +97,29 @@ export async function validateRefreshToken(
   accessToken: string,
   refreshToken?: string | null,
 ) {
+  // refresh token이 없는 경우 재발급 안되게 처리
   if (!refreshToken) {
     return {
       status: "action:invalidRefreshToken" as const,
       tokens: null,
-      headers: null,
+      headers: combineHeaders(clearAuthTokens()),
     };
   }
 
-  // access token이 만료되기 5분 전에 refresh token을 사용하여 access token을 갱신한다.
+  // accessToken의 decode해서 만료일자를 가져온다.
   const decode = jwt.decode(accessToken, { json: true });
   if (!decode) {
     return {
       status: "action:dencodeTokenError" as const,
       tokens: null,
-      headers: null,
+      headers: combineHeaders(clearAuthTokens()),
     };
   }
 
+  // access token이 만료되기 5분 전에 refresh token을 사용하여 access token을 갱신한다.
   if (decode.exp && isAccessTokenExpireDate(decode.exp * 1000)) {
     try {
+      // 발급이 완료된 상태
       const refreshRes = await createApiClient().rpc("refresh").patch({
         refreshToken,
       });
@@ -131,14 +134,16 @@ export async function validateRefreshToken(
         headers: combineHeaders(setAuthTokens(tokens)),
       };
     } catch (error) {
+      // 발급이 실패한 상태
       return {
         status: "action:invalidRefreshToken" as const,
         tokens: null,
-        headers: null,
+        headers: combineHeaders(clearAuthTokens()),
       };
     }
   }
 
+  // refresh를 할 필요가 없는 경우
   return {
     status: "action:notRefreshed" as const,
     tokens: null,
@@ -148,24 +153,32 @@ export async function validateRefreshToken(
 
 export async function getAuthFromRequest(request: Request) {
   const cookieString = request.headers.get("Cookie");
+  // 쿠키 정보가 없는 경우
   if (!cookieString) {
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: combineHeaders(clearAuthTokens()),
+      headers: null,
     };
   }
 
   const { accessToken, refreshToken } = getAuthTokens(cookieString);
+  // 쿠키는 존재하지만 인증 토큰이 존재하는지 체크가 필요
   if (!accessToken) {
+    // accessToken이 없는 경우 refreshToken으로 accessToken을 갱신한다.
+    if (refreshToken) {
+      return await refreshTokenFromRequest(request);
+    }
+
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: combineHeaders(clearAuthTokens()),
+      headers: null,
     };
   }
 
   try {
+    // 토큰이 존재하는 해당 토큰이 잘못된 토큰인지 체크한다.
     if (!(await verifyToken(accessToken))) {
       return {
         status: "action:invalidToken" as const,
@@ -174,6 +187,7 @@ export async function getAuthFromRequest(request: Request) {
       };
     }
 
+    // accessToken이 만료되기 5분 전에 refreshToken으로 accessToken을 갱신한다.
     const { status, tokens } = await validateRefreshToken(
       accessToken,
       refreshToken,
@@ -181,6 +195,7 @@ export async function getAuthFromRequest(request: Request) {
 
     switch (status) {
       case "action:refreshed": {
+        // 새로운 토큰 정보를 header에 적용시킨 후 유저 정보를 가져온다.
         const userRes = await getUserInfo(tokens.accessToken.token);
         return {
           status,
@@ -189,13 +204,15 @@ export async function getAuthFromRequest(request: Request) {
         };
       }
       case "action:notRefreshed": {
+        // refreshToken으로 accessToken을 갱신할 필요가 없는 경우
         break;
       }
       default: {
+        // 재발급시 에러가 발생하는 경우
         return {
           status,
           user: null,
-          headers: combineHeaders(clearAuthTokens()),
+          headers: null,
         };
       }
     }
@@ -208,6 +225,7 @@ export async function getAuthFromRequest(request: Request) {
       headers: null,
     };
   } catch (error) {
+    console.error(error);
     return {
       status: "action:error" as const,
       user: null,
@@ -218,18 +236,20 @@ export async function getAuthFromRequest(request: Request) {
 
 export async function refreshTokenFromRequest(request: Request) {
   const cookieString = request.headers.get("Cookie");
+  // 쿠키 정보가 없는 경우
   if (!cookieString) {
     return {
       status: "action:notLogin" as const,
-      headers: combineHeaders(clearAuthTokens()),
+      headers: null,
     };
   }
 
-  const { accessToken, refreshToken } = getAuthTokens(cookieString);
-  if (!accessToken || !refreshToken) {
+  const { refreshToken } = getAuthTokens(cookieString);
+  // 쿠키는 존재하지만 인증 토큰이 존재하는지 체크가 필요
+  if (!refreshToken) {
     return {
       status: "action:notLogin" as const,
-      headers: combineHeaders(clearAuthTokens()),
+      headers: null,
     };
   }
 
