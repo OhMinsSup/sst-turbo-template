@@ -18,9 +18,9 @@
     "eslint": "^9.6.0",
     "prettier": "^3.3.2",
     "rimraf": "^5.0.7",
+    "tsup": "^8.1.0",
     "typescript": "^5.5.3",
-    "vite": "^5.3.3",
-    "tsup": "^8.1.0"
+    "vite": "^5.3.3"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {
@@ -44,6 +44,19 @@
         "types": "./dist/t3-env.d.js",
         "default": "./dist/t3-env.js"
       }
+    },
+    "./transpile": {
+      "import": {
+        "types": "./dist/transpile.d.ts",
+        "default": "./dist/transpile.js"
+      },
+      "require": {
+        "types": "./dist/transpile.d.js",
+        "default": "./dist/transpile.js"
+      }
     }
+  },
+  "dependencies": {
+    "esbuild": "^0.23.0"
   }
 }
