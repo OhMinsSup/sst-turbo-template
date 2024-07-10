@@ -3,12 +3,17 @@ import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
 import {
+  clearAuthTokens,
+  getAuthFromRequest,
+  refreshTokenFromRequest,
+} from "~/.server/utils/auth";
+import {
   errorJsonDataResponse,
   successJsonDataResponse,
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
 import { isTheme } from "~/store/theme-store";
-import { combineHeaders, removeAuthTokenCookie } from "~/utils/misc";
+import { combineHeaders } from "~/utils/misc";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   return namedAction(request, {
@@ -25,13 +30,27 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         },
       });
     },
+    // eslint-disable-next-line @typescript-eslint/require-await
     async logout() {
-      const headers = await Promise.resolve(
-        combineHeaders(removeAuthTokenCookie()),
-      );
       return json(successJsonDataResponse(true), {
-        headers,
+        headers: combineHeaders(clearAuthTokens()),
       });
+    },
+    async refresh() {
+      const { status, headers } = await refreshTokenFromRequest(request);
+      switch (status) {
+        case "action:notLogin":
+        case "action:refreshed": {
+          return json(successJsonDataResponse(status), {
+            headers: combineHeaders(headers),
+          });
+        }
+        default: {
+          return json(errorJsonDataResponse(status), {
+            headers: combineHeaders(headers),
+          });
+        }
+      }
     },
   });
 };

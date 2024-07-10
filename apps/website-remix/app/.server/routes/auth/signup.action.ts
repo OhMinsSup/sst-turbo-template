@@ -11,10 +11,11 @@ import {
 } from "@template/sdk/enum";
 import { createHttpError } from "@template/sdk/error";
 
+import { setAuthTokens } from "~/.server/utils/auth";
 import { errorJsonDataResponse } from "~/.server/utils/response";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { createApiClient } from "~/store/app";
-import { combineHeaders, setAuthTokenCookie } from "~/utils/misc";
+import { combineHeaders } from "~/utils/misc";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   if (request.method.toUpperCase() !== RequestMethod.POST) {
@@ -42,7 +43,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } = response;
 
   return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-    headers: combineHeaders(setAuthTokenCookie(tokens)),
+    headers: combineHeaders(setAuthTokens(tokens)),
   });
 };
 

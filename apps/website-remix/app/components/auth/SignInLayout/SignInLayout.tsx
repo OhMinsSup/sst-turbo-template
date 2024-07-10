@@ -21,6 +21,7 @@ export default function SignInLayout({ children }: SignInLayoutProps) {
         <p className={cn("px-8 text-center text-sm text-muted-foreground")}>
           <Link
             to={PAGE_ENDPOINTS.AUTH.SIGNUP}
+            unstable_viewTransition
             className={cn("hover:text-brand underline underline-offset-4")}
           >
             아직 계정이 없으신가요? 회원가입

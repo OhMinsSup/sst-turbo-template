@@ -1,79 +1,46 @@
-"use client";
-
-import React, { useEffect } from "react";
-import { signOut, useSession } from "next-auth/react";
+import React from "react";
+import { useFetcher, useLoaderData } from "@remix-run/react";
 
 import { useRafInterval } from "@template/hooks/useRafInterval";
-import { HttpResultStatus } from "@template/sdk/enum";
-import { isSessionExpireDate } from "@template/utils/date";
+import { isEmpty } from "@template/utils/assertion";
 
-import { useApiClient } from "./api-client-provider";
+import type { RoutesActionData } from "~/.server/routes/root/root.action";
+import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 
 interface TokenProviderProps {
   children: React.ReactNode;
 }
 
 export default function TokenProvider({ children }: TokenProviderProps) {
-  const client = useApiClient();
+  const data = useLoaderData<RoutesLoaderData>();
+  const fetcher = useFetcher<RoutesActionData>();
 
-  //   const updateSession = async () => {
-  //     console.log("[updateSession] call", data);
-  //     if (!data) {
-  //       return;
-  //     }
+  console.log("[TokenProvider] fetcher", fetcher);
 
-  //     if (data.error) {
-  //       return;
-  //     }
+  const updateSession = () => {
+    console.log("[updateSession] call", data);
+    if (isEmpty(data)) {
+      return;
+    }
 
-  //     console.log("[updateSession] data", data);
+    switch (data.loggedInStatus) {
+      case "action:loggedIn":
+      case "action:refreshed":
+      case "action:notLogin": {
+        return;
+      }
+      default: {
+        fetcher.submit("/?refresh", { method: "post" });
+        return;
+      }
+    }
+  };
 
-  //     const result = isSessionExpireDate(
-  //       data.expires,
-  //       data.user.accessTokenExpiresAt,
-  //     );
-
-  //     console.log("[updateSession] compareSessionExpireDate", result);
-
-  //     if (result.isUpdate) {
-  //       try {
-  //         const response = await client.rpc("refresh").patch({
-  //           refreshToken: data.user.refreshToken,
-  //         });
-  //         if (response.resultCode === HttpResultStatus.OK) {
-  //           console.log("[updateSession] update session");
-  //           const session = await update({ user: response.result });
-  //           console.log("[updateSession] update session done", session);
-  //         }
-  //       } catch (error) {
-  //         console.error("[updateSession] error", error);
-  //       }
-  //     } else {
-  //       console.log("[updateSession] not update session");
-  //     }
-  //   };
-
-  //   useEffect(() => {
-  //     if (!data) {
-  //       return;
-  //     }
-
-  //     if (
-  //       data.error === "RefreshAccessTokenError" ||
-  //       data.error === "MissingRefreshToken"
-  //     ) {
-  //       // eslint-disable-next-line @typescript-eslint/no-floating-promises
-  //       signOut();
-  //       return;
-  //     }
-  //   }, [data]);
-
-  //   useRafInterval(
-  //     // eslint-disable-next-line @typescript-eslint/no-misused-promises
-  //     () => updateSession(),
-  //     // 1분
-  //     1000 * 60 * 1,
-  //   );
+  useRafInterval(
+    () => updateSession(),
+    // 1분
+    1000 * 60 * 1,
+  );
 
   return <>{children}</>;
 }
