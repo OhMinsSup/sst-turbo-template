@@ -7,7 +7,6 @@ import {
   useLoaderData,
 } from "@remix-run/react";
 
-import "./styles/fonts.css";
 import "./styles/tailwind.css";
 
 import { cn } from "@template/ui";
@@ -33,10 +32,7 @@ interface Props {
 function Document({ children }: Props) {
   const [theme] = useTheme();
   return (
-    <html
-      lang="en"
-      className={cn("__variable_geistSans __variable_geistMono", theme)}
-    >
+    <html lang="en" className={cn(theme)}>
       <head>
         <meta charSet="utf-8" />
         <meta name="viewport" content="width=device-width, initial-scale=1" />

@@ -1,6 +1,8 @@
-/* sans */
-@font-face {
+/* @font-face {
   font-family: "__GeistSans";
+  font-weight: 100 900;
+  font-display: swap;
+  font-style: normal;
   src:
     url("./assets/fonts/geist-sans/Geist-Thin.woff2") format("woff2"),
     url("./assets/fonts/geist-sans/Geist-UltraLight.woff2") format("woff2"),
@@ -11,55 +13,13 @@
     url("./assets/fonts/geist-sans/Geist-Bold.woff2") format("woff2"),
     url("./assets/fonts/geist-sans/Geist-Black.woff2") format("woff2"),
     url("./assets/fonts/geist-sans/Geist-UltraBlack.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 100 900;
 }
 
 @font-face {
-  font-family: "__GeistSans_Fallback";
+  font-family: "__GeistSans_Override";
   src: local("Arial");
   ascent-override: 85.83%;
   descent-override: 20.52%;
   line-gap-override: 9.33%;
   size-adjust: 107.19%;
-}
-.__className_geistSans {
-  font-family: "__GeistSans", "__GeistSans_Fallback";
-}
-.__variable_geistSans {
-  --font-geist-sans: "__GeistSans", "__GeistSans_Fallback";
-}
-
-/* mono */
-@font-face {
-  font-family: "__GeistMono";
-  src:
-    url("./assets/fonts/geist-mono/GeistMono-Thin.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-UltraLight.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-Light.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-Regular.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-Medium.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-SemiBold.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-Bold.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-Black.woff2") format("woff2"),
-    url("./assets/fonts/geist-mono/GeistMono-UltraBlack.woff2") format("woff2");
-  font-display: swap;
-  font-weight: 100 900;
-}
-.__className_geistMono {
-  font-family:
-    "__GeistMono",
-    ui-monospace,
-    SFMono-Regular,
-    Roboto Mono,
-    Menlo,
-    Monaco,
-    Liberation Mono,
-    DejaVu Sans Mono,
-    Courier New,
-    monospace;
-}
-.__variable_geistMono {
-  --font-geist-mono: "__GeistMono", ui-monospace, SFMono-Regular, Roboto Mono,
-    Menlo, Monaco, Liberation Mono, DejaVu Sans Mono, Courier New, monospace;
-}
+} */

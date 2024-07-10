@@ -33,6 +33,8 @@
     --ring: 222.2 84% 4.9%;
 
     --radius: 0.5rem;
+
+    --font-geist-sans: "__GeistSans", "__GeistSans_Override";
   }
 
   .dark {
