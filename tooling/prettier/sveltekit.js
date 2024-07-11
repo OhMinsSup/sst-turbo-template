@@ -9,6 +9,7 @@ const config = {
   plugins: [
     "@ianvs/prettier-plugin-sort-imports",
     "prettier-plugin-tailwindcss",
+    "prettier-plugin-svelte",
   ],
   tailwindConfig: fileURLToPath(
     new URL("../../tooling/tailwind/web.ts", import.meta.url),
@@ -16,10 +17,7 @@ const config = {
   tailwindFunctions: ["cn", "cva"],
   importOrder: [
     "<TYPES>",
-    "^(react/(.*)$)|^(react$)|^(react-native(.*)$)",
-    "^(next/(.*)$)|^(next$)",
-    "^(@remix-run/(.*)$)|^(@remix-run$)|^(remix(.*)$)|^(remix$)",
-    "^(expo(.*)$)|^(expo$)",
+    "^(svelte/(.*)$)|^(svelte$)",
     "<THIRD_PARTY_MODULES>",
     "",
     "<TYPES>^@template",

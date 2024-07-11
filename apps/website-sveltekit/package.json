@@ -1,0 +1,37 @@
+{
+  "name": "website-sveltekit",
+  "version": "0.0.1",
+  "private": true,
+  "scripts": {
+    "dev": "vite dev",
+    "build": "vite build",
+    "preview": "vite preview",
+    "test": "npm run test:integration && npm run test:unit",
+    "check": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json",
+    "check:watch": "svelte-kit sync && svelte-check --tsconfig ./tsconfig.json --watch",
+    "lint": "prettier --check . && eslint .",
+    "format": "prettier --write .",
+    "test:integration": "playwright test",
+    "test:unit": "vitest"
+  },
+  "devDependencies": {
+    "@template/eslint-config": "workspace:*",
+    "@template/prettier-config": "workspace:*",
+    "@template/tailwind-config": "workspace:*",
+    "@template/vite": "workspace:*",
+    "@playwright/test": "^1.28.1",
+    "@sveltejs/adapter-auto": "^3.0.0",
+    "@sveltejs/kit": "^2.0.0",
+    "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "eslint": "^9.6.0",
+    "prettier": "^3.3.2",
+    "svelte": "^4.2.7",
+    "svelte-check": "^3.6.0",
+    "tslib": "^2.4.1",
+    "typescript": "^5.5.3",
+    "vite": "^5.3.3",
+    "vitest": "^1.2.0"
+  },
+  "prettier": "@template/prettier-config/sveltekit",
+  "type": "module"
+}
