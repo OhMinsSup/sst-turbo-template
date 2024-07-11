@@ -1,8 +1,8 @@
 "use client";
 
+import type { Client } from "@template/sdk";
 import React from "react";
 
-import type { Client } from "@template/sdk";
 import { createClient } from "@template/sdk";
 
 import { env } from "~/env";
@@ -26,7 +26,6 @@ const getApiClient = () => {
 interface Props {
   children: React.ReactNode;
 }
-
 export default function AppProvider({ children }: Props) {
   const apiClient = getApiClient();
 

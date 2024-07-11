@@ -19,13 +19,14 @@ export const PAGE_ENDPOINTS = {
 } as const;
 
 export const SITE_CONFIG = {
-  title: "",
-  keywords: [],
-  description: "",
-  ogImage: "/og/seo.png",
+  title: "Next.js by Vercel - The React Framework",
+  keywords: ["Next.js", "React", "Framework"],
+  description:
+    "Next.js by Vercel is the full-stack React framework for the web.",
+  ogImage: "/opengraph-image.png",
   favicon: "/favicon.ico",
-  apple57x57: "/icons/icon_57x57.png",
-  apple180x180: "/icons/icon_180x180.png",
-  apple256x256: "/icons/icon_256x256.png",
+  apple32x32: "/images/favicon-32.png",
+  apple180x180: "/images/favicon-180.png",
+  apple192x192: "/images/favicon-192.png",
   manifest: "/manifest.webmanifest",
 };

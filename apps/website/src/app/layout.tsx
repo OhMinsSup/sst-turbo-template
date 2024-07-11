@@ -1,4 +1,4 @@
-import type { Viewport } from "next";
+import type { Metadata, Viewport } from "next";
 import { GeistMono } from "geist/font/mono";
 import { GeistSans } from "geist/font/sans";
 
@@ -7,7 +7,55 @@ import { Toaster } from "@template/ui/toaster";
 
 import "~/app/globals.css";
 
+import { headers } from "next/headers";
+
+import { SITE_CONFIG } from "~/constants/constants";
 import RootProvider from "~/contexts/root";
+import { getRequestInfo } from "~/utils/request";
+
+// eslint-disable-next-line @typescript-eslint/require-await
+export async function generateMetadata(): Promise<Metadata> {
+  const info = getRequestInfo(headers());
+  const metadataBase = new URL(info.domainUrl);
+  const manifestURL = new URL(SITE_CONFIG.manifest, metadataBase);
+
+  return {
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    icons: {
+      icon: SITE_CONFIG.favicon,
+    },
+    metadataBase,
+    manifest: manifestURL,
+    alternates: {
+      canonical: metadataBase,
+    },
+    openGraph: {
+      title: SITE_CONFIG.title,
+      description: SITE_CONFIG.description,
+      url: metadataBase.href,
+      siteName: SITE_CONFIG.title,
+      images: [
+        {
+          url: SITE_CONFIG.ogImage,
+        },
+      ],
+      type: "website",
+    },
+    twitter: {
+      site: "@Lalossol",
+      creator: "@Lalossol",
+      card: "summary_large_image",
+      title: SITE_CONFIG.title,
+      description: SITE_CONFIG.description,
+      images: [
+        {
+          url: SITE_CONFIG.ogImage,
+        },
+      ],
+    },
+  };
+}
 
 export const viewport: Viewport = {
   themeColor: [
@@ -22,7 +70,7 @@ interface LayoutProps {
 
 export default function Layout(props: LayoutProps) {
   return (
-    <html lang="ko" suppressHydrationWarning>
+    <html lang="en">
       <body
         className={cn(
           "min-h-screen bg-background font-sans text-foreground antialiased",

@@ -10,7 +10,7 @@ export const PAGE_ENDPOINTS = {
 
 export const SITE_CONFIG = {
   title: "Remix - Build Better Websites",
-  keywords: ["Remix"],
+  keywords: ["Remix", "React", "Framework"],
   description:
     "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.",
   ogImage: "/images/og.jpg",
