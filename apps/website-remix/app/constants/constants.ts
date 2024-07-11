@@ -9,15 +9,16 @@ export const PAGE_ENDPOINTS = {
 } as const;
 
 export const SITE_CONFIG = {
-  title: "",
-  keywords: [],
-  description: "",
-  ogImage: "/og/seo.png",
+  title: "Remix - Build Better Websites",
+  keywords: ["Remix"],
+  description:
+    "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.",
+  ogImage: "/images/og.jpg",
   favicon: "/favicon.ico",
-  apple57x57: "/icons/icon_57x57.png",
-  apple180x180: "/icons/icon_180x180.png",
-  apple256x256: "/icons/icon_256x256.png",
-  manifest: "/manifest.webmanifest",
+  apple32x32: "/images/favicon-32.png",
+  apple180x180: "/images/favicon-180.png",
+  apple192x192: "/images/favicon-192.png",
+  manifest: "/site.webmanifest",
 };
 
 export const CONSTANT_KEY = {

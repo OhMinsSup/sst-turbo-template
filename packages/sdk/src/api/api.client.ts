@@ -1,4 +1,4 @@
-import type { $Fetch } from "ofetch";
+import type { $Fetch, FetchOptions } from "ofetch";
 import { ofetch } from "ofetch";
 import { withBase, withoutTrailingSlash } from "ufo";
 
@@ -49,7 +49,21 @@ export class ApiClient {
     });
   }
 
-  get fetch() {
-    return this.fetchClient;
+  fetchNative(input: string | URL | globalThis.Request, init?: RequestInit) {
+    return this.fetchClient.native(input, init);
+  }
+
+  fetchRaw<
+    T = any,
+    R extends "json" | "text" | "blob" | "arrayBuffer" | "stream" = "json",
+  >(request: string | Request, options?: FetchOptions<R> | undefined) {
+    return this.fetchClient.raw<T, R>(request, options);
+  }
+
+  fetch<
+    T = any,
+    R extends "json" | "text" | "blob" | "arrayBuffer" | "stream" = "json",
+  >(request: string | Request, options?: FetchOptions<R> | undefined) {
+    return this.fetchClient<T, R>(request, options);
   }
 }

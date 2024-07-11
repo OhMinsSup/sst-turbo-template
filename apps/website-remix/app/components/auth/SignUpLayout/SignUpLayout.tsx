@@ -28,7 +28,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
       <div className="lg:p-8">
         <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
           <div className="flex flex-col space-y-2 text-center">
-            <Icons.threads className="mx-auto size-8 fill-current" />
+            <Icons.logo className="mx-auto h-8 fill-current" />
           </div>
           {children}
           <p
@@ -40,7 +40,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
               to="/terms"
               className={cn("hover:text-brand underline underline-offset-4")}
             >
-              Threads 약관
+              Remix 약관
             </Link>
             <Link
               to="/privacy"
