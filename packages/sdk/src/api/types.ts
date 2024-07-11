@@ -1,5 +1,6 @@
-import type { UserExternalPayload } from "@template/db/selectors";
 import type { $Fetch, FetchOptions } from "ofetch";
+
+import type { UserExternalPayload } from "@template/db/selectors";
 
 import type {
   FormFieldRefreshTokenSchema,
@@ -72,32 +73,54 @@ export type FnNameKey = EndpointsKey;
 
 export interface RpcOptions {
   headers?: HeadersInit;
-  method?: MethodType;
+  signal?: AbortSignal;
+  path?: Record<string, string>;
+  options?: $OfetchOptions;
 }
 
 // api.filter.ts -----------------------------------
 
 // api.transform.builder.ts -----------------------------------
-
-export type ApiInput<Fn extends FnNameKey> = Fn extends "signUp"
+export type ApiInput<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> = FnKey extends "signUp"
   ? FormFieldSignUpSchema
-  : Fn extends "signIn"
+  : FnKey extends "signIn"
     ? FormFieldSignInSchema
-    : Fn extends "refresh"
+    : FnKey extends "refresh"
       ? FormFieldRefreshTokenSchema
-      : Fn extends "verify"
+      : FnKey extends "verify"
         ? FormFieldVerifyTokenSchema
         : undefined;
 
+export interface TransformBuilderConstructorOptions<FnKey extends FnNameKey> {
+  fnKey: FnKey;
+  url: string;
+  fetchClient: $Fetch;
+  options?: $OfetchOptions;
+  headers?: HeadersInit;
+  signal?: AbortSignal;
+  path?: Record<string, string>;
+}
+
 // api.builder.ts -----------------------------------
-export interface ConstructorOptions<FnKey extends FnNameKey> {
+export interface BuilderConstructorOptions<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> {
   fnKey: FnKey;
   url: string;
   fetchClient: $Fetch;
   shouldThrowOnError?: boolean;
-  method?: MethodType;
+  method: MethodKey;
   options?: $OfetchOptions;
   headers?: HeadersInit;
+  body?: ApiInput<FnKey, MethodKey>;
+  signal?: AbortSignal;
+  path?: Record<string, string>;
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  searchParams?: Record<string, any>;
 }
 
 // response types -----------------------------------
@@ -121,18 +144,33 @@ export type UserResponse = UserExternalPayload;
 
 // api.builder.ts -----------------------------------
 
-export type ApiBuilderReturnValue<Fn extends FnNameKey> = ClientResponse<
-  Fn extends "signUp"
+type ApiResponse<FnKey, MethodKey> = FnKey extends "signUp"
+  ? MethodKey extends "POST"
     ? AuthResponse
-    : Fn extends "signIn"
+    : never
+  : FnKey extends "signIn"
+    ? MethodKey extends "POST"
       ? AuthResponse
-      : Fn extends "refresh"
+      : never
+    : FnKey extends "refresh"
+      ? MethodKey extends "PATCH"
         ? AuthResponse
-        : Fn extends "verify"
+        : never
+      : FnKey extends "verify"
+        ? MethodKey extends "POST"
           ? boolean
-          : Fn extends "me"
+          : never
+        : FnKey extends "me"
+          ? MethodKey extends "GET"
             ? UserResponse
-            : Fn extends "byUserId"
+            : never
+          : FnKey extends "byUserId"
+            ? MethodKey extends "GET"
               ? UserResponse
               : never
->;
+            : never;
+
+export type ApiBuilderReturnValue<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> = ClientResponse<ApiResponse<FnKey, MethodKey>>;
