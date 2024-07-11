@@ -154,10 +154,10 @@ migrations
 Thumbs.db
 
 # remix
-/.cache
+.cache
 
 # SvelteKit
-/.svelte-kit
+.svelte-kit
 
 # Vite
 vite.config.js.timestamp-*
