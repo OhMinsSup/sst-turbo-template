@@ -7,16 +7,13 @@ import { redirect } from "next/navigation";
 
 import { signIn } from "@template/auth";
 import { HttpResultStatus } from "@template/sdk/enum";
-import { isHttpError, isThreadError } from "@template/sdk/error";
+import { isAppError, isHttpError } from "@template/sdk/error";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 type ZodValidateError = FieldErrors<FormFieldSignInSchema>;
 
-export type PreviousState =
-  | FieldErrors<FormFieldSignInSchema>
-  | undefined
-  | boolean;
+export type State = FieldErrors<FormFieldSignInSchema> | undefined | boolean;
 
 const defaultErrorMessage = {
   email: {
@@ -24,10 +21,7 @@ const defaultErrorMessage = {
   },
 };
 
-export async function serverAction(
-  _: PreviousState,
-  input: FormFieldSignInSchema,
-) {
+export async function submitAction(_: State, input: FormFieldSignInSchema) {
   let isRedirect = false;
   try {
     await signIn("credentials", {
@@ -44,8 +38,8 @@ export async function serverAction(
       // @ts-expect-error - The error object has a cause property
       // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
       const error = e.cause?.err;
-      if (isThreadError<ZodValidateError>(error) && error.data) {
-        return error.data as PreviousState;
+      if (isAppError<ZodValidateError>(error) && error.data) {
+        return error.data as State;
       }
 
       if (isHttpError<ClientResponse>(error) && error.data) {
@@ -55,14 +49,14 @@ export async function serverAction(
               Array.isArray(error.data.message)
                 ? error.data.message.at(0)
                 : defaultErrorMessage
-            ) as PreviousState;
+            ) as State;
           }
           case HttpResultStatus.INCORRECT_PASSWORD:
           case HttpResultStatus.NOT_EXIST: {
-            return error.data.message as PreviousState;
+            return error.data.message as State;
           }
           default: {
-            return defaultErrorMessage as PreviousState;
+            return defaultErrorMessage as State;
           }
         }
       }

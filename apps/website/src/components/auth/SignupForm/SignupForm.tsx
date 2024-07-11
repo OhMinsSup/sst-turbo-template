@@ -20,18 +20,18 @@ import {
 import { Input } from "@template/ui/input";
 import { isBoolean, isUndefined } from "@template/utils/assertion";
 
-import type { PreviousState } from "~/actions/signup";
-import { serverAction } from "~/actions/signup";
+import type { State } from "~/components/auth/SignupForm/signup.action";
+import { submitAction } from "~/components/auth/SignupForm/signup.action";
 import { Icons } from "~/components/icons";
 import { InputPassword } from "~/components/shared/InputPassword";
 
 export default function SignupForm() {
   const [isPending, startTransition] = useTransition();
 
-  const [state, formAction] = useFormState<
-    PreviousState,
-    FormFieldSignUpSchema
-  >(serverAction, undefined);
+  const [state, formAction] = useFormState<State, FormFieldSignUpSchema>(
+    submitAction,
+    undefined,
+  );
 
   const form = useForm<FormFieldSignUpSchema>({
     resolver: zodResolver(authSchema.signUp),
@@ -51,9 +51,7 @@ export default function SignupForm() {
           id="signup-form"
           data-testid="signup-form"
           onSubmit={form.handleSubmit((input) => {
-            startTransition(() => {
-              formAction(input);
-            });
+            startTransition(() => formAction(input));
           })}
         >
           <div className="grid gap-5">

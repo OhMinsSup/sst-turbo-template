@@ -20,18 +20,18 @@ import {
 import { Input } from "@template/ui/input";
 import { isBoolean, isUndefined } from "@template/utils/assertion";
 
-import type { PreviousState } from "~/actions/signup";
-import { serverAction } from "~/actions/signin";
+import type { State } from "~/components/auth/SignInForm/signin.action";
+import { submitAction } from "~/components/auth/SignInForm/signin.action";
 import { Icons } from "~/components/icons";
 import { InputPassword } from "~/components/shared/InputPassword";
 
 export default function SignInForm() {
   const [isPending, startTransition] = useTransition();
 
-  const [state, formAction] = useFormState<
-    PreviousState,
-    FormFieldSignUpSchema
-  >(serverAction, undefined);
+  const [state, formAction] = useFormState<State, FormFieldSignUpSchema>(
+    submitAction,
+    undefined,
+  );
 
   const form = useForm<FormFieldSignUpSchema>({
     progressive: true,
@@ -50,9 +50,7 @@ export default function SignInForm() {
         <form
           id="signin-form"
           onSubmit={form.handleSubmit((input) => {
-            startTransition(() => {
-              formAction(input);
-            });
+            startTransition(() => formAction(input));
           })}
         >
           <div className="grid gap-5">
