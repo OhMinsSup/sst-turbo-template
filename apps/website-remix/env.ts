@@ -13,6 +13,16 @@ export const t3EnvFn = <TPrefix extends string | undefined = "NEXT_PUBLIC_">(
         .default("development"),
       SESSION_SECRET: z.string().min(1),
     },
+    shared: {
+      ACCESS_TOKEN_NAME: z
+        .string()
+        .min(1)
+        .regex(/.*\.access_token/),
+      REFRESH_TOKEN_NAME: z
+        .string()
+        .min(1)
+        .regex(/.*\.refresh_token/),
+    },
     client: {
       NEXT_PUBLIC_SERVER_URL: z.string().url(),
     },

@@ -134,22 +134,31 @@ migrations
 *.db
 *.db-journal
 
-# env
-env/.env.development
-env/.env.production
+# Env
+.env
+.env.*
+!.env.example
+!.env.test
 
+# build
+
+# Deploy & Build
 .turbo
 .cache
 .sst
+.vercel
+/build
 
-.anchor
+# OS
 .DS_Store
-target
-**/*.rs.bk
-node_modules
-test-ledger
-.yarn
+Thumbs.db
 
 # remix
 /.cache
-/build
+
+# SvelteKit
+/.svelte-kit
+
+# Vite
+vite.config.js.timestamp-*
+vite.config.ts.timestamp-*

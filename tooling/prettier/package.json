@@ -4,7 +4,8 @@
   "private": true,
   "type": "module",
   "exports": {
-    ".": "./index.js"
+    ".": "./index.js",
+    "./sveltekit": "./sveltekit.js"
   },
   "scripts": {
     "clean": "rimraf .turbo node_modules",
@@ -16,7 +17,8 @@
     "@ianvs/prettier-plugin-sort-imports": "^4.3.0",
     "prettier": "^3.3.2",
     "prettier-plugin-packagejson": "^2.5.0",
-    "prettier-plugin-tailwindcss": "^0.6.5"
+    "prettier-plugin-tailwindcss": "^0.6.5",
+    "prettier-plugin-svelte": "^3.2.5"
   },
   "devDependencies": {
     "@template/tsconfig": "workspace:*",
