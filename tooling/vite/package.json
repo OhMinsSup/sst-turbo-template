@@ -15,12 +15,12 @@
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "eslint": "^9.6.0",
-    "prettier": "^3.3.2",
-    "rimraf": "^5.0.7",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3",
-    "vite": "^5.3.3"
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "rimraf": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {

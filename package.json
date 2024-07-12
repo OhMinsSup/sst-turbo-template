@@ -35,11 +35,11 @@
     "@template/prettier-config": "workspace:*",
     "@turbo/gen": "^2.0.6",
     "dotenv-cli": "^7.4.2",
-    "prettier": "^3.3.2",
+    "prettier": "catalog:",
     "turbo": "^2.0.6",
-    "typescript": "^5.5.3"
+    "typescript": "catalog:"
   },
-  "packageManager": "pnpm@9.0.5",
+  "packageManager": "pnpm@9.5.0",
   "engines": {
     "bun": ">=1.0",
     "node": ">=20.0"

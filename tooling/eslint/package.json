@@ -33,9 +33,9 @@
   "devDependencies": {
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "eslint": "^9.6.0",
-    "prettier": "^3.3.2",
-    "rimraf": "^5.0.7"
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "rimraf": "catalog:"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {

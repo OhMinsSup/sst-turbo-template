@@ -39,16 +39,16 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "date-fns": "^3.6.0"
+    "date-fns": "catalog:"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "eslint": "^9.6.0",
-    "prettier": "^3.3.2",
-    "tsup": "^8.1.0",
-    "typescript": "^5.5.3"
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
   },
   "prettier": "@template/prettier-config"
 }

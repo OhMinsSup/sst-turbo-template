@@ -15,15 +15,15 @@
   "prettier": "@template/prettier-config",
   "dependencies": {
     "@ianvs/prettier-plugin-sort-imports": "^4.3.0",
-    "prettier": "^3.3.2",
+    "prettier": "catalog:",
     "prettier-plugin-packagejson": "^2.5.0",
     "prettier-plugin-tailwindcss": "^0.6.5",
     "prettier-plugin-svelte": "^3.2.5"
   },
   "devDependencies": {
     "@template/tsconfig": "workspace:*",
-    "rimraf": "^5.0.7",
-    "typescript": "^5.5.3"
+    "rimraf": "catalog:",
+    "typescript": "catalog:"
   },
   "packageManager": "pnpm@9.0.5",
   "engines": {

@@ -34,7 +34,7 @@
     "class-transformer": "^0.5.1",
     "class-validator": "^0.14.1",
     "compression": "^1.7.4",
-    "date-fns": "^3.6.0",
+    "date-fns": "catalog:",
     "helmet": "^7.1.0",
     "jsonwebtoken": "^9.0.2",
     "nestjs-cls": "^4.3.0",
@@ -60,16 +60,16 @@
     "@types/node": "^20.14.9",
     "@types/passport-jwt": "^4.0.1",
     "@types/supertest": "^6.0.2",
-    "eslint": "^9.6.0",
+    "eslint": "catalog:",
     "jest": "^29.7.0",
-    "prettier": "^3.3.2",
+    "prettier": "catalog:",
     "source-map-support": "^0.5.21",
     "supertest": "^7.0.0",
     "ts-jest": "^29.1.5",
     "ts-loader": "^9.5.1",
     "ts-node": "^10.9.2",
     "tsconfig-paths": "^4.2.0",
-    "typescript": "^5.5.3"
+    "typescript": "catalog:"
   },
   "jest": {
     "moduleFileExtensions": [

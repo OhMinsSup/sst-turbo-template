@@ -60,19 +60,19 @@
   "dependencies": {
     "@prisma/client": "^5.16.1",
     "@t3-oss/env-core": "^0.10.1",
-    "zod": "^3.23.8"
+    "zod": "catalog:"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "dotenv-cli": "^7.4.2",
-    "eslint": "^9.6.0",
-    "prettier": "^3.3.2",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
     "prisma": "^5.16.1",
     "tsx": "^4.16.2",
-    "typescript": "^5.5.3",
-    "tsup": "^8.1.0"
+    "typescript": "catalog:",
+    "tsup": "catalog:"
   },
   "prettier": "@template/prettier-config",
   "prisma": {

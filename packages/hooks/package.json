@@ -19,16 +19,16 @@
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "@types/react": "^18.3.3",
-    "eslint": "^9.6.0",
-    "prettier": "^3.3.2",
-    "react": "18.3.1",
-    "react-dom": "18.3.1",
-    "typescript": "^5.5.3"
+    "@types/react": "catalog:react18",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18",
+    "typescript": "catalog:"
   },
   "peerDependencies": {
-    "react": "18.3.1",
-    "react-dom": "18.3.1"
+    "react": "catalog:react18",
+    "react-dom": "catalog:react18"
   },
   "prettier": "@template/prettier-config"
 }
