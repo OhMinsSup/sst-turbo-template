@@ -1,16 +1,16 @@
-import type { UserExternalPayload } from "@template/db/selectors";
-import { Controller, Get, UseGuards } from "@nestjs/common";
+import { Controller, Get } from "@nestjs/common";
 import { ApiTags } from "@nestjs/swagger";
 import { AuthUser } from "src/decorators/auth-user.decorator";
 
+import type { UserExternalPayload } from "@template/db/selectors";
 import { HttpResultStatus } from "@template/sdk/enum";
 
-import { JwtAuthGuard } from "../../../guards/jwt.auth.guard";
+import { JwtAuth } from "../../../guards/jwt.auth.guard";
 import { UsersService } from "../services/users.service";
 
 @ApiTags("사용자")
 @Controller("users")
-@UseGuards(JwtAuthGuard)
+@JwtAuth()
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
