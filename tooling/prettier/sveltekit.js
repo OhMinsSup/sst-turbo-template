@@ -17,7 +17,10 @@ const config = {
   tailwindFunctions: ["cn", "cva"],
   importOrder: [
     "<TYPES>",
+    "^(@sveltejs/(.*)$)|^(@sveltejs$)",
     "^(svelte/(.*)$)|^(svelte$)",
+    "^($app/(.*)$)|^($app$)",
+    "^($lib/(.*)$)|^($lib$)",
     "<THIRD_PARTY_MODULES>",
     "",
     "<TYPES>^@template",
