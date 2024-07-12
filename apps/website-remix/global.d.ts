@@ -17,5 +17,7 @@ declare namespace NodeJS {
       // Auto generate by env-parse
       readonly NODE_ENV: string
   readonly SESSION_SECRET: string
+  readonly ACCESS_TOKEN_NAME: string
+  readonly REFRESH_TOKEN_NAME: string
     }
   }

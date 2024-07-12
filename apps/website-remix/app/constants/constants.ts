@@ -21,7 +21,4 @@ export const SITE_CONFIG = {
   manifest: "/site.webmanifest",
 };
 
-export const CONSTANT_KEY = {
-  ACCESS_TOKEN: "template.access_token",
-  REFRESH_TOKEN: "template.refresh_token",
-};
+export const CONSTANT_KEY = {};

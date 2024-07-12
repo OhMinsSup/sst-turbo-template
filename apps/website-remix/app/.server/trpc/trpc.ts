@@ -6,10 +6,13 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import { initTRPC } from "@trpc/server";
+import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 
 import { createClient } from "@template/sdk";
+
+import { combineHeaders } from "~/utils/misc";
+import { getAuthFromRequest } from "../utils/auth";
 
 /**
  * 1. CONTEXT
@@ -23,16 +26,21 @@ import { createClient } from "@template/sdk";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: {
+export const createTRPCContext = async (opts: {
   resHeaders: Headers;
   request: Request;
 }) => {
   const client = createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL);
+  const session = await getAuthFromRequest(opts.request);
   console.log(">>> tRPC Request from", opts.request.url);
+  if (session.status === "action:refreshed") {
+    opts.resHeaders = combineHeaders(opts.resHeaders, session.headers);
+  }
   return {
     request: opts.request,
     resHeaders: opts.resHeaders,
     client,
+    session: await getAuthFromRequest(opts.request),
   };
 };
 
@@ -89,13 +97,22 @@ export const publicProcedure = t.procedure;
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  //   if (!ctx.session?.user) {
-  //     throw new TRPCError({ code: "UNAUTHORIZED" });
-  //   }
-  return next({
-    ctx: {
-      // infers the `session` as non-nullable
-      //   session: ctx.session,
-    },
-  });
+  if (!ctx.session.user) {
+    throw new TRPCError({ code: "UNAUTHORIZED" });
+  }
+
+  switch (ctx.session.status) {
+    case "action:refreshed":
+    case "action:loggedIn": {
+      return next({
+        ctx: {
+          // infers the `session` as non-nullable
+          session: ctx.session,
+        },
+      });
+    }
+    default: {
+      throw new TRPCError({ code: "UNAUTHORIZED" });
+    }
+  }
 });

@@ -55,7 +55,6 @@ function Document({ children }: Props) {
       itemScope
       itemType="http://schema.org/WebSite"
       className={cn(theme)}
-      data-theme={theme ?? "system"}
     >
       <head>
         <meta charSet="utf-8" />

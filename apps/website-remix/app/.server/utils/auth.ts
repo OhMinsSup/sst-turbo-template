@@ -1,24 +1,28 @@
-import type { TokenResponse } from "@template/sdk";
 import cookie from "cookie";
 import jwt from "jsonwebtoken";
 
+import type { TokenResponse } from "@template/sdk";
 import { HttpResultStatus } from "@template/sdk/enum";
 import { isHttpError } from "@template/sdk/error";
 import { isAccessTokenExpireDate } from "@template/utils/date";
 
-import { CONSTANT_KEY } from "~/constants/constants";
 import { createApiClient } from "~/store/app";
 import { combineHeaders } from "~/utils/misc";
+
+export const TOKEN_KEY = {
+  ACCESS_TOKEN: process.env.ACCESS_TOKEN_NAME,
+  REFRESH_TOKEN: process.env.REFRESH_TOKEN_NAME,
+};
 
 export function clearAuthTokens() {
   const headers = new Headers();
   headers.append(
     "Set-Cookie",
-    cookie.serialize(CONSTANT_KEY.ACCESS_TOKEN, "", { path: "/", maxAge: -1 }),
+    cookie.serialize(TOKEN_KEY.ACCESS_TOKEN, "", { path: "/", maxAge: -1 }),
   );
   headers.append(
     "Set-Cookie",
-    cookie.serialize(CONSTANT_KEY.REFRESH_TOKEN, "", { path: "/", maxAge: -1 }),
+    cookie.serialize(TOKEN_KEY.REFRESH_TOKEN, "", { path: "/", maxAge: -1 }),
   );
   return headers;
 }
@@ -29,7 +33,7 @@ export function setAuthTokens(token: TokenResponse) {
   const headers = new Headers();
   headers.append(
     "Set-Cookie",
-    cookie.serialize(CONSTANT_KEY.ACCESS_TOKEN, accessToken.token, {
+    cookie.serialize(TOKEN_KEY.ACCESS_TOKEN, accessToken.token, {
       httpOnly: true,
       sameSite: "lax",
       expires: new Date(accessToken.expiresAt),
@@ -37,7 +41,7 @@ export function setAuthTokens(token: TokenResponse) {
   );
   headers.append(
     "Set-Cookie",
-    cookie.serialize(CONSTANT_KEY.REFRESH_TOKEN, refreshToken.token, {
+    cookie.serialize(TOKEN_KEY.REFRESH_TOKEN, refreshToken.token, {
       httpOnly: true,
       sameSite: "lax",
       expires: new Date(refreshToken.expiresAt),
@@ -49,8 +53,8 @@ export function setAuthTokens(token: TokenResponse) {
 
 export function getAuthTokens(cookieString: string) {
   const cookies = cookie.parse(cookieString);
-  const accessToken = cookies[CONSTANT_KEY.ACCESS_TOKEN];
-  const refreshToken = cookies[CONSTANT_KEY.REFRESH_TOKEN];
+  const accessToken = cookies[TOKEN_KEY.ACCESS_TOKEN];
+  const refreshToken = cookies[TOKEN_KEY.REFRESH_TOKEN];
   return {
     accessToken,
     refreshToken,
