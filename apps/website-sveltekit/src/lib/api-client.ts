@@ -5,7 +5,7 @@ export const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
   createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL, options);
 
 let apiClientSingleton: Client | undefined = undefined;
-const getApiClient = () => {
+export const getApiClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
     return createApiClient();

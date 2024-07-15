@@ -16,6 +16,7 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
+    "@t3-oss/env-core": "^0.10.1",
     "@playwright/test": "^1.28.1",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
@@ -40,6 +41,7 @@
   "prettier": "@template/prettier-config/sveltekit",
   "type": "module",
   "dependencies": {
+    "@template/vite": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/utils": "workspace:*",
     "bits-ui": "^0.21.12",
