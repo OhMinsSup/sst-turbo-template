@@ -1,19 +1,17 @@
-"use client";
-
-import type { Client } from "@template/sdk";
 import React from "react";
 
+import type { Client } from "@template/sdk";
 import { createClient } from "@template/sdk";
 
 import { env } from "~/env";
 import { ApiClientProvider } from "./api";
 import TokenProvider from "./token";
 
-const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
+export const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
   createClient(env.NEXT_PUBLIC_SERVER_URL, options);
 
 let apiClientSingleton: Client | undefined = undefined;
-const getApiClient = () => {
+export const getApiClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
     return createApiClient();
