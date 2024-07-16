@@ -1,8 +1,10 @@
+import { env } from "$env/dynamic/public";
+
 import type { Client } from "@template/sdk";
 import { createClient } from "@template/sdk";
 
 export const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
-  createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL, options);
+  createClient(env.NEXT_PUBLIC_SERVER_URL, options);
 
 let apiClientSingleton: Client | undefined = undefined;
 export const getApiClient = () => {

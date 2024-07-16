@@ -1,17 +1,17 @@
 <script lang="ts">
-  import type { SuperValidated } from "sveltekit-superforms";
   import * as Form from "$lib/components/ui/form";
   import { Input } from "$lib/components/ui/input";
   import { InputPassword } from "$lib/components/ui/input-password";
   import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
 
-  import type { FormFieldSignUpSchema } from "@template/sdk/schema";
   import { authSchema } from "@template/sdk/schema";
 
-  export let data: SuperValidated<FormFieldSignUpSchema>;
+  import type { PageData } from "../../../../routes/(auth)/signup/$types";
 
-  const form = superForm(data, {
+  export let data: PageData;
+
+  const form = superForm(data.form, {
     validators: zodClient(authSchema.signUp),
     dataType: "json",
   });
