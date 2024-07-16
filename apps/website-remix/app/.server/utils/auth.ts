@@ -254,6 +254,7 @@ export async function refreshTokenFromRequest(request: Request) {
     return {
       status: "action:notLogin" as const,
       headers: null,
+      user: null,
     };
   }
 
@@ -266,8 +267,11 @@ export async function refreshTokenFromRequest(request: Request) {
       result: { tokens },
     } = refreshRes;
 
+    const userRes = await getUserInfo(tokens.accessToken.token);
+
     return {
       status: "action:refreshed" as const,
+      user: userRes,
       headers: combineHeaders(setAuthTokens(tokens)),
     };
   } catch (error) {
