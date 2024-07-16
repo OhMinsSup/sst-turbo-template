@@ -9,8 +9,7 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 
-import { createClient } from "@template/sdk";
-
+import { getApiClient } from "~/store/app";
 import { combineHeaders } from "~/utils/misc";
 import { getAuthFromRequest } from "../utils/auth";
 
@@ -30,17 +29,19 @@ export const createTRPCContext = async (opts: {
   resHeaders: Headers;
   request: Request;
 }) => {
-  const client = createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL);
   const session = await getAuthFromRequest(opts.request);
   console.log(">>> tRPC Request from", opts.request.url);
-  if (session.status === "action:refreshed") {
+  if (
+    session.status === "action:refreshed" ||
+    session.status === "action:loggedIn"
+  ) {
     opts.resHeaders = combineHeaders(opts.resHeaders, session.headers);
   }
   return {
     request: opts.request,
     resHeaders: opts.resHeaders,
-    client,
-    session: await getAuthFromRequest(opts.request),
+    client: getApiClient(),
+    session,
   };
 };
 

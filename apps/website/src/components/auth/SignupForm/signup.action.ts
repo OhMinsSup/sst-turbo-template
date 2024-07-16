@@ -1,16 +1,15 @@
 "use server";
 
-import type { ClientResponse } from "@template/sdk";
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
 import type { FieldErrors } from "react-hook-form";
 import { redirect } from "next/navigation";
 
-import { createClient } from "@template/sdk";
+import type { ClientResponse } from "@template/sdk";
+import type { FormFieldSignUpSchema } from "@template/sdk/schema";
 import { HttpResultStatus } from "@template/sdk/enum";
 import { isAppError, isHttpError } from "@template/sdk/error";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { env } from "~/env";
+import { getApiClient } from "~/contexts/api-client";
 
 type ZodValidateError = FieldErrors<FormFieldSignUpSchema>;
 
@@ -25,10 +24,8 @@ const defaultErrorMessage = {
 export async function submitAction(_: State, input: FormFieldSignUpSchema) {
   let isRedirect = false;
 
-  const client = createClient(env.NEXT_PUBLIC_SERVER_URL);
-
   try {
-    await client.rpc("signUp").post(input);
+    await getApiClient().rpc("signUp").post(input);
     isRedirect = true;
     return true;
   } catch (error) {

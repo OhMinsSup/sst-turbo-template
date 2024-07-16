@@ -33,6 +33,7 @@ const config = {
   ],
   importOrderParserPlugins: ["typescript", "jsx", "decorators-legacy"],
   importOrderTypeScriptVersion: "4.4.0",
+  overrides: [{ files: "*.svelte", options: { parser: "svelte" } }],
 };
 
 export default config;

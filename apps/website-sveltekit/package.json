@@ -16,6 +16,7 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
+    "@t3-oss/env-core": "^0.10.1",
     "@playwright/test": "^1.28.1",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
@@ -25,6 +26,7 @@
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",
     "@template/vite": "workspace:*",
+    "@types/dom-view-transitions": "^1.0.4",
     "autoprefixer": "catalog:",
     "eslint": "catalog:",
     "prettier": "catalog:",
@@ -37,5 +39,18 @@
     "vitest": "^1.2.0"
   },
   "prettier": "@template/prettier-config/sveltekit",
-  "type": "module"
+  "type": "module",
+  "dependencies": {
+    "@template/vite": "workspace:*",
+    "@template/sdk": "workspace:*",
+    "@template/utils": "workspace:*",
+    "bits-ui": "^0.21.12",
+    "clsx": "^2.1.1",
+    "formsnap": "^1.0.1",
+    "lucide-svelte": "^0.408.0",
+    "sveltekit-superforms": "^2.16.0",
+    "tailwind-merge": "^2.3.0",
+    "tailwind-variants": "^0.2.1",
+    "zod": "catalog:"
+  }
 }

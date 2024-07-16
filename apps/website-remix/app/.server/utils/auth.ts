@@ -6,7 +6,7 @@ import { HttpResultStatus } from "@template/sdk/enum";
 import { isHttpError } from "@template/sdk/error";
 import { isAccessTokenExpireDate } from "@template/utils/date";
 
-import { createApiClient } from "~/store/app";
+import { getApiClient } from "~/store/app";
 import { combineHeaders } from "~/utils/misc";
 
 export const TOKEN_KEY = {
@@ -63,7 +63,7 @@ export function getAuthTokens(cookieString: string) {
 
 export async function verifyToken(accessToken: string) {
   try {
-    await createApiClient().rpc("verify").post({
+    await getApiClient().rpc("verify").post({
       token: accessToken,
     });
     return true;
@@ -78,7 +78,7 @@ export async function verifyToken(accessToken: string) {
 
 export async function getUserInfo(accessToken: string) {
   try {
-    const userRes = await createApiClient()
+    const userRes = await getApiClient()
       .rpc("me")
       .setAuthToken(accessToken)
       .get();
@@ -124,7 +124,7 @@ export async function validateRefreshToken(
   if (decode.exp && isAccessTokenExpireDate(decode.exp * 1000)) {
     try {
       // 발급이 완료된 상태
-      const refreshRes = await createApiClient().rpc("refresh").patch({
+      const refreshRes = await getApiClient().rpc("refresh").patch({
         refreshToken,
       });
 
@@ -258,7 +258,7 @@ export async function refreshTokenFromRequest(request: Request) {
   }
 
   try {
-    const refreshRes = await createApiClient().rpc("refresh").patch({
+    const refreshRes = await getApiClient().rpc("refresh").patch({
       refreshToken,
     });
 
