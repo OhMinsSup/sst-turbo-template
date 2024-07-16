@@ -1,4 +1,5 @@
 <script lang="ts">
+  import { Icons } from "$lib/components/icon";
   import * as Form from "$lib/components/ui/form";
   import { Input } from "$lib/components/ui/input";
   import { InputPassword } from "$lib/components/ui/input-password";
@@ -14,9 +15,11 @@
   const form = superForm(data.form, {
     validators: zodClient(authSchema.signIn),
     dataType: "json",
+    delayMs: 2000,
+    timeoutMs: 10000,
   });
 
-  const { form: formData, enhance } = form;
+  const { form: formData, enhance, delayed } = form;
 </script>
 
 <div class="grid gap-6">
@@ -51,6 +54,9 @@
         <Form.FieldErrors />
       </Form.Field>
       <Form.Button type="submit" data-testid="signin-button">
+        {#if $delayed}
+          <Icons.spinner class="mr-2 size-4 animate-spin" />
+        {/if}
         <span>로그인</span>
       </Form.Button>
     </div>
