@@ -3,10 +3,9 @@ import { defineConfig } from "tsup";
 
 export default defineConfig((options: Options) => ({
   entry: {
-    assertion: "src/assertion/index.ts",
-    date: "src/date/index.ts",
-    jwt: "src/jwt/index.ts",
-    cookie: "src/cookie/index.ts",
+    nextjs: "src/nextjs/index.ts",
+    remix: "src/remix/index.ts",
+    share: "src/share/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

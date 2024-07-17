@@ -2,16 +2,18 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import { clearAuthTokens, refreshTokenFromRequest } from "~/.server/utils/auth";
+import { refresh, signout } from "@template/trpc/share";
+
 import {
   errorJsonDataResponse,
   successJsonDataResponse,
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
+import { getApiClient } from "~/store/app";
 import { isTheme } from "~/store/theme-store";
 import { combineHeaders } from "~/utils/misc";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
+export const action = async ({ request, response }: ActionFunctionArgs) => {
   return namedAction(request, {
     async setTheme() {
       const requestText = await request.text();
@@ -29,11 +31,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     // eslint-disable-next-line @typescript-eslint/require-await
     async logout() {
       return json(successJsonDataResponse(true), {
-        headers: combineHeaders(clearAuthTokens()),
+        headers: combineHeaders(signout() as unknown as Headers),
       });
     },
     async refresh() {
-      const { status, headers } = await refreshTokenFromRequest(request);
+      const { status, headers } = await refresh({
+        headers: request.headers,
+        client: getApiClient(),
+        resHeaders: response?.headers ?? new Headers(),
+      });
       switch (status) {
         case "action:notLogin":
         case "action:refreshed": {

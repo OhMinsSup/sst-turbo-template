@@ -6,12 +6,18 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import type { Session } from "@template/auth";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import { createClient } from "@template/sdk";
+import type { Session } from "@template/auth";
+import type { ApiClient } from "@template/sdk";
+
+interface NextjsTRPCContext {
+  headers: Headers;
+  session: Session | null;
+  client: ApiClient;
+}
 
 /**
  * 1. CONTEXT
@@ -25,14 +31,9 @@ import { createClient } from "@template/sdk";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: {
-  headers: Headers;
-  session: Session | null;
-  url: string;
-}) => {
-  const session = opts.session;
-  const source = opts.headers.get("x-trpc-source") ?? "unknown";
-  const client = createClient(opts.url);
+export const createTRPCContext = (opts: NextjsTRPCContext) => {
+  const { session, headers, client } = opts;
+  const source = headers.get("x-trpc-source") ?? "unknown";
 
   console.log(">>> tRPC Request from", source, "by", session?.user);
 

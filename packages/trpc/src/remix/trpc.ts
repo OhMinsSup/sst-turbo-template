@@ -9,9 +9,37 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 
-import { getApiClient } from "~/store/app";
-import { combineHeaders } from "~/utils/misc";
-import { getAuthFromRequest } from "../utils/auth";
+import type { ApiClient } from "@template/sdk";
+
+import { auth } from "../_internal/auth";
+import { mergeHeaders } from "../_internal/misc";
+
+interface RemixTRPCContext {
+  resHeaders: Headers;
+  request: Request;
+  client: ApiClient;
+}
+
+export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
+  const { request, resHeaders, client } = opts;
+
+  const newResHeaders = mergeHeaders(resHeaders);
+
+  const { user } = await auth({
+    headers: request.headers,
+    resHeaders,
+    client,
+  });
+
+  console.log(">>> tRPC Request from Remix");
+
+  return {
+    request,
+    resHeaders: newResHeaders,
+    session: user,
+    client,
+  };
+};
 
 /**
  * 1. CONTEXT
@@ -25,24 +53,9 @@ import { getAuthFromRequest } from "../utils/auth";
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: {
-  resHeaders: Headers;
-  request: Request;
-}) => {
-  const session = await getAuthFromRequest(opts.request);
-  console.log(">>> tRPC Request from", opts.request.url);
-  if (
-    session.status === "action:refreshed" ||
-    session.status === "action:loggedIn"
-  ) {
-    opts.resHeaders = combineHeaders(opts.resHeaders, session.headers);
-  }
-  return {
-    request: opts.request,
-    resHeaders: opts.resHeaders,
-    client: getApiClient(),
-    session,
-  };
+export const createTRPCContext = async (opts: RemixTRPCContext) => {
+  const ctx = await getRemixTRPCContext(opts);
+  return ctx;
 };
 
 /**
@@ -98,22 +111,14 @@ export const publicProcedure = t.procedure;
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session.user) {
+  if (!ctx.session) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
 
-  switch (ctx.session.status) {
-    case "action:refreshed":
-    case "action:loggedIn": {
-      return next({
-        ctx: {
-          // infers the `session` as non-nullable
-          session: ctx.session,
-        },
-      });
-    }
-    default: {
-      throw new TRPCError({ code: "UNAUTHORIZED" });
-    }
-  }
+  return next({
+    ctx: {
+      // infers the `session` as non-nullable
+      session: ctx.session,
+    },
+  });
 });

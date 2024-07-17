@@ -1,17 +1,23 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import { getAuthFromRequest } from "~/.server/utils/auth";
+import { auth } from "@template/trpc/share";
+
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
+import { getApiClient } from "~/store/app";
 import { getRequestInfo } from "~/utils";
 import { combineHeaders } from "~/utils/misc";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
+export const loader = async ({ request, response }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
 
-  const { user, headers, status } = await getAuthFromRequest(request);
+  const { user, headers, status } = await auth({
+    headers: request.headers,
+    resHeaders: response?.headers ?? new Headers(),
+    client: getApiClient(),
+  });
 
   const data = {
     env: import.meta.env,

@@ -90,16 +90,12 @@ export function Layout({ children }: Props) {
   );
 }
 
-function App() {
-  return <Outlet />;
-}
-
-export default function AppWithProviders() {
+export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
   return (
     <AppProvider>
       <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}>
-        <App />
+        <Outlet />
       </TRPCReactProvider>
     </AppProvider>
   );
