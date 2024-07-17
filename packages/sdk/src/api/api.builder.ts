@@ -154,6 +154,6 @@ export default class ApiBuilder<
       "json"
     >(pathname, opts);
 
-    return response.then(onfulfilled, onrejected);
+    return response.then(onfulfilled, onrejected).catch(onrejected);
   }
 }

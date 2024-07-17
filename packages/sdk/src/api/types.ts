@@ -85,13 +85,21 @@ export type ApiInput<
   FnKey extends FnNameKey,
   MethodKey extends MethodType,
 > = FnKey extends "signUp"
-  ? FormFieldSignUpSchema
+  ? MethodKey extends "POST"
+    ? FormFieldSignUpSchema
+    : undefined
   : FnKey extends "signIn"
-    ? FormFieldSignInSchema
+    ? MethodKey extends "POST"
+      ? FormFieldSignInSchema
+      : undefined
     : FnKey extends "refresh"
-      ? FormFieldRefreshTokenSchema
+      ? MethodKey extends "PATCH"
+        ? FormFieldRefreshTokenSchema
+        : undefined
       : FnKey extends "verify"
-        ? FormFieldVerifyTokenSchema
+        ? MethodKey extends "POST"
+          ? FormFieldVerifyTokenSchema
+          : undefined
         : undefined;
 
 export interface TransformBuilderConstructorOptions<FnKey extends FnNameKey> {
