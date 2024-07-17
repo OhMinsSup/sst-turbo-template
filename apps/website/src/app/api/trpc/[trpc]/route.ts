@@ -1,9 +1,9 @@
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
 import { auth } from "@template/auth";
-import { appRouter, createTRPCContext } from "@template/trpc";
+import { appRouter, createTRPCContext } from "@template/trpc/nextjs";
 
-import { env } from "~/env";
+import { getApiClient } from "~/contexts/api-client";
 
 /**
  * Configure basic CORS headers
@@ -31,9 +31,9 @@ const handler = auth(async (req) => {
     req,
     createContext: () =>
       createTRPCContext({
-        url: env.NEXT_PUBLIC_SERVER_URL,
         session: req.auth,
         headers: req.headers,
+        client: getApiClient(),
       }),
     onError({ error, path }) {
       console.error(`>>> tRPC Error on '${path}'`, error);

@@ -3,16 +3,46 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "files": [
+    "dist"
+  ],
   "exports": {
-    ".": {
-      "types": "./dist/index.d.ts",
-      "default": "./src/index.ts"
+    "./package.json": "./package.json",
+    "./nextjs": {
+      "import": {
+        "types": "./dist/nextjs.d.ts",
+        "default": "./dist/nextjs.js"
+      },
+      "require": {
+        "types": "./dist/nextjs.d.cts",
+        "default": "./dist/nextjs.cjs"
+      }
     },
-    "./services/*": "./src/services/*.ts"
+    "./remix": {
+      "import": {
+        "types": "./dist/remix.d.ts",
+        "default": "./dist/remix.js"
+      },
+      "require": {
+        "types": "./dist/remix.d.cts",
+        "default": "./dist/remix.cjs"
+      }
+    },
+    "./share": {
+      "import": {
+        "types": "./dist/share.d.ts",
+        "default": "./dist/share.js"
+      },
+      "require": {
+        "types": "./dist/share.d.cts",
+        "default": "./dist/share.cjs"
+      }
+    }
   },
   "license": "MIT",
   "scripts": {
-    "build": "tsc",
+    "build": "tsup",
+    "build:lib": "tsup",
     "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
@@ -21,19 +51,20 @@
   },
   "dependencies": {
     "@epic-web/remember": "^1.1.0",
-    "@template/auth": "workspace:*",
-    "@template/db": "workspace:*",
+    "@template/utils": "workspace:*",
     "@template/sdk": "workspace:*",
     "@trpc/server": "11.0.0-rc.421",
     "superjson": "2.2.1",
     "zod": "catalog:"
   },
   "devDependencies": {
+    "@template/auth": "workspace:*",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
+    "tsup": "catalog:",
     "typescript": "catalog:"
   },
   "prettier": "@template/prettier-config"

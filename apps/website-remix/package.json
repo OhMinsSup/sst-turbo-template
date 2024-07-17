@@ -21,6 +21,7 @@
     "@t3-oss/env-core": "^0.10.1",
     "@tanstack/react-query": "^5.49.2",
     "@template/hooks": "workspace:*",
+    "@template/trpc": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/ui": "workspace:*",
     "@template/utils": "workspace:*",

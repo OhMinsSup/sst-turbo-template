@@ -18,7 +18,6 @@ export default function TokenProvider({ children }: TokenProviderProps) {
   const client = useApiClient();
 
   const updateSession = async () => {
-    console.log("[updateSession] call", data);
     if (!data) {
       return;
     }
@@ -27,14 +26,10 @@ export default function TokenProvider({ children }: TokenProviderProps) {
       return;
     }
 
-    console.log("[updateSession] data", data);
-
     const result = isSessionExpireDate(
       data.expires,
       data.user.accessTokenExpiresAt,
     );
-
-    console.log("[updateSession] compareSessionExpireDate", result);
 
     if (result.isUpdate) {
       try {

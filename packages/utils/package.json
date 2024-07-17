@@ -27,6 +27,26 @@
         "types": "./dist/assertion.d.cts",
         "default": "./dist/assertion.cjs"
       }
+    },
+    "./jwt": {
+      "import": {
+        "types": "./dist/jwt.d.ts",
+        "default": "./dist/jwt.js"
+      },
+      "require": {
+        "types": "./dist/jwt.d.cts",
+        "default": "./dist/jwt.cjs"
+      }
+    },
+    "./cookie": {
+      "import": {
+        "types": "./dist/cookie.d.ts",
+        "default": "./dist/cookie.js"
+      },
+      "require": {
+        "types": "./dist/cookie.d.cts",
+        "default": "./dist/cookie.cjs"
+      }
     }
   },
   "license": "MIT",
@@ -39,12 +59,15 @@
     "typecheck": "tsc --noEmit"
   },
   "dependencies": {
-    "date-fns": "catalog:"
+    "date-fns": "catalog:",
+    "cookie": "^0.6.0",
+    "jsonwebtoken": "^9.0.2"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
+    "@types/cookie": "0.6.0",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
