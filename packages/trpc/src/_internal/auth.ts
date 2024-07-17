@@ -3,23 +3,25 @@ import { getTokenFromCookie } from "@template/utils/cookie";
 import { isAccessTokenExpireDate } from "@template/utils/date";
 import { jwtDecode } from "@template/utils/jwt";
 
+import type { TokenKey } from "./misc";
 import { mergeClearAuthTokens, mergeTokenHeaders } from "./misc";
 
 interface ValidateRefreshTokenParams {
   accessToken: string;
   refreshToken?: string | null;
   resHeaders: Headers;
+  tokenKey: TokenKey;
   client: ApiClient;
 }
 
 export async function validateAuth(params: ValidateRefreshTokenParams) {
-  const { accessToken, refreshToken, client, resHeaders } = params;
+  const { accessToken, refreshToken, client, resHeaders, tokenKey } = params;
   // refresh token이 없는 경우 재발급 안되게 처리
   if (!refreshToken) {
     return {
       status: "action:invalidRefreshToken" as const,
       tokens: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
@@ -29,7 +31,7 @@ export async function validateAuth(params: ValidateRefreshTokenParams) {
     return {
       status: "action:dencodeTokenError" as const,
       tokens: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
@@ -48,14 +50,14 @@ export async function validateAuth(params: ValidateRefreshTokenParams) {
       return {
         status: "action:refreshed" as const,
         tokens,
-        headers: mergeTokenHeaders(tokens, resHeaders),
+        headers: mergeTokenHeaders(tokenKey, tokens, resHeaders),
       };
     } catch (error) {
       // 발급이 실패한 상태
       return {
         status: "action:invalidRefreshToken" as const,
         tokens: null,
-        headers: mergeClearAuthTokens(resHeaders),
+        headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
   }
@@ -112,6 +114,7 @@ interface AuthParams {
   headers: Headers;
   resHeaders: Headers;
   client: ApiClient;
+  tokenKey: TokenKey;
 }
 
 type AuthFunctionResult =
@@ -160,17 +163,20 @@ type AuthFunctionResult =
  * 인증 체크
  */
 export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
-  const { headers, client, resHeaders } = params;
+  const { headers, client, resHeaders, tokenKey } = params;
   const cookieString = headers.get("Cookie");
   if (!cookieString) {
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
-  const { refreshToken, accessToken } = getTokenFromCookie(cookieString);
+  const { refreshToken, accessToken } = getTokenFromCookie(
+    cookieString,
+    tokenKey,
+  );
   // 쿠키는 존재하지만 인증 토큰이 존재하는지 체크가 필요
   if (!accessToken) {
     // accessToken이 없는 경우 refreshToken으로 accessToken을 갱신한다.
@@ -179,6 +185,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
         headers,
         client,
         resHeaders,
+        tokenKey,
       });
 
       return response;
@@ -186,7 +193,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
@@ -200,7 +207,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
       return {
         status: "action:invalidToken" as const,
         user: null,
-        headers: mergeClearAuthTokens(resHeaders),
+        headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
 
@@ -210,6 +217,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
       tokens,
       headers: newHeaders,
     } = await validateAuth({
+      tokenKey,
       accessToken,
       refreshToken,
       resHeaders,
@@ -228,7 +236,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
           return {
             status: "action:notLogin" as const,
             user: null,
-            headers: mergeClearAuthTokens(resHeaders),
+            headers: mergeClearAuthTokens(tokenKey, resHeaders),
           };
         }
 
@@ -261,7 +269,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
       return {
         status: "action:notLogin" as const,
         user: null,
-        headers: mergeClearAuthTokens(resHeaders),
+        headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
 
@@ -275,7 +283,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
     return {
       status: "action:error" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 }
@@ -284,6 +292,7 @@ interface RefreshParams {
   headers: Headers;
   resHeaders: Headers;
   client: ApiClient;
+  tokenKey: TokenKey;
 }
 
 type RefreshFunctionResult =
@@ -309,22 +318,22 @@ type RefreshFunctionResult =
 export async function refresh(
   params: RefreshParams,
 ): Promise<RefreshFunctionResult> {
-  const { headers, client, resHeaders } = params;
+  const { headers, client, resHeaders, tokenKey } = params;
   const cookieString = headers.get("Cookie");
   if (!cookieString) {
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
-  const { refreshToken } = getTokenFromCookie(cookieString);
+  const { refreshToken } = getTokenFromCookie(cookieString, tokenKey);
   if (!refreshToken) {
     return {
       status: "action:notLogin" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 
@@ -346,20 +355,20 @@ export async function refresh(
       return {
         status: "action:notLogin" as const,
         user: null,
-        headers: mergeClearAuthTokens(resHeaders),
+        headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
 
     return {
       status: "action:refreshed" as const,
       user: userRes,
-      headers: mergeTokenHeaders(tokens, resHeaders),
+      headers: mergeTokenHeaders(tokenKey, tokens, resHeaders),
     };
   } catch (error) {
     return {
       status: "action:error" as const,
       user: null,
-      headers: mergeClearAuthTokens(resHeaders),
+      headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
 }
@@ -367,16 +376,17 @@ export async function refresh(
 /**
  * 로그아웃
  */
-export function signout(defaultHeaders?: Headers): Headers {
-  return mergeClearAuthTokens(defaultHeaders);
+export function signout(tokenKey: TokenKey, defaultHeaders?: Headers): Headers {
+  return mergeClearAuthTokens(tokenKey, defaultHeaders);
 }
 
 /**
  * 로그인
  */
 export function signin(
+  tokenKey: TokenKey,
   token: TokenResponse,
   defaultHeaders?: Headers,
 ): Headers {
-  return mergeTokenHeaders(token, defaultHeaders);
+  return mergeTokenHeaders(tokenKey, token, defaultHeaders);
 }

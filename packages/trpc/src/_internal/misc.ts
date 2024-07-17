@@ -44,21 +44,27 @@ export function combineHeaders(
   return combined;
 }
 
+export interface TokenKey {
+  accessTokenKey: string;
+  refreshTokenKey: string;
+}
+
 /**
  * Merge token and headers
  */
 export function mergeTokenHeaders(
+  tokenKey: TokenKey,
   token: TokenResponse,
   defaultHeaders?: Headers,
 ): Headers {
   const headers = new Headers();
   headers.append(
     "Set-Cookie",
-    setTokenCookie("template.access_token", token.accessToken),
+    setTokenCookie(tokenKey.accessTokenKey, token.accessToken),
   );
   headers.append(
     "Set-Cookie",
-    setTokenCookie("template.refresh_token", token.refreshToken),
+    setTokenCookie(tokenKey.refreshTokenKey, token.refreshToken),
   );
   return combineHeaders(defaultHeaders, headers);
 }
@@ -66,9 +72,12 @@ export function mergeTokenHeaders(
 /**
  *  Merge clear auth tokens
  */
-export function mergeClearAuthTokens(defaultHeaders?: Headers): Headers {
+export function mergeClearAuthTokens(
+  tokenKey: TokenKey,
+  defaultHeaders?: Headers,
+): Headers {
   const headers = new Headers();
-  headers.append("Set-Cookie", clearCookie("template.access_token"));
-  headers.append("Set-Cookie", clearCookie("template.refresh_token"));
+  headers.append("Set-Cookie", clearCookie(tokenKey.accessTokenKey));
+  headers.append("Set-Cookie", clearCookie(tokenKey.refreshTokenKey));
   return combineHeaders(defaultHeaders, headers);
 }

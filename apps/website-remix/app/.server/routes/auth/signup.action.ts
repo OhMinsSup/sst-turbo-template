@@ -12,6 +12,7 @@ import {
 import { createHttpError } from "@template/sdk/error";
 import { signin } from "@template/trpc/share";
 
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import { errorJsonDataResponse } from "~/.server/utils/response";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { getApiClient } from "~/store/app";
@@ -43,7 +44,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } = response;
 
   return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-    headers: combineHeaders(signin(tokens)),
+    headers: combineHeaders(signin(TOKEN_KEY, tokens)),
   });
 };
 

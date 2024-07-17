@@ -11,6 +11,7 @@ import { ZodError } from "zod";
 
 import type { ApiClient } from "@template/sdk";
 
+import type { TokenKey } from "../_internal/misc";
 import { auth } from "../_internal/auth";
 import { mergeHeaders } from "../_internal/misc";
 
@@ -18,10 +19,11 @@ interface RemixTRPCContext {
   resHeaders: Headers;
   request: Request;
   client: ApiClient;
+  tokenKey: TokenKey;
 }
 
 export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
-  const { request, resHeaders, client } = opts;
+  const { request, resHeaders, client, tokenKey } = opts;
 
   const newResHeaders = mergeHeaders(resHeaders);
 
@@ -29,6 +31,7 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
     headers: request.headers,
     resHeaders,
     client,
+    tokenKey,
   });
 
   console.log(">>> tRPC Request from Remix");

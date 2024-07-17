@@ -3,6 +3,7 @@ import { json } from "@remix-run/node";
 
 import { auth } from "@template/trpc/share";
 
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getApiClient } from "~/store/app";
@@ -17,6 +18,7 @@ export const loader = async ({ request, response }: LoaderFunctionArgs) => {
     headers: request.headers,
     resHeaders: response?.headers ?? new Headers(),
     client: getApiClient(),
+    tokenKey: TOKEN_KEY,
   });
 
   const data = {

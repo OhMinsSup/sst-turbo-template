@@ -4,6 +4,7 @@ import { namedAction } from "remix-utils/named-action";
 
 import { refresh, signout } from "@template/trpc/share";
 
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import {
   errorJsonDataResponse,
   successJsonDataResponse,
@@ -31,7 +32,7 @@ export const action = async ({ request, response }: ActionFunctionArgs) => {
     // eslint-disable-next-line @typescript-eslint/require-await
     async logout() {
       return json(successJsonDataResponse(true), {
-        headers: combineHeaders(signout() as unknown as Headers),
+        headers: combineHeaders(signout(TOKEN_KEY) as unknown as Headers),
       });
     },
     async refresh() {
@@ -39,6 +40,7 @@ export const action = async ({ request, response }: ActionFunctionArgs) => {
         headers: request.headers,
         client: getApiClient(),
         resHeaders: response?.headers ?? new Headers(),
+        tokenKey: TOKEN_KEY,
       });
       switch (status) {
         case "action:notLogin":
