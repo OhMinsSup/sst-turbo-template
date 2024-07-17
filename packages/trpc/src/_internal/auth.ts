@@ -156,6 +156,9 @@ type AuthFunctionResult =
       headers: Headers;
     };
 
+/**
+ * 인증 체크
+ */
 export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
   const { headers, client, resHeaders } = params;
   const cookieString = headers.get("Cookie");
