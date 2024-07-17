@@ -121,41 +121,49 @@ type AuthFunctionResult =
   | {
       status: "action:loggedIn";
       user: UserResponse;
+      tokens: TokenResponse;
       headers: Headers;
     }
   | {
       status: "action:notLogin";
       user: null;
+      tokens: null;
       headers: Headers;
     }
   | {
       status: "action:invalidToken";
       user: null;
+      tokens: null;
       headers: Headers;
     }
   | {
       status: "action:refreshed";
       user: UserResponse;
+      tokens: TokenResponse;
       headers: Headers;
     }
   | {
       status: "action:notRefreshed";
-      user: null;
+      user: UserResponse;
+      tokens: TokenResponse;
       headers: Headers;
     }
   | {
       status: "action:error";
       user: null;
+      tokens: null;
       headers: Headers;
     }
   | {
       status: "action:invalidRefreshToken";
       user: null;
+      tokens: null;
       headers: Headers;
     }
   | {
       status: "action:dencodeTokenError";
       user: null;
+      tokens: null;
       headers: Headers;
     };
 
@@ -169,6 +177,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
     return {
       status: "action:notLogin" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
@@ -193,6 +202,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
     return {
       status: "action:notLogin" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
@@ -207,6 +217,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
       return {
         status: "action:invalidToken" as const,
         user: null,
+        tokens: null,
         headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
@@ -236,6 +247,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
           return {
             status: "action:notLogin" as const,
             user: null,
+            tokens: null,
             headers: mergeClearAuthTokens(tokenKey, resHeaders),
           };
         }
@@ -243,6 +255,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
         return {
           status,
           user: userRes,
+          tokens,
           headers: newHeaders,
         };
       }
@@ -255,6 +268,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
         return {
           status,
           user: null,
+          tokens: null,
           headers: newHeaders,
         };
       }
@@ -269,6 +283,7 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
       return {
         status: "action:notLogin" as const,
         user: null,
+        tokens: null,
         headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
@@ -276,13 +291,14 @@ export async function auth(params: AuthParams): Promise<AuthFunctionResult> {
     return {
       status: "action:loggedIn" as const,
       user: userRes,
+      tokens,
       headers: newHeaders,
     };
   } catch (error) {
-    console.error(error);
     return {
       status: "action:error" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
@@ -299,16 +315,19 @@ type RefreshFunctionResult =
   | {
       status: "action:refreshed";
       user: UserResponse;
+      tokens: TokenResponse;
       headers: Headers;
     }
   | {
       status: "action:notLogin";
       user: null;
+      tokens: null;
       headers: Headers;
     }
   | {
       status: "action:error";
       user: null;
+      tokens: null;
       headers: Headers;
     };
 
@@ -324,6 +343,7 @@ export async function refresh(
     return {
       status: "action:notLogin" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
@@ -333,6 +353,7 @@ export async function refresh(
     return {
       status: "action:notLogin" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
@@ -355,6 +376,7 @@ export async function refresh(
       return {
         status: "action:notLogin" as const,
         user: null,
+        tokens: null,
         headers: mergeClearAuthTokens(tokenKey, resHeaders),
       };
     }
@@ -362,12 +384,14 @@ export async function refresh(
     return {
       status: "action:refreshed" as const,
       user: userRes,
+      tokens,
       headers: mergeTokenHeaders(tokenKey, tokens, resHeaders),
     };
   } catch (error) {
     return {
       status: "action:error" as const,
       user: null,
+      tokens: null,
       headers: mergeClearAuthTokens(tokenKey, resHeaders),
     };
   }
