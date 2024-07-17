@@ -1,7 +1,5 @@
-import "@template/sdk";
-
 import type { ApiClient, TokenResponse, UserResponse } from "@template/sdk";
-import { clearCookie, getTokenFromCookie } from "@template/utils/cookie";
+import { getTokenFromCookie } from "@template/utils/cookie";
 import { isAccessTokenExpireDate } from "@template/utils/date";
 import { jwtDecode } from "@template/utils/jwt";
 

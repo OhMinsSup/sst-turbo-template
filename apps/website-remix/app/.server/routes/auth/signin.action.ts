@@ -30,6 +30,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const input: Awaited<FormFieldSignInSchema> = await request.json();
   const response = await getApiClient().rpc("signIn").post(input);
+  console.log(response);
   if (response.error) {
     return json(errorJsonDataResponse(response.error));
   }
@@ -41,6 +42,11 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const {
     result: { tokens },
   } = response;
+
+  const headers = combineHeaders(signin(tokens));
+  for (const [key, value] of headers) {
+    console.log(`${key}: ${value}`);
+  }
 
   return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
     headers: combineHeaders(signin(tokens)),

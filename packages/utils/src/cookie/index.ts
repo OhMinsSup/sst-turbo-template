@@ -55,7 +55,7 @@ export const setTokenCookie = (
     ...options,
     httpOnly: true,
     sameSite: "lax",
-    expires: new Date(value.token),
+    expires: new Date(value.expiresAt),
   });
 };
 

@@ -58,7 +58,7 @@ export function mergeTokenHeaders(
   );
   headers.append(
     "Set-Cookie",
-    setTokenCookie("template.access_token", token.refreshToken),
+    setTokenCookie("template.refresh_token", token.refreshToken),
   );
   return combineHeaders(defaultHeaders, headers);
 }
