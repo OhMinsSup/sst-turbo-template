@@ -31,19 +31,11 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
   authKit.combineHeader(resHeaders);
 
   const cookie = request.headers.get("cookie");
-  console.log(">>> tRPC Request from Remix");
-  if (!cookie) {
-    return {
-      request,
-      resHeaders: authKit.headers,
-      session: null,
-      authKit,
-      client,
-    };
-  }
 
-  const tokens = authKit.getTokens(cookie, AuthKitFramework.Remix);
-  const { user, status, headers } = await authKit.auth(tokens);
+  const tokens = cookie
+    ? authKit.getTokens(cookie, AuthKitFramework.Remix)
+    : null;
+  const { user, status, headers } = await authKit.checkAuth(tokens);
   console.log(">>> tRPC Request from Remix");
 
   return {
