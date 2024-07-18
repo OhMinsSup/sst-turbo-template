@@ -1,6 +1,7 @@
 import React from "react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 
+import { AuthKitStatus } from "@template/authkit";
 import { useRafInterval } from "@template/hooks/useRafInterval";
 import { isEmpty } from "@template/utils/assertion";
 
@@ -21,8 +22,8 @@ export default function TokenProvider({ children }: TokenProviderProps) {
     }
 
     switch (data.loggedInStatus) {
-      case "action:refreshed":
-      case "action:loggedIn": {
+      case AuthKitStatus.Refreshed:
+      case AuthKitStatus.LoggedIn: {
         fetcher.submit("?/refresh", { method: "post" });
         return;
       }

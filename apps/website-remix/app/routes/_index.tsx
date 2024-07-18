@@ -3,6 +3,7 @@ import { useLoaderData } from "@remix-run/react";
 import { invariant } from "@epic-web/invariant";
 
 import { createTrpcServer } from "~/.server/trpc";
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import { getApiClient } from "~/store/app";
 import { api } from "~/store/trpc-react";
 
@@ -12,6 +13,7 @@ export const loader = async (ctx: LoaderFunctionArgs) => {
     ctx.request,
     ctx.response.headers,
     getApiClient(),
+    TOKEN_KEY,
   );
   const message = await trpcServer.etc.hello();
   console.log("message", message);

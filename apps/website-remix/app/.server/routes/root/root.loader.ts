@@ -1,8 +1,9 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import { auth } from "@template/trpc/share";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getApiClient } from "~/store/app";
@@ -12,12 +13,19 @@ import { combineHeaders } from "~/utils/misc";
 export const loader = async ({ request, response }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
-
-  const { user, headers, status } = await auth({
-    headers: request.headers,
-    resHeaders: response?.headers ?? new Headers(),
+  const authKit = new AuthKit({
+    tokenKey: TOKEN_KEY,
+    headers: response?.headers,
     client: getApiClient(),
   });
+
+  const cookie = request.headers.get("cookie");
+
+  const tokens = cookie
+    ? authKit.getTokens(cookie, AuthKitFramework.Remix)
+    : null;
+
+  const { user, status, headers } = await authKit.checkAuth(tokens);
 
   const data = {
     env: import.meta.env,

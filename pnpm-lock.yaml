@@ -374,6 +374,9 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.49.2
         version: 5.49.2(react@18.3.1)
+      '@template/authkit':
+        specifier: workspace:*
+        version: link:../../packages/authkit
       '@template/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -401,9 +404,6 @@ importers:
       isbot:
         specifier: ^5.1.11
         version: 5.1.11
-      jsonwebtoken:
-        specifier: ^9.0.2
-        version: 9.0.2
       lucide-react:
         specifier: ^0.400.0
         version: 0.400.0(react@18.3.1)
@@ -486,15 +486,15 @@ importers:
 
   apps/website-sveltekit:
     dependencies:
+      '@template/authkit':
+        specifier: workspace:*
+        version: link:../../packages/authkit
       '@template/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
       '@template/utils':
         specifier: workspace:*
         version: link:../../packages/utils
-      '@template/vite':
-        specifier: workspace:*
-        version: link:../../tooling/vite
       bits-ui:
         specifier: ^0.21.12
         version: 0.21.12(svelte@4.2.18)
@@ -550,6 +550,9 @@ importers:
       '@template/tailwind-config':
         specifier: workspace:*
         version: link:../../tooling/tailwind
+      '@template/vite':
+        specifier: workspace:*
+        version: link:../../tooling/vite
       '@types/dom-view-transitions':
         specifier: ^1.0.4
         version: 1.0.4
@@ -629,6 +632,37 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.3.2
+      typescript:
+        specifier: 'catalog:'
+        version: 5.5.3
+
+  packages/authkit:
+    dependencies:
+      '@template/utils':
+        specifier: workspace:*
+        version: link:../utils
+    devDependencies:
+      '@template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@template/sdk':
+        specifier: workspace:*
+        version: link:../sdk
+      '@template/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: 'catalog:'
+        version: 9.6.0
+      prettier:
+        specifier: 'catalog:'
+        version: 3.3.2
+      tsup:
+        specifier: 'catalog:'
+        version: 8.1.0(@swc/core@1.6.7)(postcss@8.4.39)(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3))(typescript@5.5.3)
       typescript:
         specifier: 'catalog:'
         version: 5.5.3
@@ -751,6 +785,9 @@ importers:
       '@epic-web/remember':
         specifier: ^1.1.0
         version: 1.1.0
+      '@template/authkit':
+        specifier: workspace:*
+        version: link:../authkit
       '@template/sdk':
         specifier: workspace:*
         version: link:../sdk

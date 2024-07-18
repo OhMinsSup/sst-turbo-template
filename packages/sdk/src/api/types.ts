@@ -135,7 +135,7 @@ export interface BuilderConstructorOptions<
 
 interface TokenItemSchema {
   token: string;
-  expiresAt: Date;
+  expiresAt: Date | number | string;
 }
 
 export interface TokenResponse {

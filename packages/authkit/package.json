@@ -1,5 +1,5 @@
 {
-  "name": "@template/trpc",
+  "name": "@template/authkit",
   "version": "0.0.1",
   "private": true,
   "type": "module",
@@ -8,24 +8,14 @@
   ],
   "exports": {
     "./package.json": "./package.json",
-    "./nextjs": {
+    ".": {
       "import": {
-        "types": "./dist/nextjs.d.ts",
-        "default": "./dist/nextjs.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
-        "types": "./dist/nextjs.d.cts",
-        "default": "./dist/nextjs.cjs"
-      }
-    },
-    "./remix": {
-      "import": {
-        "types": "./dist/remix.d.ts",
-        "default": "./dist/remix.js"
-      },
-      "require": {
-        "types": "./dist/remix.d.cts",
-        "default": "./dist/remix.cjs"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     }
   },
@@ -40,16 +30,10 @@
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
-    "@epic-web/remember": "^1.1.0",
-    "@template/utils": "workspace:*",
-    "@template/authkit": "workspace:*",
-    "@template/sdk": "workspace:*",
-    "@trpc/server": "11.0.0-rc.421",
-    "superjson": "2.2.1",
-    "zod": "catalog:"
+    "@template/utils": "workspace:*"
   },
   "devDependencies": {
-    "@template/auth": "workspace:*",
+    "@template/sdk": "workspace:*",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",

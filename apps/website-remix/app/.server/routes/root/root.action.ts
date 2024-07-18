@@ -2,8 +2,9 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import { refresh, signout } from "@template/trpc/share";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
+import { TOKEN_KEY } from "~/.server/utils/constants";
 import {
   errorJsonDataResponse,
   successJsonDataResponse,
@@ -30,29 +31,33 @@ export const action = async ({ request, response }: ActionFunctionArgs) => {
     },
     // eslint-disable-next-line @typescript-eslint/require-await
     async logout() {
+      const authKit = new AuthKit({
+        tokenKey: TOKEN_KEY,
+        headers: response?.headers,
+        client: getApiClient(),
+      });
+
       return json(successJsonDataResponse(true), {
-        headers: combineHeaders(signout() as unknown as Headers),
+        headers: combineHeaders(authKit.signout()),
       });
     },
     async refresh() {
-      const { status, headers } = await refresh({
-        headers: request.headers,
+      const authKit = new AuthKit({
+        tokenKey: TOKEN_KEY,
+        headers: response?.headers,
         client: getApiClient(),
-        resHeaders: response?.headers ?? new Headers(),
       });
-      switch (status) {
-        case "action:notLogin":
-        case "action:refreshed": {
-          return json(successJsonDataResponse(status), {
-            headers: combineHeaders(headers),
-          });
-        }
-        default: {
-          return json(errorJsonDataResponse(status), {
-            headers: combineHeaders(headers),
-          });
-        }
-      }
+
+      const cookie = request.headers.get("cookie");
+
+      const tokens = cookie
+        ? authKit.getTokens(cookie, AuthKitFramework.Remix)
+        : null;
+
+      const { status, headers } = await authKit.checkRefresh(tokens);
+      return json(successJsonDataResponse(status), {
+        headers: combineHeaders(headers),
+      });
     },
   });
 };

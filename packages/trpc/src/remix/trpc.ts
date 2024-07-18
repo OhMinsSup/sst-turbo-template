@@ -9,34 +9,49 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 
+import type { AuthKitTokenKey } from "@template/authkit";
 import type { ApiClient } from "@template/sdk";
-
-import { auth } from "../_internal/auth";
-import { mergeHeaders } from "../_internal/misc";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 interface RemixTRPCContext {
   resHeaders: Headers;
   request: Request;
   client: ApiClient;
+  tokenKey: AuthKitTokenKey;
 }
 
 export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
-  const { request, resHeaders, client } = opts;
+  const { request, resHeaders, client, tokenKey } = opts;
 
-  const newResHeaders = mergeHeaders(resHeaders);
-
-  const { user } = await auth({
-    headers: request.headers,
-    resHeaders,
+  const authKit = new AuthKit({
     client,
+    tokenKey,
   });
 
+  authKit.combineHeader(resHeaders);
+
+  const cookie = request.headers.get("cookie");
+  console.log(">>> tRPC Request from Remix");
+  if (!cookie) {
+    return {
+      request,
+      resHeaders: authKit.headers,
+      session: null,
+      authKit,
+      client,
+    };
+  }
+
+  const tokens = authKit.getTokens(cookie, AuthKitFramework.Remix);
+  const { user, status, headers } = await authKit.auth(tokens);
   console.log(">>> tRPC Request from Remix");
 
   return {
     request,
-    resHeaders: newResHeaders,
+    resHeaders: headers,
     session: user,
+    status,
+    authKit,
     client,
   };
 };
