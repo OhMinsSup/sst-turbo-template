@@ -1,8 +1,8 @@
 import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
+import type { AuthKitTokenKey } from "@template/authkit";
 import type { ApiClient } from "@template/sdk";
 
-import type { AuthKitTokenKey } from "../authkit";
 import type { AppRouter } from "./root";
 import { appRouter } from "./root";
 import { createCallerFactory, createTRPCContext } from "./trpc";

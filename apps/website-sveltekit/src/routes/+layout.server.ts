@@ -1,7 +1,7 @@
 import { getApiClient } from "$lib/api";
 import { privateConfig } from "$lib/config/config.private";
 
-import { AuthKit, AuthKitFramework } from "@template/trpc/authkit";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 import type { LayoutServerLoad } from "./$types";
 

@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import { AuthKit, AuthKitFramework } from "@template/trpc/authkit";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 import { TOKEN_KEY } from "~/.server/utils/constants";
 import {

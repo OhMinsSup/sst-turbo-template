@@ -3,6 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignInSchema } from "@template/sdk/schema";
+import { AuthKit } from "@template/authkit";
 import {
   ErrorDisplayType,
   HttpResultStatus,
@@ -10,7 +11,6 @@ import {
   RequestMethod,
 } from "@template/sdk/enum";
 import { createHttpError } from "@template/sdk/error";
-import { AuthKit } from "@template/trpc/authkit";
 
 import { TOKEN_KEY } from "~/.server/utils/constants";
 import { errorJsonDataResponse } from "~/.server/utils/response";

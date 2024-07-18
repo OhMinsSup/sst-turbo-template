@@ -19,7 +19,7 @@ import {
   mergeClearAuthTokens,
   mergeHeaders,
   mergeTokenHeaders,
-} from "../_internal/misc";
+} from "./_internal/misc";
 import { AuthKitFramework, AuthKitStatus } from "./types";
 
 export class AuthKit {

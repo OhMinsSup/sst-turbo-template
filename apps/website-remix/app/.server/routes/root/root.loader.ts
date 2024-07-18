@@ -1,7 +1,7 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import { AuthKit, AuthKitFramework } from "@template/trpc/authkit";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 import { TOKEN_KEY } from "~/.server/utils/constants";
 import { getTheme } from "~/.server/utils/theme";

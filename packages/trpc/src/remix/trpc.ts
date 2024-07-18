@@ -9,12 +9,9 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 import { ZodError } from "zod";
 
+import type { AuthKitTokenKey } from "@template/authkit";
 import type { ApiClient } from "@template/sdk";
-
-import type { AuthKitTokenKey } from "../authkit";
-import { combineHeaders } from "../_internal/misc";
-import { AuthKitFramework } from "../authkit";
-import { AuthKit } from "../authkit/authkit";
+import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 interface RemixTRPCContext {
   resHeaders: Headers;
@@ -31,7 +28,7 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
     tokenKey,
   });
 
-  authKit.combineHeader(combineHeaders(resHeaders));
+  authKit.combineHeader(resHeaders);
 
   const cookie = request.headers.get("cookie");
   console.log(">>> tRPC Request from Remix");

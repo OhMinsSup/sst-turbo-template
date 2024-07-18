@@ -1,7 +1,7 @@
 import type { TokenResponse } from "@template/sdk";
 import { clearCookie, setTokenCookie } from "@template/utils/cookie";
 
-import type { AuthKitTokenKey } from "../authkit/types";
+import type { AuthKitTokenKey } from "../types";
 
 /**
  * Convert headers to an array of key-value pairs

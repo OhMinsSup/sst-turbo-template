@@ -1,8 +1,8 @@
 import React from "react";
 import { useFetcher, useLoaderData } from "@remix-run/react";
 
+import { AuthKitStatus } from "@template/authkit";
 import { useRafInterval } from "@template/hooks/useRafInterval";
-import { AuthKitStatus } from "@template/trpc/authkit";
 import { isEmpty } from "@template/utils/assertion";
 
 import type { RoutesActionData } from "~/.server/routes/root/root.action";
