@@ -2,7 +2,7 @@ import type { inferRouterInputs, inferRouterOutputs } from "@trpc/server";
 
 import type { ApiClient } from "@template/sdk";
 
-import type { TokenKey } from "../_internal/misc";
+import type { AuthKitTokenKey } from "../authkit";
 import type { AppRouter } from "./root";
 import { appRouter } from "./root";
 import { createCallerFactory, createTRPCContext } from "./trpc";
@@ -20,7 +20,7 @@ const createTrpcServer = (
   request: Request,
   resHeaders: Headers,
   client: ApiClient,
-  tokenKey: TokenKey,
+  tokenKey: AuthKitTokenKey,
 ) =>
   createCaller(() =>
     createTRPCContext({ request, resHeaders, client, tokenKey }),

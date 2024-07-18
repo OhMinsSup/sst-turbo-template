@@ -28,14 +28,14 @@
         "default": "./dist/remix.cjs"
       }
     },
-    "./share": {
+    "./authkit": {
       "import": {
-        "types": "./dist/share.d.ts",
-        "default": "./dist/share.js"
+        "types": "./dist/authkit.d.ts",
+        "default": "./dist/authkit.js"
       },
       "require": {
-        "types": "./dist/share.d.cts",
-        "default": "./dist/share.cjs"
+        "types": "./dist/authkit.d.cts",
+        "default": "./dist/authkit.cjs"
       }
     }
   },

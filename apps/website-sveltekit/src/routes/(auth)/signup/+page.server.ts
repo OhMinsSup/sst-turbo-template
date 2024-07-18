@@ -1,6 +1,6 @@
 import { fail } from "@sveltejs/kit";
-import { getApiClient } from "$lib/api-client.js";
-import { TOKEN_KEY } from "$lib/server/auth.js";
+import { getApiClient } from "$lib/api";
+import { privateConfig } from "$lib/config/config.private.js";
 import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
@@ -33,18 +33,26 @@ export const actions: Actions = {
         result: { tokens },
       } = response;
 
-      event.cookies.set(TOKEN_KEY.ACCESS_TOKEN, tokens.accessToken.token, {
-        httpOnly: true,
-        expires: new Date(tokens.accessToken.expiresAt),
-        path: "/",
-        sameSite: "lax",
-      });
-      event.cookies.set(TOKEN_KEY.REFRESH_TOKEN, tokens.refreshToken.token, {
-        httpOnly: true,
-        expires: new Date(tokens.refreshToken.expiresAt),
-        path: "/",
-        sameSite: "lax",
-      });
+      event.cookies.set(
+        privateConfig.token.accessTokenKey,
+        tokens.accessToken.token,
+        {
+          httpOnly: true,
+          expires: new Date(tokens.accessToken.expiresAt),
+          path: "/",
+          sameSite: "lax",
+        },
+      );
+      event.cookies.set(
+        privateConfig.token.refreshTokenKey,
+        tokens.refreshToken.token,
+        {
+          httpOnly: true,
+          expires: new Date(tokens.refreshToken.expiresAt),
+          path: "/",
+          sameSite: "lax",
+        },
+      );
 
       return {
         form,

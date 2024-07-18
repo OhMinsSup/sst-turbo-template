@@ -10,7 +10,7 @@ import {
   RequestMethod,
 } from "@template/sdk/enum";
 import { createHttpError } from "@template/sdk/error";
-import { signin } from "@template/trpc/share";
+import { AuthKit } from "@template/trpc/authkit";
 
 import { TOKEN_KEY } from "~/.server/utils/constants";
 import { errorJsonDataResponse } from "~/.server/utils/response";
@@ -18,8 +18,8 @@ import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { getApiClient } from "~/store/app";
 import { combineHeaders } from "~/utils/misc";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  if (request.method.toUpperCase() !== RequestMethod.POST) {
+export const action = async (ctx: ActionFunctionArgs) => {
+  if (ctx.request.method.toUpperCase() !== RequestMethod.POST) {
     throw createHttpError({
       statusMessage: "Method Not Allowed",
       statusCode: HttpStatus.METHOD_NOT_ALLOWED,
@@ -28,9 +28,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     });
   }
 
+  const authKit = new AuthKit({
+    tokenKey: TOKEN_KEY,
+    headers: ctx.response?.headers,
+    client: getApiClient(),
+  });
+
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const input: Awaited<FormFieldSignUpSchema> = await request.json();
-  const response = await getApiClient().rpc("signUp").post(input);
+  const input: Awaited<FormFieldSignUpSchema> = await ctx.request.json();
+  const response = await authKit.client.rpc("signUp").post(input);
   if (response.error) {
     return json(errorJsonDataResponse(response.error));
   }
@@ -44,7 +50,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   } = response;
 
   return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-    headers: combineHeaders(signin(TOKEN_KEY, tokens)),
+    headers: combineHeaders(authKit.signin(tokens)),
   });
 };
 

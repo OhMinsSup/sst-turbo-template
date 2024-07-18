@@ -5,7 +5,7 @@ export default defineConfig((options: Options) => ({
   entry: {
     nextjs: "src/nextjs/index.ts",
     remix: "src/remix/index.ts",
-    share: "src/share/index.ts",
+    authkit: "src/authkit/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

@@ -1,6 +1,8 @@
 import type { TokenResponse } from "@template/sdk";
 import { clearCookie, setTokenCookie } from "@template/utils/cookie";
 
+import type { AuthKitTokenKey } from "../authkit/types";
+
 /**
  * Convert headers to an array of key-value pairs
  */
@@ -44,16 +46,11 @@ export function combineHeaders(
   return combined;
 }
 
-export interface TokenKey {
-  accessTokenKey: string;
-  refreshTokenKey: string;
-}
-
 /**
  * Merge token and headers
  */
 export function mergeTokenHeaders(
-  tokenKey: TokenKey,
+  tokenKey: AuthKitTokenKey,
   token: TokenResponse,
   defaultHeaders?: Headers,
 ): Headers {
@@ -73,7 +70,7 @@ export function mergeTokenHeaders(
  *  Merge clear auth tokens
  */
 export function mergeClearAuthTokens(
-  tokenKey: TokenKey,
+  tokenKey: AuthKitTokenKey,
   defaultHeaders?: Headers,
 ): Headers {
   const headers = new Headers();
