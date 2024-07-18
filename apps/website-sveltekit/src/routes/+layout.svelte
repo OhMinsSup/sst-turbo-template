@@ -4,6 +4,7 @@
   import { invalidate, invalidateAll, onNavigate } from "$app/navigation";
   import { rafInterval } from "$lib/svelte/lifecycle/raf-interval";
 
+  import { AuthKitStatus } from "@template/authkit";
   import { isEmpty } from "@template/utils/assertion";
 
   import type { LayoutData } from "./$types";
@@ -22,20 +23,14 @@
   });
 
   const updateSession = async () => {
-    if (!data.data || isEmpty(data.data)) {
+    if (!data.user || isEmpty(data.user)) {
       return;
     }
 
-    const {
-      data: { status },
-    } = data;
-
-    switch (status) {
-      case "action:refreshed":
-      case "action:loggedIn": {
-        console.log("refreshing....", status);
-        await invalidateAll();
-        console.log("refreshed....", status);
+    switch (data.loggedInStatus) {
+      case AuthKitStatus.Refreshed:
+      case AuthKitStatus.LoggedIn: {
+        await invalidate((url) => url.pathname === "/");
         return;
       }
       default: {
