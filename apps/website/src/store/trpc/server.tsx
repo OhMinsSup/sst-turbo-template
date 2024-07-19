@@ -4,7 +4,7 @@ import { headers } from "next/headers";
 import { auth } from "@template/auth";
 import { createCaller, createTRPCContext } from "@template/trpc/nextjs";
 
-import { getApiClient } from "~/contexts/api-client";
+import { getApiClient } from "~/store/api";
 
 /**
  * This wraps the `createTRPCContext` helper and provides the required context for the tRPC API when
