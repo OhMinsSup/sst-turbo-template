@@ -47,6 +47,7 @@
     "@template/utils": "workspace:*",
     "bits-ui": "^0.21.12",
     "clsx": "^2.1.1",
+    "date-fns": "catalog:",
     "formsnap": "^1.0.1",
     "jsonwebtoken": "^9.0.2",
     "lucide-svelte": "^0.408.0",

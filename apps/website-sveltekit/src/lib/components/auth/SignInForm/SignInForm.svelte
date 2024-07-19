@@ -12,11 +12,20 @@
 
   export let data: PageData;
 
+  let loading = false;
+
   const form = superForm(data.form, {
     validators: zodClient(authSchema.signIn),
     dataType: "json",
-    delayMs: 2000,
-    timeoutMs: 10000,
+    onSubmit: () => {
+      loading = true;
+    },
+    onError: () => {
+      loading = false;
+    },
+    onUpdate: () => {
+      loading = false;
+    },
   });
 
   const { form: formData, enhance, delayed } = form;
@@ -54,7 +63,7 @@
         <Form.FieldErrors />
       </Form.Field>
       <Form.Button type="submit" data-testid="signin-button">
-        {#if $delayed}
+        {#if loading}
           <Icons.spinner class="mr-2 size-4 animate-spin" />
         {/if}
         <span>로그인</span>

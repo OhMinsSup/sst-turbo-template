@@ -1,4 +1,4 @@
-import { fail } from "@sveltejs/kit";
+import { fail, redirect } from "@sveltejs/kit";
 import { getApiClient } from "$lib/api";
 import { privateConfig } from "$lib/config/config.private.js";
 import { setError, superValidate } from "sveltekit-superforms";
@@ -11,7 +11,7 @@ import { authSchema } from "@template/sdk/schema";
 
 import type { Actions, PageServerLoad } from "./$types.js";
 
-export const load: PageServerLoad = async () => {
+export const load: PageServerLoad = async (event) => {
   return {
     form: await superValidate(zod(authSchema.signIn)),
   };
@@ -25,6 +25,8 @@ export const actions: Actions = {
         form,
       });
     }
+
+    let isRedirect = false;
 
     try {
       const response = await getApiClient().rpc("signIn").post(form.data);
@@ -54,11 +56,13 @@ export const actions: Actions = {
         },
       );
 
-      return {
-        form,
-      };
+      event.setHeaders({
+        "X-Auth-Status": "true",
+      });
+
+      isRedirect = true;
     } catch (e) {
-      console.error(e);
+      isRedirect = false;
       if (e instanceof FetchError) {
         const data: ClientResponse<null> = e.data;
         switch (data.resultCode) {
@@ -84,6 +88,10 @@ export const actions: Actions = {
       return fail(HttpStatus.INTERNAL_SERVER_ERROR, {
         form,
       });
+    }
+
+    if (isRedirect) {
+      redirect(HttpStatus.TEMPORARY_REDIRECT, "/");
     }
   },
 };
