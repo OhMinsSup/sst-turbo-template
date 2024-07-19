@@ -7,13 +7,13 @@ import { useRafInterval } from "@template/hooks/useRafInterval";
 import { HttpResultStatus } from "@template/sdk/enum";
 import { isSessionExpireDate } from "@template/utils/date";
 
-import { useApiClient } from "./api";
+import { ApiClientProvider, getApiClient, useApiClient } from "~/store/api";
 
-interface TokenProviderProps {
+interface Props {
   children: React.ReactNode;
 }
 
-export default function TokenProvider({ children }: TokenProviderProps) {
+function TokenProvider({ children }: Props) {
   const { data, update } = useSession();
   const client = useApiClient();
 
@@ -72,4 +72,14 @@ export default function TokenProvider({ children }: TokenProviderProps) {
   );
 
   return <>{children}</>;
+}
+
+export default function AppProvider({ children }: Props) {
+  const apiClient = getApiClient();
+
+  return (
+    <ApiClientProvider client={apiClient}>
+      <TokenProvider>{children}</TokenProvider>
+    </ApiClientProvider>
+  );
 }

@@ -9,7 +9,7 @@ import { isEmpty } from "@template/utils/assertion";
 
 import type { RoutesActionData } from "~/.server/routes/root/root.action";
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
-import { ApiClientProvider } from "../api/provider";
+import { ApiClientProvider } from "~/store/api";
 
 export const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
   createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL, options);

@@ -4,8 +4,8 @@ import { SessionProvider } from "next-auth/react";
 import { auth } from "@template/auth";
 import { ThemeProvider } from "@template/ui/theme";
 
-import { TRPCReactProvider } from "~/trpc/react";
-import AppProvider from "./app";
+import { AppProvider } from "~/store/app";
+import { TRPCReactProvider } from "~/store/trpc/react";
 
 interface ProviderProps {
   children: React.ReactNode;

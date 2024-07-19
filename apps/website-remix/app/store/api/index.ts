@@ -1,1 +1,1 @@
-export { useApiClient, useApiClientStore } from "./provider";
+export { useApiClient, useApiClientStore, ApiClientProvider } from "./provider";
