@@ -210,7 +210,7 @@ importers:
         version: 9.5.1(typescript@5.5.3)(webpack@5.92.1(@swc/core@1.6.7(@swc/helpers@0.5.5)))
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)
+        version: 10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3)
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
@@ -486,6 +486,9 @@ importers:
 
   apps/website-sveltekit:
     dependencies:
+      '@tanstack/svelte-query':
+        specifier: ^5.51.9
+        version: 5.51.9(svelte@4.2.18)
       '@template/authkit':
         specifier: workspace:*
         version: link:../../packages/authkit
@@ -495,6 +498,12 @@ importers:
       '@template/utils':
         specifier: workspace:*
         version: link:../../packages/utils
+      '@trpc/client':
+        specifier: 11.0.0-rc.421
+        version: 11.0.0-rc.421(@trpc/server@11.0.0-rc.421)
+      '@trpc/server':
+        specifier: 11.0.0-rc.421
+        version: 11.0.0-rc.421
       bits-ui:
         specifier: ^0.21.12
         version: 0.21.12(svelte@4.2.18)
@@ -522,6 +531,9 @@ importers:
       tailwind-variants:
         specifier: ^0.2.1
         version: 0.2.1(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)))
+      trpc-svelte-query-adapter:
+        specifier: ^2.3.7
+        version: 2.3.7(@tanstack/svelte-query@5.51.9(svelte@4.2.18))(@trpc/client@11.0.0-rc.421(@trpc/server@11.0.0-rc.421))(@trpc/server@11.0.0-rc.421)(svelte@4.2.18)(typescript@5.5.3)
       zod:
         specifier: 'catalog:'
         version: 3.23.8
@@ -3921,10 +3933,18 @@ packages:
   '@tanstack/query-core@5.49.1':
     resolution: {integrity: sha512-JnC9ndmD1KKS01Rt/ovRUB1tmwO7zkyXAyIxN9mznuJrcNtOrkmOnQqdJF2ib9oHzc2VxHomnEG7xyfo54Npkw==}
 
+  '@tanstack/query-core@5.51.9':
+    resolution: {integrity: sha512-HsAwaY5J19MD18ykZDS3aVVh+bAt0i7m6uQlFC2b77DLV9djo+xEN7MWQAQQTR8IM+7r/zbozTQ7P0xr0bHuew==}
+
   '@tanstack/react-query@5.49.2':
     resolution: {integrity: sha512-6rfwXDK9BvmHISbNFuGd+wY3P44lyW7lWiA9vIFGT/T0P9aHD1VkjTvcM4SDAIbAQ9ygEZZoLt7dlU1o3NjMVA==}
     peerDependencies:
       react: ^18.0.0
+
+  '@tanstack/svelte-query@5.51.9':
+    resolution: {integrity: sha512-u9U/Lo/5TrQ1bzBP5DPKfACNLAiY0BySeRaKC5Xn45+5k9aD3BZVCOIsTAprkByBklsshWkueXE0QQiCo7LPeQ==}
+    peerDependencies:
+      svelte: ^3.54.0 || ^4.0.0 || ^5.0.0-next.0
 
   '@tokenizer/token@0.3.0':
     resolution: {integrity: sha512-OvjF+z51L3ov0OyAU0duzsYuvO01PH7x4t6DJx+guahgTnBHkhJdG7soQeTSFLWN3efnHyibZ4Z8l2EuWwJN3A==}
@@ -8251,6 +8271,9 @@ packages:
     resolution: {integrity: sha512-u0piLU+nCOHMgGjRbimiXmA9kM/L9EHh3zL81xCdp7m+Y2pHIsnmbdDoEDoAz5geaonNR6q6+yOPQs6n4T6sBQ==}
     engines: {node: '>= 14'}
 
+  proxy-deep@3.1.1:
+    resolution: {integrity: sha512-kppbvLUNJ4IOMZds9/4gz/rtT5OFiesy3XosLsgMKlF3vb6GA5Y3ptyDlzKLcOcUBW+zaY+RiMINTsgE+O6e+Q==}
+
   proxy-from-env@1.1.0:
     resolution: {integrity: sha512-D+zkORCbA9f1tdWRK0RaCR3GPv50cMxcrz4X8k5LTSUD1Dkw47mKJEZQNunItRTkWwgtaUSo1RVFRIG9ZXiFYg==}
 
@@ -9338,6 +9361,15 @@ packages:
 
   trough@2.2.0:
     resolution: {integrity: sha512-tmMpK00BjZiUyVyvrBK7knerNgmgvcV/KLVyuma/SC+TQN167GrMRciANTz09+k3zW8L8t60jWO1GpfkZdjTaw==}
+
+  trpc-svelte-query-adapter@2.3.7:
+    resolution: {integrity: sha512-tO/Mubb1BCUvqscGeISj7Ye003c5DuK70rRUErCLe346bz06R8eg05rEiT3qE4cbwrrSR36qXp3N8ZQlnr4KaA==}
+    peerDependencies:
+      '@tanstack/svelte-query': ^5.8.2
+      '@trpc/client': ^10.43.3
+      '@trpc/server': ^10.43.3
+      svelte: ^4.2.3
+      typescript: ^5.2.2
 
   ts-algebra@2.0.0:
     resolution: {integrity: sha512-FPAhNPFMrkwz76P7cdjdmiShwMynZYN6SgOujD1urY4oNm80Ou9oMdmbR45LotcKOXoy7wSmHkRFE6Mxbrhefw==}
@@ -12956,10 +12988,17 @@ snapshots:
 
   '@tanstack/query-core@5.49.1': {}
 
+  '@tanstack/query-core@5.51.9': {}
+
   '@tanstack/react-query@5.49.2(react@18.3.1)':
     dependencies:
       '@tanstack/query-core': 5.49.1
       react: 18.3.1
+
+  '@tanstack/svelte-query@5.51.9(svelte@4.2.18)':
+    dependencies:
+      '@tanstack/query-core': 5.51.9
+      svelte: 4.2.18
 
   '@tokenizer/token@0.3.0': {}
 
@@ -12997,7 +13036,7 @@ snapshots:
       minimatch: 9.0.5
       node-plop: 0.26.3
       proxy-agent: 6.4.0
-      ts-node: 10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)
+      ts-node: 10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.1
     transitivePeerDependencies:
@@ -16502,7 +16541,7 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 20.14.9
-      ts-node: 10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)
+      ts-node: 10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -18141,7 +18180,7 @@ snapshots:
       yaml: 1.10.2
     optionalDependencies:
       postcss: 8.4.39
-      ts-node: 10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)
+      ts-node: 10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3)
 
   postcss-load-config@4.0.2(postcss@8.4.39)(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)):
     dependencies:
@@ -18149,7 +18188,7 @@ snapshots:
       yaml: 2.4.5
     optionalDependencies:
       postcss: 8.4.39
-      ts-node: 10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)
+      ts-node: 10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3)
 
   postcss-modules-extract-imports@3.1.0(postcss@8.4.39):
     dependencies:
@@ -18319,6 +18358,8 @@ snapshots:
       socks-proxy-agent: 8.0.4
     transitivePeerDependencies:
       - supports-color
+
+  proxy-deep@3.1.1: {}
 
   proxy-from-env@1.1.0: {}
 
@@ -19500,6 +19541,15 @@ snapshots:
 
   trough@2.2.0: {}
 
+  trpc-svelte-query-adapter@2.3.7(@tanstack/svelte-query@5.51.9(svelte@4.2.18))(@trpc/client@11.0.0-rc.421(@trpc/server@11.0.0-rc.421))(@trpc/server@11.0.0-rc.421)(svelte@4.2.18)(typescript@5.5.3):
+    dependencies:
+      '@tanstack/svelte-query': 5.51.9(svelte@4.2.18)
+      '@trpc/client': 11.0.0-rc.421(@trpc/server@11.0.0-rc.421)
+      '@trpc/server': 11.0.0-rc.421
+      proxy-deep: 3.1.1
+      svelte: 4.2.18
+      typescript: 5.5.3
+
   ts-algebra@2.0.0:
     optional: true
 
@@ -19539,7 +19589,7 @@ snapshots:
       typescript: 5.5.3
       webpack: 5.92.1(@swc/core@1.6.7(@swc/helpers@0.5.5))
 
-  ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3):
+  ts-node@10.9.2(@swc/core@1.6.7(@swc/helpers@0.5.5))(@types/node@20.14.9)(typescript@5.5.3):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11

@@ -16,11 +16,11 @@
     "test:unit": "vitest"
   },
   "devDependencies": {
-    "@t3-oss/env-core": "^0.10.1",
     "@playwright/test": "^1.28.1",
     "@sveltejs/adapter-auto": "^3.0.0",
     "@sveltejs/kit": "^2.0.0",
     "@sveltejs/vite-plugin-svelte": "^3.0.0",
+    "@t3-oss/env-core": "^0.10.1",
     "@tailwindcss/typography": "^0.5.13",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
@@ -42,9 +42,12 @@
   "prettier": "@template/prettier-config/sveltekit",
   "type": "module",
   "dependencies": {
+    "@tanstack/svelte-query": "^5.51.9",
     "@template/authkit": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/utils": "workspace:*",
+    "@trpc/client": "11.0.0-rc.421",
+    "@trpc/server": "11.0.0-rc.421",
     "bits-ui": "^0.21.12",
     "clsx": "^2.1.1",
     "date-fns": "catalog:",
@@ -54,6 +57,7 @@
     "sveltekit-superforms": "^2.16.0",
     "tailwind-merge": "^2.3.0",
     "tailwind-variants": "^0.2.1",
+    "trpc-svelte-query-adapter": "^2.3.7",
     "zod": "catalog:"
   }
 }
