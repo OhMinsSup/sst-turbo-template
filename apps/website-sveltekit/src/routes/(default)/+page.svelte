@@ -8,4 +8,4 @@
 <p>
   Visit <a href="https://kit.svelte.dev">kit.svelte.dev</a> to read the documentation
 </p>
-<div class=" flex items-center justify-center">{data?.data.status}</div>
+<div class=" flex items-center justify-center">{data?.loggedInStatus}</div>

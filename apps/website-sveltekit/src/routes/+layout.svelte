@@ -1,7 +1,7 @@
 <script lang="ts">
   import "../app.css";
 
-  import { invalidate, invalidateAll, onNavigate } from "$app/navigation";
+  import { invalidateAll, onNavigate } from "$app/navigation";
   import { rafInterval } from "$lib/svelte/lifecycle/raf-interval";
 
   import { AuthKitStatus } from "@template/authkit";
@@ -30,7 +30,7 @@
     switch (data.loggedInStatus) {
       case AuthKitStatus.Refreshed:
       case AuthKitStatus.LoggedIn: {
-        await invalidate((url) => url.pathname === "/");
+        await invalidateAll();
         return;
       }
       default: {
