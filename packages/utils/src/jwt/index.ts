@@ -1,8 +1,8 @@
-import jwt from "jsonwebtoken";
+import { decodeJwt } from "jose";
 
 export const jwtDecode = (token: string) => {
   try {
-    return jwt.decode(token, { json: true });
+    return decodeJwt(token);
   } catch (error) {
     return null;
   }

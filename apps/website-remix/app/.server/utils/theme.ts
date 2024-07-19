@@ -1,6 +1,6 @@
 import cookie from "cookie";
 
-import type { Theme } from "~/store/theme-store";
+import type { Theme } from "~/store/theme/store";
 
 const cookieName = "template.theme";
 

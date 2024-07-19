@@ -10,7 +10,7 @@ import "~/app/globals.css";
 import { headers } from "next/headers";
 
 import { SITE_CONFIG } from "~/constants/constants";
-import RootProvider from "~/contexts/root";
+import { RootProvider } from "~/store";
 import { getRequestInfo } from "~/utils/request";
 
 // eslint-disable-next-line @typescript-eslint/require-await

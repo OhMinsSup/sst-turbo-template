@@ -1,5 +1,6 @@
-import type { Client } from "@template/sdk";
 import { createStore } from "zustand/vanilla";
+
+import type { Client } from "@template/sdk";
 
 export interface ApiClientState {
   client: Client;

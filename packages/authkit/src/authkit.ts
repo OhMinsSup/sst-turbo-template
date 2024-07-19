@@ -375,11 +375,11 @@ export class AuthKit {
       const tokens: TokenResponse = {
         accessToken: {
           token: accessToken,
-          expiresAt: accessDecode.exp as unknown as number,
+          expiresAt: (accessDecode.exp as unknown as number) * 1000,
         },
         refreshToken: {
           token: refreshToken,
-          expiresAt: refreshDecode.exp as unknown as number,
+          expiresAt: (refreshDecode.exp as unknown as number) * 1000,
         },
       };
 

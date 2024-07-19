@@ -61,7 +61,7 @@
   "dependencies": {
     "date-fns": "catalog:",
     "cookie": "^0.6.0",
-    "jsonwebtoken": "^9.0.2"
+    "jose": "^5.6.3"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
