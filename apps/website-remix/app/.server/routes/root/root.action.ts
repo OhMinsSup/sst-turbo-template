@@ -11,7 +11,7 @@ import {
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
 import { getApiClient } from "~/store/app";
-import { isTheme } from "~/store/theme-store";
+import { isTheme } from "~/store/theme";
 import { combineHeaders } from "~/utils/misc";
 
 export const action = async ({ request, response }: ActionFunctionArgs) => {

@@ -15,13 +15,13 @@ import { cn } from "@template/ui";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { ShowToast, Toaster } from "./components/shared/Toast";
-import AppProvider from "./store/app";
+import { AppProvider } from "./store/app";
 import {
   NonFlashOfWrongThemeEls,
   ThemeProvider,
   useTheme,
-} from "./store/theme-store";
-import { TRPCReactProvider } from "./store/trpc-react";
+} from "./store/theme";
+import { TRPCReactProvider } from "./store/trpc";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { action } from "~/.server/routes/root/root.action";

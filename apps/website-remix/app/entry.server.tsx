@@ -12,9 +12,9 @@ import type {
 } from "@remix-run/node";
 import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
+import { cors } from "remix-utils/cors";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
-import { cors } from "remix-utils/cors";
 
 const ABORT_DELAY = 5_000;
 

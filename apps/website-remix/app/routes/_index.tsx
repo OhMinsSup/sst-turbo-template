@@ -5,7 +5,7 @@ import { invariant } from "@epic-web/invariant";
 import { createTrpcServer } from "~/.server/trpc";
 import { TOKEN_KEY } from "~/.server/utils/constants";
 import { getApiClient } from "~/store/app";
-import { api } from "~/store/trpc-react";
+import { api } from "~/store/trpc";
 
 export const loader = async (ctx: LoaderFunctionArgs) => {
   invariant(ctx.response, "response is required");
@@ -16,7 +16,6 @@ export const loader = async (ctx: LoaderFunctionArgs) => {
     TOKEN_KEY,
   );
   const message = await trpcServer.etc.hello();
-  console.log("message", message);
   return {
     message,
   };

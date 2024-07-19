@@ -1,11 +1,12 @@
-import type { Client } from "@template/sdk";
 import type { ReactNode } from "react";
 import type { StoreApi } from "zustand";
 import { createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
-import type { ApiClientStore } from "./api-store";
-import { createApiClientStore, initApiClientStore } from "./api-store";
+import type { Client } from "@template/sdk";
+
+import type { ApiClientStore } from "./store";
+import { createApiClientStore, initApiClientStore } from "./store";
 
 export const ApiClientContext = createContext<StoreApi<ApiClientStore> | null>(
   null,
