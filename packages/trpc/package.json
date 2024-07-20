@@ -53,6 +53,7 @@
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
+    "@sveltejs/kit": "^2.5.18",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

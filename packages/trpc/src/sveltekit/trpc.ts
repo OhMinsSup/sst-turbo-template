@@ -6,41 +6,33 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+import type { RequestEvent } from "@sveltejs/kit";
 import { initTRPC, TRPCError } from "@trpc/server";
 
 import type { AuthKitTokenKey } from "@template/authkit";
 import type { ApiClient } from "@template/sdk";
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
-interface RemixTRPCContext {
-  resHeaders: Headers;
-  request: Request;
+interface SveltekitTRPCContext {
+  event: RequestEvent;
   client: ApiClient;
   tokenKey: AuthKitTokenKey;
 }
 
-export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
-  const { request, resHeaders, client, tokenKey } = opts;
+export const getSveltekitTRPCContext = async (opts: SveltekitTRPCContext) => {
+  const { event, client, tokenKey } = opts;
 
   const authKit = new AuthKit({
     client,
     tokenKey,
   });
 
-  authKit.combineHeader(resHeaders);
-
-  const cookie = request.headers.get("cookie");
-
-  const tokens = cookie
-    ? authKit.getTokens(cookie, AuthKitFramework.Remix)
-    : null;
-
-  const { user, status, headers } = await authKit.checkAuth(tokens);
-  console.log(">>> tRPC Request from Remix");
+  const { status, user } = await authKit.checkAuth(
+    authKit.getTokens(event.cookies.getAll(), AuthKitFramework.SvelteKit),
+  );
 
   return {
-    request,
-    resHeaders: headers,
+    event,
     session: user,
     status,
     authKit,
@@ -60,8 +52,8 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: RemixTRPCContext) => {
-  const ctx = await getRemixTRPCContext(opts);
+export const createTRPCContext = async (opts: SveltekitTRPCContext) => {
+  const ctx = await getSveltekitTRPCContext(opts);
   return ctx;
 };
 
