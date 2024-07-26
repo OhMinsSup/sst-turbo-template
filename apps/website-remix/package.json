@@ -53,8 +53,5 @@
     "vite": "catalog:",
     "vite-tsconfig-paths": "^4.3.2"
   },
-  "prettier": "@template/prettier-config",
-  "engines": {
-    "node": ">=20.0.0"
-  }
+  "prettier": "@template/prettier-config"
 }

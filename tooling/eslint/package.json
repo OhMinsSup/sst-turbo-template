@@ -1,7 +1,7 @@
 {
   "name": "@template/eslint-config",
-  "version": "0.0.1",
   "private": true,
+  "version": "0.0.1",
   "type": "module",
   "exports": {
     "./base": "./base.js",
@@ -37,10 +37,5 @@
     "eslint": "catalog:",
     "prettier": "catalog:",
     "rimraf": "catalog:"
-  },
-  "packageManager": "pnpm@9.0.5",
-  "engines": {
-    "bun": ">=1.0",
-    "node": ">=20.0"
   }
 }

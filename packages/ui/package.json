@@ -9,8 +9,9 @@
   },
   "license": "MIT",
   "scripts": {
-    "add": "pnpm dlx shadcn-ui add",
+    "build": "tsc",
     "clean": "rm -rf .turbo node_modules",
+    "dev": "tsc",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false",

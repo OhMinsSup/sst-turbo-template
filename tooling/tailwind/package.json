@@ -27,10 +27,5 @@
     "prettier": "catalog:",
     "rimraf": "catalog:",
     "typescript": "catalog:"
-  },
-  "packageManager": "pnpm@9.0.5",
-  "engines": {
-    "bun": ">=1.0",
-    "node": ">=20.0"
   }
 }
