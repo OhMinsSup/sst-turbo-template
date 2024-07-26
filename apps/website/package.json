@@ -14,7 +14,7 @@
     "with-env": "dotenv -e ../../.env --"
   },
   "dependencies": {
-    "@hookform/resolvers": "^3.7.0",
+    "@hookform/resolvers": "^3.9.0",
     "@lexical/html": "^0.16.1",
     "@lexical/link": "^0.16.1",
     "@lexical/react": "^0.16.1",

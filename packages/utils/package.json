@@ -51,12 +51,13 @@
   },
   "license": "MIT",
   "scripts": {
+    "dev": "tsup --watch",
     "build": "tsup",
     "build:lib": "tsup",
     "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
-    "typecheck": "tsc --noEmit"
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "dependencies": {
     "date-fns": "catalog:",

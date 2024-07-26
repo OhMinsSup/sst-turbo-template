@@ -5,12 +5,10 @@ interface GetTokenFromCookieOptions {
   refreshTokenKey: string | RegExp;
 }
 
+// Get token from cookie by key
 export const getTokenFromCookie = (
   cookieString: string,
-  opts: GetTokenFromCookieOptions = {
-    accessTokenKey: /.*\.access_token/,
-    refreshTokenKey: /.*\.refresh_token/,
-  },
+  opts: GetTokenFromCookieOptions,
 ) => {
   const cookies = cookie.parse(cookieString);
   let accessToken: string | null = null;
@@ -40,6 +38,7 @@ export const getTokenFromCookie = (
   };
 };
 
+// Set token cookie with key, value and options
 export const setTokenCookie = (
   key: string,
   value: {
@@ -59,6 +58,7 @@ export const setTokenCookie = (
   });
 };
 
+// Set cookie with key, value and options
 export const setCookie = (
   key: string,
   value: string,
@@ -67,6 +67,7 @@ export const setCookie = (
   return cookie.serialize(key, value, options);
 };
 
+// Clear cookie by setting maxAge to -1
 export const clearCookie = (key: string) =>
   cookie.serialize(key, "", {
     path: "/",

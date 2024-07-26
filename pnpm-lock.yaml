@@ -221,8 +221,8 @@ importers:
   apps/website:
     dependencies:
       '@hookform/resolvers':
-        specifier: ^3.7.0
-        version: 3.7.0(react-hook-form@7.52.1(react@18.3.1))
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
       '@lexical/html':
         specifier: ^0.16.1
         version: 0.16.1
@@ -523,8 +523,8 @@ importers:
         specifier: ^2.16.0
         version: 2.16.0(@sveltejs/kit@2.5.18(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1)))(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1)))(svelte@4.2.18)
       tailwind-merge:
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^2.4.0
+        version: 2.4.0
       tailwind-variants:
         specifier: ^0.2.1
         version: 0.2.1(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)))
@@ -841,8 +841,8 @@ importers:
   packages/ui:
     dependencies:
       '@hookform/resolvers':
-        specifier: ^3.7.0
-        version: 3.7.0(react-hook-form@7.52.1(react@18.3.1))
+        specifier: ^3.9.0
+        version: 3.9.0(react-hook-form@7.52.1(react@18.3.1))
       '@radix-ui/react-accordion':
         specifier: ^1.2.0
         version: 1.2.0(@types/react-dom@18.3.0)(@types/react@18.3.3)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -937,8 +937,8 @@ importers:
         specifier: 'catalog:'
         version: 3.6.0
       embla-carousel-react:
-        specifier: ^8.1.6
-        version: 8.1.6(react@18.3.1)
+        specifier: ^8.1.7
+        version: 8.1.7(react@18.3.1)
       input-otp:
         specifier: ^1.2.4
         version: 1.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -952,14 +952,14 @@ importers:
         specifier: ^7.52.1
         version: 7.52.1(react@18.3.1)
       react-resizable-panels:
-        specifier: ^2.0.20
-        version: 2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.0.22
+        version: 2.0.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       tailwind-merge:
-        specifier: ^2.3.0
-        version: 2.3.0
+        specifier: ^2.4.0
+        version: 2.4.0
       tailwindcss-animate:
         specifier: ^1.0.7
         version: 1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)))
@@ -2128,8 +2128,8 @@ packages:
   '@hapi/topo@5.1.0':
     resolution: {integrity: sha512-foQZKJig7Ob0BMAYBfcJk8d77QtOe7Wo4ox7ff1lQYoNNAb6jwcY1ncdoy2e9wQZzvNy7ODZCYJkK8kzmcAnAg==}
 
-  '@hookform/resolvers@3.7.0':
-    resolution: {integrity: sha512-42p5X18noBV3xqOpTlf2V5qJZwzNgO4eLzHzmKGh/w7z4+4XqRw5AsESVkqE+qwAuRRlg2QG12EVEjPkrRIbeg==}
+  '@hookform/resolvers@3.9.0':
+    resolution: {integrity: sha512-bU0Gr4EepJ/EQsH/IwEzYLsT/PEj5C0ynLQ4m+GSHS+xKH4TfSelhluTgOaoc4kA5s7eCsQbM4wvZLzELmWzUg==}
     peerDependencies:
       react-hook-form: ^7.0.0
 
@@ -5459,18 +5459,18 @@ packages:
   electron-to-chromium@1.4.816:
     resolution: {integrity: sha512-EKH5X5oqC6hLmiS7/vYtZHZFTNdhsYG5NVPRN6Yn0kQHNBlT59+xSM8HBy66P5fxWpKgZbPqb+diC64ng295Jw==}
 
-  embla-carousel-react@8.1.6:
-    resolution: {integrity: sha512-DHxwFzF63yVrU95Eo58E9Xr5b6Y9ul6TTsqb/rtwMi+jXudAmIqN1i9iBxQ73i8jKuUVxll/ziNYMmnWvrdQJQ==}
+  embla-carousel-react@8.1.7:
+    resolution: {integrity: sha512-ermMKzQ46LhXE4f81VBCVGxCJWvZfsu504dkyiUDO+cnEEPW8NlC2PpKULmiOWugusYWRLhQLjmyQs3b8vvOjA==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.1.6:
-    resolution: {integrity: sha512-Wg+J2YoqLqkaqsXi7fTJaLmXm6BpgDRJ0EfTdvQ4KE/ip5OsUuKGpJsEQDTt4waGXSDyZhIBlfoQtgGJeyYQ1Q==}
+  embla-carousel-reactive-utils@8.1.7:
+    resolution: {integrity: sha512-FDPcWjNtW04KSuvSfGbVeoB8yl5no3E0++HikO/uW12cNkMnWt68C4OBOakZQZlpUdRQSA9KCYoBuQzfpVGvZQ==}
     peerDependencies:
-      embla-carousel: 8.1.6
+      embla-carousel: 8.1.7
 
-  embla-carousel@8.1.6:
-    resolution: {integrity: sha512-9n7FVsbPAs1KD+JmO84DnEDOZMXPBQbLujjMQqvsBRN2CDWwgZ9hRSNapztdPnyJfzOIxowGmj0BUQ8ACYAPkA==}
+  embla-carousel@8.1.7:
+    resolution: {integrity: sha512-b3kBr2H+S1gx4neki0P+aqN6cA5Ibjqy4CR3Ufi3X+Q3JpoNXJgOmJMSPkoP9DKcDREwADN6UWZzRwF2oo0y9Q==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -8388,8 +8388,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@2.0.20:
-    resolution: {integrity: sha512-aMbK3VF8U+VBICG+rwhE0Rr/eFZaRzmNq3akBRL1TrayIpLXz7Rbok0//kYeWj6SQRsjcQ3f4eRplJicM+oL6w==}
+  react-resizable-panels@2.0.22:
+    resolution: {integrity: sha512-G8x8o7wjQxCG+iF4x4ngKVBpe0CY+DAZ/SaiDoqBEt0yuKJe9OE/VVYMBMMugQ3GyQ65NnSJt23tujlaZZe75A==}
     peerDependencies:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
@@ -9184,8 +9184,8 @@ packages:
   tabbable@6.2.0:
     resolution: {integrity: sha512-Cat63mxsVJlzYvN51JmVXIgNoUokrIaT2zLclCXjRd8boZ0004U4KCs/sToJ75C6sdlByWxpYnb5Boif1VSFew==}
 
-  tailwind-merge@2.3.0:
-    resolution: {integrity: sha512-vkYrLpIP+lgR0tQCG6AP7zZXCTLc1Lnv/CCRT3BqJ9CZ3ui2++GPaGb1x/ILsINIMSYqqvrpqjUFsMNLlW99EA==}
+  tailwind-merge@2.4.0:
+    resolution: {integrity: sha512-49AwoOQNKdqKPd9CViyH5wJoSKsCDjUlzL8DxuGp3P1FsGY36NJDAa18jLZcaHAUUuTj+JB8IAo8zWgBNvBF7A==}
 
   tailwind-variants@0.2.1:
     resolution: {integrity: sha512-2xmhAf4UIc3PijOUcJPA1LP4AbxhpcHuHM2C26xM0k81r0maAO6uoUSHl3APmvHZcY5cZCY/bYuJdfFa4eGoaw==}
@@ -10879,7 +10879,7 @@ snapshots:
       '@hapi/hoek': 9.3.0
     optional: true
 
-  '@hookform/resolvers@3.7.0(react-hook-form@7.52.1(react@18.3.1))':
+  '@hookform/resolvers@3.9.0(react-hook-form@7.52.1(react@18.3.1))':
     dependencies:
       react-hook-form: 7.52.1(react@18.3.1)
 
@@ -14785,17 +14785,17 @@ snapshots:
 
   electron-to-chromium@1.4.816: {}
 
-  embla-carousel-react@8.1.6(react@18.3.1):
+  embla-carousel-react@8.1.7(react@18.3.1):
     dependencies:
-      embla-carousel: 8.1.6
-      embla-carousel-reactive-utils: 8.1.6(embla-carousel@8.1.6)
+      embla-carousel: 8.1.7
+      embla-carousel-reactive-utils: 8.1.7(embla-carousel@8.1.7)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.1.6(embla-carousel@8.1.6):
+  embla-carousel-reactive-utils@8.1.7(embla-carousel@8.1.7):
     dependencies:
-      embla-carousel: 8.1.6
+      embla-carousel: 8.1.7
 
-  embla-carousel@8.1.6: {}
+  embla-carousel@8.1.7: {}
 
   emittery@0.13.1: {}
 
@@ -18454,7 +18454,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.3
 
-  react-resizable-panels@2.0.20(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-resizable-panels@2.0.22(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
@@ -19324,13 +19324,11 @@ snapshots:
 
   tabbable@6.2.0: {}
 
-  tailwind-merge@2.3.0:
-    dependencies:
-      '@babel/runtime': 7.24.7
+  tailwind-merge@2.4.0: {}
 
   tailwind-variants@0.2.1(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3))):
     dependencies:
-      tailwind-merge: 2.3.0
+      tailwind-merge: 2.4.0
       tailwindcss: 3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3))
 
   tailwindcss-animate@1.0.7(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3))):
