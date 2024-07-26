@@ -88,3 +88,12 @@ declare module "eslint-plugin-jsx-a11y" {
 }
 
 declare module "eslint-config-prettier" {}
+
+declare module "eslint-config-turbo" {
+  import type { Linter, Rule } from "eslint";
+
+  export const configs: {
+    recommended: { rules: Linter.RulesRecord };
+  };
+  export const rules: Record<string, Rule.RuleModule>;
+}
