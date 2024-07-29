@@ -21,11 +21,9 @@ export const loader = async ({ request, response }: LoaderFunctionArgs) => {
 
   const cookie = request.headers.get("cookie");
 
-  const tokens = cookie
-    ? authKit.getTokens(cookie, AuthKitFramework.Remix)
-    : null;
-
-  const { user, status, headers } = await authKit.checkAuth(tokens);
+  const { user, status, headers } = await authKit.checkAuth(
+    cookie ? authKit.getTokens(cookie, AuthKitFramework.Remix) : null,
+  );
 
   const data = {
     env: import.meta.env,
