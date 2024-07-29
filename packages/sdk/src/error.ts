@@ -11,5 +11,5 @@ export {
   createError as createHttpError,
 } from "./errors/http";
 export { FetchError };
-export const isFetchError = (input: unknown): input is FetchError =>
+export const isFetchError = <T = any>(input: unknown): input is FetchError<T> =>
   input instanceof FetchError;

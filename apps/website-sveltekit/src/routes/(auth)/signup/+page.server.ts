@@ -6,7 +6,7 @@ import { zod } from "sveltekit-superforms/adapters";
 
 import type { ClientResponse } from "@template/sdk";
 import { HttpResultStatus, HttpStatus } from "@template/sdk/enum";
-import { FetchError } from "@template/sdk/error";
+import { isFetchError } from "@template/sdk/error";
 import { authSchema } from "@template/sdk/schema";
 
 import type { Actions, PageServerLoad } from "./$types.js";
@@ -63,8 +63,8 @@ export const actions: Actions = {
       isRedirect = true;
     } catch (e) {
       isRedirect = false;
-      if (e instanceof FetchError) {
-        const data: ClientResponse<null> = e.data;
+      if (isFetchError<ClientResponse>(e) && e.data) {
+        const data = e.data;
         switch (data.resultCode) {
           case HttpResultStatus.NOT_EXIST: {
             const message = Object.values(

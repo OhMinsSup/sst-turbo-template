@@ -24,7 +24,7 @@
 
   const refresh = async () => {
     try {
-      await fetch("/api/refresh", {
+      await fetch("/api/auth/refresh", {
         method: "POST",
       });
     } catch (error) {

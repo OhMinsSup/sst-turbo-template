@@ -64,6 +64,7 @@ export class AuthKit {
     return this._client;
   }
 
+  // 상태에 따른 json 반환
   getJson<S extends AuthKitStatus = AuthKitStatus.NotLogin>(
     status: S,
   ): AuthKitReturnValue<S> {
@@ -101,57 +102,43 @@ export class AuthKit {
     }
   }
 
-  /**
-   * api client 설정
-   */
+  // api client 설정
   setApiClient(client: ApiClient) {
     this._client = client;
     return this;
   }
 
-  /**
-   * 쿠키에서 가져오거나 설정 할 토큰 키 이름 설정
-   */
+  // 쿠키에서 가져오거나 설정 할 토큰 키 이름 설정
   setTokenKey(tokenKey: AuthKitTokenKey) {
     this._tokenKey = tokenKey;
     return this;
   }
 
-  /**
-   * 재발급, 발급 토근 설정
-   */
+  // 재발급, 발급 토근 설정
   setTokens(tokens: TokenResponse | null) {
     this._tokens = tokens;
     return this;
   }
 
-  /**
-   * 유저 정보 설정
-   */
+  // 유저 정보 설정
   setUser(user: UserResponse | null) {
     this._user = user;
     return this;
   }
 
-  /**
-   * 헤더를 설정한다.
-   */
+  // 헤더를 설정한다.
   mergeHeader(...headers: (ResponseInit["headers"] | null | undefined)[]) {
     this._headers = mergeHeaders(this._headers, ...headers);
     return this;
   }
 
-  /**
-   * 헤더를 합친다.
-   */
+  // 헤더를 합친다.
   combineHeader(...headers: (ResponseInit["headers"] | null | undefined)[]) {
     this._headers = combineHeaders(this._headers, ...headers);
     return this;
   }
 
-  /**
-   *  인증 관련 쿠키 값을 제거한다.
-   */
+  // 인증 관련 쿠키 값을 제거한다.
   clearAuthTokens() {
     const headers = new Headers();
     for (const key of Object.values(this._tokenKey)) {
@@ -161,9 +148,7 @@ export class AuthKit {
     return this;
   }
 
-  /**
-   *  인증 관련 쿠키 값을 설정한다.
-   */
+  // 인증 관련 쿠키 값을 설정한다.
   setAuthTokens(tokens: TokenResponse) {
     const headers = new Headers();
     headers.append(
@@ -178,14 +163,17 @@ export class AuthKit {
     return this;
   }
 
+  // 토큰을 헤더에 추가한다.
   signin(token: TokenResponse) {
     return mergeTokenHeaders(this._tokenKey, token, this._headers);
   }
 
+  // 토큰을 헤더에서 제거한다.
   signout() {
     return mergeClearAuthTokens(this._tokenKey, this._headers);
   }
 
+  // 쿠키에서 토큰을 가져온다.
   getTokens<F extends AuthKitFramework = AuthKitFramework.None>(
     cookie: F extends AuthKitFramework.SvelteKit
       ? { name: string; value: string }[]
@@ -222,9 +210,7 @@ export class AuthKit {
     }
   }
 
-  /**
-   * 토큰이 유효한지 체크
-   */
+  // 토큰이 유효한지 체크
   async verify(accessToken: string) {
     try {
       // 토큰이 유효한지 체크
@@ -239,9 +225,7 @@ export class AuthKit {
     }
   }
 
-  /**
-   * 유저 정보를 가져온다.
-   */
+  // 유저 정보를 가져온다.
   async getUserInfo(accessToken: string) {
     try {
       const response = await this._client
@@ -255,6 +239,7 @@ export class AuthKit {
     }
   }
 
+  // 인증 체크
   async checkAuth(tokens: AuthKitParams | null) {
     if (!tokens) {
       return this.getJson(AuthKitStatus.NotLogin);
@@ -263,9 +248,7 @@ export class AuthKit {
     return await this.auth(tokens);
   }
 
-  /**
-   * 인증 체크
-   */
+  // 인증 체크
   async auth({ accessToken, refreshToken }: AuthKitParams) {
     if (!accessToken) {
       if (refreshToken) {
@@ -292,6 +275,7 @@ export class AuthKit {
     }
   }
 
+  // 토큰 갱신
   async checkRefresh(tokens: AuthKitParams | null) {
     if (!tokens) {
       return this.getJson(AuthKitStatus.NotLogin);
@@ -300,9 +284,7 @@ export class AuthKit {
     return await this.refresh(tokens);
   }
 
-  /**
-   * 토큰 갱신
-   */
+  // 토큰 갱신
   async refresh({ refreshToken }: Pick<AuthKitParams, "refreshToken">) {
     if (!refreshToken) {
       return this.getJson(AuthKitStatus.NotLogin);
@@ -347,9 +329,7 @@ export class AuthKit {
     }
   }
 
-  /**
-   * 인증 검증
-   */
+  // 인증 검증
   async validateAuth({ accessToken, refreshToken }: AuthKitValidateAuthParams) {
     if (!refreshToken) {
       return this.getJson(AuthKitStatus.Invalid);

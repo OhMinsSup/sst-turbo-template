@@ -12,7 +12,7 @@ import { ZodError } from "zod";
 
 import type { AuthResponse, Client } from "@template/sdk";
 
-interface SessionUser {
+export interface Session {
   user: Pick<AuthResponse, "email" | "id" | "image" | "name"> & {
     accessToken: string;
     refreshToken: string;
@@ -25,7 +25,7 @@ interface SessionUser {
     | "InvalidRefreshToken";
 }
 
-interface NextjsTRPCContext<Session extends SessionUser> {
+interface NextjsTRPCContext {
   headers: Headers;
   session: Session | null;
   client: Client;
@@ -43,9 +43,7 @@ interface NextjsTRPCContext<Session extends SessionUser> {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = <Session extends SessionUser>(
-  opts: NextjsTRPCContext<Session>,
-) => {
+export const createTRPCContext = (opts: NextjsTRPCContext) => {
   const { session, headers, client } = opts;
   const source = headers.get("x-trpc-source") ?? "unknown";
 
@@ -117,8 +115,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: ctx.session.user,
-      error: ctx.session.error,
+      session: ctx.session as unknown as Session,
     },
   });
 });
