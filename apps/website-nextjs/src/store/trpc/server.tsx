@@ -1,8 +1,9 @@
 import { cache } from "react";
-import { headers } from "next/headers";
+import { cookies, headers } from "next/headers";
 
 import { createCaller, createTRPCContext } from "@template/trpc/nextjs";
 
+import { env } from "~/env";
 import { getApiClient } from "~/store/api";
 
 /**
@@ -14,9 +15,13 @@ const createContext = cache(async () => {
   heads.set("x-trpc-source", "rsc");
 
   return createTRPCContext({
-    session: null,
+    cookies: cookies,
     headers: heads,
     client: getApiClient(),
+    tokenKey: {
+      accessTokenKey: env.ACCESS_TOKEN_NAME,
+      refreshTokenKey: env.REFRESH_TOKEN_NAME,
+    },
   });
 });
 

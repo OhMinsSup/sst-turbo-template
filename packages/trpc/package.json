@@ -52,6 +52,7 @@
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "@sveltejs/kit": "^2.5.18",
+    "next": "^14.2.4",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

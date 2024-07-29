@@ -6,11 +6,14 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
+import type { cookies } from "next/headers";
 import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
+import type { AuthKitTokenKey } from "@template/authkit";
 import type { AuthResponse, Client } from "@template/sdk";
+import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
 
 export interface Session {
   user: Pick<AuthResponse, "email" | "id" | "image" | "name"> & {
@@ -27,8 +30,9 @@ export interface Session {
 
 interface NextjsTRPCContext {
   headers: Headers;
-  session: Session | null;
+  cookies: typeof cookies;
   client: Client;
+  tokenKey: AuthKitTokenKey;
 }
 
 /**
@@ -43,14 +47,48 @@ interface NextjsTRPCContext {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = (opts: NextjsTRPCContext) => {
-  const { session, headers, client } = opts;
+export const createTRPCContext = async (opts: NextjsTRPCContext) => {
+  const { cookies, headers, client, tokenKey } = opts;
   const source = headers.get("x-trpc-source") ?? "unknown";
 
-  console.log(">>> tRPC Request from", source, "by", session?.user);
+  const authKit = new AuthKit({
+    client,
+    tokenKey,
+    headers,
+  });
+
+  const cookie = headers.get("cookie");
+
+  const { user, status, tokens } = await authKit.checkAuth(
+    cookie ? authKit.getTokens(cookie, AuthKitFramework.Next) : null,
+  );
+
+  if (
+    tokens &&
+    [AuthKitStatus.LoggedIn, AuthKitStatus.Refreshed].includes(status)
+  ) {
+    cookies().set(tokenKey.accessTokenKey, tokens.accessToken.token, {
+      httpOnly: true,
+      expires: new Date(tokens.accessToken.expiresAt),
+      path: "/",
+      sameSite: "lax",
+    });
+    cookies().set(tokenKey.refreshTokenKey, tokens.refreshToken.token, {
+      httpOnly: true,
+      expires: new Date(tokens.refreshToken.expiresAt),
+      path: "/",
+      sameSite: "lax",
+    });
+  }
+
+  console.log(">>> tRPC Request Nextjs from", source);
 
   return {
-    session,
+    headers,
+    cookies,
+    session: user,
+    status,
+    authKit,
     client,
   };
 };
@@ -109,13 +147,13 @@ export const publicProcedure = t.procedure;
  * @see https://trpc.io/docs/procedures
  */
 export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
-  if (!ctx.session?.user) {
+  if (!ctx.session) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: ctx.session as unknown as Session,
+      session: ctx.session,
     },
   });
 });
