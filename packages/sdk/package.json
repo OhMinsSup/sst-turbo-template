@@ -53,7 +53,7 @@
   "scripts": {
     "build": "tsup",
     "clean": "rm -rf .turbo node_modules",
-    "dev": "tsup",
+    "build:pkg": "tsup",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"

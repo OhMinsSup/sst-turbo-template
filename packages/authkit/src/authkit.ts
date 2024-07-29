@@ -214,7 +214,7 @@ export class AuthKit {
       case AuthKitFramework.Next:
       case AuthKitFramework.None:
       case AuthKitFramework.Remix: {
-        return getTokenFromCookie(cookie as unknown as string);
+        return getTokenFromCookie(cookie as unknown as string, this._tokenKey);
       }
       default: {
         throw new Error("Invalid framework");

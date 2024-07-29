@@ -9,12 +9,16 @@
       "dependsOn": ["^build"],
       "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
     },
+    "build:pkg": {
+      "dependsOn": ["^build:pkg"],
+      "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
+    },
     "dev": {
       "persistent": true,
       "cache": false
     },
     "format": {
-     "outputs": ["node_modules/.cache/.prettiercache"],
+      "outputs": ["node_modules/.cache/.prettiercache"],
       "outputLogs": "new-only"
     },
     "lint": {
