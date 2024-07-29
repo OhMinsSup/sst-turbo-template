@@ -238,9 +238,6 @@ importers:
       '@tanstack/react-query':
         specifier: ^5.49.2
         version: 5.49.2(react@18.3.1)
-      '@template/auth':
-        specifier: workspace:*
-        version: link:../../packages/auth
       '@template/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -283,6 +280,9 @@ importers:
       next:
         specifier: ^14.2.4
         version: 14.2.4(@playwright/test@1.45.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+      next-auth:
+        specifier: 5.0.0-beta.18
+        version: 5.0.0-beta.18(next@14.2.4(@playwright/test@1.45.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
       react:
         specifier: catalog:react18
         version: 18.3.1
@@ -596,52 +596,6 @@ importers:
         specifier: ^1.2.0
         version: 1.6.0(@types/node@20.14.9)(terser@5.31.1)
 
-  packages/auth:
-    dependencies:
-      '@t3-oss/env-nextjs':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
-      '@template/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@template/utils':
-        specifier: workspace:*
-        version: link:../utils
-      next:
-        specifier: ^14.2.4
-        version: 14.2.4(@playwright/test@1.45.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
-      next-auth:
-        specifier: 5.0.0-beta.18
-        version: 5.0.0-beta.18(next@14.2.4(@playwright/test@1.45.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1))(react@18.3.1)
-      react:
-        specifier: catalog:react18
-        version: 18.3.1
-      react-dom:
-        specifier: catalog:react18
-        version: 18.3.1(react@18.3.1)
-      zod:
-        specifier: 'catalog:'
-        version: 3.23.8
-    devDependencies:
-      '@template/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@template/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@template/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      eslint:
-        specifier: 'catalog:'
-        version: 9.7.0
-      prettier:
-        specifier: 'catalog:'
-        version: 3.3.3
-      typescript:
-        specifier: 'catalog:'
-        version: 5.5.3
-
   packages/authkit:
     dependencies:
       '@template/utils':
@@ -816,9 +770,6 @@ importers:
       '@sveltejs/kit':
         specifier: ^2.5.18
         version: 2.5.18(@sveltejs/vite-plugin-svelte@3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1)))(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1))
-      '@template/auth':
-        specifier: workspace:*
-        version: link:../auth
       '@template/eslint-config':
         specifier: workspace:*
         version: link:../../tooling/eslint

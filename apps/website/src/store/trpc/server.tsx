@@ -1,9 +1,9 @@
 import { cache } from "react";
 import { headers } from "next/headers";
 
-import { auth } from "@template/auth";
 import { createCaller, createTRPCContext } from "@template/trpc/nextjs";
 
+import { auth } from "~/auth";
 import { getApiClient } from "~/store/api";
 
 /**

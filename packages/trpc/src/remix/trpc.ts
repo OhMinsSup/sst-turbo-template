@@ -9,13 +9,13 @@
 import { initTRPC, TRPCError } from "@trpc/server";
 
 import type { AuthKitTokenKey } from "@template/authkit";
-import type { ApiClient } from "@template/sdk";
+import type { Client } from "@template/sdk";
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 interface RemixTRPCContext {
   resHeaders: Headers;
   request: Request;
-  client: ApiClient;
+  client: Client;
   tokenKey: AuthKitTokenKey;
 }
 

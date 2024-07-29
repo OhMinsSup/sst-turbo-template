@@ -1,7 +1,6 @@
 import React from "react";
 
-import { auth } from "@template/auth";
-
+import { auth } from "~/auth";
 import { AuthSample } from "~/components/shared/AuthSample";
 
 export default async function Page() {

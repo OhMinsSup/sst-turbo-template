@@ -1,9 +1,9 @@
 import React from "react";
 import { SessionProvider } from "next-auth/react";
 
-import { auth } from "@template/auth";
 import { ThemeProvider } from "@template/ui/theme";
 
+import { auth } from "~/auth";
 import { AppProvider } from "~/store/app";
 import { TRPCReactProvider } from "~/store/trpc/react";
 
