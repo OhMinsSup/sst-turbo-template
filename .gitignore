@@ -53,3 +53,7 @@ dist/
 
 # SvelteKit
 .svelte-kit
+
+# sqlite
+*.sqlite
+*.db
