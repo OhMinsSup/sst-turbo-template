@@ -22,6 +22,18 @@
     });
   });
 
+  const refresh = async () => {
+    try {
+      await fetch("/api/refresh", {
+        method: "POST",
+      });
+    } catch (error) {
+      console.error(error);
+    } finally {
+      await invalidateAll();
+    }
+  };
+
   const updateSession = async () => {
     if (!data.user || isEmpty(data.user)) {
       return;
@@ -30,7 +42,7 @@
     switch (data.loggedInStatus) {
       case AuthKitStatus.Refreshed:
       case AuthKitStatus.LoggedIn: {
-        await invalidateAll();
+        await refresh();
         return;
       }
       default: {

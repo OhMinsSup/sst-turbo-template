@@ -1,4 +1,4 @@
-import type { ApiClient, TokenResponse, UserResponse } from "@template/sdk";
+import type { Client, TokenResponse, UserResponse } from "@template/sdk";
 
 export interface AuthKitTokenKey {
   accessTokenKey: string;
@@ -6,7 +6,7 @@ export interface AuthKitTokenKey {
 }
 
 export interface AuthKitConstructorOptions {
-  client: ApiClient;
+  client: Client;
   tokenKey: AuthKitTokenKey;
   headers?: Headers;
 }

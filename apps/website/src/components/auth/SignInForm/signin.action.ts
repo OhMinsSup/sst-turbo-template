@@ -1,14 +1,14 @@
 "use server";
 
-import type { ClientResponse } from "@template/sdk";
-import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import type { FieldErrors } from "react-hook-form";
 import { redirect } from "next/navigation";
 
-import { signIn } from "@template/auth";
+import type { ClientResponse } from "@template/sdk";
+import type { FormFieldSignInSchema } from "@template/sdk/schema";
 import { HttpResultStatus } from "@template/sdk/enum";
 import { isAppError, isHttpError } from "@template/sdk/error";
 
+import { signIn } from "~/auth";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 type ZodValidateError = FieldErrors<FormFieldSignInSchema>;

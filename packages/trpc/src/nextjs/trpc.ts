@@ -10,13 +10,25 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import type { Session } from "@template/auth";
-import type { ApiClient } from "@template/sdk";
+import type { AuthResponse, Client } from "@template/sdk";
+
+export interface Session {
+  user: Pick<AuthResponse, "email" | "id" | "image" | "name"> & {
+    accessToken: string;
+    refreshToken: string;
+    accessTokenExpiresAt: number;
+    refreshTokenExpiresAt: number;
+  };
+  error?:
+    | "RefreshAccessTokenError"
+    | "MissingRefreshToken"
+    | "InvalidRefreshToken";
+}
 
 interface NextjsTRPCContext {
   headers: Headers;
   session: Session | null;
-  client: ApiClient;
+  client: Client;
 }
 
 /**
@@ -103,7 +115,7 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   return next({
     ctx: {
       // infers the `session` as non-nullable
-      session: ctx.session,
+      session: ctx.session as unknown as Session,
     },
   });
 });

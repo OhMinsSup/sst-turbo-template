@@ -9,7 +9,7 @@ import { HttpResultStatus } from "@template/sdk/enum";
 import { isAppError, isHttpError } from "@template/sdk/error";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { getApiClient } from "~/contexts/api-client";
+import { getApiClient } from "~/store/api";
 
 type ZodValidateError = FieldErrors<FormFieldSignUpSchema>;
 

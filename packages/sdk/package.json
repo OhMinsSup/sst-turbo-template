@@ -52,8 +52,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "build:lib": "tsup",
     "clean": "rm -rf .turbo node_modules",
+    "build:pkg": "tsup",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"

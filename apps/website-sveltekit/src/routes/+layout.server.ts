@@ -1,7 +1,7 @@
 import { getApiClient } from "$lib/api";
 import { privateConfig } from "$lib/config/config.private";
 
-import { AuthKit, AuthKitFramework } from "@template/authkit";
+import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
 
 import type { LayoutServerLoad } from "./$types";
 
@@ -15,7 +15,10 @@ export const load = (async (event) => {
     authkit.getTokens(event.cookies.getAll(), AuthKitFramework.SvelteKit),
   );
 
-  if (tokens) {
+  if (
+    tokens &&
+    [AuthKitStatus.LoggedIn, AuthKitStatus.Refreshed].includes(status)
+  ) {
     event.cookies.set(
       privateConfig.token.accessTokenKey,
       tokens.accessToken.token,

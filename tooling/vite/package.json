@@ -4,8 +4,9 @@
   "private": true,
   "type": "module",
   "scripts": {
-    "build:lib": "tsup",
+    "build": "tsup",
     "clean": "rm -rf .turbo node_modules",
+    "dev": "tsup",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
@@ -21,11 +22,6 @@
     "tsup": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:"
-  },
-  "packageManager": "pnpm@9.0.5",
-  "engines": {
-    "bun": ">=1.0",
-    "node": ">=20.0"
   },
   "peerDependencies": {
     "vite": "^5.0.0"
@@ -44,19 +40,6 @@
         "types": "./dist/t3-env.d.js",
         "default": "./dist/t3-env.js"
       }
-    },
-    "./transpile": {
-      "import": {
-        "types": "./dist/transpile.d.ts",
-        "default": "./dist/transpile.js"
-      },
-      "require": {
-        "types": "./dist/transpile.d.js",
-        "default": "./dist/transpile.js"
-      }
     }
-  },
-  "dependencies": {
-    "esbuild": "^0.23.0"
   }
 }

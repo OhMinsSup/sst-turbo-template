@@ -1,6 +1,7 @@
-import type { AuthResponse } from "@template/sdk";
 import type { Account, Profile, Session } from "next-auth";
 import type { DefaultJWT, JWT as NextAuthJWT } from "next-auth/jwt";
+
+import type { AuthResponse } from "@template/sdk";
 
 export interface Token {
   accessToken: string;

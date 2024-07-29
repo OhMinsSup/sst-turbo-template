@@ -7,16 +7,15 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import { ZodError } from "zod";
 
 import type { AuthKitTokenKey } from "@template/authkit";
-import type { ApiClient } from "@template/sdk";
+import type { Client } from "@template/sdk";
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 interface RemixTRPCContext {
   resHeaders: Headers;
   request: Request;
-  client: ApiClient;
+  client: Client;
   tokenKey: AuthKitTokenKey;
 }
 
@@ -35,6 +34,7 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
   const tokens = cookie
     ? authKit.getTokens(cookie, AuthKitFramework.Remix)
     : null;
+
   const { user, status, headers } = await authKit.checkAuth(tokens);
   console.log(">>> tRPC Request from Remix");
 
@@ -71,15 +71,7 @@ export const createTRPCContext = async (opts: RemixTRPCContext) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create({
-  errorFormatter: ({ shape, error }) => ({
-    ...shape,
-    data: {
-      ...shape.data,
-      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
-    },
-  }),
-});
+const t = initTRPC.context<typeof createTRPCContext>().create();
 
 /**
  * Create a server-side caller

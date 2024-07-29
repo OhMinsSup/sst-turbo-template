@@ -32,9 +32,8 @@
   "license": "MIT",
   "scripts": {
     "build": "tsup",
-    "build:lib": "tsup",
-    "dev": "tsc --watch",
     "clean": "rm -rf .turbo node_modules",
+    "build:pkg": "tsup",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -44,15 +43,15 @@
     "@template/utils": "workspace:*",
     "@template/authkit": "workspace:*",
     "@template/sdk": "workspace:*",
-    "@trpc/server": "11.0.0-rc.421",
-    "superjson": "2.2.1",
+    "@trpc/server": "catalog:",
+    "superjson": "catalog:",
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@template/auth": "workspace:*",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
+    "@sveltejs/kit": "^2.5.18",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",
