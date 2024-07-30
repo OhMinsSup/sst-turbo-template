@@ -27,6 +27,16 @@
         "types": "./dist/remix.d.cts",
         "default": "./dist/remix.cjs"
       }
+    },
+    "./sveltekit": {
+      "import": {
+        "types": "./dist/sveltekit.d.ts",
+        "default": "./dist/sveltekit.js"
+      },
+      "require": {
+        "types": "./dist/sveltekit.d.cts",
+        "default": "./dist/sveltekit.cjs"
+      }
     }
   },
   "license": "MIT",

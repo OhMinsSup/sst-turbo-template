@@ -1,6 +1,7 @@
 <script lang="ts">
   import "../app.css";
 
+  import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { invalidateAll, onNavigate } from "$app/navigation";
   import { rafInterval } from "$lib/svelte/lifecycle/raf-interval";
 
@@ -10,6 +11,8 @@
   import type { LayoutData } from "./$types";
 
   export let data: LayoutData;
+
+  const queryClient = new QueryClient();
 
   onNavigate((navigation) => {
     if (!document.startViewTransition) return;
@@ -24,7 +27,7 @@
 
   const refresh = async () => {
     try {
-      await fetch("/api/refresh", {
+      await fetch("/api/auth/refresh", {
         method: "POST",
       });
     } catch (error) {
@@ -57,4 +60,6 @@
   );
 </script>
 
-<slot></slot>
+<QueryClientProvider client={queryClient}>
+  <slot></slot>
+</QueryClientProvider>

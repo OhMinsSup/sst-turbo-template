@@ -36,14 +36,15 @@ export const POST: RequestHandler = async ({ cookies }) => {
     );
   }
 
-  const data = {
-    user,
-    loggedInStatus: status,
-  };
-
-  return new Response(JSON.stringify(data), {
-    headers: {
-      "content-type": "application/json",
+  return new Response(
+    JSON.stringify({
+      user,
+      loggedInStatus: status,
+    }),
+    {
+      headers: {
+        "content-type": "application/json",
+      },
     },
-  });
+  );
 };

@@ -31,6 +31,8 @@ export const getSveltekitTRPCContext = async (opts: SveltekitTRPCContext) => {
     authKit.getTokens(event.cookies.getAll(), AuthKitFramework.SvelteKit),
   );
 
+  console.log(">>> tRPC Request from SvelteKit");
+
   return {
     event,
     session: user,
