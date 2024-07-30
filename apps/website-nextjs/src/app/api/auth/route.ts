@@ -1,4 +1,4 @@
-import { revalidatePath } from "next/cache";
+import { revalidatePath, revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
 
 import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
@@ -45,7 +45,7 @@ export async function GET() {
     loggedInStatus: status,
   };
 
-  revalidatePath("/");
+  revalidateTag("auth");
 
   return new Response(JSON.stringify(data), {
     headers: {
