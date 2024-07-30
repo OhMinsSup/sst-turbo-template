@@ -44,6 +44,7 @@
     "@tanstack/svelte-query": "^5.51.9",
     "@template/authkit": "workspace:*",
     "@template/sdk": "workspace:*",
+    "@template/trpc": "workspace:*",
     "@template/utils": "workspace:*",
     "@trpc/client": "catalog:",
     "@trpc/server": "catalog:",

@@ -27,6 +27,16 @@
         "types": "./dist/remix.d.cts",
         "default": "./dist/remix.cjs"
       }
+    },
+    "./sveltekit": {
+      "import": {
+        "types": "./dist/sveltekit.d.ts",
+        "default": "./dist/sveltekit.js"
+      },
+      "require": {
+        "types": "./dist/sveltekit.d.cts",
+        "default": "./dist/sveltekit.cjs"
+      }
     }
   },
   "license": "MIT",
@@ -52,6 +62,7 @@
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "@sveltejs/kit": "^2.5.18",
+    "next": "^14.2.4",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

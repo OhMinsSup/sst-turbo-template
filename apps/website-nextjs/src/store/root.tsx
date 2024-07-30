@@ -27,10 +27,7 @@ export const auth = unstable_cache(
       loggedInStatus: AuthKitStatus;
     }>;
 
-    return {
-      ...data,
-      time: new Date().toISOString(),
-    };
+    return data;
   },
   ["auth_session"],
   {
