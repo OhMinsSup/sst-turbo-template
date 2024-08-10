@@ -9,7 +9,6 @@ import { t3EnvFn } from "./env";
 export default defineConfig({
   plugins: [
     t3EnvPlugin({
-      envFile: "../../.env",
       t3EnvFn,
     }),
     remix({

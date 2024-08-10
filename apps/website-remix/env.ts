@@ -26,7 +26,7 @@ export const t3EnvFn = <TPrefix extends string | undefined = "NEXT_PUBLIC_">(
     client: {
       NEXT_PUBLIC_SERVER_URL: z.string().url(),
     },
-    runtimeEnv: runtimeEnv,
+    runtimeEnv,
     skipValidation: runtimeEnv.SKIP_ENV_VALIDATION === "development",
     emptyStringAsUndefined: true,
   });

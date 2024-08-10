@@ -1,112 +1,17 @@
-import fs from "node:fs";
 import path from "node:path";
 import type * as Vite from "vite";
-import { loadEnv, normalizePath } from "vite";
+import { normalizePath } from "vite";
 
-// vite 환경 변수 DTS 파일 이름
-const VITE_ENV_DTS_FILENAME = "vite-env.d.ts";
-// process.env 환경 변수 DTS 파일 이름
-const PROCESS_ENV_DTS_FILENAME = "global.d.ts";
-// import.meta.env.* regex의 모든 값을 가져오기 위한 정규식
-const IMPORT_META_ENV_REGEX = /^import\.meta\.env\..+/;
-const TYPESCRIPT_INTERFACE_IMPORT_META_ENV_REGEXP =
-  /interface ImportMetaEnv\s*\{[\s\S]*?\}/g;
-// process.env.* regex 모든 값을 가져오기 위한 정규식
-const PROCESS_ENV_REGEX = /^process\.env\..+/;
-const TYPESCRIPT_INTERFACE_PROCESS_ENV_REGEXP =
-  /declare namespace NodeJS\s*\{\s*interface ProcessEnv\s*\{[\s\S]*?\}\s*\}/g;
-
-// 기본 process.env prefix
-const DEFAULT_PROCESS_ENV_PREFIX = "";
+import {
+  create_static_module,
+  getEnv,
+  template,
+  template_process_env,
+} from "./core";
+import { getEnvDir, getEnvPrefix, write_if_changed } from "./utils";
+import { env_static_private, env_static_public } from "./vmod";
 
 type RuntimeEnv = Record<string, string | boolean | number | undefined>;
-
-type SupportType = "string" | "number" | "boolean" | "object" | "array";
-
-type Recordable<K extends string = string, T = unknown> = Record<K, T>;
-
-function makeInterfaceItem(
-  env: Recordable,
-  commentRecord: Recordable<string, string>,
-) {
-  const interfaceItem: string[] = [];
-  const typeMap: Recordable<SupportType> = {
-    boolean: "boolean",
-    string: "string",
-    number: "number",
-    array: "any[]",
-    object: "Record<string, any>",
-  };
-  for (const envKey of Object.keys(env)) {
-    const value = env[envKey];
-    const comment = commentRecord[envKey];
-    let valueType = typeof value as SupportType;
-    valueType =
-      valueType === "object"
-        ? Array.isArray(value)
-          ? "array"
-          : valueType
-        : valueType;
-    const jsDocComment = comment
-      ? `/**
-   * ${comment}
-   */
-  `
-      : "";
-    // eslint-disable-next-line @typescript-eslint/no-base-to-string, @typescript-eslint/restrict-template-expressions
-    const keyValue = `readonly ${envKey}: ${typeMap[valueType] || "any"}`;
-
-    interfaceItem.push(jsDocComment + keyValue);
-  }
-
-  return interfaceItem;
-}
-
-function writeEnvInterface(
-  path: string,
-  envInterface: string,
-  regex: RegExp,
-  isViteEnv = true,
-) {
-  if (fs.existsSync(path)) {
-    const fileContent = fs.readFileSync(path, { encoding: "utf-8" });
-    if (regex.test(fileContent)) {
-      // replace
-      envInterface = fileContent.replace(regex, envInterface);
-    } else {
-      // append
-      envInterface = `${fileContent}
-${envInterface}`;
-    }
-  } else {
-    envInterface = `${isViteEnv ? '/// <reference types="vite/client" />\n\n' : ""}
-${envInterface}`;
-  }
-  fs.writeFileSync(path, envInterface);
-}
-
-function generateEnvTypescript(
-  env: Recordable,
-  commentRecord: Recordable<string, string>,
-  isViteEnv = true,
-) {
-  const interfaceItem = makeInterfaceItem(env, commentRecord);
-
-  if (isViteEnv) {
-    return `interface ImportMetaEnv {
-      // Auto generate by env-parse
-      ${interfaceItem.join("\n  ")}
-    }`;
-  }
-
-  return `declare namespace NodeJS {
-    interface ProcessEnv {
-      [key: string]: string;
-      // Auto generate by env-parse
-      ${interfaceItem.join("\n  ")}
-    }
-  }`;
-}
 
 interface T3EnvOptions<TEnv extends RuntimeEnv> {
   t3EnvFn: (
@@ -126,116 +31,102 @@ export const vitePlugin: VitePlugin = ({
   t3EnvFn,
   prefix = "NEXT_PUBLIC_",
 }) => {
+  let env: {
+    public: Record<string, string>;
+    private: Record<string, string>;
+  };
+
   return [
     {
       name: "vite-plugin-t3-env",
-      config: (config, env) => {
+      config: async (config, config_env) => {
         const resolvedRoot = normalizePath(
           config.root ? path.resolve(config.root) : process.cwd(),
         );
 
-        let envDir = resolvedRoot;
-        if (envFile) {
-          envDir = path.resolve(resolvedRoot, path.dirname(envFile));
-        } else if (config.envDir) {
-          envDir = normalizePath(path.resolve(resolvedRoot, config.envDir));
-        }
+        const envDir = await getEnvDir({
+          resolvedRoot,
+          viteConfigEnvDir: config.envDir,
+          userConfigEnvFile: envFile,
+        });
 
-        let envPrefix: string | string[] | undefined = undefined;
-        if (prefix) {
-          envPrefix = prefix;
-        }
+        const prefixs = getEnvPrefix({
+          userConfigPrefix: prefix,
+          viteConfigEnvPrefix: config.envPrefix,
+        });
 
-        if (typeof envPrefix === "undefined" || !envPrefix) {
-          envPrefix = config.envPrefix;
-        }
-
-        const clientPrefix = Array.isArray(envPrefix)
-          ? envPrefix.at(0)
-          : envPrefix;
-
-        const processEnvVar = loadEnv(
-          env.mode,
-          envDir,
-          DEFAULT_PROCESS_ENV_PREFIX,
+        const runtimeEnv = getEnv(
+          {
+            envDir,
+            prefixs,
+          },
+          config_env.mode,
         );
 
-        const envVar = loadEnv(env.mode, envDir, envPrefix);
+        for (const prefix of prefixs) {
+          t3EnvFn(
+            Object.assign({}, runtimeEnv.private, runtimeEnv.public),
+            prefix,
+          );
+        }
 
-        const runtimeEnv = {
-          ...processEnvVar,
-          ...envVar,
-        };
-
-        const defineEnv = t3EnvFn(runtimeEnv, clientPrefix);
+        env = runtimeEnv;
 
         // eslint-disable-next-line @typescript-eslint/no-explicit-any
         const define: Record<string, any> = {};
-        for (const key of Object.keys(defineEnv)) {
-          // prefix를 가진 key값을 import.meta.env.*로 변경
-          if (Array.isArray(envPrefix)) {
-            const prefix = envPrefix.find((prefix) => key.startsWith(prefix));
-            if (prefix) {
-              define[`import.meta.env.${key}`] = JSON.stringify(defineEnv[key]);
-              continue;
-            }
-          } else if (
-            typeof envPrefix === "string" &&
-            key.startsWith(envPrefix)
-          ) {
-            define[`import.meta.env.${key}`] = JSON.stringify(defineEnv[key]);
-            continue;
-          } else {
-            define[`process.env.${key}`] = JSON.stringify(defineEnv[key]);
-          }
+
+        for (const key of Object.keys(runtimeEnv.public)) {
+          define[`import.meta.env.${key}`] = JSON.stringify(
+            runtimeEnv.public[key],
+          );
+        }
+
+        for (const key of Object.keys(runtimeEnv.private)) {
+          define[`process.env.${key}`] = JSON.stringify(
+            runtimeEnv.private[key],
+          );
         }
 
         return {
           define,
+          optimizeDeps: {
+            exclude: ["$env"],
+          },
         };
       },
-      configResolved: (config) => {
-        if (config.define) {
-          const importMetaEnvVar = Object.keys(config.define).reduce(
-            (acc, key) => {
-              if (IMPORT_META_ENV_REGEX.test(key)) {
-                const envKey = key.replace("import.meta.env.", "");
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                acc[envKey] = config.define?.[key];
-              }
-              return acc;
-            },
-            {} as Record<string, string | boolean | number | undefined>,
-          );
-
-          const processEnvVar = Object.keys(config.define).reduce(
-            (acc, key) => {
-              if (PROCESS_ENV_REGEX.test(key)) {
-                const envKey = key.replace("process.env.", "");
-                // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-                acc[envKey] = config.define?.[key];
-              }
-              return acc;
-            },
-            {} as Record<string, string | boolean | number | undefined>,
-          );
-
-          writeEnvInterface(
-            path.resolve(config.root, VITE_ENV_DTS_FILENAME),
-            generateEnvTypescript(importMetaEnvVar, {}, true),
-            TYPESCRIPT_INTERFACE_IMPORT_META_ENV_REGEXP,
-            true,
-          );
-
-          writeEnvInterface(
-            path.resolve(config.root, PROCESS_ENV_DTS_FILENAME),
-            generateEnvTypescript(processEnvVar, {}, false),
-            TYPESCRIPT_INTERFACE_PROCESS_ENV_REGEXP,
-            false,
-          );
-        }
+      /**
+       * Stores the final config.
+       */
+      configResolved(config) {
+        write_if_changed(
+          path.resolve(config.root, "vite-env.d.ts"),
+          template(env),
+        );
+        write_if_changed(
+          path.resolve(config.root, "global.d.ts"),
+          template_process_env(env.private),
+        );
       },
       enforce: "pre",
+    },
+    {
+      name: "t3-env-virtual-modules",
+      resolveId(id) {
+        // treat $env/static/[public|private] as virtual
+        if (id.startsWith("$env/")) {
+          return `\0virtual:${id}`;
+        }
+      },
+      load(id) {
+        switch (id) {
+          case env_static_private: {
+            return create_static_module("$env/static/private", env.private);
+          }
+          case env_static_public: {
+            return create_static_module("$env/static/public", env.public);
+          }
+        }
+      },
     },
   ];
 };
