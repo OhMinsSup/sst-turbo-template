@@ -1,21 +1,5 @@
-import { loadEnv } from "vite";
-
 import { GENERATED_COMMENT, reserved, valid_identifier } from "./constants";
-import { dedent, filter_private_env, filter_public_env } from "./utils";
-
-export interface GetEnvConfigParams {
-  envDir: string;
-  prefixs: string[];
-}
-
-export const getEnv = (config: GetEnvConfigParams, mode: string) => {
-  const env = loadEnv(mode, config.envDir, "");
-
-  return {
-    public: filter_public_env(env, { prefixs: config.prefixs }),
-    private: filter_private_env(env, { prefixs: config.prefixs }),
-  };
-};
+import { dedent } from "./utils";
 
 export function create_static_module(id: string, env: Record<string, string>) {
   const declarations: string[] = [];
@@ -46,10 +30,10 @@ export function create_static_types(
     .map((k) => `export const ${k}: string;`);
 
   return dedent`
-		declare module '$env/static/${id}' {
-			${declarations.join("\n")}
-		}
-	`;
+          declare module '$env/static/${id}' {
+              ${declarations.join("\n")}
+          }
+      `;
 }
 
 type SupportType = "string" | "number" | "boolean" | "object" | "array";
@@ -90,31 +74,11 @@ export function create_process_env(env: Record<string, string>) {
     );
 
   return dedent`
-    declare namespace NodeJS {
-      interface ProcessEnv {
-        [key: string]: string;
-        ${declarations.join("\n")}
+      declare namespace NodeJS {
+        interface ProcessEnv {
+          [key: string]: string;
+          ${declarations.join("\n")}
+        }
       }
-    }
-  `;
+    `;
 }
-
-export const template = (env: {
-  public: Record<string, string>;
-  private: Record<string, string>;
-}) => `
-${GENERATED_COMMENT}
-
-/// <reference types="vite/client" />
-
-${create_import_meta_env(env.public)}
-
-${create_static_types("private", env)}
-
-${create_static_types("public", env)}
-`;
-
-export const template_process_env = (env: Record<string, string>) => `
-${GENERATED_COMMENT}
-${create_process_env(env)}
-`;

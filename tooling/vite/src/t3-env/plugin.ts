@@ -1,14 +1,15 @@
 import path from "node:path";
 import type * as Vite from "vite";
+import {
+  parse as esModuleLexer,
+  init as initEsModuleLexer,
+} from "es-module-lexer";
 import { normalizePath } from "vite";
 
-import {
-  create_static_module,
-  getEnv,
-  template,
-  template_process_env,
-} from "./core";
-import { getEnvDir, getEnvPrefix, write_if_changed } from "./utils";
+import { get_env, get_env_dir, get_env_prefix } from "./env";
+import { create_static_module } from "./generate";
+import { template, template_process_env } from "./template";
+import { write_if_changed } from "./utils";
 import { env_static_private, env_static_public } from "./vmod";
 
 type RuntimeEnv = Record<string, string | boolean | number | undefined>;
@@ -44,18 +45,18 @@ export const vitePlugin: VitePlugin = ({
           config.root ? path.resolve(config.root) : process.cwd(),
         );
 
-        const envDir = await getEnvDir({
+        const envDir = await get_env_dir({
           resolvedRoot,
           viteConfigEnvDir: config.envDir,
           userConfigEnvFile: envFile,
         });
 
-        const prefixs = getEnvPrefix({
+        const prefixs = get_env_prefix({
           userConfigPrefix: prefix,
           viteConfigEnvPrefix: config.envPrefix,
         });
 
-        const runtimeEnv = getEnv(
+        const runtimeEnv = get_env(
           {
             envDir,
             prefixs,
@@ -97,7 +98,9 @@ export const vitePlugin: VitePlugin = ({
       /**
        * Stores the final config.
        */
-      configResolved(config) {
+      async configResolved(config) {
+        await initEsModuleLexer;
+
         write_if_changed(
           path.resolve(config.root, "vite-env.d.ts"),
           template(env),
@@ -124,6 +127,48 @@ export const vitePlugin: VitePlugin = ({
           }
           case env_static_public: {
             return create_static_module("$env/static/public", env.public);
+          }
+        }
+      },
+    },
+    {
+      name: "t3-env-private-module-server-only",
+      transform(code, id, options) {
+        if (options?.ssr) return;
+        switch (id) {
+          case env_static_private: {
+            const exports = esModuleLexer(code)[1];
+            return {
+              code: exports
+                .map(({ n: name }) =>
+                  name === "default"
+                    ? "export default undefined;"
+                    : `export const ${name} = undefined;`,
+                )
+                .join("\n"),
+              map: null,
+            };
+          }
+        }
+      },
+    },
+    {
+      name: "t3-env-public-module-client-only",
+      transform(code, id, options) {
+        if (!options?.ssr) return;
+        switch (id) {
+          case env_static_public: {
+            const exports = esModuleLexer(code)[1];
+            return {
+              code: exports
+                .map(({ n: name }) =>
+                  name === "default"
+                    ? "export default undefined;"
+                    : `export const ${name} = undefined;`,
+                )
+                .join("\n"),
+              map: null,
+            };
           }
         }
       },

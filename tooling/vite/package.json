@@ -3,34 +3,6 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
-  "scripts": {
-    "build": "tsup",
-    "build:pkg": "tsup",
-    "clean": "rm -rf .turbo node_modules",
-    "dev": "tsup",
-    "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint",
-    "typecheck": "tsc --noEmit"
-  },
-  "prettier": "@template/prettier-config",
-  "devDependencies": {
-    "@template/eslint-config": "workspace:*",
-    "@template/prettier-config": "workspace:*",
-    "@template/tsconfig": "workspace:*",
-    "find-up": "^7.0.0",
-    "eslint": "catalog:",
-    "prettier": "catalog:",
-    "rimraf": "catalog:",
-    "tsup": "catalog:",
-    "typescript": "catalog:",
-    "vite": "catalog:"
-  },
-  "peerDependencies": {
-    "vite": "^5.0.0"
-  },
-  "files": [
-    "dist"
-  ],
   "exports": {
     "./package.json": "./package.json",
     "./t3-env": {
@@ -43,5 +15,36 @@
         "default": "./dist/t3-env.js"
       }
     }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:pkg": "tsup",
+    "clean": "rm -rf .turbo node_modules",
+    "dev": "tsup --watch",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit"
+  },
+  "prettier": "@template/prettier-config",
+  "dependencies": {
+    "es-module-lexer": "^1.5.4",
+    "find-up": "^7.0.0"
+  },
+  "devDependencies": {
+    "@template/eslint-config": "workspace:*",
+    "@template/prettier-config": "workspace:*",
+    "@template/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "rimraf": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:",
+    "vite": "catalog:"
+  },
+  "peerDependencies": {
+    "vite": "^5.0.0"
   }
 }

@@ -1139,6 +1139,13 @@ importers:
   tooling/typescript: {}
 
   tooling/vite:
+    dependencies:
+      es-module-lexer:
+        specifier: ^1.5.4
+        version: 1.5.4
+      find-up:
+        specifier: ^7.0.0
+        version: 7.0.0
     devDependencies:
       '@template/eslint-config':
         specifier: workspace:*
@@ -1152,9 +1159,6 @@ importers:
       eslint:
         specifier: 'catalog:'
         version: 9.7.0
-      find-up:
-        specifier: ^7.0.0
-        version: 7.0.0
       prettier:
         specifier: 'catalog:'
         version: 3.3.3
