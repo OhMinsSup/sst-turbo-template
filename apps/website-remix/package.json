@@ -16,9 +16,9 @@
     "@conform-to/zod": "^1.1.5",
     "@epic-web/invariant": "^1.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@remix-run/node": "^2.11.1",
-    "@remix-run/react": "^2.11.1",
-    "@remix-run/serve": "^2.11.1",
+    "@remix-run/node": "catalog:remix2",
+    "@remix-run/react": "catalog:remix2",
+    "@remix-run/serve": "catalog:remix2",
     "@t3-oss/env-core": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@template/authkit": "workspace:*",
@@ -38,7 +38,7 @@
     "remix-utils": "^7.6.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.11.1",
+    "@remix-run/dev": "catalog:remix2",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",
