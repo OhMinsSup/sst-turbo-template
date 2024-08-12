@@ -1,21 +1,22 @@
 {
   "name": "@template/hooks",
-  "private": true,
   "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
   "type": "module",
   "exports": {
     "./*": "./src/*.tsx",
     "./utils/*": "./src/utils/*.ts"
   },
-  "license": "MIT",
   "scripts": {
     "build": "tsc",
-    "clean": "rm -rf .turbo node_modules",
     "build:pkg": "tsc",
+    "clean": "rm -rf .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
+  "prettier": "@template/prettier-config",
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
@@ -31,6 +32,5 @@
   "peerDependencies": {
     "react": "catalog:react18",
     "react-dom": "catalog:react18"
-  },
-  "prettier": "@template/prettier-config"
+  }
 }

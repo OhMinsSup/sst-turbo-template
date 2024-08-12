@@ -14,10 +14,10 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
+    "@tailwindcss/typography": "^0.5.13",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
-    "tailwindcss-animate": "^1.0.7",
-    "@tailwindcss/typography": "^0.5.13"
+    "tailwindcss-animate": "^1.0.7"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",

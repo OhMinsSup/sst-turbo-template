@@ -19,7 +19,7 @@
     "@remix-run/node": "^2.11.1",
     "@remix-run/react": "^2.11.1",
     "@remix-run/serve": "^2.11.1",
-    "@t3-oss/env-core": "^0.10.1",
+    "@t3-oss/env-core": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@template/authkit": "workspace:*",
     "@template/hooks": "workspace:*",
@@ -31,8 +31,8 @@
     "@trpc/react-query": "catalog:",
     "@trpc/server": "catalog:",
     "date-fns": "catalog:",
-    "isbot": "^5.1.11",
-    "lucide-react": "^0.400.0",
+    "isbot": "^5.1.14",
+    "lucide-react": "^0.427.0",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",
     "remix-utils": "^7.6.0"
@@ -52,6 +52,6 @@
     "tailwindcss": "catalog:",
     "typescript": "catalog:",
     "vite": "catalog:",
-    "vite-tsconfig-paths": "^4.3.2"
+    "vite-tsconfig-paths": "^5.0.1"
   }
 }

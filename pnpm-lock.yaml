@@ -6,6 +6,9 @@ settings:
 
 catalogs:
   default:
+    '@t3-oss/env-core':
+      specifier: ^0.11.0
+      version: 0.11.0
     '@tanstack/react-query':
       specifier: ^5.51.9
       version: 5.51.15
@@ -293,8 +296,8 @@ importers:
         specifier: ^4.17.21
         version: 4.17.21
       lucide-react:
-        specifier: ^0.400.0
-        version: 0.400.0(react@18.3.1)
+        specifier: ^0.427.0
+        version: 0.427.0(react@18.3.1)
       next:
         specifier: ^14.2.4
         version: 14.2.4(@playwright/test@1.45.1)(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -384,8 +387,8 @@ importers:
         specifier: ^2.11.1
         version: 2.11.1(typescript@5.5.3)
       '@t3-oss/env-core':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
+        specifier: 'catalog:'
+        version: 0.11.0(typescript@5.5.3)(zod@3.23.8)
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.51.15(react@18.3.1)
@@ -420,11 +423,11 @@ importers:
         specifier: 'catalog:'
         version: 3.6.0
       isbot:
-        specifier: ^5.1.11
-        version: 5.1.11
+        specifier: ^5.1.14
+        version: 5.1.14
       lucide-react:
-        specifier: ^0.400.0
-        version: 0.400.0(react@18.3.1)
+        specifier: ^0.427.0
+        version: 0.427.0(react@18.3.1)
       react:
         specifier: catalog:react18
         version: 18.3.1
@@ -478,8 +481,8 @@ importers:
         specifier: 'catalog:'
         version: 5.3.3(@types/node@20.14.9)(terser@5.31.1)
       vite-tsconfig-paths:
-        specifier: ^4.3.2
-        version: 4.3.2(typescript@5.5.3)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1))
+        specifier: ^5.0.1
+        version: 5.0.1(typescript@5.5.3)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1))
 
   apps/website-solidstart:
     dependencies:
@@ -563,8 +566,8 @@ importers:
         specifier: ^3.1.1
         version: 3.1.1(svelte@4.2.18)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1))
       '@t3-oss/env-core':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
+        specifier: 'catalog:'
+        version: 0.11.0(typescript@5.5.3)(zod@3.23.8)
       '@tailwindcss/typography':
         specifier: ^0.5.13
         version: 0.5.13(tailwindcss@3.4.4(ts-node@10.9.2(@swc/core@1.6.7)(@types/node@20.14.9)(typescript@5.5.3)))
@@ -654,8 +657,8 @@ importers:
         specifier: ^5.16.1
         version: 5.16.1(prisma@5.16.1)
       '@t3-oss/env-core':
-        specifier: ^0.10.1
-        version: 0.10.1(typescript@5.5.3)(zod@3.23.8)
+        specifier: 'catalog:'
+        version: 0.11.0(typescript@5.5.3)(zod@3.23.8)
       zod:
         specifier: 'catalog:'
         version: 3.23.8
@@ -3878,6 +3881,15 @@ packages:
       typescript:
         optional: true
 
+  '@t3-oss/env-core@0.11.0':
+    resolution: {integrity: sha512-PSalC5bG0a7XbyoLydiQdAnx3gICX6IQNctvh+TyLrdFxsxgocdj9Ui7sd061UlBzi+z4aIGjnem1kZx9QtUgQ==}
+    peerDependencies:
+      typescript: '>=5.0.0'
+      zod: ^3.0.0
+    peerDependenciesMeta:
+      typescript:
+        optional: true
+
   '@t3-oss/env-nextjs@0.10.1':
     resolution: {integrity: sha512-iy2qqJLnFh1RjEWno2ZeyTu0ufomkXruUsOZludzDIroUabVvHsrSjtkHqwHp1/pgPUzN3yBRHMILW162X7x2Q==}
     peerDependencies:
@@ -6632,8 +6644,8 @@ packages:
     resolution: {integrity: sha512-iHrqe5shvBUcFbmZq9zOQHBoeOhZJu6RQGrDpBgenUm/Am+F3JM2MgQj+rK3Z601fzrL5gLZWtAPH2OBaSVcyw==}
     engines: {node: '>= 8.0.0'}
 
-  isbot@5.1.11:
-    resolution: {integrity: sha512-Asuou7OsKVbATgXlrlqdeSRw4fYnD6CNcc0IXy1f5m1AImL2S6IP0xRcRRzjGjoARbegvnBnju9kk5z/Itf70Q==}
+  isbot@5.1.14:
+    resolution: {integrity: sha512-4X8KZHyaIqXOqEv1qfZOqshMX3r7Q/VtMEMzuGPZljDMEIGpX7bcGODR9gZztXdcPBEJpNioQXXBJun+xi2G5g==}
     engines: {node: '>=18'}
 
   isexe@2.0.0:
@@ -7113,10 +7125,10 @@ packages:
     resolution: {integrity: sha512-jumlc0BIUrS3qJGgIkWZsyfAM7NCWiBcCDhnd+3NNM5KbBmLTgHVfWBcg6W+rLUsIpzpERPsvwUP7CckAQSOoA==}
     engines: {node: '>=12'}
 
-  lucide-react@0.400.0:
-    resolution: {integrity: sha512-rpp7pFHh3Xd93KHixNgB0SqThMHpYNzsGUu69UaQbSZ75Q/J3m5t6EhKyMT3m4w2WOxmJ2mY0tD3vebnXqQryQ==}
+  lucide-react@0.427.0:
+    resolution: {integrity: sha512-lv9s6c5BDF/ccuA0EgTdskTxIe11qpwBDmzRZHJAKtp8LTewAvDvOM+pTES9IpbBuTqkjiMhOmGpJ/CB+mKjFw==}
     peerDependencies:
-      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0
+      react: ^16.5.1 || ^17.0.0 || ^18.0.0 || ^19.0.0-rc
 
   lucide-svelte@0.408.0:
     resolution: {integrity: sha512-5rJvcnHvE+K/2ebff/tKvG1FmIut01hDUaibMk6pG2Je+82TCPflVvhMvgCjP0fkM0ztj5t/ma1s5WYyketOSA==}
@@ -9801,8 +9813,8 @@ packages:
       '@testing-library/jest-dom':
         optional: true
 
-  vite-tsconfig-paths@4.3.2:
-    resolution: {integrity: sha512-0Vd/a6po6Q+86rPlntHye7F31zA2URZMbH8M3saAZ/xR9QoGN/L21bxEGfXdWmFdNkqPpRdxFT7nmNe12e9/uA==}
+  vite-tsconfig-paths@5.0.1:
+    resolution: {integrity: sha512-yqwv+LstU7NwPeNqajZzLEBVpUFU6Dugtb2P84FXuvaoYA+/70l9MHE+GYfYAycVyPSDYZ7mjOFuYBRqlEpTig==}
     peerDependencies:
       vite: '*'
     peerDependenciesMeta:
@@ -12892,6 +12904,12 @@ snapshots:
       defer-to-connect: 2.0.1
 
   '@t3-oss/env-core@0.10.1(typescript@5.5.3)(zod@3.23.8)':
+    dependencies:
+      zod: 3.23.8
+    optionalDependencies:
+      typescript: 5.5.3
+
+  '@t3-oss/env-core@0.11.0(typescript@5.5.3)(zod@3.23.8)':
     dependencies:
       zod: 3.23.8
     optionalDependencies:
@@ -16317,7 +16335,7 @@ snapshots:
 
   isbinaryfile@4.0.10: {}
 
-  isbot@5.1.11: {}
+  isbot@5.1.14: {}
 
   isexe@2.0.0: {}
 
@@ -16975,7 +16993,7 @@ snapshots:
 
   lru-cache@7.18.3: {}
 
-  lucide-react@0.400.0(react@18.3.1):
+  lucide-react@0.427.0(react@18.3.1):
     dependencies:
       react: 18.3.1
 
@@ -20055,7 +20073,7 @@ snapshots:
     transitivePeerDependencies:
       - supports-color
 
-  vite-tsconfig-paths@4.3.2(typescript@5.5.3)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1)):
+  vite-tsconfig-paths@5.0.1(typescript@5.5.3)(vite@5.3.3(@types/node@20.14.9)(terser@5.31.1)):
     dependencies:
       debug: 4.3.5
       globrex: 0.1.2
