@@ -1,7 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
-import { ACCESS_TOKEN_NAME } from "$env/static/private";
-import { NEXT_PUBLIC_SERVER_URL } from "$env/static/public";
 
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
@@ -13,8 +11,6 @@ import { getRequestInfo } from "~/utils";
 import { combineHeaders } from "~/utils/misc";
 
 export const loader = async ({ request, response }: LoaderFunctionArgs) => {
-  console.log("publicEnv", NEXT_PUBLIC_SERVER_URL);
-  console.log("privateEnv", ACCESS_TOKEN_NAME);
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
   const authKit = new AuthKit({

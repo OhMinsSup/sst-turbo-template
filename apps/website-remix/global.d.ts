@@ -1,13 +1,11 @@
 
-// this file is generated — do not edit it
+  // this file is generated — do not edit it
 
-declare namespace NodeJS {
+  declare namespace NodeJS {
   interface ProcessEnv {
     [key: string]: string;
     readonly DATABASE_URL: string;
     readonly AUTH_SECRET: string;
-    readonly AUTH_DISCORD_ID: string;
-    readonly AUTH_DISCORD_SECRET: string;
     readonly SERVER_PORT: string;
     readonly LOGGER_DRIVER: string;
     readonly LOG_LEVELS: string;
@@ -116,8 +114,8 @@ declare namespace NodeJS {
     readonly npm_package_dependencies__remix_run_node: string;
     readonly npm_package_scripts_clean: string;
     readonly npm_node_execpath: string;
-    readonly npm_package_devDependencies_find_up: string;
     readonly COLORTERM: string;
     readonly NODE_ENV: string;
   }
 }
+  

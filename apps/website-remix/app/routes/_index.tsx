@@ -1,6 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 import { invariant } from "@epic-web/invariant";
+import { ACCESS_TOKEN_NAME } from "$env/static/private";
+import { NEXT_PUBLIC_SERVER_URL } from "$env/static/public";
 
 import { createTrpcServer } from "~/.server/trpc";
 import { TOKEN_KEY } from "~/.server/utils/constants";
@@ -9,6 +11,9 @@ import { api } from "~/store/trpc";
 
 export const loader = async (ctx: LoaderFunctionArgs) => {
   invariant(ctx.response, "response is required");
+  console.log("server", ACCESS_TOKEN_NAME);
+  console.log("server", NEXT_PUBLIC_SERVER_URL);
+
   const trpcServer = createTrpcServer(
     ctx.request,
     ctx.response.headers,
@@ -26,6 +31,9 @@ export default function Index() {
   const messageQuery = api.etc.hello.useQuery(undefined, {
     initialData: data.message,
   });
+
+  console.log("t", ACCESS_TOKEN_NAME);
+  console.log("t", NEXT_PUBLIC_SERVER_URL);
 
   return (
     <div className="p-4 font-sans">
