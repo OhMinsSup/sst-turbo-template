@@ -61,7 +61,7 @@
   "prettier": "@template/prettier-config",
   "dependencies": {
     "ofetch": "^1.3.4",
-    "ufo": "^1.5.3",
+    "ufo": "^1.5.4",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -59,7 +59,7 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "@prisma/client": "^5.16.1",
+    "@prisma/client": "catalog:prisma5",
     "@t3-oss/env-core": "catalog:",
     "zod": "catalog:"
   },
@@ -70,9 +70,9 @@
     "dotenv-cli": "^7.4.2",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "prisma": "^5.16.1",
+    "prisma": "catalog:prisma5",
     "tsup": "catalog:",
-    "tsx": "^4.16.2",
+    "tsx": "catalog:",
     "typescript": "catalog:"
   },
   "prisma": {
