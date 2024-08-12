@@ -4,17 +4,17 @@ import { namedAction } from "remix-utils/named-action";
 
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
-import { TOKEN_KEY } from "~/.server/utils/constants";
 import {
   errorJsonDataResponse,
   successJsonDataResponse,
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
+import { privateConfig } from "~/config/config.private";
 import { getApiClient } from "~/store/app";
 import { isTheme } from "~/store/theme";
 import { combineHeaders } from "~/utils/misc";
 
-export const action = async ({ request, response }: ActionFunctionArgs) => {
+export const action = async ({ request }: ActionFunctionArgs) => {
   return namedAction(request, {
     async setTheme() {
       const requestText = await request.text();
@@ -32,8 +32,8 @@ export const action = async ({ request, response }: ActionFunctionArgs) => {
     // eslint-disable-next-line @typescript-eslint/require-await
     async logout() {
       const authKit = new AuthKit({
-        tokenKey: TOKEN_KEY,
-        headers: response?.headers,
+        tokenKey: privateConfig.token,
+        headers: request.headers,
         client: getApiClient(),
       });
 
@@ -43,8 +43,8 @@ export const action = async ({ request, response }: ActionFunctionArgs) => {
     },
     async refresh() {
       const authKit = new AuthKit({
-        tokenKey: TOKEN_KEY,
-        headers: response?.headers,
+        tokenKey: privateConfig.token,
+        headers: request.headers,
         client: getApiClient(),
       });
 

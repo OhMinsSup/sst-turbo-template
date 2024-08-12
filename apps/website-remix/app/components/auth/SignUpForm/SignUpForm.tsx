@@ -1,8 +1,8 @@
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import { zodResolver } from "@hookform/resolvers/zod";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
+import type { FormFieldSignUpSchema } from "@template/sdk/schema";
 import { authSchema } from "@template/sdk/schema";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
@@ -34,7 +34,7 @@ export default function SignUpForm() {
       password: "",
       confirmPassword: "",
     },
-    errors: actionData?.errors ?? undefined,
+    errors: (actionData?.result ?? undefined) as any,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
@@ -42,7 +42,6 @@ export default function SignUpForm() {
   const onSubmit = (input: FormFieldSignUpSchema) =>
     submit(input, {
       method: "post",
-      replace: true,
       encType: "application/json",
     });
 

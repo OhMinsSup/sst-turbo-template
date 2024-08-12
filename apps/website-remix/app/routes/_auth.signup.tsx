@@ -1,4 +1,3 @@
-import React from "react";
 import { Outlet } from "@remix-run/react";
 
 import { SignUpLayout } from "~/components/auth/SignUpLayout";

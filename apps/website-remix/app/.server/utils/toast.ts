@@ -1,7 +1,8 @@
-import { createId as cuid } from "@paralleldrive/cuid2";
 import { createCookieSessionStorage, redirect } from "@remix-run/node";
+import { createId as cuid } from "@paralleldrive/cuid2";
 import { z } from "zod";
 
+import { privateConfig } from "~/config/config.private";
 import { combineHeaders } from "~/utils/misc";
 
 export const toastKey = "toast";
@@ -22,7 +23,7 @@ export const toastSessionStorage = createCookieSessionStorage({
     sameSite: "lax",
     path: "/",
     httpOnly: true,
-    secrets: [process.env.SESSION_SECRET],
+    secrets: [privateConfig.sessionSecret],
     secure: import.meta.env.PROD,
   },
 });

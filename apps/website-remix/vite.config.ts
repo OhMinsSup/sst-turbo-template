@@ -1,4 +1,5 @@
 import { vitePlugin as remix } from "@remix-run/dev";
+import { installGlobals } from "@remix-run/node";
 import { defineConfig } from "vite";
 import tsconfigPaths from "vite-tsconfig-paths";
 
@@ -6,10 +7,11 @@ import { t3EnvPlugin } from "@template/vite/t3-env";
 
 import { t3EnvFn } from "./env";
 
+installGlobals({ nativeFetch: true });
+
 export default defineConfig({
   plugins: [
     t3EnvPlugin({
-      envFile: "../../.env",
       t3EnvFn,
     }),
     remix({
@@ -18,7 +20,7 @@ export default defineConfig({
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
         unstable_singleFetch: true,
-        unstable_fogOfWar: true,
+        unstable_lazyRouteDiscovery: true,
       },
     }),
     tsconfigPaths(),

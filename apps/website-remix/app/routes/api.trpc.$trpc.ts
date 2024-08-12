@@ -1,22 +1,22 @@
 import type { LoaderFunction } from "@remix-run/node";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-import { appRouter, createTRPCContext } from "~/.server/trpc";
-import { TOKEN_KEY } from "~/.server/utils/constants";
+import { privateConfig } from "~/config/config.private";
 import { getApiClient } from "~/store/app";
+import { appRouter, createTRPCContext } from "~/trpc";
 
 export const handler = (request: Request) =>
   fetchRequestHandler({
     endpoint: "/api/trpc",
     router: appRouter,
     req: request,
-    createContext: ({ resHeaders, req }) =>
-      createTRPCContext({
-        resHeaders,
+    createContext: ({ req }) => {
+      return createTRPCContext({
         request: req,
         client: getApiClient(),
-        tokenKey: TOKEN_KEY,
-      }),
+        tokenKey: privateConfig.token,
+      });
+    },
     onError({ error, path }) {
       console.error(`>>> tRPC Error on '${path}'`, error);
     },

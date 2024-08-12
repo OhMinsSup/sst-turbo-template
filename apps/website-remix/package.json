@@ -5,19 +5,20 @@
   "type": "module",
   "scripts": {
     "build": "remix vite:build",
-    "dev": "remix vite:dev",
     "clean": "git clean -xdf .turbo node_modules",
+    "dev": "remix vite:dev",
     "lint": "eslint --ignore-path .gitignore --cache --cache-location ./node_modules/.cache/eslint .",
     "start": "remix-serve ./build/server/index.js",
     "typecheck": "tsc"
   },
+  "prettier": "@template/prettier-config",
   "dependencies": {
     "@conform-to/zod": "^1.1.5",
     "@epic-web/invariant": "^1.0.0",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@remix-run/node": "^2.10.2",
-    "@remix-run/react": "^2.10.2",
-    "@remix-run/serve": "^2.10.2",
+    "@remix-run/node": "^2.11.1",
+    "@remix-run/react": "^2.11.1",
+    "@remix-run/serve": "^2.11.1",
     "@t3-oss/env-core": "^0.10.1",
     "@tanstack/react-query": "catalog:",
     "@template/authkit": "workspace:*",
@@ -37,7 +38,7 @@
     "remix-utils": "^7.6.0"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.10.2",
+    "@remix-run/dev": "^2.11.1",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",
@@ -52,6 +53,5 @@
     "typescript": "catalog:",
     "vite": "catalog:",
     "vite-tsconfig-paths": "^4.3.2"
-  },
-  "prettier": "@template/prettier-config"
+  }
 }

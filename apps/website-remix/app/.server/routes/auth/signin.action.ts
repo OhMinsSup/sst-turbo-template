@@ -10,10 +10,10 @@ import {
   HttpStatus,
   RequestMethod,
 } from "@template/sdk/enum";
-import { createHttpError } from "@template/sdk/error";
+import { createHttpError, isFetchError } from "@template/sdk/error";
 
-import { TOKEN_KEY } from "~/.server/utils/constants";
 import { errorJsonDataResponse } from "~/.server/utils/response";
+import { privateConfig } from "~/config/config.private";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { getApiClient } from "~/store/app";
 import { combineHeaders } from "~/utils/misc";
@@ -29,29 +29,38 @@ export const action = async (ctx: ActionFunctionArgs) => {
   }
 
   const authKit = new AuthKit({
-    tokenKey: TOKEN_KEY,
-    headers: ctx.response?.headers,
+    tokenKey: privateConfig.token,
+    headers: ctx.request.headers,
     client: getApiClient(),
   });
 
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const input: Awaited<FormFieldSignInSchema> = await ctx.request.json();
-  const response = await authKit.client.rpc("signIn").post(input);
-  if (response.error) {
-    return json(errorJsonDataResponse(response.error));
+
+  try {
+    const response = await authKit.client.rpc("signIn").post(input);
+    if (response.error) {
+      return json(errorJsonDataResponse(response.error));
+    }
+
+    if (response.resultCode !== HttpResultStatus.OK) {
+      return json(errorJsonDataResponse(null));
+    }
+
+    const {
+      result: { tokens },
+    } = response;
+
+    return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
+      headers: combineHeaders(authKit.signin(tokens)),
+    });
+  } catch (error) {
+    if (isFetchError<RemixDataFlow.Response>(error)) {
+      return json(errorJsonDataResponse(error.data?.message));
+    }
+
+    throw error;
   }
-
-  if (response.resultCode !== HttpResultStatus.OK) {
-    return json(errorJsonDataResponse(null));
-  }
-
-  const {
-    result: { tokens },
-  } = response;
-
-  return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-    headers: combineHeaders(authKit.signin(tokens)),
-  });
 };
 
 export type RoutesActionData = typeof action;

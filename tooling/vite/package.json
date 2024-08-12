@@ -3,15 +3,36 @@
   "version": "0.0.1",
   "private": true,
   "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./t3-env": {
+      "import": {
+        "types": "./dist/t3-env.d.ts",
+        "default": "./dist/t3-env.js"
+      },
+      "require": {
+        "types": "./dist/t3-env.d.js",
+        "default": "./dist/t3-env.js"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
   "scripts": {
     "build": "tsup",
+    "build:pkg": "tsup",
     "clean": "rm -rf .turbo node_modules",
-    "dev": "tsup",
+    "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
   "prettier": "@template/prettier-config",
+  "dependencies": {
+    "es-module-lexer": "^1.5.4",
+    "find-up": "^7.0.0"
+  },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
@@ -25,21 +46,5 @@
   },
   "peerDependencies": {
     "vite": "^5.0.0"
-  },
-  "files": [
-    "dist"
-  ],
-  "exports": {
-    "./package.json": "./package.json",
-    "./t3-env": {
-      "import": {
-        "types": "./dist/t3-env.d.ts",
-        "default": "./dist/t3-env.js"
-      },
-      "require": {
-        "types": "./dist/t3-env.d.js",
-        "default": "./dist/t3-env.js"
-      }
-    }
   }
 }

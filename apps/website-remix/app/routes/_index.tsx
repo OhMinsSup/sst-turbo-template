@@ -1,23 +1,12 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
-import { invariant } from "@epic-web/invariant";
 
-import { createTrpcServer } from "~/.server/trpc";
-import { TOKEN_KEY } from "~/.server/utils/constants";
-import { getApiClient } from "~/store/app";
 import { api } from "~/store/trpc";
+import { trpcServer } from "~/trpc";
 
 export const loader = async (ctx: LoaderFunctionArgs) => {
-  invariant(ctx.response, "response is required");
-  const trpcServer = createTrpcServer(
-    ctx.request,
-    ctx.response.headers,
-    getApiClient(),
-    TOKEN_KEY,
-  );
-  const message = await trpcServer.etc.hello();
   return {
-    message,
+    message: await trpcServer(ctx).etc.hello(),
   };
 };
 

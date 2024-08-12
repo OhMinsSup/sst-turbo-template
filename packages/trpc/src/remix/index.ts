@@ -18,13 +18,9 @@ const createCaller = createCallerFactory(appRouter);
 
 const createTrpcServer = (
   request: Request,
-  resHeaders: Headers,
   client: Client,
   tokenKey: AuthKitTokenKey,
-) =>
-  createCaller(() =>
-    createTRPCContext({ request, resHeaders, client, tokenKey }),
-  );
+) => createCaller(() => createTRPCContext({ request, client, tokenKey }));
 
 /**
  * Inference helpers for input types
