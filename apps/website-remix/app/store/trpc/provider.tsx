@@ -3,7 +3,7 @@ import { QueryClient, QueryClientProvider } from "@tanstack/react-query";
 import { loggerLink, unstable_httpBatchStreamLink } from "@trpc/client";
 import { createTRPCReact } from "@trpc/react-query";
 
-import type { AppRouter } from "~/.server/trpc";
+import type { AppRouter } from "~/trpc";
 
 const createQueryClient = () =>
   new QueryClient({

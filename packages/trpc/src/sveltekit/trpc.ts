@@ -55,8 +55,7 @@ export const getSveltekitTRPCContext = async (opts: SveltekitTRPCContext) => {
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: SveltekitTRPCContext) => {
-  const ctx = await getSveltekitTRPCContext(opts);
-  return ctx;
+  return await getSveltekitTRPCContext(opts);
 };
 
 /**

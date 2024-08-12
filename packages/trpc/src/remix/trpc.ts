@@ -13,31 +13,28 @@ import type { Client } from "@template/sdk";
 import { AuthKit, AuthKitFramework } from "@template/authkit";
 
 interface RemixTRPCContext {
-  resHeaders: Headers;
   request: Request;
   client: Client;
   tokenKey: AuthKitTokenKey;
 }
 
 export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
-  const { request, resHeaders, client, tokenKey } = opts;
+  const { request, client, tokenKey } = opts;
 
   const authKit = new AuthKit({
     client,
     tokenKey,
-    headers: resHeaders,
   });
 
   const cookie = request.headers.get("cookie");
 
-  const { user, status, headers } = await authKit.checkAuth(
+  const { user, status } = await authKit.checkAuth(
     cookie ? authKit.getTokens(cookie, AuthKitFramework.Remix) : null,
   );
   console.log(">>> tRPC Request from Remix");
 
   return {
     request,
-    resHeaders: headers,
     session: user,
     status,
     authKit,
@@ -58,8 +55,7 @@ export const getRemixTRPCContext = async (opts: RemixTRPCContext) => {
  * @see https://trpc.io/docs/server/context
  */
 export const createTRPCContext = async (opts: RemixTRPCContext) => {
-  const ctx = await getRemixTRPCContext(opts);
-  return ctx;
+  return await getRemixTRPCContext(opts);
 };
 
 /**

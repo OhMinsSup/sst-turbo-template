@@ -74,6 +74,7 @@
     export const npm_package_dependencies_isbot: string;
     export const USER_ZDOTDIR: string;
     export const __CFBundleIdentifier: string;
+    export const BLOCKSIZE: string;
     export const npm_command: string;
     export const npm_package_devDependencies_tailwindcss: string;
     export const npm_package_dependencies__remix_run_serve: string;
@@ -118,6 +119,7 @@
     export const npm_package_dependencies__template_sdk: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;
+    export const SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
     export const npm_node_execpath: string;
     export const COLORTERM: string;
     export const NODE_ENV: string;
