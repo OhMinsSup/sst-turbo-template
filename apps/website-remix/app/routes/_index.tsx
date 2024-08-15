@@ -1,20 +1,20 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { useLoaderData } from "@remix-run/react";
 
-import { api } from "~/store/trpc";
-import { trpcServer } from "~/trpc";
+// import { api } from "~/store/trpc";
+// import { trpcServer } from "~/trpc";
 
 export const loader = async (ctx: LoaderFunctionArgs) => {
   return {
-    message: await trpcServer(ctx).etc.hello(),
+    // message: await trpcServer(ctx).etc.hello(),
   };
 };
 
 export default function Index() {
   const data = useLoaderData<typeof loader>();
-  const messageQuery = api.etc.hello.useQuery(undefined, {
-    initialData: data.message,
-  });
+  // const messageQuery = api.etc.hello.useQuery(undefined, {
+  //   initialData: data.message,
+  // });
 
   return (
     <div className="p-4 font-sans">
@@ -23,7 +23,7 @@ export default function Index() {
         Remix is a full-stack web framework for React. It's designed to make
         building production-ready applications faster and easier.
       </p>
-      <p>{messageQuery.data}</p>
+      {/* <p>{messageQuery.data}</p> */}
       <ul className="mt-4 list-disc space-y-2 pl-6">
         <li>
           <a

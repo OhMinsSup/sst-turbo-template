@@ -21,7 +21,6 @@
     "@remix-run/serve": "catalog:remix2",
     "@t3-oss/env-core": "catalog:",
     "@tanstack/react-query": "catalog:",
-    "@template/authkit": "workspace:*",
     "@template/hooks": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/trpc": "workspace:*",

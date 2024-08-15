@@ -21,7 +21,8 @@ import {
   ThemeProvider,
   useTheme,
 } from "./store/theme";
-import { TRPCReactProvider } from "./store/trpc";
+
+// import { TRPCReactProvider } from "./store/trpc";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { action } from "~/.server/routes/root/root.action";
@@ -78,25 +79,19 @@ function Document({ children }: Props) {
   );
 }
 
-export function Layout({ children }: Props) {
+export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
+  console.log(`#[root.app] ==>`, data);
   return (
     <ThemeProvider specifiedTheme={data.userPrefs.theme}>
       <Document>
-        {children}
+        <AppProvider>
+          {/* <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}> */}
+          <Outlet />
+          {/* </TRPCReactProvider> */}
+        </AppProvider>
         {data.toast ? <ShowToast toast={data.toast} /> : null}
       </Document>
     </ThemeProvider>
-  );
-}
-
-export default function App() {
-  const data = useLoaderData<RoutesLoaderData>();
-  return (
-    <AppProvider>
-      <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}>
-        <Outlet />
-      </TRPCReactProvider>
-    </AppProvider>
   );
 }

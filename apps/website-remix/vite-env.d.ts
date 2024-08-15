@@ -6,6 +6,8 @@
   
   interface ImportMetaEnv {
 	readonly NEXT_PUBLIC_SERVER_URL: string;
+	readonly NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
+	readonly NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   
   declare module '$env/static/private' {
@@ -36,7 +38,6 @@
     export const npm_package_dependencies__template_ui: string;
     export const npm_package_prettier: string;
     export const TMPDIR: string;
-    export const npm_package_dependencies__template_authkit: string;
     export const npm_package_dependencies__paralleldrive_cuid2: string;
     export const npm_package_scripts_lint: string;
     export const npm_package_devDependencies__template_vite: string;
@@ -74,7 +75,6 @@
     export const npm_package_dependencies_isbot: string;
     export const USER_ZDOTDIR: string;
     export const __CFBundleIdentifier: string;
-    export const BLOCKSIZE: string;
     export const npm_command: string;
     export const npm_package_devDependencies_tailwindcss: string;
     export const npm_package_dependencies__remix_run_serve: string;
@@ -119,7 +119,6 @@
     export const npm_package_dependencies__template_sdk: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;
-    export const SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
     export const npm_node_execpath: string;
     export const COLORTERM: string;
     export const NODE_ENV: string;
@@ -127,5 +126,7 @@
   
   declare module '$env/static/public' {
     export const NEXT_PUBLIC_SERVER_URL: string;
+    export const NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
+    export const NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   

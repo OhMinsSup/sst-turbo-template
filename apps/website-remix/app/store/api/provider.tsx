@@ -4,6 +4,7 @@ import { createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
 import type { Client } from "@template/sdk";
+import { Auth } from "@template/sdk/auth";
 
 import type { ApiClientStore } from "./store";
 import { createApiClientStore, initApiClientStore } from "./store";
@@ -14,13 +15,14 @@ export const ApiClientContext = createContext<StoreApi<ApiClientStore> | null>(
 
 export interface Props {
   client: Client;
+  auth: Auth;
   children: ReactNode;
 }
 
-export const ApiClientProvider = ({ children, client }: Props) => {
+export const ApiClientProvider = ({ children, client, auth }: Props) => {
   const storeRef = useRef<StoreApi<ApiClientStore>>();
   if (!storeRef.current) {
-    storeRef.current = createApiClientStore(initApiClientStore(client));
+    storeRef.current = createApiClientStore(initApiClientStore(client, auth));
   }
 
   return (
