@@ -5,21 +5,24 @@ import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
 import type { ClientResponse } from "@template/sdk";
-import { HttpResultStatus, HttpStatus } from "@template/sdk/enum";
-import { isFetchError } from "@template/sdk/error";
-import { authSchema } from "@template/sdk/schema";
+import {
+  HttpResultStatus,
+  HttpStatus,
+  isFetchError,
+  schema,
+} from "@template/sdk";
 
 import type { Actions, PageServerLoad } from "./$types.js";
 
 export const load: PageServerLoad = async (event) => {
   return {
-    form: await superValidate(zod(authSchema.signIn)),
+    form: await superValidate(zod(schema.signIn)),
   };
 };
 
 export const actions: Actions = {
   default: async (event) => {
-    const form = await superValidate(event, zod(authSchema.signIn));
+    const form = await superValidate(event, zod(schema.signIn));
     if (!form.valid) {
       return fail(HttpStatus.BAD_REQUEST, {
         form,

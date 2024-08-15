@@ -2,8 +2,8 @@ import React from "react";
 import { unstable_cache } from "next/cache";
 import { headers } from "next/headers";
 
-import type { AuthKitStatus } from "@template/authkit";
 import type { UserResponse } from "@template/sdk";
+import type { AuthKitStatus } from "@template/sdk/authkit";
 import { ThemeProvider } from "@template/ui/theme";
 
 import { AppProvider } from "~/store/app";

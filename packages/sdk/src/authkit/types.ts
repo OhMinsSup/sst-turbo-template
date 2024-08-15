@@ -1,4 +1,4 @@
-import type { Client, TokenResponse, UserResponse } from "@template/sdk";
+import type { Client, TokenResponse, UserResponse } from "..";
 
 export interface AuthKitTokenKey {
   accessTokenKey: string;

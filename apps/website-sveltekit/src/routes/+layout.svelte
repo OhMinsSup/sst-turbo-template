@@ -5,7 +5,7 @@
   import { invalidateAll, onNavigate } from "$app/navigation";
   import { rafInterval } from "$lib/svelte/lifecycle/raf-interval";
 
-  import { AuthKitStatus } from "@template/authkit";
+  import { AuthKitStatus } from "@template/sdk/authkit";
   import { isEmpty } from "@template/utils/assertion";
 
   import type { LayoutData } from "./$types";

@@ -3,34 +3,11 @@ import { defineConfig } from "tsup";
 
 export default defineConfig((options: Options) => [
   {
-    entry: ["src/index.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-  {
-    entry: ["src/schema.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-  {
-    entry: ["src/enum.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-  {
-    entry: ["src/error.ts"],
+    entry: {
+      index: "src/index.ts",
+      authkit: "src/authkit/index.ts",
+      auth: "src/auth/index.ts",
+    },
     format: ["esm", "cjs"],
     dts: true,
     minify: !options.watch,

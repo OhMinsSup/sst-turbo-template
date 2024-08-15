@@ -9,13 +9,13 @@
 import type { RequestEvent } from "@sveltejs/kit";
 import { initTRPC, TRPCError } from "@trpc/server";
 
-import type { AuthKitTokenKey } from "@template/authkit";
-import type { ApiClient } from "@template/sdk";
-import { AuthKit, AuthKitFramework } from "@template/authkit";
+import type { Client } from "@template/sdk";
+import type { AuthKitTokenKey } from "@template/sdk/authkit";
+import { AuthKit, AuthKitFramework } from "@template/sdk/authkit";
 
 interface SveltekitTRPCContext {
   event: RequestEvent;
-  client: ApiClient;
+  client: Client;
   tokenKey: AuthKitTokenKey;
 }
 

@@ -1,7 +1,7 @@
 import { createStore } from "zustand/vanilla";
 
-import type { AuthKitStatus } from "@template/authkit";
 import type { Client, UserResponse } from "@template/sdk";
+import type { AuthKitStatus } from "@template/sdk/authkit";
 
 export interface ApiClientState {
   client: Client;

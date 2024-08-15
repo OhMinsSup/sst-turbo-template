@@ -10,8 +10,8 @@ import type {
   HeadersInit,
   MethodType,
 } from "./types";
-import { HttpStatus } from "../enum";
-import { createHttpError } from "../error";
+import { HttpStatus } from "./constants";
+import { createHttpError } from "./errors";
 import { schema } from "./schema";
 
 export default class ApiBuilder<

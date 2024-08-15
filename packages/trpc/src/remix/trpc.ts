@@ -8,9 +8,9 @@
  */
 import { initTRPC, TRPCError } from "@trpc/server";
 
-import type { AuthKitTokenKey } from "@template/authkit";
 import type { Client } from "@template/sdk";
-import { AuthKit, AuthKitFramework } from "@template/authkit";
+import type { AuthKitTokenKey } from "@template/sdk/authkit";
+import { AuthKit, AuthKitFramework } from "@template/sdk/authkit";
 
 interface RemixTRPCContext {
   request: Request;

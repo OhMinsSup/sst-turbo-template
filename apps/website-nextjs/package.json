@@ -21,7 +21,6 @@
     "@lexical/react": "^0.17.0",
     "@t3-oss/env-nextjs": "^0.11.0",
     "@tanstack/react-query": "catalog:",
-    "@template/authkit": "workspace:*",
     "@template/hooks": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/trpc": "workspace:*",

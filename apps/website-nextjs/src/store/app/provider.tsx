@@ -3,8 +3,8 @@
 import React from "react";
 
 import type { UserResponse } from "@template/sdk";
-import { AuthKitStatus } from "@template/authkit";
 import { useRafInterval } from "@template/hooks/useRafInterval";
+import { AuthKitStatus } from "@template/sdk/authkit";
 import { isEmpty } from "@template/utils/assertion";
 
 import { ApiClientProvider, getApiClient } from "~/store/api";

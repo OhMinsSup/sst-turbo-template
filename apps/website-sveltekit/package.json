@@ -19,7 +19,6 @@
   "prettier": "@template/prettier-config/sveltekit",
   "dependencies": {
     "@tanstack/svelte-query": "^5.51.21",
-    "@template/authkit": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/trpc": "workspace:*",
     "@template/utils": "workspace:*",

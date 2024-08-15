@@ -45,6 +45,16 @@
         "types": "./dist/cookie.d.cts",
         "default": "./dist/cookie.cjs"
       }
+    },
+    "./request": {
+      "import": {
+        "types": "./dist/request.d.ts",
+        "default": "./dist/request.js"
+      },
+      "require": {
+        "types": "./dist/request.d.cts",
+        "default": "./dist/request.cjs"
+      }
     }
   },
   "files": [
@@ -52,8 +62,8 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:pkg": "tsc",
-    "clean": "rm -rf .turbo node_modules",
+    "build:pkg": "tsup",
+    "clean": "rm -rf .turbo node_modules dist",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"

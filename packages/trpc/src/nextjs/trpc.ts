@@ -11,9 +11,13 @@ import { initTRPC, TRPCError } from "@trpc/server";
 import superjson from "superjson";
 import { ZodError } from "zod";
 
-import type { AuthKitTokenKey } from "@template/authkit";
 import type { AuthResponse, Client } from "@template/sdk";
-import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
+import type { AuthKitTokenKey } from "@template/sdk/authkit";
+import {
+  AuthKit,
+  AuthKitFramework,
+  AuthKitStatus,
+} from "@template/sdk/authkit";
 
 export interface Session {
   user: Pick<AuthResponse, "email" | "id" | "image" | "name"> & {

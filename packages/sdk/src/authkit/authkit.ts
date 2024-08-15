@@ -1,4 +1,3 @@
-import type { ApiClient, TokenResponse, UserResponse } from "@template/sdk";
 import {
   clearCookie,
   getTokenFromCookie,
@@ -6,7 +5,10 @@ import {
 } from "@template/utils/cookie";
 import { isAccessTokenExpireDate } from "@template/utils/date";
 import { jwtDecode } from "@template/utils/jwt";
+import { combineHeaders, mergeHeaders } from "@template/utils/request";
 
+import type { Client } from "..";
+import type { TokenResponse, UserResponse } from "../api/types";
 import type {
   AuthKitConstructorOptions,
   AuthKitParams,
@@ -14,16 +16,11 @@ import type {
   AuthKitTokenKey,
   AuthKitValidateAuthParams,
 } from "./types";
-import {
-  combineHeaders,
-  mergeClearAuthTokens,
-  mergeHeaders,
-  mergeTokenHeaders,
-} from "./_internal/misc";
 import { AuthKitFramework, AuthKitStatus } from "./types";
+import { mergeClearAuthTokens, mergeTokenHeaders } from "./utils";
 
 export class AuthKit {
-  private _client: ApiClient;
+  private _client: Client;
 
   private _tokenKey: AuthKitTokenKey;
 
@@ -103,7 +100,7 @@ export class AuthKit {
   }
 
   // api client 설정
-  setApiClient(client: ApiClient) {
+  setApiClient(client: Client) {
     this._client = client;
     return this;
   }

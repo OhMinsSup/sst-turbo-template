@@ -2,6 +2,7 @@ import type { $Fetch, FetchOptions } from "ofetch";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 
+import type { HttpResultStatus } from "./constants";
 import type {
   FormFieldRefreshTokenSchema,
   FormFieldSignInSchema,
@@ -20,7 +21,7 @@ export type HeadersInit = FetchOptions<"json">["headers"];
 export type MethodType = "GET" | "POST" | "PUT" | "DELETE" | "PATCH" | "HEAD";
 
 export interface ClientResponse<Data = unknown> {
-  resultCode: number;
+  resultCode: HttpResultStatus;
   message?: string | string[] | Record<string, unknown> | null;
   error?: string | string[] | Record<string, unknown> | null;
   result: Data;
@@ -50,6 +51,12 @@ export type EndpointsKey = keyof Endpoints;
 // api.client.ts -----------------------------------
 
 export interface Options {
+  /**
+   * API URL.
+   * @description API URL.
+   * @example 'https://api.example.com'
+   */
+  url: string;
   /**
    * api prefix
    * @description API prefix.

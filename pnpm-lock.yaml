@@ -6,110 +6,24 @@ settings:
 
 catalogs:
   default:
-    '@hookform/resolvers':
-      specifier: ^3.9.0
-      version: 3.9.0
-    '@t3-oss/env-core':
-      specifier: ^0.11.0
-      version: 0.11.0
-    '@tanstack/react-query':
-      specifier: ^5.51.23
-      version: 5.51.23
-    '@trpc/client':
-      specifier: ^11.0.0-rc.477
-      version: 11.0.0-rc.477
-    '@trpc/react-query':
-      specifier: ^11.0.0-rc.477
-      version: 11.0.0-rc.477
-    '@trpc/server':
-      specifier: ^11.0.0-rc.477
-      version: 11.0.0-rc.477
-    autoprefixer:
-      specifier: ^10.4.20
-      version: 10.4.20
     date-fns:
       specifier: ^3.6.0
       version: 3.6.0
     eslint:
       specifier: ^9.9.0
       version: 9.9.0
-    postcss:
-      specifier: ^8.4.41
-      version: 8.4.41
     prettier:
       specifier: ^3.3.3
       version: 3.3.3
-    react-hook-form:
-      specifier: ^7.52.2
-      version: 7.52.2
-    rimraf:
-      specifier: ^6.0.1
-      version: 6.0.1
-    superjson:
-      specifier: ^2.2.1
-      version: 2.2.1
-    tailwindcss:
-      specifier: ^3.4.9
-      version: 3.4.9
     tsup:
       specifier: ^8.1.0
       version: 8.1.0
-    tsx:
-      specifier: ^4.16.2
-      version: 4.17.0
     typescript:
       specifier: ^5.5.4
       version: 5.5.4
-    vite:
-      specifier: ^5.4.0
-      version: 5.4.0
     zod:
       specifier: ^3.23.8
       version: 3.23.8
-    zustand:
-      specifier: ^4.5.4
-      version: 4.5.4
-  kit2:
-    '@sveltejs/kit':
-      specifier: ^2.5.21
-      version: 2.5.21
-  next14:
-    next:
-      specifier: ^14.2.5
-      version: 14.2.5
-  prisma5:
-    '@prisma/client':
-      specifier: 5.18.0
-      version: 5.18.0
-    prisma:
-      specifier: 5.18.0
-      version: 5.18.0
-  react18:
-    '@types/react':
-      specifier: ^18.3.3
-      version: 18.3.3
-    '@types/react-dom':
-      specifier: ^18.3.0
-      version: 18.3.0
-    react:
-      specifier: 18.3.1
-      version: 18.3.1
-    react-dom:
-      specifier: 18.3.1
-      version: 18.3.1
-  remix2:
-    '@remix-run/dev':
-      specifier: ^2.11.1
-      version: 2.11.1
-    '@remix-run/node':
-      specifier: ^2.11.1
-      version: 2.11.1
-    '@remix-run/react':
-      specifier: ^2.11.1
-      version: 2.11.1
-    '@remix-run/serve':
-      specifier: ^2.11.1
-      version: 2.11.1
 
 importers:
 
@@ -268,7 +182,7 @@ importers:
         version: 9.5.1(typescript@5.5.4)(webpack@5.93.0(@swc/core@1.7.10(@swc/helpers@0.5.5)))
       ts-node:
         specifier: ^10.9.2
-        version: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+        version: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
       tsconfig-paths:
         specifier: ^4.2.0
         version: 4.2.0
@@ -296,9 +210,6 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.51.23(react@18.3.1)
-      '@template/authkit':
-        specifier: workspace:*
-        version: link:../../packages/authkit
       '@template/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -386,7 +297,7 @@ importers:
         version: 18.3.0
       autoprefixer:
         specifier: 'catalog:'
-        version: 10.4.20(postcss@8.4.39)
+        version: 10.4.20(postcss@8.4.41)
       dotenv-cli:
         specifier: ^7.4.2
         version: 7.4.2
@@ -432,9 +343,6 @@ importers:
       '@tanstack/react-query':
         specifier: 'catalog:'
         version: 5.51.23(react@18.3.1)
-      '@template/authkit':
-        specifier: workspace:*
-        version: link:../../packages/authkit
       '@template/hooks':
         specifier: workspace:*
         version: link:../../packages/hooks
@@ -547,9 +455,6 @@ importers:
       '@tanstack/svelte-query':
         specifier: ^5.51.21
         version: 5.51.21(svelte@4.2.18)
-      '@template/authkit':
-        specifier: workspace:*
-        version: link:../../packages/authkit
       '@template/sdk':
         specifier: workspace:*
         version: link:../../packages/sdk
@@ -657,40 +562,6 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.2.0)(terser@5.31.1)
 
-  packages/authkit:
-    dependencies:
-      '@template/utils':
-        specifier: workspace:*
-        version: link:../utils
-    devDependencies:
-      '@template/db':
-        specifier: workspace:*
-        version: link:../db
-      '@template/eslint-config':
-        specifier: workspace:*
-        version: link:../../tooling/eslint
-      '@template/prettier-config':
-        specifier: workspace:*
-        version: link:../../tooling/prettier
-      '@template/sdk':
-        specifier: workspace:*
-        version: link:../sdk
-      '@template/tsconfig':
-        specifier: workspace:*
-        version: link:../../tooling/typescript
-      eslint:
-        specifier: 'catalog:'
-        version: 9.9.0(jiti@1.21.6)
-      prettier:
-        specifier: 'catalog:'
-        version: 3.3.3
-      tsup:
-        specifier: 'catalog:'
-        version: 8.1.0(@swc/core@1.7.10)(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4))(typescript@5.5.4)
-      typescript:
-        specifier: 'catalog:'
-        version: 5.5.4
-
   packages/db:
     dependencies:
       '@prisma/client':
@@ -769,6 +640,12 @@ importers:
 
   packages/sdk:
     dependencies:
+      '@template/utils':
+        specifier: workspace:*
+        version: link:../utils
+      date-fns:
+        specifier: 'catalog:'
+        version: 3.6.0
       ofetch:
         specifier: ^1.3.4
         version: 1.3.4
@@ -799,7 +676,7 @@ importers:
         version: 3.3.3
       tsup:
         specifier: 'catalog:'
-        version: 8.1.0(@swc/core@1.7.10)(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4))(typescript@5.5.4)
+        version: 8.1.0(@swc/core@1.7.10)(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(typescript@5.5.4))(typescript@5.5.4)
       typescript:
         specifier: 'catalog:'
         version: 5.5.4
@@ -809,9 +686,6 @@ importers:
       '@epic-web/remember':
         specifier: ^1.1.0
         version: 1.1.0
-      '@template/authkit':
-        specifier: workspace:*
-        version: link:../authkit
       '@template/sdk':
         specifier: workspace:*
         version: link:../sdk
@@ -1084,7 +958,7 @@ importers:
         version: 7.35.0(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-react-hooks:
         specifier: rc
-        version: 5.1.0-rc-2d2cc042-20240809(eslint@9.9.0(jiti@1.21.6))
+        version: 5.1.0-rc-49496d49-20240814(eslint@9.9.0(jiti@1.21.6))
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.1
         version: 12.1.1(eslint@9.9.0(jiti@1.21.6))
@@ -5691,8 +5565,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
 
-  eslint-plugin-react-hooks@5.1.0-rc-2d2cc042-20240809:
-    resolution: {integrity: sha512-PEZ2M6eAd+DWlbrE561PumDgwHNYrLUPEcP4P/el+GjT5HnZh1lvr+UecKez547u49EtICPTEwd9VS2u66edTw==}
+  eslint-plugin-react-hooks@5.1.0-rc-49496d49-20240814:
+    resolution: {integrity: sha512-A5hwoU0WxNLjuPa9vH0+4Sh+GOcfBIgZJ0cbwu9UECyD8VbIv+N3all4yyHqFQqcz10qzoHHLSuRFE4O7AC5PQ==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -13023,6 +12897,23 @@ snapshots:
   '@swc/core-win32-x64-msvc@1.7.10':
     optional: true
 
+  '@swc/core@1.7.10':
+    dependencies:
+      '@swc/counter': 0.1.3
+      '@swc/types': 0.1.12
+    optionalDependencies:
+      '@swc/core-darwin-arm64': 1.7.10
+      '@swc/core-darwin-x64': 1.7.10
+      '@swc/core-linux-arm-gnueabihf': 1.7.10
+      '@swc/core-linux-arm64-gnu': 1.7.10
+      '@swc/core-linux-arm64-musl': 1.7.10
+      '@swc/core-linux-x64-gnu': 1.7.10
+      '@swc/core-linux-x64-musl': 1.7.10
+      '@swc/core-win32-arm64-msvc': 1.7.10
+      '@swc/core-win32-ia32-msvc': 1.7.10
+      '@swc/core-win32-x64-msvc': 1.7.10
+    optional: true
+
   '@swc/core@1.7.10(@swc/helpers@0.5.5)':
     dependencies:
       '@swc/counter': 0.1.3
@@ -13124,7 +13015,7 @@ snapshots:
       node-plop: 0.26.3
       picocolors: 1.0.1
       proxy-agent: 6.4.0
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
       update-check: 1.5.4
       validate-npm-package-name: 5.0.1
     transitivePeerDependencies:
@@ -15294,7 +15185,7 @@ snapshots:
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.0
 
-  eslint-plugin-react-hooks@5.1.0-rc-2d2cc042-20240809(eslint@9.9.0(jiti@1.21.6)):
+  eslint-plugin-react-hooks@5.1.0-rc-49496d49-20240814(eslint@9.9.0(jiti@1.21.6)):
     dependencies:
       eslint: 9.9.0(jiti@1.21.6)
 
@@ -16680,7 +16571,7 @@ snapshots:
       strip-json-comments: 3.1.1
     optionalDependencies:
       '@types/node': 22.2.0
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
     transitivePeerDependencies:
       - babel-plugin-macros
       - supports-color
@@ -18328,7 +18219,7 @@ snapshots:
       yaml: 1.10.2
     optionalDependencies:
       postcss: 8.4.39
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
 
   postcss-load-config@4.0.2(postcss@8.4.39)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)):
     dependencies:
@@ -18336,7 +18227,7 @@ snapshots:
       yaml: 2.4.5
     optionalDependencies:
       postcss: 8.4.39
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
 
   postcss-load-config@4.0.2(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)):
     dependencies:
@@ -18344,7 +18235,15 @@ snapshots:
       yaml: 2.4.5
     optionalDependencies:
       postcss: 8.4.41
-      ts-node: 10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4)
+      ts-node: 10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4)
+
+  postcss-load-config@4.0.2(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(typescript@5.5.4)):
+    dependencies:
+      lilconfig: 3.1.2
+      yaml: 2.4.5
+    optionalDependencies:
+      postcss: 8.4.41
+      ts-node: 10.9.2(@swc/core@1.7.10)(typescript@5.5.4)
 
   postcss-modules-extract-imports@3.1.0(postcss@8.4.39):
     dependencies:
@@ -19738,7 +19637,7 @@ snapshots:
       typescript: 5.5.4
       webpack: 5.93.0(@swc/core@1.7.10(@swc/helpers@0.5.5))
 
-  ts-node@10.9.2(@swc/core@1.7.10)(@types/node@22.2.0)(typescript@5.5.4):
+  ts-node@10.9.2(@swc/core@1.7.10(@swc/helpers@0.5.5))(@types/node@22.2.0)(typescript@5.5.4):
     dependencies:
       '@cspotcode/source-map-support': 0.8.1
       '@tsconfig/node10': 1.0.11
@@ -19757,6 +19656,26 @@ snapshots:
       yn: 3.1.1
     optionalDependencies:
       '@swc/core': 1.7.10(@swc/helpers@0.5.5)
+
+  ts-node@10.9.2(@swc/core@1.7.10)(typescript@5.5.4):
+    dependencies:
+      '@cspotcode/source-map-support': 0.8.1
+      '@tsconfig/node10': 1.0.11
+      '@tsconfig/node12': 1.0.11
+      '@tsconfig/node14': 1.0.3
+      '@tsconfig/node16': 1.0.4
+      acorn: 8.12.1
+      acorn-walk: 8.3.3
+      arg: 4.1.3
+      create-require: 1.1.1
+      diff: 4.0.2
+      make-error: 1.3.6
+      typescript: 5.5.4
+      v8-compile-cache-lib: 3.0.1
+      yn: 3.1.1
+    optionalDependencies:
+      '@swc/core': 1.7.10
+    optional: true
 
   tsconfck@3.1.1(typescript@5.5.4):
     optionalDependencies:
@@ -19806,6 +19725,30 @@ snapshots:
       tree-kill: 1.2.2
     optionalDependencies:
       '@swc/core': 1.7.10(@swc/helpers@0.5.5)
+      postcss: 8.4.41
+      typescript: 5.5.4
+    transitivePeerDependencies:
+      - supports-color
+      - ts-node
+
+  tsup@8.1.0(@swc/core@1.7.10)(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(typescript@5.5.4))(typescript@5.5.4):
+    dependencies:
+      bundle-require: 4.2.1(esbuild@0.21.5)
+      cac: 6.7.14
+      chokidar: 3.6.0
+      debug: 4.3.5
+      esbuild: 0.21.5
+      execa: 5.1.1
+      globby: 11.1.0
+      joycon: 3.1.1
+      postcss-load-config: 4.0.2(postcss@8.4.41)(ts-node@10.9.2(@swc/core@1.7.10)(typescript@5.5.4))
+      resolve-from: 5.0.0
+      rollup: 4.18.0
+      source-map: 0.8.0-beta.0
+      sucrase: 3.35.0
+      tree-kill: 1.2.2
+    optionalDependencies:
+      '@swc/core': 1.7.10
       postcss: 8.4.41
       typescript: 5.5.4
     transitivePeerDependencies:
@@ -20049,7 +19992,7 @@ snapshots:
       anymatch: 3.1.3
       chokidar: 3.6.0
       destr: 2.0.3
-      h3: 1.11.1
+      h3: 1.12.0
       listhen: 1.7.2
       lru-cache: 10.3.0
       mri: 1.2.0

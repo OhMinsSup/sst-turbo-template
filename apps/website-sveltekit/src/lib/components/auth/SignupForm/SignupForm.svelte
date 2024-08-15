@@ -6,7 +6,7 @@
   import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
 
-  import { authSchema } from "@template/sdk/schema";
+  import { schema } from "@template/sdk";
 
   import type { PageData } from "../../../../routes/(auth)/signup/$types";
 
@@ -15,7 +15,7 @@
   let loading = false;
 
   const form = superForm(data.form, {
-    validators: zodClient(authSchema.signUp),
+    validators: zodClient(schema.signUp),
     dataType: "json",
     onSubmit: () => {
       loading = true;

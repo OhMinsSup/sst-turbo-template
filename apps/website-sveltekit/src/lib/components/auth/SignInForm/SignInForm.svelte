@@ -6,7 +6,7 @@
   import { superForm } from "sveltekit-superforms";
   import { zodClient } from "sveltekit-superforms/adapters";
 
-  import { authSchema } from "@template/sdk/schema";
+  import { authSchema } from "@template/sdk";
 
   import type { PageData } from "../../../../routes/(auth)/signin/$types";
 

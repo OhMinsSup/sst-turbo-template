@@ -1,7 +1,11 @@
 import { getApiClient } from "$lib/api";
 import { privateConfig } from "$lib/config/config.private";
 
-import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
+import {
+  AuthKit,
+  AuthKitFramework,
+  AuthKitStatus,
+} from "@template/sdk/authkit";
 
 import type { LayoutServerLoad } from "./$types";
 

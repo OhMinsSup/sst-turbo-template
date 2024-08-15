@@ -6,7 +6,7 @@ import { createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
 import type { Client, UserResponse } from "@template/sdk";
-import { AuthKitStatus } from "@template/authkit";
+import { AuthKitStatus } from "@template/sdk/authkit";
 
 import type { ApiClientStore } from "./store";
 import { createApiClientStore, initApiClientStore } from "./store";

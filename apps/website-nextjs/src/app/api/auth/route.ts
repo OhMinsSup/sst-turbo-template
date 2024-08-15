@@ -1,7 +1,11 @@
-import { revalidatePath, revalidateTag } from "next/cache";
+import { revalidateTag } from "next/cache";
 import { cookies, headers } from "next/headers";
 
-import { AuthKit, AuthKitFramework, AuthKitStatus } from "@template/authkit";
+import {
+  AuthKit,
+  AuthKitFramework,
+  AuthKitStatus,
+} from "@template/sdk/authkit";
 
 import { env } from "~/env";
 import { getApiClient } from "~/store/api/api-client";

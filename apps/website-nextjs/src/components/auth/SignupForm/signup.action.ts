@@ -4,10 +4,8 @@ import type { FieldErrors } from "react-hook-form";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import type { ClientResponse } from "@template/sdk";
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import { HttpResultStatus } from "@template/sdk/enum";
-import { isFetchError } from "@template/sdk/error";
+import type { ClientResponse, FormFieldSignUpSchema } from "@template/sdk";
+import { HttpResultStatus, isFetchError } from "@template/sdk";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { env } from "~/env";

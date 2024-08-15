@@ -1,4 +1,4 @@
-import { schema as auth } from "./auth.schema";
+import { schema as authSchema } from "./auth.schema";
 
 export type {
   FormFieldRefreshTokenSchema,
@@ -8,7 +8,7 @@ export type {
 } from "./auth.schema";
 
 export const schema = {
-  ...auth,
+  ...authSchema,
 };
 
 export type Schema = typeof schema;

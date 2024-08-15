@@ -4,10 +4,8 @@ import type { FieldErrors } from "react-hook-form";
 import { cookies } from "next/headers";
 import { redirect } from "next/navigation";
 
-import type { ClientResponse } from "@template/sdk";
-import type { FormFieldSignInSchema } from "@template/sdk/schema";
-import { HttpResultStatus } from "@template/sdk/enum";
-import { isFetchError } from "@template/sdk/error";
+import type { ClientResponse, FormFieldSignInSchema } from "@template/sdk";
+import { HttpResultStatus, isFetchError } from "@template/sdk";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { env } from "~/env";
@@ -52,15 +50,13 @@ export async function submitAction(_: State, input: FormFieldSignInSchema) {
     if (isFetchError<ClientResponse>(error) && error.data) {
       switch (error.data.resultCode) {
         case HttpResultStatus.INVALID: {
-          return (
-            Array.isArray(error.data.message)
-              ? error.data.message.at(0)
-              : defaultErrorMessage
-          ) as State;
+          return Array.isArray(error.data.message)
+            ? error.data.message.at(0)
+            : defaultErrorMessage;
         }
         case HttpResultStatus.INCORRECT_PASSWORD:
         case HttpResultStatus.NOT_EXIST: {
-          return error.data.message as State;
+          return error.data.message;
         }
         default: {
           return defaultErrorMessage as State;
