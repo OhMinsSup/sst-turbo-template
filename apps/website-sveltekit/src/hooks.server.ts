@@ -6,6 +6,7 @@ import { createAuthServerClient } from "@template/sdk/auth";
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.authenticates = createAuthServerClient({
     url: NEXT_PUBLIC_SERVER_URL,
+    logDebugMessages: false,
     cookies: {
       getAll() {
         return event.cookies.getAll();

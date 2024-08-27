@@ -5,7 +5,6 @@ export default defineConfig((options: Options) => [
   {
     entry: {
       index: "src/index.ts",
-      authkit: "src/authkit/index.ts",
       auth: "src/auth/index.ts",
     },
     format: ["esm", "cjs"],

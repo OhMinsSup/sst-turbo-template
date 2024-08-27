@@ -16,16 +16,6 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./authkit": {
-      "import": {
-        "types": "./dist/authkit.d.ts",
-        "default": "./dist/authkit.js"
-      },
-      "require": {
-        "types": "./dist/authkit.d.cts",
-        "default": "./dist/authkit.cjs"
-      }
-    },
     "./auth": {
       "import": {
         "types": "./dist/auth.d.ts",

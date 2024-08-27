@@ -4,25 +4,27 @@ import {
   createAuthBrowserClient,
   createAuthServerClient,
 } from "@template/sdk/auth";
+import { isBrowser } from "@template/utils/assertion";
 
 import type { LayoutLoad } from "./$types";
 
 export const load: LayoutLoad = async ({ fetch, data, depends }) => {
   depends("authenticates:auth");
 
-  const authenticates =
-    typeof window !== "undefined"
-      ? createAuthBrowserClient({
-          url: NEXT_PUBLIC_SERVER_URL,
-        })
-      : createAuthServerClient({
-          url: NEXT_PUBLIC_SERVER_URL,
-          cookies: {
-            getAll() {
-              return data.cookies;
-            },
+  const authenticates = isBrowser()
+    ? createAuthBrowserClient({
+        url: NEXT_PUBLIC_SERVER_URL,
+        logDebugMessages: false,
+      })
+    : createAuthServerClient({
+        url: NEXT_PUBLIC_SERVER_URL,
+        logDebugMessages: false,
+        cookies: {
+          getAll() {
+            return data.cookies;
           },
-        });
+        },
+      });
 
   /**
    * It's fine to use `getSession` here, because on the client, `getSession` is

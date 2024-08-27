@@ -2,15 +2,12 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import { AuthKit } from "@template/sdk/authkit";
-
+import { createRemixServerClient } from "~/.server/utils/auth";
 import {
   errorJsonDataResponse,
   successJsonDataResponse,
 } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
-import { privateConfig } from "~/config/config.private";
-import { getApiClient } from "~/store/app";
 import { isTheme } from "~/store/theme";
 import { combineHeaders } from "~/utils/misc";
 
@@ -29,16 +26,19 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         },
       });
     },
-    // eslint-disable-next-line @typescript-eslint/require-await
+
     async logout() {
-      const authKit = new AuthKit({
-        tokenKey: privateConfig.token,
-        headers: request.headers,
-        client: getApiClient(),
+      const headers = new Headers();
+
+      const client = createRemixServerClient({
+        request,
+        headers,
       });
 
+      await client.signOut();
+
       return json(successJsonDataResponse(true), {
-        headers: combineHeaders(authKit.signout()),
+        headers: combineHeaders(headers),
       });
     },
   });

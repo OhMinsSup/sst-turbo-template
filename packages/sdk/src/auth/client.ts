@@ -28,7 +28,12 @@ import type {
   SupportedStorage,
 } from "./types";
 import { HttpResultStatus, HttpStatus } from "../api/constants";
-import { createAppError, isAppError, isHttpError } from "../api/errors";
+import {
+  createAppError,
+  isAppError,
+  isFetchError,
+  isHttpError,
+} from "../api/errors";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
 import {
@@ -444,33 +449,28 @@ export class AuthClient extends Core {
         return { error: sessionError };
       }
       const accessToken = session?.access_token;
+
+      let error: AppError | null = null;
       if (accessToken) {
         try {
           await this.api.rpc("signOut").post({ accessToken });
-        } catch (error) {
-          if (isHttpError(error)) {
-            if (
-              [
-                HttpStatus.NOT_FOUND,
-                HttpStatus.UNAUTHORIZED,
-                HttpStatus.FORBIDDEN,
-              ].includes(error.statusCode)
-            ) {
-              return {
-                error: createAppError({
-                  message: "Failed to sign out",
-                  data: error,
-                }),
-              };
-            }
-          }
+        } catch (e) {
+          this.error("[#_signOut()] ==> signOut error", e);
+          error = isFetchError(e)
+            ? createAppError({
+                message: "Failed to sign out",
+                data: e,
+              })
+            : isAppError(e)
+              ? e
+              : createAppError({ message: "Failed to sign out" });
         }
       }
 
       await this._removeSession();
       await this._notifyAllSubscribers("SIGNED_OUT", null);
 
-      return { error: null };
+      return { error };
     });
   }
 
