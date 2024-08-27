@@ -1,15 +1,14 @@
 "use server";
 
 import type { FieldErrors } from "react-hook-form";
-import { cookies } from "next/headers";
+import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
 import type { ClientResponse, FormFieldSignUpSchema } from "@template/sdk";
 import { HttpResultStatus, isFetchError } from "@template/sdk";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { env } from "~/env";
-import { getApiClient } from "~/store/api";
+import { createClient } from "~/libs/auth/server";
 
 type ZodValidateError = FieldErrors<FormFieldSignUpSchema>;
 
@@ -24,29 +23,14 @@ const defaultErrorMessage = {
 export async function submitAction(_: State, input: FormFieldSignUpSchema) {
   let isRedirect = false;
 
-  try {
-    const response = await getApiClient().rpc("signUp").post(input);
-    const {
-      result: { tokens },
-    } = response;
+  const client = createClient();
 
-    cookies().set(env.ACCESS_TOKEN_NAME, tokens.accessToken.token, {
-      httpOnly: true,
-      expires: new Date(tokens.accessToken.expiresAt),
-      path: "/",
-      sameSite: "lax",
-    });
-    cookies().set(env.REFRESH_TOKEN_NAME, tokens.refreshToken.token, {
-      httpOnly: true,
-      expires: new Date(tokens.refreshToken.expiresAt),
-      path: "/",
-      sameSite: "lax",
-    });
+  try {
+    await client.signUp(input);
 
     isRedirect = true;
   } catch (error) {
     isRedirect = false;
-
     if (isFetchError<ClientResponse>(error) && error.data) {
       switch (error.data.resultCode) {
         case HttpResultStatus.INVALID: {
@@ -66,6 +50,7 @@ export async function submitAction(_: State, input: FormFieldSignUpSchema) {
     }
   } finally {
     if (isRedirect) {
+      revalidatePath("/", "layout");
       redirect(PAGE_ENDPOINTS.AUTH.SIGNIN);
     }
   }
