@@ -9,9 +9,10 @@ import "~/app/globals.css";
 
 import { headers } from "next/headers";
 
+import { getRequestInfo } from "@template/utils/request";
+
 import { SITE_CONFIG } from "~/constants/constants";
 import { RootProvider } from "~/store";
-import { getRequestInfo } from "~/utils/request";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function generateMetadata(): Promise<Metadata> {

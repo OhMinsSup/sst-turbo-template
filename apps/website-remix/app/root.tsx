@@ -81,11 +81,10 @@ function Document({ children }: Props) {
 
 export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
-  console.log(`#[root.app] ==>`, data);
   return (
     <ThemeProvider specifiedTheme={data.userPrefs.theme}>
       <Document>
-        <AppProvider>
+        <AppProvider session={data.session}>
           {/* <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}> */}
           <Outlet />
           {/* </TRPCReactProvider> */}

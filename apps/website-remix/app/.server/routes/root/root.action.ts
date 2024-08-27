@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
-import { AuthKit, AuthKitFramework } from "@template/sdk/authkit";
+import { AuthKit } from "@template/sdk/authkit";
 
 import {
   errorJsonDataResponse,
@@ -39,24 +39,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
       return json(successJsonDataResponse(true), {
         headers: combineHeaders(authKit.signout()),
-      });
-    },
-    async refresh() {
-      const authKit = new AuthKit({
-        tokenKey: privateConfig.token,
-        headers: request.headers,
-        client: getApiClient(),
-      });
-
-      const cookie = request.headers.get("cookie");
-
-      const tokens = cookie
-        ? authKit.getTokens(cookie, AuthKitFramework.Remix)
-        : null;
-
-      const { status, headers } = await authKit.checkRefresh(tokens);
-      return json(successJsonDataResponse(status), {
-        headers: combineHeaders(headers),
       });
     },
   });

@@ -1,7 +1,7 @@
 import { createTRPCClient, httpBatchLink } from "@trpc/client";
-import { getRequestInfo } from "$lib/utils";
 
 import type { AppRouter } from "@template/trpc/sveltekit";
+import { getRequestInfo } from "@template/utils/request";
 
 /**
  * Motivation: For TRPC to work seamlessly SSR, we have to proxy the Request and Response headers

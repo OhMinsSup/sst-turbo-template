@@ -13,6 +13,7 @@ import { assertHttpError, isHttpError } from "../../../libs/error";
 import { UsersService } from "../../../routes/users/services/users.service";
 import { RefreshTokenDTO } from "../dto/refresh-token.dto";
 import { SigninDTO } from "../dto/signin.dto";
+import { SignoutDTO } from "../dto/signout.dto";
 import { SignupDTO } from "../dto/signup.dto";
 import { VerifyTokenDTO } from "../dto/verify-token.dto";
 import { PasswordService } from "./password.service";
@@ -357,5 +358,61 @@ export class AuthService {
         },
       };
     });
+  }
+
+  /**
+   * @description Signout Handler
+   * @param {SignoutDTO} input
+   */
+  async signout(input: SignoutDTO) {
+    let jwtDto: JwtPayload;
+    try {
+      jwtDto = await this.jwt.verifyAsync<JwtPayload>(input.accessToken, {
+        secret: this.env.getAccessTokenSecret(),
+      });
+    } catch {
+      assertHttpError(
+        true,
+        {
+          resultCode: HttpResultStatus.TOKEN_EXPIRED,
+          message: "Unauthorized",
+          result: null,
+        },
+        "Unauthorized",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    assertHttpError(
+      !jwtDto || (jwtDto && !jwtDto.sub),
+      {
+        resultCode: HttpResultStatus.TOKEN_EXPIRED,
+        message: "Unauthorized",
+        result: null,
+      },
+      "Unauthorized",
+      HttpStatus.UNAUTHORIZED,
+    );
+
+    const user = await this.user.checkUserById(jwtDto.sub);
+    assertHttpError(
+      !user,
+      {
+        resultCode: HttpResultStatus.NOT_EXIST,
+        message: "user not found",
+        result: null,
+      },
+      "Not Found",
+      HttpStatus.NOT_FOUND,
+    );
+
+    await this.token.deleteByTokenId(jwtDto.jti);
+
+    return {
+      resultCode: HttpResultStatus.OK,
+      message: null,
+      error: null,
+      result: true,
+    };
   }
 }

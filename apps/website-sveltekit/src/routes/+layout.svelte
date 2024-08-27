@@ -2,16 +2,13 @@
   import "../app.css";
 
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
-  import { invalidateAll, onNavigate } from "$app/navigation";
-  import { rafInterval } from "$lib/svelte/lifecycle/raf-interval";
-
-  import { AuthKitStatus } from "@template/sdk/authkit";
-  import { isEmpty } from "@template/utils/assertion";
+  import { invalidate, onNavigate } from "$app/navigation";
+	import { onMount } from 'svelte';
 
   import type { LayoutData } from "./$types";
 
   export let data: LayoutData;
-
+	$: ({ session, authenticates } = data);
   const queryClient = new QueryClient();
 
   onNavigate((navigation) => {
@@ -25,39 +22,17 @@
     });
   });
 
-  const refresh = async () => {
-    try {
-      await fetch("/api/auth/refresh", {
-        method: "POST",
-      });
-    } catch (error) {
-      console.error(error);
-    } finally {
-      await invalidateAll();
-    }
-  };
 
-  const updateSession = async () => {
-    if (!data.user || isEmpty(data.user)) {
-      return;
-    }
+	onMount(() => {
+		const { data: { subscription } } = authenticates.onAuthStateChange((_, newSession) => {
+			if (newSession?.expires_at !== session?.expires_at) {
+				invalidate('authenticates:auth');
+			}
+		});
 
-    switch (data.loggedInStatus) {
-      case AuthKitStatus.Refreshed:
-      case AuthKitStatus.LoggedIn: {
-        await refresh();
-        return;
-      }
-      default: {
-        return;
-      }
-    }
-  };
+		return () => subscription.unsubscribe();
+	});
 
-  rafInterval(
-    updateSession, // 1분
-    1000 * 60 * 1,
-  );
 </script>
 
 <QueryClientProvider client={queryClient}>

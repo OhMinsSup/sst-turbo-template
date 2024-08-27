@@ -28,11 +28,16 @@ export const verifySchema = z.object({
   token: z.string().min(1, "토큰이 필요합니다."),
 });
 
+export const signOutSchema = z.object({
+  accessToken: z.string().min(1, "Access Token이 필요합니다."),
+});
+
 export const schema = {
   signIn: signInSchema,
   signUp: signUpSchema,
   refresh: refreshTokenSchema,
   verify: verifySchema,
+  signOut: signOutSchema,
 };
 
 export type FormFieldSignInSchema = z.infer<typeof schema.signIn>;
@@ -42,3 +47,5 @@ export type FormFieldSignUpSchema = z.infer<typeof schema.signUp>;
 export type FormFieldRefreshTokenSchema = z.infer<typeof schema.refresh>;
 
 export type FormFieldVerifyTokenSchema = z.infer<typeof schema.verify>;
+
+export type FormFieldSignoutSchema = z.infer<typeof schema.signOut>;

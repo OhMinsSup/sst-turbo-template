@@ -5,10 +5,10 @@ import { headers } from "next/headers";
 import type { UserResponse } from "@template/sdk";
 import type { AuthKitStatus } from "@template/sdk/authkit";
 import { ThemeProvider } from "@template/ui/theme";
+import { getRequestInfo } from "@template/utils/request";
 
 import { AppProvider } from "~/store/app";
 import { TRPCReactProvider } from "~/store/trpc/react";
-import { getRequestInfo } from "~/utils/request";
 
 interface ProviderProps {
   children: React.ReactNode;

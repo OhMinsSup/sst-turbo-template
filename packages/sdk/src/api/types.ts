@@ -6,6 +6,7 @@ import type { HttpResultStatus } from "./constants";
 import type {
   FormFieldRefreshTokenSchema,
   FormFieldSignInSchema,
+  FormFieldSignoutSchema,
   FormFieldSignUpSchema,
   FormFieldVerifyTokenSchema,
   Schema,
@@ -34,12 +35,14 @@ export interface Endpoint {
     | Schema["signIn"]
     | Schema["refresh"]
     | Schema["verify"]
+    | Schema["signOut"]
     | undefined;
 }
 
 export interface Endpoints {
   signUp: Endpoint;
   signIn: Endpoint;
+  signOut: Endpoint;
   refresh: Endpoint;
   verify: Endpoint;
   me: Endpoint;
@@ -107,7 +110,11 @@ export type ApiInput<
         ? MethodKey extends "POST"
           ? FormFieldVerifyTokenSchema
           : undefined
-        : undefined;
+        : FnKey extends "signOut"
+          ? MethodKey extends "POST"
+            ? FormFieldSignoutSchema
+            : undefined
+          : never;
 
 export interface TransformBuilderConstructorOptions<FnKey extends FnNameKey> {
   fnKey: FnKey;
@@ -183,7 +190,11 @@ type ApiResponse<FnKey, MethodKey> = FnKey extends "signUp"
             ? MethodKey extends "GET"
               ? UserResponse
               : never
-            : never;
+            : FnKey extends "signOut"
+              ? MethodKey extends "POST"
+                ? boolean
+                : never
+              : never;
 
 export type ApiBuilderReturnValue<
   FnKey extends FnNameKey,

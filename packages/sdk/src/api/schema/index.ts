@@ -5,6 +5,7 @@ export type {
   FormFieldSignInSchema,
   FormFieldSignUpSchema,
   FormFieldVerifyTokenSchema,
+  FormFieldSignoutSchema,
 } from "./auth.schema";
 
 export const schema = {

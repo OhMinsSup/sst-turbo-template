@@ -30,7 +30,7 @@
     "@trpc/react-query": "catalog:",
     "@trpc/server": "catalog:",
     "date-fns": "catalog:",
-    "isbot": "^5.1.14",
+    "isbot": "^5.1.17",
     "lucide-react": "^0.427.0",
     "react": "catalog:react18",
     "react-dom": "catalog:react18",

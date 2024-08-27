@@ -2,7 +2,7 @@ import { ErrorDisplayType } from "../constants/error-display";
 import { HttpStatus } from "../constants/http-status";
 
 export class HttpError<DataT = unknown> extends Error {
-  static __thread_http_error__ = true;
+  static __template_http_error__ = true;
   statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
   fatal = false;
   unhandled = false;
@@ -110,5 +110,5 @@ export function createError<DataT = unknown>(
 export function isError<DataT = unknown>(
   input: any,
 ): input is HttpError<DataT> {
-  return input?.constructor?.__thread_http_error__ === true;
+  return input?.constructor?.__template_http_error__ === true;
 }

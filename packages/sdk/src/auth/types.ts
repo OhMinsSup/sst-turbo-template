@@ -1,7 +1,9 @@
+import type { AppError } from "../api/errors";
 import type { Options, UserResponse } from "../api/types";
 
 export interface AuthClientOptions {
   url: string;
+  logDebugMessages?: boolean;
   storage?: SupportedStorage;
   lock?: LockFunc;
   persistSession?: boolean;
@@ -80,7 +82,9 @@ export type LockFunc = <R>(
   fn: () => Promise<R>,
 ) => Promise<R>;
 
-export type InitializeResult = Record<string, any> | null;
+export interface InitializeResult {
+  error: AppError | null;
+}
 
 export type CallRefreshTokenResult =
   | {
@@ -89,5 +93,58 @@ export type CallRefreshTokenResult =
     }
   | {
       session: null;
-      error: Error;
+      error: AppError;
+    };
+
+export type AuthChangeEvent =
+  | "INITIAL_SESSION"
+  | "PASSWORD_RECOVERY"
+  | "SIGNED_IN"
+  | "SIGNED_OUT"
+  | "TOKEN_REFRESHED"
+  | "USER_UPDATED";
+
+export interface Subscription {
+  /**
+   * The subscriber UUID. This will be set by the client.
+   */
+  id: string;
+  /**
+   * The function to call every time there is an event. eg: (eventName) => {}
+   */
+  callback:
+    | ((event: AuthChangeEvent, session: Session | null) => void)
+    | ((event: AuthChangeEvent, session: Session | null) => Promise<void>);
+  /**
+   * Call this to remove the listener.
+   */
+  unsubscribe: () => void;
+}
+
+export type LoadSession =
+  | {
+      session: Session;
+      error: null;
+    }
+  | {
+      session: null;
+      error: AppError;
+    }
+  | {
+      session: null;
+      error: null;
+    };
+
+export type GetUserResponse =
+  | {
+      user: UserResponse;
+      error: null;
+    }
+  | {
+      user: null;
+      error: AppError;
+    }
+  | {
+      user: null;
+      error: null;
     };

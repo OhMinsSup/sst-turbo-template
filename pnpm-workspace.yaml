@@ -41,7 +41,7 @@ catalogs:
   kit2:
     "@sveltejs/kit": "^2.5.21"
   remix2:
-    "@remix-run/node": "^2.11.1"
-    "@remix-run/react": "^2.11.1"
-    "@remix-run/serve": "^2.11.1"
-    "@remix-run/dev": "^2.11.1"
+    "@remix-run/node": "^2.11.2"
+    "@remix-run/react": "^2.11.2"
+    "@remix-run/serve": "^2.11.2"
+    "@remix-run/dev": "^2.11.2"

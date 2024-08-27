@@ -11,10 +11,9 @@ import {
   RequestMethod,
 } from "@template/sdk";
 
+import { createRemixServerClient } from "~/.server/utils/auth";
 import { errorJsonDataResponse } from "~/.server/utils/response";
-import { sessionStorage } from "~/.server/utils/session";
-import { PAGE_ENDPOINTS, SESSION_DATA_KEY } from "~/constants/constants";
-import { createAuthticationClient } from "~/store/app/provider";
+import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 export const action = async (ctx: ActionFunctionArgs) => {
   if (ctx.request.method.toUpperCase() !== RequestMethod.POST) {
@@ -29,19 +28,18 @@ export const action = async (ctx: ActionFunctionArgs) => {
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const input: Awaited<FormFieldSignInSchema> = await ctx.request.json();
 
+  const headers = new Headers();
+
   try {
-    const data = await createAuthticationClient().signIn(input, true);
+    const client = createRemixServerClient({
+      request: ctx.request,
+      headers,
+    });
 
-    const cookieSession = await sessionStorage.getSession(
-      ctx.request.headers.get("Cookie"),
-    );
-
-    cookieSession.set(SESSION_DATA_KEY.dataKey, data.session);
+    await client.signIn(input);
 
     return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-      headers: {
-        "set-cookie": await sessionStorage.commitSession(cookieSession),
-      },
+      headers,
     });
   } catch (error) {
     if (isFetchError<RemixDataFlow.Response>(error)) {

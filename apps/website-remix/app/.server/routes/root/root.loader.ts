@@ -1,12 +1,9 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import type { Session } from "@template/sdk/auth";
-
-import { sessionStorage } from "~/.server/utils/session";
+import { createRemixServerClient } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { SESSION_DATA_KEY } from "~/constants/constants";
 import { getRequestInfo } from "~/utils";
 import { combineHeaders } from "~/utils/misc";
 
@@ -14,15 +11,22 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
 
-  const cookieSession = await sessionStorage.getSession(
-    request.headers.get("cookie"),
-  );
+  const headers = new Headers();
+  const client = createRemixServerClient({
+    request,
+    headers,
+  });
 
-  const session = cookieSession.get(SESSION_DATA_KEY.dataKey) as
-    | Session
-    | undefined;
+  const { session } = await client.getSession();
 
-  console.log("#[root.loader] ==>", session);
+  const user = await (async function () {
+    try {
+      const { user } = await client.getUser();
+      return user;
+    } catch {
+      return null;
+    }
+  })();
 
   return json(
     {
@@ -32,10 +36,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
         theme: getTheme(request),
       },
       toast,
-      user: session ?? null,
+      session,
+      user,
     },
     {
-      headers: combineHeaders(toastHeaders),
+      headers: combineHeaders(headers, toastHeaders),
     },
   );
 };
