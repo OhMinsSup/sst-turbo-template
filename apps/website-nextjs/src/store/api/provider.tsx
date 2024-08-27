@@ -6,7 +6,6 @@ import { createContext, useContext, useRef } from "react";
 import { useStore } from "zustand";
 
 import type { Client, UserResponse } from "@template/sdk";
-import { AuthKitStatus } from "@template/sdk/authkit";
 
 import type { ApiClientStore } from "./store";
 import { createApiClientStore, initApiClientStore } from "./store";
@@ -18,23 +17,15 @@ export const ApiClientContext = createContext<StoreApi<ApiClientStore> | null>(
 export interface Props {
   client: Client;
   user?: UserResponse | null;
-  loggedInStatus?: AuthKitStatus;
   children: ReactNode;
 }
 
-export const ApiClientProvider = ({
-  children,
-  client,
-  user,
-  loggedInStatus,
-}: Props) => {
+export const ApiClientProvider = ({ children, client }: Props) => {
   const storeRef = useRef<StoreApi<ApiClientStore>>();
   if (!storeRef.current) {
     storeRef.current = createApiClientStore(
       initApiClientStore({
         client,
-        user: user ?? null,
-        loggedInStatus: loggedInStatus ?? AuthKitStatus.NotLogin,
       }),
     );
   }
@@ -60,26 +51,4 @@ export const useApiClientStore = <T,>(
 
 export const useApiClient = () => {
   return useApiClientStore((state) => state.client);
-};
-
-export const useSession = () => {
-  return useApiClientStore((state) => ({
-    user: state.user,
-    loggedInStatus: state.loggedInStatus,
-    setSession: state.setSession,
-  }));
-};
-
-export const useLoggedInStatus = () => {
-  return useApiClientStore((state) => ({
-    status: state.loggedInStatus,
-    setLoggedInStatus: state.setLoggedInStatus,
-  }));
-};
-
-export const useUser = () => {
-  return useApiClientStore((state) => ({
-    user: state.user,
-    setUser: state.setUser,
-  }));
 };
