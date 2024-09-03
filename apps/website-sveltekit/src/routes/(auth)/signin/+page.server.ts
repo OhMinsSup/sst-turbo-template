@@ -2,7 +2,6 @@ import { fail, redirect } from "@sveltejs/kit";
 import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
-import type { ClientResponse } from "@template/sdk";
 import {
   HttpResultStatus,
   HttpStatus,
@@ -35,7 +34,7 @@ export const actions: Actions = {
       isRedirect = true;
     } catch (e) {
       isRedirect = false;
-      if (isFetchError<ClientResponse>(e) && e.data) {
+      if (isFetchError(e) && e.data) {
         const data = e.data;
         switch (data.resultCode) {
           case HttpResultStatus.NOT_EXIST: {

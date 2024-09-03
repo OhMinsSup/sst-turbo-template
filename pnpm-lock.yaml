@@ -903,8 +903,8 @@ importers:
         specifier: 'catalog:'
         version: 3.6.0
       embla-carousel-react:
-        specifier: ^8.1.8
-        version: 8.1.8(react@18.3.1)
+        specifier: ^8.2.0
+        version: 8.2.0(react@18.3.1)
       input-otp:
         specifier: ^1.2.4
         version: 1.2.4(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -918,8 +918,8 @@ importers:
         specifier: 'catalog:'
         version: 7.53.0(react@18.3.1)
       react-resizable-panels:
-        specifier: ^2.0.23
-        version: 2.0.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
+        specifier: ^2.1.2
+        version: 2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
       sonner:
         specifier: ^1.5.0
         version: 1.5.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)
@@ -5489,18 +5489,18 @@ packages:
   electron-to-chromium@1.5.6:
     resolution: {integrity: sha512-jwXWsM5RPf6j9dPYzaorcBSUg6AiqocPEyMpkchkvntaH9HGfOOMZwxMJjDY/XEs3T5dM7uyH1VhRMkqUU9qVw==}
 
-  embla-carousel-react@8.1.8:
-    resolution: {integrity: sha512-b8DcmC+j1vqVWSM6rU/GYGyY6Kp9LX8OoikZPBKmV6qL8s94sSPGl6jtDLLUtV8TTIQGMYOlOKUgoMAt/0TwOQ==}
+  embla-carousel-react@8.2.0:
+    resolution: {integrity: sha512-dWqbmaEBQjeAcy/EKrcAX37beVr0ubXuHPuLZkx27z58V1FIvRbbMb4/c3cLZx0PAv/ofngX2QFrwUB+62SPnw==}
     peerDependencies:
       react: ^16.8.0 || ^17.0.1 || ^18.0.0
 
-  embla-carousel-reactive-utils@8.1.8:
-    resolution: {integrity: sha512-bwV/23WD3Ecm0YuQ4I6Syzs3tdVJw0Oj3VCZlEODv1kH8LZ5kNDLgX2Uvx5brvoe2hpifBHPBQ8gYlxNL5kMPA==}
+  embla-carousel-reactive-utils@8.2.0:
+    resolution: {integrity: sha512-ZdaPNgMydkPBiDRUv+wRIz3hpZJ3LKrTyz+XWi286qlwPyZFJDjbzPBiXnC3czF9N/nsabSc7LTRvGauUzwKEg==}
     peerDependencies:
-      embla-carousel: 8.1.8
+      embla-carousel: 8.2.0
 
-  embla-carousel@8.1.8:
-    resolution: {integrity: sha512-KuHPA8qcAts6YE6ELtt38XYAb26hnKw8Ga0lSXmrhm1oI97t6oACFkqSsy33dfeZQEhaZB6VwWvaWQJRJVgSgA==}
+  embla-carousel@8.2.0:
+    resolution: {integrity: sha512-rf2GIX8rab9E6ZZN0Uhz05746qu2KrDje9IfFyHzjwxLwhvGjUt6y9+uaY1Sf+B0OPSa3sgas7BE2hWZCtopTA==}
 
   emittery@0.13.1:
     resolution: {integrity: sha512-DeWwawk6r5yR9jFgnDKYt4sLS0LmHJJi3ZOnb5/JdbYwj3nW+FxQnHIjhBKz8YLC7oRNPVM9NQ47I3CVx34eqQ==}
@@ -8481,8 +8481,8 @@ packages:
       '@types/react':
         optional: true
 
-  react-resizable-panels@2.0.23:
-    resolution: {integrity: sha512-8ZKTwTU11t/FYwiwhMdtZYYyFxic5U5ysRu2YwfkAgDbUJXFvnWSJqhnzkSlW+mnDoNAzDCrJhdOSXBPA76wug==}
+  react-resizable-panels@2.1.2:
+    resolution: {integrity: sha512-Ku2Bo7JvE8RpHhl4X1uhkdeT9auPBoxAOlGTqomDUUrBAX2mVGuHYZTcWvlnJSgx0QyHIxHECgGB5XVPUbUOkQ==}
     peerDependencies:
       react: ^16.14.0 || ^17.0.0 || ^18.0.0
       react-dom: ^16.14.0 || ^17.0.0 || ^18.0.0
@@ -14952,17 +14952,17 @@ snapshots:
 
   electron-to-chromium@1.5.6: {}
 
-  embla-carousel-react@8.1.8(react@18.3.1):
+  embla-carousel-react@8.2.0(react@18.3.1):
     dependencies:
-      embla-carousel: 8.1.8
-      embla-carousel-reactive-utils: 8.1.8(embla-carousel@8.1.8)
+      embla-carousel: 8.2.0
+      embla-carousel-reactive-utils: 8.2.0(embla-carousel@8.2.0)
       react: 18.3.1
 
-  embla-carousel-reactive-utils@8.1.8(embla-carousel@8.1.8):
+  embla-carousel-reactive-utils@8.2.0(embla-carousel@8.2.0):
     dependencies:
-      embla-carousel: 8.1.8
+      embla-carousel: 8.2.0
 
-  embla-carousel@8.1.8: {}
+  embla-carousel@8.2.0: {}
 
   emittery@0.13.1: {}
 
@@ -18690,7 +18690,7 @@ snapshots:
     optionalDependencies:
       '@types/react': 18.3.5
 
-  react-resizable-panels@2.0.23(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
+  react-resizable-panels@2.1.2(react-dom@18.3.1(react@18.3.1))(react@18.3.1):
     dependencies:
       react: 18.3.1
       react-dom: 18.3.1(react@18.3.1)
