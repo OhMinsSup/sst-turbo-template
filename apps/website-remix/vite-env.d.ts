@@ -43,7 +43,6 @@
     export const npm_package_devDependencies__template_vite: string;
     export const TERM_PROGRAM_VERSION: string;
     export const npm_package_scripts_dev: string;
-    export const npm_package_dependencies__conform_to_zod: string;
     export const ZDOTDIR: string;
     export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
     export const MallocNanoZone: string;
@@ -97,17 +96,14 @@
     export const XPC_SERVICE_NAME: string;
     export const npm_package_devDependencies_autoprefixer: string;
     export const VSCODE_INJECTION: string;
-    export const npm_package_dependencies__trpc_client: string;
     export const npm_package_dependencies__epic_web_invariant: string;
     export const npm_package_type: string;
     export const SHLVL: string;
     export const HOME: string;
     export const VSCODE_GIT_ASKPASS_MAIN: string;
-    export const npm_package_dependencies__trpc_server: string;
     export const npm_package_devDependencies__template_prettier_config: string;
     export const LOGNAME: string;
     export const npm_lifecycle_script: string;
-    export const npm_package_dependencies__trpc_react_query: string;
     export const VSCODE_GIT_IPC_HANDLE: string;
     export const npm_package_dependencies_react: string;
     export const PGDATA: string;

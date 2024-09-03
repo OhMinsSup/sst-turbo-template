@@ -36,7 +36,7 @@ export const action = async (ctx: ActionFunctionArgs) => {
       headers,
     });
 
-    await client.signUp(input);
+    await client.signUp(input, true);
 
     return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
       headers,

@@ -1,14 +1,14 @@
 <script lang="ts">
   import "../app.css";
 
+  import { onMount } from "svelte";
   import { QueryClient, QueryClientProvider } from "@tanstack/svelte-query";
   import { invalidate, onNavigate } from "$app/navigation";
-	import { onMount } from 'svelte';
 
   import type { LayoutData } from "./$types";
 
   export let data: LayoutData;
-	$: ({ session, authenticates } = data);
+  $: ({ session, authenticates } = data);
   const queryClient = new QueryClient();
 
   onNavigate((navigation) => {
@@ -22,17 +22,19 @@
     });
   });
 
+  onMount(() => {
+    const {
+      data: { subscription },
+    } = authenticates.onAuthStateChange((_, newSession) => {
+      if (newSession?.expires_at !== session?.expires_at) {
+        invalidate("authenticates:auth");
+      }
+    });
 
-	onMount(() => {
-		const { data: { subscription } } = authenticates.onAuthStateChange((_, newSession) => {
-			if (newSession?.expires_at !== session?.expires_at) {
-				invalidate('authenticates:auth');
-			}
-		});
+    return () => subscription.unsubscribe();
+  });
 
-		return () => subscription.unsubscribe();
-	});
-
+  console.log(data);
 </script>
 
 <QueryClientProvider client={queryClient}>

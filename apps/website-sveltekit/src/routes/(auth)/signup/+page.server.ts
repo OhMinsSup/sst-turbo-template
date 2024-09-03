@@ -1,6 +1,4 @@
 import { fail, redirect } from "@sveltejs/kit";
-import { getApiClient } from "$lib/api";
-import { privateConfig } from "$lib/config/config.private.js";
 import { setError, superValidate } from "sveltekit-superforms";
 import { zod } from "sveltekit-superforms/adapters";
 
@@ -32,36 +30,7 @@ export const actions: Actions = {
     let isRedirect = false;
 
     try {
-      const response = await getApiClient().rpc("signUp").post(form.data);
-
-      const {
-        result: { tokens },
-      } = response;
-
-      event.cookies.set(
-        privateConfig.token.accessTokenKey,
-        tokens.accessToken.token,
-        {
-          httpOnly: true,
-          expires: new Date(tokens.accessToken.expiresAt),
-          path: "/",
-          sameSite: "lax",
-        },
-      );
-      event.cookies.set(
-        privateConfig.token.refreshTokenKey,
-        tokens.refreshToken.token,
-        {
-          httpOnly: true,
-          expires: new Date(tokens.refreshToken.expiresAt),
-          path: "/",
-          sameSite: "lax",
-        },
-      );
-
-      event.setHeaders({
-        "X-Auth-Status": "true",
-      });
+      await event.locals.authenticates.signUp(form.data, true);
 
       isRedirect = true;
     } catch (e) {

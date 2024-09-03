@@ -36,7 +36,6 @@
     readonly npm_package_devDependencies__template_vite: string;
     readonly TERM_PROGRAM_VERSION: string;
     readonly npm_package_scripts_dev: string;
-    readonly npm_package_dependencies__conform_to_zod: string;
     readonly ZDOTDIR: string;
     readonly ORIGINAL_XDG_CURRENT_DESKTOP: string;
     readonly MallocNanoZone: string;
@@ -90,17 +89,14 @@
     readonly XPC_SERVICE_NAME: string;
     readonly npm_package_devDependencies_autoprefixer: string;
     readonly VSCODE_INJECTION: string;
-    readonly npm_package_dependencies__trpc_client: string;
     readonly npm_package_dependencies__epic_web_invariant: string;
     readonly npm_package_type: string;
     readonly SHLVL: string;
     readonly HOME: string;
     readonly VSCODE_GIT_ASKPASS_MAIN: string;
-    readonly npm_package_dependencies__trpc_server: string;
     readonly npm_package_devDependencies__template_prettier_config: string;
     readonly LOGNAME: string;
     readonly npm_lifecycle_script: string;
-    readonly npm_package_dependencies__trpc_react_query: string;
     readonly VSCODE_GIT_IPC_HANDLE: string;
     readonly npm_package_dependencies_react: string;
     readonly PGDATA: string;
