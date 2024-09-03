@@ -33,8 +33,6 @@
 
     return () => subscription.unsubscribe();
   });
-
-  console.log(data);
 </script>
 
 <QueryClientProvider client={queryClient}>
