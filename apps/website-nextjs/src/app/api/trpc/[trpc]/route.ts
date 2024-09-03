@@ -1,11 +1,11 @@
-import type { NextRequest } from "next/server";
-import { cookies } from "next/headers";
 import { fetchRequestHandler } from "@trpc/server/adapters/fetch";
 
-import { appRouter, createTRPCContext } from "@template/trpc/nextjs";
+import { appRouter, createTRPCContext } from "@template/trpc";
 
-import { env } from "~/env";
-import { getApiClient } from "~/store/api";
+import { createClient } from "~/libs/auth/server";
+import { getApiClient } from "~/utils/api-client";
+
+export const runtime = "edge";
 
 /**
  * Configure basic CORS headers
@@ -26,20 +26,20 @@ export const OPTIONS = () => {
   return response;
 };
 
-const handler = async (req: NextRequest) => {
+const handler = async (req: Request) => {
+  const client = createClient();
+
+  const data = await client.getSession();
+
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
     router: appRouter,
     req,
     createContext: () =>
       createTRPCContext({
-        cookies,
+        session: data.session,
         headers: req.headers,
         client: getApiClient(),
-        tokenKey: {
-          accessTokenKey: env.ACCESS_TOKEN_NAME,
-          refreshTokenKey: env.REFRESH_TOKEN_NAME,
-        },
       }),
     onError({ error, path }) {
       console.error(`>>> tRPC Error on '${path}'`, error);

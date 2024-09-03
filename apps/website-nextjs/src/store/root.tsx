@@ -3,7 +3,7 @@ import React from "react";
 import { ThemeProvider } from "@template/ui/theme";
 
 import { AppProvider } from "~/store/app";
-import { TRPCReactProvider } from "~/store/trpc/react";
+import { TRPCReactProvider } from "~/trpc/client";
 
 interface ProviderProps {
   children: React.ReactNode;

@@ -2,7 +2,8 @@
 
 import React from "react";
 
-import { ApiClientProvider, getApiClient } from "~/store/api";
+import { ApiClientProvider } from "~/store/api";
+import { getApiClient } from "~/utils/api-client";
 
 interface Props {
   children: React.ReactNode;
@@ -11,7 +12,7 @@ interface Props {
 interface AppProviderProps extends Props {}
 
 export default function AppProvider({ children }: AppProviderProps) {
-  const apiClient = getApiClient();
-
-  return <ApiClientProvider client={apiClient}>{children}</ApiClientProvider>;
+  return (
+    <ApiClientProvider client={getApiClient()}>{children}</ApiClientProvider>
+  );
 }

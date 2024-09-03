@@ -26,7 +26,7 @@ export async function submitAction(_: State, input: FormFieldSignUpSchema) {
   const client = createClient();
 
   try {
-    await client.signUp(input);
+    await client.signUp(input, true);
 
     isRedirect = true;
   } catch (error) {

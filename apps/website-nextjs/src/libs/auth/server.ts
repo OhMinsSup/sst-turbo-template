@@ -1,5 +1,3 @@
-import type {} from "@template/sdk/auth";
-
 import { cookies } from "next/headers";
 
 import { createAuthServerClient } from "@template/sdk/auth";
