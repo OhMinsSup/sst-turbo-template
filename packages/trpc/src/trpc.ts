@@ -6,41 +6,18 @@
  * tl;dr - this is where all the tRPC server stuff is created and plugged in.
  * The pieces you will need to use are documented accordingly near the end
  */
-import type { RequestEvent } from "@sveltejs/kit";
 import { initTRPC, TRPCError } from "@trpc/server";
+import superjson from "superjson";
+import { ZodError } from "zod";
 
 import type { Client } from "@template/sdk";
-import type { AuthKitTokenKey } from "@template/sdk/authkit";
-import { AuthKit, AuthKitFramework } from "@template/sdk/authkit";
+import type { Session } from "@template/sdk/auth";
 
-interface SveltekitTRPCContext {
-  event: RequestEvent;
+interface TRPCContext {
+  headers: Headers;
+  session: Session | null;
   client: Client;
-  tokenKey: AuthKitTokenKey;
 }
-
-export const getSveltekitTRPCContext = async (opts: SveltekitTRPCContext) => {
-  const { event, client, tokenKey } = opts;
-
-  const authKit = new AuthKit({
-    client,
-    tokenKey,
-  });
-
-  const { status, user } = await authKit.checkAuth(
-    authKit.getTokens(event.cookies.getAll(), AuthKitFramework.SvelteKit),
-  );
-
-  console.log(">>> tRPC Request from SvelteKit");
-
-  return {
-    event,
-    session: user,
-    status,
-    authKit,
-    client,
-  };
-};
 
 /**
  * 1. CONTEXT
@@ -54,8 +31,17 @@ export const getSveltekitTRPCContext = async (opts: SveltekitTRPCContext) => {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: SveltekitTRPCContext) => {
-  return await getSveltekitTRPCContext(opts);
+export const createTRPCContext = async (opts: TRPCContext) => {
+  const session = opts.session;
+  const source = opts.headers.get("x-trpc-source") ?? "unknown";
+
+  console.log(">>> tRPC Request from", source, "by", session?.user);
+
+  return {
+    client: opts.client,
+    headers: opts.headers,
+    session,
+  };
 };
 
 /**
@@ -64,7 +50,16 @@ export const createTRPCContext = async (opts: SveltekitTRPCContext) => {
  * This is where the trpc api is initialized, connecting the context and
  * transformer
  */
-const t = initTRPC.context<typeof createTRPCContext>().create();
+const t = initTRPC.context<typeof createTRPCContext>().create({
+  transformer: superjson,
+  errorFormatter: ({ shape, error }) => ({
+    ...shape,
+    data: {
+      ...shape.data,
+      zodError: error.cause instanceof ZodError ? error.cause.flatten() : null,
+    },
+  }),
+});
 
 /**
  * Create a server-side caller
@@ -106,7 +101,6 @@ export const protectedProcedure = t.procedure.use(({ ctx, next }) => {
   if (!ctx.session) {
     throw new TRPCError({ code: "UNAUTHORIZED" });
   }
-
   return next({
     ctx: {
       // infers the `session` as non-nullable

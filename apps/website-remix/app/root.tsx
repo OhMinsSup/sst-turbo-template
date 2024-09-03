@@ -16,13 +16,12 @@ import { cn } from "@template/ui";
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { ShowToast, Toaster } from "./components/shared/Toast";
 import { AppProvider } from "./store/app";
+import { QueryProvider } from "./store/query";
 import {
   NonFlashOfWrongThemeEls,
   ThemeProvider,
   useTheme,
 } from "./store/theme";
-
-// import { TRPCReactProvider } from "./store/trpc";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { action } from "~/.server/routes/root/root.action";
@@ -85,9 +84,9 @@ export default function App() {
     <ThemeProvider specifiedTheme={data.userPrefs.theme}>
       <Document>
         <AppProvider session={data.session}>
-          {/* <TRPCReactProvider baseUrl={data.requestInfo.domainUrl}> */}
-          <Outlet />
-          {/* </TRPCReactProvider> */}
+          <QueryProvider baseUrl={data.requestInfo.domainUrl}>
+            <Outlet />
+          </QueryProvider>
         </AppProvider>
         {data.toast ? <ShowToast toast={data.toast} /> : null}
       </Document>

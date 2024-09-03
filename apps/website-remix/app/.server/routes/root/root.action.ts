@@ -26,7 +26,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         },
       });
     },
-
     async logout() {
       const headers = new Headers();
 

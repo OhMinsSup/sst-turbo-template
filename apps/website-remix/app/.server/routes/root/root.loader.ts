@@ -1,10 +1,11 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
+import { getRequestInfo } from "@template/utils/request";
+
 import { createRemixServerClient } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { getRequestInfo } from "~/utils";
 import { combineHeaders } from "~/utils/misc";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
