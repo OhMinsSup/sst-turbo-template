@@ -37,12 +37,3 @@ catalogs:
   prisma5:
     prisma: 5.19.1
     "@prisma/client": 5.19.1
-  next14:
-    next: "^14.2.7"
-  kit2:
-    "@sveltejs/kit": "^2.5.25"
-  remix2:
-    "@remix-run/node": "^2.11.2"
-    "@remix-run/react": "^2.11.2"
-    "@remix-run/serve": "^2.11.2"
-    "@remix-run/dev": "^2.11.2"

@@ -2,8 +2,8 @@ import React from "react";
 
 import { ThemeProvider } from "@template/ui/theme";
 
+import { TRPCReactProvider } from "~/libs/trpc/react";
 import { AppProvider } from "~/store/app";
-import { TRPCReactProvider } from "~/trpc/client";
 
 interface ProviderProps {
   children: React.ReactNode;

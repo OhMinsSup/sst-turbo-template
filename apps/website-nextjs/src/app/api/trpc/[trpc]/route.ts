@@ -31,6 +31,8 @@ const handler = async (req: Request) => {
 
   const data = await client.getSession();
 
+  console.log(">>> Session", data.session);
+
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
     router: appRouter,

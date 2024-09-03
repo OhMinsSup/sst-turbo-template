@@ -7,27 +7,27 @@
     },
     "build": {
       "dependsOn": ["^build"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
+      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "build:pkg": {
       "dependsOn": ["^build:pkg"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json", "dist/**"]
+      "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
     "dev": {
-      "persistent": true,
-      "cache": false
+      "cache": false,
+      "persistent": false
     },
     "format": {
-      "outputs": ["node_modules/.cache/.prettiercache"],
+      "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
     },
     "lint": {
       "dependsOn": ["^topo", "^build"],
-      "outputs": ["node_modules/.cache/.eslintcache"]
+      "outputs": [".cache/.eslintcache"]
     },
     "typecheck": {
       "dependsOn": ["^topo", "^build"],
-      "outputs": ["node_modules/.cache/tsbuildinfo.json"]
+      "outputs": [".cache/tsbuildinfo.json"]
     },
     "clean": {
       "cache": false
@@ -48,7 +48,15 @@
       "interactive": true
     }
   },
-  "globalEnv": ["NEXT_PUBLIC_SERVER_URL", "AUTH_SECRET", "PORT"],
+  "globalEnv": [
+    "NEXT_PUBLIC_SERVER_URL",
+    "POSTGRES_URL",
+    "AUTH_DISCORD_ID",
+    "AUTH_DISCORD_SECRET",
+    "AUTH_REDIRECT_PROXY_URL",
+    "AUTH_SECRET",
+    "PORT"
+  ],
   "globalPassThroughEnv": [
     "NODE_ENV",
     "CI",

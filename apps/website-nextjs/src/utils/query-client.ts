@@ -1,6 +1,6 @@
 import type { QueryClient } from "@tanstack/react-query";
 
-import { createQueryClient } from "~/trpc/query-client";
+import { createQueryClient } from "~/libs/trpc/query-client";
 
 let clientQueryClientSingleton: QueryClient | undefined = undefined;
 export const getQueryClient = () => {

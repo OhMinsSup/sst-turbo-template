@@ -27,13 +27,8 @@ import type {
   Subscription,
   SupportedStorage,
 } from "./types";
-import { HttpResultStatus, HttpStatus } from "../api/constants";
-import {
-  createAppError,
-  isAppError,
-  isFetchError,
-  isHttpError,
-} from "../api/errors";
+import { HttpResultStatus } from "../api/constants";
+import { createAppError, isAppError, isFetchError } from "../api/errors";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
 import {

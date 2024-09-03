@@ -9,6 +9,7 @@ export function createClient() {
 
   return createAuthServerClient({
     url: env.NEXT_PUBLIC_SERVER_URL,
+    logDebugMessages: false,
     cookies: {
       getAll() {
         return cookieStore.getAll();

@@ -38,12 +38,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@sveltejs/kit": "catalog:kit2",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "eslint": "catalog:",
-    "next": "catalog:next14",
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"

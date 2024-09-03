@@ -12,6 +12,7 @@ export async function updateSession(request: NextRequest) {
 
   const authenticates = createAuthServerClient({
     url: env.NEXT_PUBLIC_SERVER_URL,
+    logDebugMessages: false,
     cookies: {
       getAll() {
         return request.cookies.getAll();
@@ -39,7 +40,7 @@ export async function updateSession(request: NextRequest) {
   if (
     !user &&
     !request.nextUrl.pathname.startsWith("/signin") &&
-    !request.nextUrl.pathname.startsWith("/auth")
+    !request.nextUrl.pathname.startsWith("/signup")
   ) {
     // no user, potentially respond by redirecting the user to the login page
     const url = request.nextUrl.clone();
