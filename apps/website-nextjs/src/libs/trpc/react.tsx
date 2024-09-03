@@ -7,14 +7,18 @@ import { createTRPCReact } from "@trpc/react-query";
 import SuperJSON from "superjson";
 
 import type { AppRouter } from "@template/trpc";
-import { isBrowser } from "@template/utils/assertion";
 
 import { env } from "~/env";
 import { getQueryClient } from "~/utils/query-client";
 
 export const api = createTRPCReact<AppRouter>();
 
-export function TRPCReactProvider(props: { children: React.ReactNode }) {
+export interface TRPCReactProviderProps {
+  children: React.ReactNode;
+  domainUrl: string;
+}
+
+export function TRPCReactProvider(props: TRPCReactProviderProps) {
   const queryClient = getQueryClient();
 
   const [trpcClient] = useState(() =>
@@ -27,7 +31,7 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
         }),
         unstable_httpBatchStreamLink({
           transformer: SuperJSON,
-          url: getBaseUrl() + "/api/trpc",
+          url: props.domainUrl + "/api/trpc",
           headers() {
             const headers = new Headers();
             headers.set("x-trpc-source", "nextjs-react");
@@ -46,10 +50,3 @@ export function TRPCReactProvider(props: { children: React.ReactNode }) {
     </QueryClientProvider>
   );
 }
-
-const getBaseUrl = () => {
-  if (isBrowser()) return window.location.origin;
-  if (env.VERCEL_URL) return `https://${env.VERCEL_URL}`;
-  // eslint-disable-next-line no-restricted-properties
-  return `http://localhost:${process.env.PORT ?? 3000}`;
-};

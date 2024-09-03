@@ -9,6 +9,7 @@ import "~/app/globals.css";
 
 import { headers } from "next/headers";
 
+import { ThemeToggle } from "@template/ui/theme";
 import { getRequestInfo } from "@template/utils/request";
 
 import { SITE_CONFIG } from "~/constants/constants";
@@ -69,9 +70,9 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default function Layout(props: LayoutProps) {
+export default async function Layout(props: LayoutProps) {
   return (
-    <html lang="en">
+    <html lang="en" suppressHydrationWarning>
       <body
         className={cn(
           "min-h-screen bg-background font-sans text-foreground antialiased",
@@ -81,6 +82,9 @@ export default function Layout(props: LayoutProps) {
       >
         <RootProvider>
           {props.children}
+          <div className="absolute bottom-4 right-4">
+            <ThemeToggle />
+          </div>
           <Toaster />
         </RootProvider>
       </body>

@@ -64,6 +64,7 @@
     readonly PATH: string;
     readonly npm_package_scripts_typecheck: string;
     readonly _: string;
+    readonly LaunchInstanceID: string;
     readonly npm_package_dependencies_isbot: string;
     readonly USER_ZDOTDIR: string;
     readonly __CFBundleIdentifier: string;
@@ -83,7 +84,6 @@
     readonly npm_config_node_linker: string;
     readonly VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     readonly XPC_FLAGS: string;
-    readonly npm_config_node_gyp: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
     readonly npm_package_dependencies__template_hooks: string;
     readonly XPC_SERVICE_NAME: string;
@@ -105,9 +105,11 @@
     readonly npm_package_dependencies__template_utils: string;
     readonly VSCODE_GIT_ASKPASS_NODE: string;
     readonly GIT_ASKPASS: string;
+    readonly npm_config_link_workspace_packages: string;
     readonly npm_package_dependencies__template_sdk: string;
     readonly npm_package_dependencies__remix_run_node: string;
     readonly npm_package_scripts_clean: string;
+    readonly SECURITYSESSIONID: string;
     readonly npm_node_execpath: string;
     readonly COLORTERM: string;
     readonly NODE_ENV: string;

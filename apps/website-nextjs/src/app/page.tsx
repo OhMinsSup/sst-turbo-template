@@ -5,10 +5,6 @@ import { createClient } from "~/libs/auth/server";
 
 export default async function Page() {
   const data = await createClient().getSession();
-  console.log(data);
-  return (
-    <React.Suspense fallback={<></>}>
-      <AuthSample />
-    </React.Suspense>
-  );
+  console.log(data.session);
+  return <AuthSample />;
 }

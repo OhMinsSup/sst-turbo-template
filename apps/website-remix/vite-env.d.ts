@@ -71,6 +71,7 @@
     export const PATH: string;
     export const npm_package_scripts_typecheck: string;
     export const _: string;
+    export const LaunchInstanceID: string;
     export const npm_package_dependencies_isbot: string;
     export const USER_ZDOTDIR: string;
     export const __CFBundleIdentifier: string;
@@ -90,7 +91,6 @@
     export const npm_config_node_linker: string;
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;
-    export const npm_config_node_gyp: string;
     export const npm_package_dependencies__tanstack_react_query: string;
     export const npm_package_dependencies__template_hooks: string;
     export const XPC_SERVICE_NAME: string;
@@ -112,9 +112,11 @@
     export const npm_package_dependencies__template_utils: string;
     export const VSCODE_GIT_ASKPASS_NODE: string;
     export const GIT_ASKPASS: string;
+    export const npm_config_link_workspace_packages: string;
     export const npm_package_dependencies__template_sdk: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;
+    export const SECURITYSESSIONID: string;
     export const npm_node_execpath: string;
     export const COLORTERM: string;
     export const NODE_ENV: string;
