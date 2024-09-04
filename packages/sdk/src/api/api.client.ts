@@ -10,15 +10,13 @@ export class ApiClient {
   protected prefix = "/api/v1";
   protected fetchClient: $Fetch;
 
-  constructor(url: string, otps?: Options) {
+  constructor({ url, options, prefix, fetchClient }: Options) {
     if (!url) {
       const error = new Error();
       error.name = "ThreadClientError";
       error.message = "ThreadClient requires a valid URL.";
       throw error;
     }
-
-    const { options, prefix, fetchClient } = otps ?? {};
 
     if (prefix) {
       this.prefix = prefix;

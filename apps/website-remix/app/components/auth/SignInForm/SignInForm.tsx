@@ -2,8 +2,8 @@ import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignInSchema } from "@template/sdk/schema";
-import { authSchema } from "@template/sdk/schema";
+import type { FormFieldSignInSchema } from "@template/sdk";
+import { schema } from "@template/sdk";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -29,7 +29,7 @@ export default function SignInForm() {
 
   const form = useForm<FormFieldSignInSchema>({
     progressive: true,
-    resolver: zodResolver(authSchema.signIn),
+    resolver: zodResolver(schema.signIn),
     defaultValues: {
       email: "",
       password: "",

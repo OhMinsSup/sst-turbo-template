@@ -21,4 +21,6 @@ export const SITE_CONFIG = {
   manifest: "/site.webmanifest",
 };
 
-export const CONSTANT_KEY = {};
+export const SESSION_DATA_KEY = {
+  dataKey: "session.data",
+};

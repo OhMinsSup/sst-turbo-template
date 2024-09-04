@@ -6,7 +6,7 @@ export default defineConfig((options: Options) => ({
     assertion: "src/assertion/index.ts",
     date: "src/date/index.ts",
     jwt: "src/jwt/index.ts",
-    cookie: "src/cookie/index.ts",
+    request: "src/request/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

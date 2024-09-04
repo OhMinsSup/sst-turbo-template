@@ -2,21 +2,18 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import { AuthKit } from "@template/authkit";
+import type { FormFieldSignUpSchema } from "@template/sdk";
 import {
+  createHttpError,
   ErrorDisplayType,
-  HttpResultStatus,
   HttpStatus,
+  isFetchError,
   RequestMethod,
-} from "@template/sdk/enum";
-import { createHttpError, isFetchError } from "@template/sdk/error";
+} from "@template/sdk";
 
+import { createRemixServerClient } from "~/.server/utils/auth";
 import { errorJsonDataResponse } from "~/.server/utils/response";
-import { privateConfig } from "~/config/config.private";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { getApiClient } from "~/store/app";
-import { combineHeaders } from "~/utils/misc";
 
 export const action = async (ctx: ActionFunctionArgs) => {
   if (ctx.request.method.toUpperCase() !== RequestMethod.POST) {
@@ -28,31 +25,21 @@ export const action = async (ctx: ActionFunctionArgs) => {
     });
   }
 
-  const authKit = new AuthKit({
-    tokenKey: privateConfig.token,
-    headers: ctx.request.headers,
-    client: getApiClient(),
-  });
-
   // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
   const input: Awaited<FormFieldSignUpSchema> = await ctx.request.json();
 
+  const headers = new Headers();
+
   try {
-    const response = await authKit.client.rpc("signUp").post(input);
-    if (response.error) {
-      return json(errorJsonDataResponse(response.error));
-    }
+    const client = createRemixServerClient({
+      request: ctx.request,
+      headers,
+    });
 
-    if (response.resultCode !== HttpResultStatus.OK) {
-      return json(errorJsonDataResponse(null));
-    }
-
-    const {
-      result: { tokens },
-    } = response;
+    await client.signUp(input, true);
 
     return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-      headers: combineHeaders(authKit.signin(tokens)),
+      headers,
     });
   } catch (error) {
     if (isFetchError<RemixDataFlow.Response>(error)) {

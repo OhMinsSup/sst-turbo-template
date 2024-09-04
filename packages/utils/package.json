@@ -36,14 +36,14 @@
         "default": "./dist/jwt.cjs"
       }
     },
-    "./cookie": {
+    "./request": {
       "import": {
-        "types": "./dist/cookie.d.ts",
-        "default": "./dist/cookie.js"
+        "types": "./dist/request.d.ts",
+        "default": "./dist/request.js"
       },
       "require": {
-        "types": "./dist/cookie.d.cts",
-        "default": "./dist/cookie.cjs"
+        "types": "./dist/request.d.cts",
+        "default": "./dist/request.cjs"
       }
     }
   },
@@ -52,23 +52,22 @@
   ],
   "scripts": {
     "build": "tsup",
-    "build:pkg": "tsc",
-    "clean": "rm -rf .turbo node_modules",
+    "build:pkg": "tsup",
+    "clean": "rm -rf .turbo node_modules dist",
+    "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "cookie": "^0.6.0",
     "date-fns": "catalog:",
-    "jose": "^5.6.3"
+    "jose": "^5.8.0"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
-    "@types/cookie": "0.6.0",
     "eslint": "catalog:",
     "prettier": "catalog:",
     "tsup": "catalog:",

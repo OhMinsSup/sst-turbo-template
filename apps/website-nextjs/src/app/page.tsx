@@ -1,11 +1,11 @@
 import React from "react";
 
 import { AuthSample } from "~/components/shared/AuthSample";
+import { createClient } from "~/libs/auth/server";
 
-export default function Page() {
-  return (
-    <React.Suspense fallback={<></>}>
-      <AuthSample />
-    </React.Suspense>
-  );
+export default async function Page() {
+  const client = createClient();
+  const { session } = await client.getSession();
+  console.log(session);
+  return <AuthSample />;
 }

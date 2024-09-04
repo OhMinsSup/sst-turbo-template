@@ -1,62 +1,40 @@
-import React from "react";
-import { useFetcher, useLoaderData } from "@remix-run/react";
+import React, { useEffect } from "react";
+import { SerializeFrom } from "@remix-run/node";
+import { useRevalidator } from "@remix-run/react";
 
-import type { Client } from "@template/sdk";
-import { AuthKitStatus } from "@template/authkit";
-import { useRafInterval } from "@template/hooks/useRafInterval";
-import { createClient } from "@template/sdk";
-import { isEmpty } from "@template/utils/assertion";
+import { createAuthBrowserClient } from "@template/sdk/auth/client";
 
-import type { RoutesActionData } from "~/.server/routes/root/root.action";
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
-import { ApiClientProvider } from "~/store/api";
 
-export const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
-  createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL, options);
-
-let apiClientSingleton: Client | undefined = undefined;
-export const getApiClient = () => {
-  if (typeof window === "undefined") {
-    // Server: always make a new query client
-    return createApiClient();
-  } else {
-    // Browser: use singleton pattern to keep the same query client
-    return (apiClientSingleton ??= createApiClient());
-  }
+export const createRemixBrowserClient = () => {
+  return createAuthBrowserClient({
+    isSingleton: true,
+    logDebugMessages: false,
+    url: import.meta.env.NEXT_PUBLIC_SERVER_URL,
+  });
 };
 
 interface Props {
+  session?: SerializeFrom<RoutesLoaderData>["session"];
   children: React.ReactNode;
 }
 
-export default function AppProvider({ children }: Props) {
-  const apiClient = getApiClient();
+export default function AppProvider({ children, session }: Props) {
+  const revalidator = useRevalidator();
 
-  const data = useLoaderData<RoutesLoaderData>();
-  const fetcher = useFetcher<RoutesActionData>();
+  const authClient = createRemixBrowserClient();
 
-  const updateSession = () => {
-    if (isEmpty(data)) {
-      return;
-    }
-
-    switch (data.loggedInStatus) {
-      case AuthKitStatus.Refreshed:
-      case AuthKitStatus.LoggedIn: {
-        fetcher.submit("?/refresh", { method: "post" });
-        return;
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = authClient.onAuthStateChange((_, newSession) => {
+      if (newSession?.expires_at !== session?.expires_at) {
+        revalidator.revalidate();
       }
-      default: {
-        return;
-      }
-    }
-  };
+    });
 
-  useRafInterval(
-    () => updateSession(),
-    // 1분
-    1000 * 60 * 1,
-  );
+    return () => subscription.unsubscribe();
+  }, [session]);
 
-  return <ApiClientProvider client={apiClient}>{children}</ApiClientProvider>;
+  return <>{children}</>;
 }

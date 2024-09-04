@@ -10,8 +10,8 @@ import type {
   HeadersInit,
   MethodType,
 } from "./types";
-import { HttpStatus } from "../enum";
-import { createHttpError } from "../error";
+import { HttpStatus } from "./constants";
+import { createAppError } from "./errors";
 import { schema } from "./schema";
 
 export default class ApiBuilder<
@@ -66,6 +66,10 @@ export default class ApiBuilder<
       pathname: (id: string) => `/users/${id}`,
       schema: undefined,
     },
+    signOut: {
+      pathname: "/auth/signout",
+      schema: schema.signOut,
+    },
   };
 
   constructor(builder: BuilderConstructorOptions<FnKey, MethodKey>) {
@@ -105,10 +109,8 @@ export default class ApiBuilder<
     if (!["GET", "HEAD"].includes(this.method) && _body && _endpoint.schema) {
       const input = _endpoint.schema.safeParse(_body);
       if (!input.success) {
-        throw createHttpError({
+        throw createAppError({
           message: "Invalid input",
-          status: HttpStatus.BAD_REQUEST,
-          statusMessage: "Bad Request",
           data: {
             [input.error.name]: {
               message: input.error.message,
@@ -133,10 +135,8 @@ export default class ApiBuilder<
     }
 
     if (!pathname) {
-      throw createHttpError({
+      throw createAppError({
         message: "Invalid pathname",
-        status: HttpStatus.NOT_FOUND,
-        statusMessage: "Not Found",
       });
     }
 

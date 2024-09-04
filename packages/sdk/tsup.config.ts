@@ -1,41 +1,17 @@
 import type { Options } from "tsup";
 import { defineConfig } from "tsup";
 
-export default defineConfig((options: Options) => [
-  {
-    entry: ["src/index.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
+export default defineConfig((options: Options) => ({
+  entry: {
+    index: "src/index.ts",
+    auth: "src/auth/index.ts",
+    "auth/server": "src/auth/createAuthServerClient.ts",
+    "auth/client": "src/auth/createAuthBrowserClient.ts",
   },
-  {
-    entry: ["src/schema.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-  {
-    entry: ["src/enum.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-  {
-    entry: ["src/error.ts"],
-    format: ["esm", "cjs"],
-    dts: true,
-    minify: !options.watch,
-    minifyWhitespace: true,
-    clean: true,
-    ...options,
-  },
-]);
+  format: ["esm", "cjs"],
+  dts: true,
+  minify: !options.watch,
+  minifyWhitespace: true,
+  clean: true,
+  ...options,
+}));

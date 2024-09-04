@@ -207,7 +207,7 @@ function Themed({
   initialOnly?: boolean;
 }) {
   const [theme] = useTheme();
-  const [initialTheme] = React.useState(theme);
+  const [initialTheme] = useState(theme);
   const themeToReference = initialOnly ? initialTheme : theme;
   const serverRenderWithUnknownTheme = !theme && typeof window !== "object";
   if (serverRenderWithUnknownTheme) {

@@ -1,3 +1,4 @@
+/* eslint-disable @typescript-eslint/no-explicit-any */
 export type Dict<T = any> = Record<string, T>;
 
 // Number assertions
@@ -12,6 +13,7 @@ export function isNotNumber(value: any) {
 }
 
 export function isNumeric(value: any) {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
   return value != null && value - parseFloat(value) + 1 >= 0;
 }
 
@@ -56,6 +58,7 @@ export function isEmptyObject(value: any) {
 }
 
 export function isNotEmptyObject(value: any): value is object {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-return
   return value && !isEmptyObject(value);
 }
 
@@ -82,3 +85,29 @@ export function isEmpty(value: any): boolean {
 
 export const isNullOrUndefined = (value: unknown): value is null | undefined =>
   isNull(value) || isUndefined(value);
+
+export function canUseDOM(): boolean {
+  return Boolean(
+    typeof window !== "undefined" &&
+      // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition, @typescript-eslint/prefer-optional-chain
+      window.document &&
+      // eslint-disable-next-line @typescript-eslint/unbound-method
+      window.document.createElement,
+  );
+}
+
+export const isBrowser = () => canUseDOM();
+
+export const isTrusted = (value: unknown): value is true =>
+  isBoolean(value) && value;
+
+export const isFalsy = (value: unknown): value is false =>
+  value === false || value === 0 || value === "" || isNullOrUndefined(value);
+
+export const isPromiseLike = <T = any>(
+  value: unknown,
+): value is PromiseLike<T> =>
+  isObject(value) &&
+  isFunction(value as PromiseLike<T>) &&
+  // eslint-disable-next-line @typescript-eslint/unbound-method
+  isFunction((value as PromiseLike<T>).then);

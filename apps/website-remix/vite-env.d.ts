@@ -6,6 +6,8 @@
   
   interface ImportMetaEnv {
 	readonly NEXT_PUBLIC_SERVER_URL: string;
+	readonly NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
+	readonly NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   
   declare module '$env/static/private' {
@@ -36,13 +38,11 @@
     export const npm_package_dependencies__template_ui: string;
     export const npm_package_prettier: string;
     export const TMPDIR: string;
-    export const npm_package_dependencies__template_authkit: string;
     export const npm_package_dependencies__paralleldrive_cuid2: string;
     export const npm_package_scripts_lint: string;
     export const npm_package_devDependencies__template_vite: string;
     export const TERM_PROGRAM_VERSION: string;
     export const npm_package_scripts_dev: string;
-    export const npm_package_dependencies__conform_to_zod: string;
     export const ZDOTDIR: string;
     export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
     export const MallocNanoZone: string;
@@ -71,10 +71,10 @@
     export const PATH: string;
     export const npm_package_scripts_typecheck: string;
     export const _: string;
+    export const LaunchInstanceID: string;
     export const npm_package_dependencies_isbot: string;
     export const USER_ZDOTDIR: string;
     export const __CFBundleIdentifier: string;
-    export const BLOCKSIZE: string;
     export const npm_command: string;
     export const npm_package_devDependencies_tailwindcss: string;
     export const npm_package_dependencies__remix_run_serve: string;
@@ -91,23 +91,19 @@
     export const npm_config_node_linker: string;
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;
-    export const npm_config_node_gyp: string;
     export const npm_package_dependencies__tanstack_react_query: string;
     export const npm_package_dependencies__template_hooks: string;
     export const XPC_SERVICE_NAME: string;
     export const npm_package_devDependencies_autoprefixer: string;
     export const VSCODE_INJECTION: string;
-    export const npm_package_dependencies__trpc_client: string;
     export const npm_package_dependencies__epic_web_invariant: string;
     export const npm_package_type: string;
     export const SHLVL: string;
     export const HOME: string;
     export const VSCODE_GIT_ASKPASS_MAIN: string;
-    export const npm_package_dependencies__trpc_server: string;
     export const npm_package_devDependencies__template_prettier_config: string;
     export const LOGNAME: string;
     export const npm_lifecycle_script: string;
-    export const npm_package_dependencies__trpc_react_query: string;
     export const VSCODE_GIT_IPC_HANDLE: string;
     export const npm_package_dependencies_react: string;
     export const PGDATA: string;
@@ -116,10 +112,11 @@
     export const npm_package_dependencies__template_utils: string;
     export const VSCODE_GIT_ASKPASS_NODE: string;
     export const GIT_ASKPASS: string;
+    export const npm_config_link_workspace_packages: string;
     export const npm_package_dependencies__template_sdk: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;
-    export const SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
+    export const SECURITYSESSIONID: string;
     export const npm_node_execpath: string;
     export const COLORTERM: string;
     export const NODE_ENV: string;
@@ -127,5 +124,7 @@
   
   declare module '$env/static/public' {
     export const NEXT_PUBLIC_SERVER_URL: string;
+    export const NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
+    export const NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   

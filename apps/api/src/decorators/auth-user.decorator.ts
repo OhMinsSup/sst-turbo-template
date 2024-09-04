@@ -5,7 +5,7 @@ import {
   HttpStatus,
 } from "@nestjs/common";
 
-import { HttpResultStatus } from "@template/sdk/enum";
+import { HttpResultStatus } from "@template/sdk";
 
 import type { PassportUser } from "../routes/auth/strategies/jwt.auth.strategy";
 import { assertHttpError } from "../libs/error";

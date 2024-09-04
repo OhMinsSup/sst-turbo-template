@@ -1,12 +1,12 @@
 "use client";
 
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
 import React, { useTransition } from "react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 
-import { authSchema } from "@template/sdk/schema";
+import type { FormFieldSignUpSchema } from "@template/sdk";
+import { schema } from "@template/sdk";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -35,7 +35,7 @@ export default function SignInForm() {
 
   const form = useForm<FormFieldSignUpSchema>({
     progressive: true,
-    resolver: zodResolver(authSchema.signIn),
+    resolver: zodResolver(schema.signIn),
     defaultValues: {
       email: "",
       password: "",

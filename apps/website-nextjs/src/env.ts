@@ -14,16 +14,7 @@ export const env = createEnv({
    * Specify your server-side environment variables schema here.
    * This way you can ensure the app isn't built with invalid env vars.
    */
-  server: {
-    ACCESS_TOKEN_NAME: z
-      .string()
-      .min(1)
-      .regex(/.*\.access_token/),
-    REFRESH_TOKEN_NAME: z
-      .string()
-      .min(1)
-      .regex(/.*\.refresh_token/),
-  },
+  server: {},
 
   /**
    * Specify your client-side environment variables schema here.
@@ -40,7 +31,5 @@ export const env = createEnv({
     NODE_ENV: process.env.NODE_ENV,
   },
   skipValidation:
-    !!process.env.CI ||
-    !!process.env.SKIP_ENV_VALIDATION ||
-    process.env.npm_lifecycle_event === "lint",
+    !!process.env.CI || process.env.npm_lifecycle_event === "lint",
 });

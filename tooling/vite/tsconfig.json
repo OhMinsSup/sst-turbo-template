@@ -1,6 +1,5 @@
 {
   "extends": "@template/tsconfig/vite.json",
-  "compilerOptions": {},
   "include": ["."],
   "exclude": ["node_modules"]
 }

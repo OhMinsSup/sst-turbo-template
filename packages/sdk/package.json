@@ -16,34 +16,34 @@
         "default": "./dist/index.cjs"
       }
     },
-    "./schema": {
+    "./auth": {
       "import": {
-        "types": "./dist/schema.d.ts",
-        "default": "./dist/schema.js"
+        "types": "./dist/auth.d.ts",
+        "default": "./dist/auth.js"
       },
       "require": {
-        "types": "./dist/schema.d.cts",
-        "default": "./dist/schema.cjs"
+        "types": "./dist/auth.d.cts",
+        "default": "./dist/auth.cjs"
       }
     },
-    "./enum": {
+    "./auth/server": {
       "import": {
-        "types": "./dist/enum.d.ts",
-        "default": "./dist/enum.js"
+        "types": "./dist/auth/server.d.ts",
+        "default": "./dist/auth/server.js"
       },
       "require": {
-        "types": "./dist/enum.d.cts",
-        "default": "./dist/enum.cjs"
+        "types": "./dist/auth/server.d.cts",
+        "default": "./dist/auth/server.cjs"
       }
     },
-    "./error": {
+    "./auth/client": {
       "import": {
-        "types": "./dist/error.d.ts",
-        "default": "./dist/error.js"
+        "types": "./dist/auth/client.d.ts",
+        "default": "./dist/auth/client.js"
       },
       "require": {
-        "types": "./dist/error.d.cts",
-        "default": "./dist/error.cjs"
+        "types": "./dist/auth/client.d.cts",
+        "default": "./dist/auth/client.cjs"
       }
     }
   },
@@ -53,13 +53,17 @@
   "scripts": {
     "build": "tsup",
     "build:pkg": "tsup",
-    "clean": "rm -rf .turbo node_modules",
+    "clean": "rm -rf .turbo node_modules dist",
+    "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
+    "@template/utils": "workspace:*",
+    "cookie": "^0.6.0",
+    "date-fns": "catalog:",
     "ofetch": "^1.3.4",
     "ufo": "^1.5.4",
     "zod": "catalog:"

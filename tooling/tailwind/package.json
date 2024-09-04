@@ -14,7 +14,7 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "@tailwindcss/typography": "^0.5.14",
+    "@tailwindcss/typography": "^0.5.15",
     "postcss": "catalog:",
     "tailwindcss": "catalog:",
     "tailwindcss-animate": "^1.0.7"

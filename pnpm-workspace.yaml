@@ -4,7 +4,8 @@ packages:
   - "tooling/*"
 
 catalog:
-  "@tanstack/react-query": ^5.51.23
+  "@tanstack/react-query": ^5.53.3
+  "@tanstack/svelte-query": ^5.53.3
   "@trpc/client": ^11.0.0-rc.477
   "@trpc/react-query": ^11.0.0-rc.477
   "@trpc/server": ^11.0.0-rc.477
@@ -12,36 +13,27 @@ catalog:
   zod: ^3.23.8
   date-fns: ^3.6.0
   "@t3-oss/env-core": "^0.11.0"
-  "react-hook-form": "^7.52.2"
+  "react-hook-form": "^7.53.0"
   "@hookform/resolvers": "^3.9.0"
   zustand: "^4.5.4"
 
-  eslint: ^9.9.0
+  eslint: ^9.9.1
   prettier: ^3.3.3
   typescript: ^5.5.4
   rimraf: ^6.0.1
-  vite: ^5.4.0
-  tsup: ^8.1.0
-  tailwindcss: ^3.4.9
-  postcss: ^8.4.41
+  vite: ^5.4.2
+  tsup: ^8.2.4
+  tailwindcss: ^3.4.10
+  postcss: ^8.4.44
   autoprefixer: ^10.4.20
-  tsx: "^4.16.2"
+  tsx: "^4.19.0"
 
 catalogs:
   react18:
     react: 18.3.1
     react-dom: 18.3.1
-    "@types/react": ^18.3.3
+    "@types/react": ^18.3.5
     "@types/react-dom": ^18.3.0
   prisma5:
-    prisma: 5.18.0
-    "@prisma/client": 5.18.0
-  next14:
-    next: "^14.2.5"
-  kit2:
-    "@sveltejs/kit": "^2.5.21"
-  remix2:
-    "@remix-run/node": "^2.11.1"
-    "@remix-run/react": "^2.11.1"
-    "@remix-run/serve": "^2.11.1"
-    "@remix-run/dev": "^2.11.1"
+    prisma: 5.19.1
+    "@prisma/client": 5.19.1

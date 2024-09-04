@@ -1,4 +1,4 @@
-import { Prisma } from "..";
+import { Prisma } from "@prisma/client";
 
 export const getUserSettingSelector = () => {
   return Prisma.validator<Prisma.UserSettingsSelect>()({

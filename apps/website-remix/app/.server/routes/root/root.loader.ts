@@ -1,44 +1,49 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import { AuthKit, AuthKitFramework } from "@template/authkit";
+import { getRequestInfo } from "@template/utils/request";
 
+import { createRemixServerClient } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { privateConfig } from "~/config/config.private";
-import { getApiClient } from "~/store/app";
-import { getRequestInfo } from "~/utils";
 import { combineHeaders } from "~/utils/misc";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
-  const authKit = new AuthKit({
-    headers: request.headers,
-    tokenKey: privateConfig.token,
-    client: getApiClient(),
+
+  const headers = new Headers();
+  const client = createRemixServerClient({
+    request,
+    headers,
   });
 
-  const cookie = request.headers.get("cookie");
+  const { session } = await client.getSession();
 
-  const { user, status, headers } = await authKit.checkAuth(
-    cookie ? authKit.getTokens(cookie, AuthKitFramework.Remix) : null,
-  );
+  const user = await (async function () {
+    try {
+      const { user } = await client.getUser();
+      return user;
+    } catch {
+      return null;
+    }
+  })();
 
-  const data = {
-    env: import.meta.env,
-    requestInfo,
-    userPrefs: {
-      theme: getTheme(request),
+  return json(
+    {
+      env: import.meta.env,
+      requestInfo,
+      userPrefs: {
+        theme: getTheme(request),
+      },
+      toast,
+      session,
+      user,
     },
-    toast,
-    user,
-    loggedInStatus: status,
-  };
-
-  return json(data, {
-    headers: combineHeaders(toastHeaders, headers),
-  });
+    {
+      headers: combineHeaders(headers, toastHeaders),
+    },
+  );
 };
 
 export type RoutesLoaderData = typeof loader;

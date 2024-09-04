@@ -4,6 +4,7 @@ import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
 import { RefreshTokenDTO } from "../dto/refresh-token.dto";
 import { SigninDTO } from "../dto/signin.dto";
+import { SignoutDTO } from "../dto/signout.dto";
 import { SignupDTO } from "../dto/signup.dto";
 import { VerifyTokenDTO } from "../dto/verify-token.dto";
 import { AuthService } from "../services/auth.service";
@@ -35,6 +36,18 @@ export class AuthController {
   })
   async signin(@Body() body: SigninDTO) {
     return await this.service.signin(body);
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60 } })
+  @Post("signout")
+  @ApiOperation({ summary: "로그아웃" })
+  @ApiBody({
+    required: true,
+    description: "로그아웃 API",
+    type: SignoutDTO,
+  })
+  async signout(@Body() body: SignoutDTO) {
+    return await this.service.signout(body);
   }
 
   @SkipThrottle()

@@ -6,34 +6,14 @@
   "type": "module",
   "exports": {
     "./package.json": "./package.json",
-    "./nextjs": {
+    ".": {
       "import": {
-        "types": "./dist/nextjs.d.ts",
-        "default": "./dist/nextjs.js"
+        "types": "./dist/index.d.ts",
+        "default": "./dist/index.js"
       },
       "require": {
-        "types": "./dist/nextjs.d.cts",
-        "default": "./dist/nextjs.cjs"
-      }
-    },
-    "./remix": {
-      "import": {
-        "types": "./dist/remix.d.ts",
-        "default": "./dist/remix.js"
-      },
-      "require": {
-        "types": "./dist/remix.d.cts",
-        "default": "./dist/remix.cjs"
-      }
-    },
-    "./sveltekit": {
-      "import": {
-        "types": "./dist/sveltekit.d.ts",
-        "default": "./dist/sveltekit.js"
-      },
-      "require": {
-        "types": "./dist/sveltekit.d.cts",
-        "default": "./dist/sveltekit.cjs"
+        "types": "./dist/index.d.cts",
+        "default": "./dist/index.cjs"
       }
     }
   },
@@ -43,7 +23,7 @@
   "scripts": {
     "build": "tsup",
     "build:pkg": "tsup",
-    "clean": "rm -rf .turbo node_modules",
+    "clean": "rm -rf .turbo node_modules dist",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
     "typecheck": "tsc --noEmit --emitDeclarationOnly false"
@@ -51,7 +31,6 @@
   "prettier": "@template/prettier-config",
   "dependencies": {
     "@epic-web/remember": "^1.1.0",
-    "@template/authkit": "workspace:*",
     "@template/sdk": "workspace:*",
     "@template/utils": "workspace:*",
     "@trpc/server": "catalog:",
@@ -59,12 +38,10 @@
     "zod": "catalog:"
   },
   "devDependencies": {
-    "@sveltejs/kit": "catalog:kit2",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
     "eslint": "catalog:",
-    "next": "catalog:next14",
     "prettier": "catalog:",
     "tsup": "catalog:",
     "typescript": "catalog:"

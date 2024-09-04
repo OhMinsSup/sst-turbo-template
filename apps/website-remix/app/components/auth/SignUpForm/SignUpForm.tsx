@@ -2,8 +2,8 @@ import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignUpSchema } from "@template/sdk/schema";
-import { authSchema } from "@template/sdk/schema";
+import type { FormFieldSignUpSchema } from "@template/sdk";
+import { schema } from "@template/sdk";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -28,7 +28,7 @@ export default function SignUpForm() {
   const isSubmittingForm = navigation.state !== "idle";
 
   const form = useForm<FormFieldSignUpSchema>({
-    resolver: zodResolver(authSchema.signUp),
+    resolver: zodResolver(schema.signUp),
     defaultValues: {
       email: "",
       password: "",

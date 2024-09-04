@@ -3,7 +3,7 @@ import { ApiTags } from "@nestjs/swagger";
 import { AuthUser } from "src/decorators/auth-user.decorator";
 
 import type { UserExternalPayload } from "@template/db/selectors";
-import { HttpResultStatus } from "@template/sdk/enum";
+import { HttpResultStatus } from "@template/sdk";
 
 import { JwtAuth } from "../../../guards/jwt.auth.guard";
 import { UsersService } from "../services/users.service";
