@@ -148,3 +148,8 @@ export type GetUserResponse =
       user: null;
       error: null;
     };
+
+export interface HandleMessageData {
+  event: AuthChangeEvent;
+  session: Session | null;
+}

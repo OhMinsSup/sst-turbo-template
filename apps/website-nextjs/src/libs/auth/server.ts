@@ -1,8 +1,6 @@
-import "server-only";
-
 import { cookies } from "next/headers";
 
-import { createAuthServerClient } from "@template/sdk/auth";
+import { createAuthServerClient } from "@template/sdk/auth/server";
 
 import { env } from "~/env";
 

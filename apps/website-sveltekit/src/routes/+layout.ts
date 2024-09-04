@@ -1,9 +1,7 @@
 import { NEXT_PUBLIC_SERVER_URL } from "$env/static/public";
 
-import {
-  createAuthBrowserClient,
-  createAuthServerClient,
-} from "@template/sdk/auth";
+import { createAuthBrowserClient } from "@template/sdk/auth/client";
+import { createAuthServerClient } from "@template/sdk/auth/server";
 import { isBrowser } from "@template/utils/assertion";
 
 import type { LayoutLoad } from "./$types";

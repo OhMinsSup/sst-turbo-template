@@ -1,7 +1,7 @@
 import type { Handle } from "@sveltejs/kit";
 import { NEXT_PUBLIC_SERVER_URL } from "$env/static/public";
 
-import { createAuthServerClient } from "@template/sdk/auth";
+import { createAuthServerClient } from "@template/sdk/auth/server";
 
 export const handle: Handle = async ({ event, resolve }) => {
   event.locals.authenticates = createAuthServerClient({

@@ -2,7 +2,7 @@ import React, { useEffect } from "react";
 import { SerializeFrom } from "@remix-run/node";
 import { useRevalidator } from "@remix-run/react";
 
-import { createAuthBrowserClient } from "@template/sdk/auth";
+import { createAuthBrowserClient } from "@template/sdk/auth/client";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 

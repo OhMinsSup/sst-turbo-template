@@ -5,6 +5,8 @@ export default defineConfig((options: Options) => ({
   entry: {
     index: "src/index.ts",
     auth: "src/auth/index.ts",
+    "auth/server": "src/auth/createAuthServerClient.ts",
+    "auth/client": "src/auth/createAuthBrowserClient.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

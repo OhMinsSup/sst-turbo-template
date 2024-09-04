@@ -29,9 +29,7 @@ export const OPTIONS = () => {
 const handler = async (req: Request) => {
   const client = createClient();
 
-  const data = await client.getSession();
-
-  console.log(">>> Session", data.session);
+  const { session } = await client.getSession();
 
   const response = await fetchRequestHandler({
     endpoint: "/api/trpc",
@@ -39,7 +37,7 @@ const handler = async (req: Request) => {
     req,
     createContext: () =>
       createTRPCContext({
-        session: data.session,
+        session,
         headers: req.headers,
         client: getApiClient(),
       }),

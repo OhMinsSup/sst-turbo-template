@@ -21,10 +21,10 @@ const createContext = cache(async () => {
 
   const client = createClient();
 
-  const data = await client.getSession();
+  const { session } = await client.getSession();
 
   return createTRPCContext({
-    session: data.session,
+    session,
     headers: heads,
     client: getApiClient(),
   });

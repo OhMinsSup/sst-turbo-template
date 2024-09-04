@@ -9,11 +9,11 @@ import "~/app/globals.css";
 
 import { headers } from "next/headers";
 
-import { ThemeToggle } from "@template/ui/theme";
+import { ThemeProvider, ThemeToggle } from "@template/ui/theme";
 import { getRequestInfo } from "@template/utils/request";
 
 import { SITE_CONFIG } from "~/constants/constants";
-import { RootProvider } from "~/store";
+import { TRPCReactProvider } from "~/libs/trpc/react";
 
 // eslint-disable-next-line @typescript-eslint/require-await
 export async function generateMetadata(): Promise<Metadata> {
@@ -70,7 +70,9 @@ interface LayoutProps {
   children: React.ReactNode;
 }
 
-export default async function Layout(props: LayoutProps) {
+export default function Layout(props: LayoutProps) {
+  const { domainUrl } = getRequestInfo(headers());
+
   return (
     <html lang="en" suppressHydrationWarning>
       <body
@@ -80,13 +82,15 @@ export default async function Layout(props: LayoutProps) {
           GeistMono.variable,
         )}
       >
-        <RootProvider>
-          {props.children}
-          <div className="absolute bottom-4 right-4">
-            <ThemeToggle />
-          </div>
-          <Toaster />
-        </RootProvider>
+        <ThemeProvider attribute="class" defaultTheme="system" enableSystem>
+          <TRPCReactProvider domainUrl={domainUrl}>
+            {props.children}
+            <div className="absolute bottom-4 right-4">
+              <ThemeToggle />
+            </div>
+            <Toaster />
+          </TRPCReactProvider>
+        </ThemeProvider>
       </body>
     </html>
   );

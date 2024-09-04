@@ -22,7 +22,6 @@ export const getItemAsync = async (
   }
 
   try {
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-return
     return JSON.parse(value);
   } catch {
     return value;
@@ -36,12 +35,12 @@ export const removeItemAsync = async (
   await storage.removeItem(key);
 };
 
+export const isSupportedBroadcastChannel = () =>
+  isBrowser() && "BroadcastChannel" in globalThis;
+
 export const isSupportedNavigatorLocks = () =>
   isBrowser() && "navigator" in globalThis && "locks" in navigator;
 
-/**
- * Checks whether localStorage is supported on this browser.
- */
 export const isSupportsLocalStorage = () => {
   if (!isBrowser()) {
     return false;

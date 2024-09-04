@@ -1,7 +1,7 @@
 import type { NextRequest } from "next/server";
 import { NextResponse } from "next/server";
 
-import { createAuthServerClient } from "@template/sdk/auth";
+import { createAuthServerClient } from "@template/sdk/auth/server";
 
 import { env } from "~/env";
 

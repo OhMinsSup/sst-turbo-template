@@ -1,5 +1,3 @@
-import "./utils/polyfills";
-
 import { addSeconds, isBefore, subMinutes, toDate } from "date-fns";
 
 import {
@@ -20,6 +18,7 @@ import type {
   AuthClientOptions,
   CallRefreshTokenResult,
   GetUserResponse,
+  HandleMessageData,
   InitializeResult,
   LoadSession,
   LockFunc,
@@ -41,6 +40,7 @@ import { Core } from "./core";
 import { Deferred } from "./utils/deferred";
 import {
   getItemAsync,
+  isSupportedBroadcastChannel,
   isSupportedNavigatorLocks,
   isSupportsLocalStorage,
   removeItemAsync,
@@ -48,6 +48,9 @@ import {
   uuid,
 } from "./utils/helper";
 import { LockAcquireTimeoutError, lockNoOp, navigatorLock } from "./utils/lock";
+import { polyfillGlobalThis } from "./utils/polyfills";
+
+polyfillGlobalThis();
 
 export class AuthClient extends Core {
   protected storageKey: string;
@@ -104,6 +107,29 @@ export class AuthClient extends Core {
     } else {
       this.memoryStorage = {};
       this.storage = memoryLocalStorageAdapter(this.memoryStorage);
+    }
+
+    if (
+      isSupportedBroadcastChannel() &&
+      this.persistSession &&
+      this.storageKey
+    ) {
+      try {
+        this.broadcastChannel = new globalThis.BroadcastChannel(
+          this.storageKey,
+        );
+      } catch (e) {
+        this.error(
+          "Failed to create a new BroadcastChannel, multi-tab state changes will not be available",
+          e,
+        );
+      }
+
+      this.broadcastChannel?.addEventListener(
+        "message",
+        // eslint-disable-next-line @typescript-eslint/no-misused-promises
+        this._handleMessage.bind(this),
+      );
     }
 
     // eslint-disable-next-line @typescript-eslint/no-floating-promises
@@ -853,10 +879,18 @@ export class AuthClient extends Core {
     }
   }
 
-  /**
-   * This is the private implementation of {@link #startAutoRefresh}. Use this
-   * within the library.
-   */
+  private async _handleMessage(event: MessageEvent<HandleMessageData>) {
+    this.debug(
+      "received broadcast notification from other tab or client",
+      event,
+    );
+
+    const eventName = event.data.event;
+    const session = event.data.session;
+
+    await this._notifyAllSubscribers(eventName, session, false); // broadcast = false so we don't get an endless loop of messages
+  }
+
   private async _startAutoRefresh() {
     await this._stopAutoRefresh();
 

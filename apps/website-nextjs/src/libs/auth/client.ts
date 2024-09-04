@@ -1,4 +1,4 @@
-import { createAuthBrowserClient } from "@template/sdk/auth";
+import { createAuthBrowserClient } from "@template/sdk/auth/client";
 
 import { env } from "~/env";
 

@@ -2,7 +2,7 @@ import {
   createAuthServerClient,
   parseCookieHeader,
   serializeCookieHeader,
-} from "@template/sdk/auth";
+} from "@template/sdk/auth/server";
 
 interface CreateRemixServerClientOptions {
   headers: Headers;
