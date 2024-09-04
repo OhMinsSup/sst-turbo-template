@@ -1,12 +1,12 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 
-import { getRequestInfo } from "@template/utils/request";
+import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
 import { createRemixServerClient } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { combineHeaders } from "~/utils/misc";
+import { getHints } from "~/utils/client-hints";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
@@ -31,10 +31,13 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   return json(
     {
-      env: import.meta.env,
-      requestInfo,
-      userPrefs: {
-        theme: getTheme(request),
+      requestInfo: {
+        hints: getHints(request),
+        origin: requestInfo.domainUrl,
+        path: new URL(request.url).pathname,
+        userPrefs: {
+          theme: getTheme(request),
+        },
       },
       toast,
       session,

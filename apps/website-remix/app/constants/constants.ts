@@ -23,4 +23,6 @@ export const SITE_CONFIG = {
 
 export const SESSION_DATA_KEY = {
   dataKey: "session.data",
+  themeKey: "template.theme",
+  toastKey: "template.toast",
 };

@@ -9,6 +9,7 @@ export const loader: LoaderFunction = async ({ request }) => {
     const url = new URL("/", `http://${host}`);
     await Promise.all([
       fetch(url.toString(), { method: "HEAD" }).then((r) => {
+        // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
         if (!r.ok) return Promise.reject(r);
       }),
     ]);
@@ -18,3 +19,5 @@ export const loader: LoaderFunction = async ({ request }) => {
     return new Response("ERROR", { status: 500 });
   }
 };
+
+export type RoutesLoaderData = typeof loader;

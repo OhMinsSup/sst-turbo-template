@@ -2,8 +2,10 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { z } from "zod";
 
+import { combineHeaders } from "@template/utils/request";
+
 import { privateConfig } from "~/config/config.private";
-import { combineHeaders } from "~/utils/misc";
+import { SESSION_DATA_KEY } from "~/constants/constants";
 
 export const toastKey = "toast";
 
@@ -19,12 +21,12 @@ export type ToastInput = z.input<typeof ToastSchema>;
 
 export const toastSessionStorage = createCookieSessionStorage({
   cookie: {
-    name: "template.toast",
+    name: SESSION_DATA_KEY.toastKey,
     sameSite: "lax",
     path: "/",
     httpOnly: true,
     secrets: [privateConfig.sessionSecret],
-    secure: import.meta.env.PROD,
+    secure: privateConfig.isProd,
   },
 });
 

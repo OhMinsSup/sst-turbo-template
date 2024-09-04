@@ -7,7 +7,7 @@
  * The pieces you will need to use are documented accordingly near the end
  */
 import { initTRPC, TRPCError } from "@trpc/server";
-import superjson from "superjson";
+import SuperJson from "superjson";
 import { ZodError } from "zod";
 
 import type { Client } from "@template/sdk";
@@ -31,11 +31,11 @@ interface TRPCContext {
  *
  * @see https://trpc.io/docs/server/context
  */
-export const createTRPCContext = async (opts: TRPCContext) => {
+export const createTRPCContext = (opts: TRPCContext) => {
   const session = opts.session;
   const source = opts.headers.get("x-trpc-source") ?? "unknown";
 
-  console.log(">>> tRPC Request from", source, "by", session?.user);
+  console.log(">>> tRPC Request from", source, "by", session?.user.name);
 
   return {
     client: opts.client,
@@ -51,7 +51,7 @@ export const createTRPCContext = async (opts: TRPCContext) => {
  * transformer
  */
 const t = initTRPC.context<typeof createTRPCContext>().create({
-  transformer: superjson,
+  transformer: SuperJson,
   errorFormatter: ({ shape, error }) => ({
     ...shape,
     data: {

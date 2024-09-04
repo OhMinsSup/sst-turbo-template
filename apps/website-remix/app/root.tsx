@@ -10,18 +10,15 @@ import {
 import "./styles/tailwind.css";
 
 import type { LinksFunction } from "@remix-run/node";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import { cn } from "@template/ui";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import { ThemeSwitch } from "./components/shared/Theme";
 import { ShowToast, Toaster } from "./components/shared/Toast";
 import { AppProvider } from "./store/app";
-import { QueryProvider } from "./store/query";
-import {
-  NonFlashOfWrongThemeEls,
-  ThemeProvider,
-  useTheme,
-} from "./store/theme";
+import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { action } from "~/.server/routes/root/root.action";
@@ -48,13 +45,12 @@ interface Props {
 
 function Document({ children }: Props) {
   const data = useLoaderData<RoutesLoaderData>();
-  const [theme] = useTheme();
   return (
     <html
       lang="en"
       itemScope
       itemType="http://schema.org/WebSite"
-      className={cn(theme)}
+      className={cn(data.requestInfo.userPrefs.theme)}
     >
       <head>
         <meta charSet="utf-8" />
@@ -63,13 +59,15 @@ function Document({ children }: Props) {
           content="width=device-width,initial-scale=1,viewport-fit=cover"
         />
         <meta name="theme-color" content="#ffffff" />
-        <link rel="canonical" href={data.requestInfo.domainUrl} />
+        <link rel="canonical" href={data.requestInfo.origin} />
         <Meta />
         <Links />
-        <NonFlashOfWrongThemeEls ssrTheme={Boolean(theme)} />
       </head>
       <body>
         {children}
+        <div className="container flex justify-between pb-5">
+          <ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
+        </div>
         <Toaster closeButton position="top-center" />
         <ScrollRestoration />
         <Scripts />
@@ -79,17 +77,17 @@ function Document({ children }: Props) {
 }
 
 export default function App() {
+  const queryClient = getQueryClient();
   const data = useLoaderData<RoutesLoaderData>();
+
   return (
-    <ThemeProvider specifiedTheme={data.userPrefs.theme}>
-      <Document>
-        <AppProvider session={data.session}>
-          <QueryProvider baseUrl={data.requestInfo.domainUrl}>
-            <Outlet />
-          </QueryProvider>
-        </AppProvider>
-        {data.toast ? <ShowToast toast={data.toast} /> : null}
-      </Document>
-    </ThemeProvider>
+    <Document>
+      <AppProvider session={data.session}>
+        <QueryClientProvider client={queryClient}>
+          <Outlet />
+        </QueryClientProvider>
+      </AppProvider>
+      {data.toast ? <ShowToast toast={data.toast} /> : null}
+    </Document>
   );
 }
