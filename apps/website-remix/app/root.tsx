@@ -5,11 +5,13 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRevalidator,
 } from "@remix-run/react";
 
 import "./styles/tailwind.css";
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, SerializeFrom } from "@remix-run/node";
+import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 
 import { cn } from "@template/ui";
@@ -17,7 +19,7 @@ import { cn } from "@template/ui";
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { ThemeSwitch } from "./components/shared/Theme";
 import { ShowToast, Toaster } from "./components/shared/Toast";
-import { AppProvider } from "./store/app";
+import { createRemixBrowserClient } from "./utils/auth";
 import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
@@ -76,17 +78,43 @@ function Document({ children }: Props) {
   );
 }
 
-export default function App() {
+interface AppWithProviderProps {
+  session?: SerializeFrom<RoutesLoaderData>["session"];
+  children: React.ReactNode;
+}
+
+function AppWithProvider({ children, session }: AppWithProviderProps) {
   const queryClient = getQueryClient();
+
+  const revalidator = useRevalidator();
+
+  const authClient = createRemixBrowserClient();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = authClient.onAuthStateChange((_, newSession) => {
+      if (newSession?.expires_at !== session?.expires_at) {
+        revalidator.revalidate();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [session]);
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}
+
+export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
 
   return (
     <Document>
-      <AppProvider session={data.session}>
-        <QueryClientProvider client={queryClient}>
-          <Outlet />
-        </QueryClientProvider>
-      </AppProvider>
+      <AppWithProvider session={data.session}>
+        <Outlet />
+      </AppWithProvider>
       {data.toast ? <ShowToast toast={data.toast} /> : null}
     </Document>
   );
