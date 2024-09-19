@@ -17,10 +17,7 @@ export const action = async (ctx: ActionFunctionArgs) => {
     ) as FomrFieldThemeSchema["redirectTo"],
   };
 
-  console.log(input);
-
   const parsed = themeSchema.safeParse(input);
-  console.log(parsed.error);
   invariantResponse(parsed.success, "Invalid theme received");
 
   const { theme, redirectTo } = parsed.data;

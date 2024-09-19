@@ -1,4 +1,4 @@
-import type { AppError } from "../api/errors";
+import type { AppError, FetchError, HttpError } from "../api/errors";
 import type { Options, UserResponse } from "../api/types";
 
 export interface AuthClientOptions {
@@ -83,7 +83,7 @@ export type LockFunc = <R>(
 ) => Promise<R>;
 
 export interface InitializeResult {
-  error: AppError | null;
+  error: HttpError | FetchError | null;
 }
 
 export type CallRefreshTokenResult =
@@ -93,7 +93,7 @@ export type CallRefreshTokenResult =
     }
   | {
       session: null;
-      error: AppError;
+      error: HttpError | FetchError;
     };
 
 export type AuthChangeEvent =
@@ -128,7 +128,7 @@ export type LoadSession =
     }
   | {
       session: null;
-      error: AppError;
+      error: HttpError | FetchError;
     }
   | {
       session: null;
@@ -142,7 +142,7 @@ export type GetUserResponse =
     }
   | {
       user: null;
-      error: AppError;
+      error: HttpError | FetchError;
     }
   | {
       user: null;

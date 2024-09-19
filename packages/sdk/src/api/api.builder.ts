@@ -11,7 +11,7 @@ import type {
   MethodType,
 } from "./types";
 import { HttpStatus } from "./constants";
-import { createAppError } from "./errors";
+import { createHttpError } from "./errors";
 import { schema } from "./schema";
 
 export default class ApiBuilder<
@@ -103,24 +103,6 @@ export default class ApiBuilder<
     const _endpoint = this.endpoints[this.fnKey];
     const _path = this.path;
 
-    let _body = this.body;
-
-    // body validate
-    if (!["GET", "HEAD"].includes(this.method) && _body && _endpoint.schema) {
-      const input = _endpoint.schema.safeParse(_body);
-      if (!input.success) {
-        throw createAppError({
-          message: "Invalid input",
-          data: {
-            [input.error.name]: {
-              message: input.error.message,
-            },
-          },
-        });
-      }
-      _body = input.data as ApiInput<FnKey, MethodKey>;
-    }
-
     let pathname: string | null = null;
     if (typeof _endpoint.pathname === "function" && _path) {
       pathname = _endpoint.pathname(...Object.values(_path));
@@ -135,9 +117,31 @@ export default class ApiBuilder<
     }
 
     if (!pathname) {
-      throw createAppError({
+      throw createHttpError({
+        statusMessage: "Not Found",
+        statusCode: HttpStatus.NOT_FOUND,
         message: "Invalid pathname",
       });
+    }
+
+    let _body = this.body;
+
+    // body validate
+    if (!["GET", "HEAD"].includes(this.method) && _body && _endpoint.schema) {
+      const input = _endpoint.schema.safeParse(_body);
+      if (!input.success) {
+        throw createHttpError({
+          statusMessage: "Bad Request",
+          statusCode: HttpStatus.BAD_REQUEST,
+          message: "Invalid input",
+          data: {
+            [input.error.name]: {
+              message: input.error.message,
+            },
+          },
+        });
+      }
+      _body = input.data as ApiInput<FnKey, MethodKey>;
     }
 
     const opts: FetchOptions<"json"> = {

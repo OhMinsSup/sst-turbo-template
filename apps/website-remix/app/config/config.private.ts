@@ -4,4 +4,5 @@ import { NODE_ENV, SESSION_SECRET } from "$env/static/private";
 export const privateConfig = {
   sessionSecret: SESSION_SECRET,
   isProd: NODE_ENV === "production",
+  nodeEnv: NODE_ENV,
 };

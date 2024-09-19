@@ -39,11 +39,15 @@ export default function SignUpForm() {
     reValidateMode: "onSubmit",
   });
 
-  const onSubmit = (input: FormFieldSignUpSchema) =>
+  const onSubmit = (input: FormFieldSignUpSchema) => {
+    const formData = new FormData();
+    formData.append("email", input.email);
+    formData.append("password", input.password);
+    formData.append("confirmPassword", input.confirmPassword);
     submit(input, {
       method: "post",
-      encType: "application/json",
     });
+  };
 
   return (
     <div className="grid gap-6">
