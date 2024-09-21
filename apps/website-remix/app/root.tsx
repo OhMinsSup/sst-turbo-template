@@ -17,9 +17,10 @@ import { QueryClientProvider } from "@tanstack/react-query";
 import { cn } from "@template/ui";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
-import { ThemeSwitch } from "./components/shared/Theme";
+import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast, Toaster } from "./components/shared/Toast";
 import { createRemixBrowserClient } from "./utils/auth";
+import { ClientHintCheck } from "./utils/client-hints";
 import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
@@ -55,21 +56,13 @@ function Document({ children }: Props) {
       className={cn(data.requestInfo.userPrefs.theme)}
     >
       <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1,viewport-fit=cover"
-        />
-        <meta name="theme-color" content="#ffffff" />
-        <link rel="canonical" href={data.requestInfo.origin} />
+        <ClientHintCheck />
+        <GlobalMeta />
         <Meta />
         <Links />
       </head>
       <body>
         {children}
-        <div className="container flex justify-between pb-5">
-          <ThemeSwitch userPreference={data.requestInfo.userPrefs.theme} />
-        </div>
         <Toaster closeButton position="top-center" />
         <ScrollRestoration />
         <Scripts />
@@ -109,6 +102,8 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
 
 export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
+
+  console.log(data);
 
   return (
     <Document>

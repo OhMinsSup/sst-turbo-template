@@ -1,3 +1,4 @@
+import type { FieldErrors } from "react-hook-form";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -34,7 +35,9 @@ export default function SignUpForm() {
       password: "",
       confirmPassword: "",
     },
-    errors: (actionData?.result ?? undefined) as any,
+    errors: (actionData?.result ?? undefined) as
+      | FieldErrors<FormFieldSignUpSchema>
+      | undefined,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
@@ -50,28 +53,33 @@ export default function SignUpForm() {
   };
 
   return (
-    <div className="grid gap-6">
+    <div className="text-center">
+      <span className="select-none font-bold">Instagram 계정으로 회원가입</span>
       <Form {...form}>
         <form
           id="signup-form"
-          data-testid="signup-form"
+          className="flex w-full flex-col gap-1.5 py-4 text-start"
           onSubmit={form.handleSubmit(onSubmit)}
         >
-          <div className="grid gap-5">
+          <div className="grid gap-3">
             <FormField
               control={form.control}
               name="email"
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                  <FormLabel>이메일</FormLabel>
                   <FormControl>
                     <Input
-                      data-testid="email"
-                      placeholder="example@example.com"
+                      type="email"
+                      className={cn(
+                        "h-14",
+                        error?.message
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : undefined,
+                      )}
+                      placeholder="이메일 주소"
                       autoCapitalize="none"
                       autoComplete="email"
-                      autoCorrect="off"
-                      dir="ltr"
+                      dir="auto"
                       {...field}
                     />
                   </FormControl>
@@ -82,15 +90,19 @@ export default function SignUpForm() {
             <FormField
               control={form.control}
               name="password"
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                  <FormLabel>비밀번호</FormLabel>
                   <FormControl>
                     <InputPassword
-                      data-testid="password"
                       placeholder="비밀번호"
+                      className={cn(
+                        "h-14",
+                        error?.message
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : undefined,
+                      )}
                       autoComplete="current-password"
-                      dir="ltr"
+                      dir="auto"
                       {...field}
                     />
                   </FormControl>
@@ -101,15 +113,19 @@ export default function SignUpForm() {
             <FormField
               control={form.control}
               name="confirmPassword"
-              render={({ field }) => (
+              render={({ field, fieldState: { error } }) => (
                 <FormItem>
-                  <FormLabel>비밀번호 확인</FormLabel>
                   <FormControl>
                     <InputPassword
-                      data-testid="confirm-password"
                       placeholder="비밀번호 확인"
+                      className={cn(
+                        "h-14",
+                        error?.message
+                          ? "border-destructive focus-visible:ring-destructive"
+                          : undefined,
+                      )}
                       autoComplete="current-password"
-                      dir="ltr"
+                      dir="auto"
                       {...field}
                     />
                   </FormControl>
@@ -119,6 +135,7 @@ export default function SignUpForm() {
             />
             <Button
               type="submit"
+              size="lg"
               disabled={isSubmittingForm}
               aria-disabled={isSubmittingForm}
               data-testid="signup-button"
@@ -131,16 +148,6 @@ export default function SignUpForm() {
           </div>
         </form>
       </Form>
-      <div className="relative">
-        <div className="absolute inset-0 flex items-center">
-          <span className="w-full border-t" />
-        </div>
-        <div className="relative flex justify-center text-xs uppercase">
-          <span className={cn("bg-background px-2 text-muted-foreground")}>
-            또는
-          </span>
-        </div>
-      </div>
     </div>
   );
 }

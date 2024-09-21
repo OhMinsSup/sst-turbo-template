@@ -9,10 +9,11 @@ import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/utils/client-hints";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
+  const headers = new Headers();
+
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
 
-  const headers = new Headers();
   const client = createRemixServerClient({
     request,
     headers,

@@ -11,11 +11,23 @@ import {
 } from "@epic-web/client-hints/color-scheme";
 import { clientHint as timeZoneHint } from "@epic-web/client-hints/time-zone";
 
+import { SESSION_DATA_KEY } from "~/constants/constants";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
+import {
+  clientHint as deviceHint,
+  subscribeToDeviceChange,
+} from "./client-hints-device-type";
 
 const hintsUtils = getHintUtils({
-  theme: colorSchemeHint,
-  timeZone: timeZoneHint,
+  theme: {
+    ...colorSchemeHint,
+    cookieName: SESSION_DATA_KEY.themeKey,
+  },
+  timeZone: {
+    ...timeZoneHint,
+    cookieName: SESSION_DATA_KEY.timezoneKey,
+  },
+  device: deviceHint,
 });
 
 export const { getHints } = hintsUtils;
@@ -33,13 +45,14 @@ export function useHints() {
  * if they are not set then reloads the page if any cookie was set to an
  * inaccurate value.
  */
-export function ClientHintCheck({ nonce }: { nonce: string }) {
+export function ClientHintCheck() {
   const { revalidate } = useRevalidator();
   useEffect(() => subscribeToSchemeChange(() => revalidate()), [revalidate]);
 
+  useEffect(() => subscribeToDeviceChange(() => revalidate()), [revalidate]);
+
   return (
     <script
-      nonce={nonce}
       dangerouslySetInnerHTML={{
         __html: hintsUtils.getClientHintCheckScript(),
       }}

@@ -9,7 +9,6 @@ import {
   createRemixServerClient,
   requireAnonymous,
 } from "~/.server/utils/auth";
-import { checkHoneypot } from "~/.server/utils/honeypot";
 import {
   errorJsonDataResponse,
   validateRequestMethods,
@@ -30,8 +29,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     await requireAnonymous(client);
 
     const formData = await request.formData();
-
-    checkHoneypot(formData);
 
     const input = {
       email: formData.get("email"),
