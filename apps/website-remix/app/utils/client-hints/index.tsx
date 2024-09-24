@@ -16,7 +16,7 @@ import { useRequestInfo } from "~/hooks/useRequestInfo";
 import {
   clientHint as deviceHint,
   subscribeToDeviceChange,
-} from "./client-hints-device-type";
+} from "./device-type";
 
 const hintsUtils = getHintUtils({
   theme: {

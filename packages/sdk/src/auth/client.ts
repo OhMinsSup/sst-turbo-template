@@ -31,7 +31,6 @@ import { HttpResultStatus, HttpStatus } from "../api/constants";
 import {
   createAppError,
   createHttpError,
-  isAppError,
   isFetchError,
   isHttpError,
 } from "../api/errors";
