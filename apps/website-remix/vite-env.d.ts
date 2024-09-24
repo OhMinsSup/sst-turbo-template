@@ -6,8 +6,6 @@
   
   interface ImportMetaEnv {
 	readonly NEXT_PUBLIC_SERVER_URL: string;
-	readonly NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
-	readonly NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   
   declare module '$env/static/private' {
@@ -104,12 +102,14 @@
     export const npm_package_devDependencies__template_prettier_config: string;
     export const LOGNAME: string;
     export const npm_lifecycle_script: string;
+    export const npm_package_dependencies_zod: string;
     export const VSCODE_GIT_IPC_HANDLE: string;
     export const npm_package_dependencies_react: string;
     export const PGDATA: string;
     export const NVM_BIN: string;
     export const npm_config_user_agent: string;
     export const npm_package_dependencies__template_utils: string;
+    export const npm_package_dependencies__epic_web_client_hints: string;
     export const VSCODE_GIT_ASKPASS_NODE: string;
     export const GIT_ASKPASS: string;
     export const npm_config_link_workspace_packages: string;
@@ -124,7 +124,5 @@
   
   declare module '$env/static/public' {
     export const NEXT_PUBLIC_SERVER_URL: string;
-    export const NEXT_PUBLIC_ACCESS_TOKEN_NAME: string;
-    export const NEXT_PUBLIC_REFRESH_TOKEN_NAME: string;
 }
   

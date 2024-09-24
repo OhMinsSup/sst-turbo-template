@@ -12,7 +12,7 @@ export const meta: MetaFunction<RoutesLoaderData> = ({ data }) => {
   return getMeta({
     title: SITE_CONFIG.title,
     description: SITE_CONFIG.description,
-    siteUrl: data.requestInfo.domainUrl,
+    siteUrl: data.requestInfo.origin,
     image: SITE_CONFIG.ogImage,
   });
 };

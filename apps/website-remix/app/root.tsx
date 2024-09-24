@@ -5,23 +5,23 @@ import {
   Scripts,
   ScrollRestoration,
   useLoaderData,
+  useRevalidator,
 } from "@remix-run/react";
 
 import "./styles/tailwind.css";
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, SerializeFrom } from "@remix-run/node";
+import { useEffect } from "react";
+import { QueryClientProvider } from "@tanstack/react-query";
 
 import { cn } from "@template/ui";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast, Toaster } from "./components/shared/Toast";
-import { AppProvider } from "./store/app";
-import { QueryProvider } from "./store/query";
-import {
-  NonFlashOfWrongThemeEls,
-  ThemeProvider,
-  useTheme,
-} from "./store/theme";
+import { createRemixBrowserClient } from "./utils/auth";
+import { ClientHintCheck } from "./utils/client-hints";
+import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { action } from "~/.server/routes/root/root.action";
@@ -48,25 +48,18 @@ interface Props {
 
 function Document({ children }: Props) {
   const data = useLoaderData<RoutesLoaderData>();
-  const [theme] = useTheme();
   return (
     <html
       lang="en"
       itemScope
       itemType="http://schema.org/WebSite"
-      className={cn(theme)}
+      className={cn(data.requestInfo.userPrefs.theme)}
     >
       <head>
-        <meta charSet="utf-8" />
-        <meta
-          name="viewport"
-          content="width=device-width,initial-scale=1,viewport-fit=cover"
-        />
-        <meta name="theme-color" content="#ffffff" />
-        <link rel="canonical" href={data.requestInfo.domainUrl} />
+        <ClientHintCheck />
+        <GlobalMeta />
         <Meta />
         <Links />
-        <NonFlashOfWrongThemeEls ssrTheme={Boolean(theme)} />
       </head>
       <body>
         {children}
@@ -78,18 +71,46 @@ function Document({ children }: Props) {
   );
 }
 
+interface AppWithProviderProps {
+  session?: SerializeFrom<RoutesLoaderData>["session"];
+  children: React.ReactNode;
+}
+
+function AppWithProvider({ children, session }: AppWithProviderProps) {
+  const queryClient = getQueryClient();
+
+  const revalidator = useRevalidator();
+
+  const authClient = createRemixBrowserClient();
+
+  useEffect(() => {
+    const {
+      data: { subscription },
+    } = authClient.onAuthStateChange((_, newSession) => {
+      if (newSession?.expires_at !== session?.expires_at) {
+        revalidator.revalidate();
+      }
+    });
+
+    return () => subscription.unsubscribe();
+  }, [session]);
+
+  return (
+    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+  );
+}
+
 export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
+
+  console.log(data);
+
   return (
-    <ThemeProvider specifiedTheme={data.userPrefs.theme}>
-      <Document>
-        <AppProvider session={data.session}>
-          <QueryProvider baseUrl={data.requestInfo.domainUrl}>
-            <Outlet />
-          </QueryProvider>
-        </AppProvider>
-        {data.toast ? <ShowToast toast={data.toast} /> : null}
-      </Document>
-    </ThemeProvider>
+    <Document>
+      <AppWithProvider session={data.session}>
+        <Outlet />
+      </AppWithProvider>
+      {data.toast ? <ShowToast toast={data.toast} /> : null}
+    </Document>
   );
 }

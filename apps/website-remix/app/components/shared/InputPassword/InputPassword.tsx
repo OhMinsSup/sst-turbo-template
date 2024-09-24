@@ -1,3 +1,4 @@
+import type { LucideProps } from "lucide-react";
 import * as React from "react";
 
 import { Button } from "@template/ui/button";
@@ -8,10 +9,10 @@ import { Icons } from "~/components/icons";
 export type InputPasswordProps = Omit<
   React.InputHTMLAttributes<HTMLInputElement>,
   "type"
->;
+> & { iconEyeProps?: LucideProps; iconEyeOffProps?: LucideProps };
 
 const InputPassword = React.forwardRef<HTMLInputElement, InputPasswordProps>(
-  ({ className, ...props }, ref) => {
+  ({ className, iconEyeOffProps, iconEyeProps, ...props }, ref) => {
     const [showPassword, setShowPassword] = React.useState(false);
     return (
       <div className="relative rounded-md">
@@ -30,7 +31,11 @@ const InputPassword = React.forwardRef<HTMLInputElement, InputPasswordProps>(
             setShowPassword((prev) => !prev);
           }}
         >
-          {showPassword ? <Icons.eye /> : <Icons.eyeOff />}
+          {showPassword ? (
+            <Icons.eye {...iconEyeProps} />
+          ) : (
+            <Icons.eyeOff {...iconEyeOffProps} />
+          )}
         </Button>
       </div>
     );

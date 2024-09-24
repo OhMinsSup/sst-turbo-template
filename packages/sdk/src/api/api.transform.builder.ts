@@ -80,6 +80,7 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
       }
     } else if (Array.isArray(headers)) {
       for (const header of headers) {
+        // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
         if (Array.isArray(header) && header.length === 2) {
           const [key, value] = header;
           if (key && value) {

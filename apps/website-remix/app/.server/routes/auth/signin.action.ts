@@ -3,38 +3,37 @@ import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignInSchema } from "@template/sdk";
-import {
-  createHttpError,
-  ErrorDisplayType,
-  HttpStatus,
-  isFetchError,
-  RequestMethod,
-} from "@template/sdk";
+import { isFetchError, isHttpError, RequestMethod } from "@template/sdk";
 
-import { createRemixServerClient } from "~/.server/utils/auth";
-import { errorJsonDataResponse } from "~/.server/utils/response";
+import {
+  createRemixServerClient,
+  requireAnonymous,
+} from "~/.server/utils/auth";
+import {
+  errorJsonDataResponse,
+  validateRequestMethods,
+} from "~/.server/utils/response";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-export const action = async (ctx: ActionFunctionArgs) => {
-  if (ctx.request.method.toUpperCase() !== RequestMethod.POST) {
-    throw createHttpError({
-      statusMessage: "Method Not Allowed",
-      statusCode: HttpStatus.METHOD_NOT_ALLOWED,
-      displayType: ErrorDisplayType.TOAST,
-      data: "not allowed method",
-    });
-  }
-
-  // eslint-disable-next-line @typescript-eslint/no-unsafe-assignment
-  const input: Awaited<FormFieldSignInSchema> = await ctx.request.json();
-
+export const action = async ({ request }: ActionFunctionArgs) => {
   const headers = new Headers();
 
+  const client = createRemixServerClient({
+    request,
+    headers,
+  });
+
   try {
-    const client = createRemixServerClient({
-      request: ctx.request,
-      headers,
-    });
+    validateRequestMethods(request, [RequestMethod.POST]);
+
+    await requireAnonymous(client);
+
+    const formData = await request.formData();
+
+    const input = {
+      email: formData.get("email"),
+      password: formData.get("password"),
+    } as FormFieldSignInSchema;
 
     await client.signIn(input, true);
 
@@ -44,6 +43,10 @@ export const action = async (ctx: ActionFunctionArgs) => {
   } catch (error) {
     if (isFetchError<RemixDataFlow.Response>(error)) {
       return json(errorJsonDataResponse(error.data?.message));
+    }
+
+    if (isHttpError(error)) {
+      return json(errorJsonDataResponse(error.message));
     }
 
     throw error;

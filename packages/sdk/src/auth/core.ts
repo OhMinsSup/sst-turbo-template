@@ -1,3 +1,5 @@
+import { isBrowser } from "@template/utils/assertion";
+
 import type { AuthClientOptions } from "./types";
 import { ApiClient } from "../api/api.client";
 
@@ -20,13 +22,19 @@ export class Core {
 
   protected debug(...args: unknown[]) {
     if (this.logDebugMessages) {
-      console.debug(`[Debug message]`, ...args);
+      console.debug(
+        `[Debug message][${isBrowser() ? "client" : "server"}] `,
+        ...args,
+      );
     }
     return this;
   }
 
   protected error(...args: unknown[]) {
-    console.error(`[Error message]`, ...args);
+    console.error(
+      `[Error message][${isBrowser() ? "client" : "server"}] `,
+      ...args,
+    );
     return this;
   }
 }

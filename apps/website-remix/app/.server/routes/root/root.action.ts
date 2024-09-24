@@ -2,30 +2,13 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { json } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 
+import { combineHeaders } from "@template/utils/request";
+
 import { createRemixServerClient } from "~/.server/utils/auth";
-import {
-  errorJsonDataResponse,
-  successJsonDataResponse,
-} from "~/.server/utils/response";
-import { setTheme } from "~/.server/utils/theme";
-import { isTheme } from "~/store/theme";
-import { combineHeaders } from "~/utils/misc";
+import { successJsonDataResponse } from "~/.server/utils/response";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   return namedAction(request, {
-    async setTheme() {
-      const requestText = await request.text();
-      const form = new URLSearchParams(requestText);
-      const theme = form.get("theme");
-      if (!isTheme(theme)) {
-        return json(errorJsonDataResponse(false));
-      }
-      return json(successJsonDataResponse(true), {
-        headers: {
-          "Set-Cookie": setTheme(theme),
-        },
-      });
-    },
     async logout() {
       const headers = new Headers();
 

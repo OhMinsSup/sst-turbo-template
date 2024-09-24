@@ -97,12 +97,14 @@
     readonly npm_package_devDependencies__template_prettier_config: string;
     readonly LOGNAME: string;
     readonly npm_lifecycle_script: string;
+    readonly npm_package_dependencies_zod: string;
     readonly VSCODE_GIT_IPC_HANDLE: string;
     readonly npm_package_dependencies_react: string;
     readonly PGDATA: string;
     readonly NVM_BIN: string;
     readonly npm_config_user_agent: string;
     readonly npm_package_dependencies__template_utils: string;
+    readonly npm_package_dependencies__epic_web_client_hints: string;
     readonly VSCODE_GIT_ASKPASS_NODE: string;
     readonly GIT_ASKPASS: string;
     readonly npm_config_link_workspace_packages: string;

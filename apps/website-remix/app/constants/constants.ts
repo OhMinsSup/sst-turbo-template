@@ -19,8 +19,13 @@ export const SITE_CONFIG = {
   apple180x180: "/images/favicon-180.png",
   apple192x192: "/images/favicon-192.png",
   manifest: "/site.webmanifest",
+  backgroundImage: "/images/bg.webp",
 };
 
 export const SESSION_DATA_KEY = {
   dataKey: "session.data",
+  themeKey: "template.theme",
+  toastKey: "template.toast",
+  timezoneKey: "template.timezone",
+  deviceKey: "template.device",
 };

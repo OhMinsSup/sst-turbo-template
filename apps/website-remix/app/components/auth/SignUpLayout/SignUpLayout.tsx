@@ -13,49 +13,28 @@ interface SignUpLayoutProps {
 
 export default function SignUpLayout({ children }: SignUpLayoutProps) {
   return (
-    <div className="container grid h-screen w-screen flex-col items-center justify-center lg:max-w-none lg:grid-cols-2 lg:px-0">
-      <Link
-        unstable_viewTransition
-        to={PAGE_ENDPOINTS.AUTH.SIGNIN}
-        className={cn(
-          buttonVariants({ variant: "ghost" }),
-          "absolute right-4 top-4 md:right-8 md:top-8",
-        )}
-      >
-        로그인
-      </Link>
-      <div className={cn("hidden h-full bg-muted lg:block")} />
-      <div className="lg:p-8">
-        <div className="mx-auto flex w-full flex-col justify-center space-y-6 sm:w-[350px]">
-          <div className="flex flex-col space-y-2 text-center">
-            <Icons.logo className="mx-auto h-8 fill-current" />
+    <div className="z-50 mx-auto w-full max-w-[370px] py-16">
+      {children}
+      <div className="mt-6 space-y-5">
+        <div className="relative">
+          <div className="absolute inset-0 flex items-center">
+            <span className="w-full border-t" />
           </div>
-          {children}
-          <p
-            className={cn(
-              "space-x-3 px-8 text-center text-sm text-muted-foreground",
-            )}
-          >
-            <Link
-              to="/terms"
-              className={cn("hover:text-brand underline underline-offset-4")}
-            >
-              Remix 약관
-            </Link>
-            <Link
-              to="/privacy"
-              className={cn("hover:text-brand underline underline-offset-4")}
-            >
-              개인정보처리방침
-            </Link>
-            <Link
-              to="/cookie"
-              className={cn("hover:text-brand underline underline-offset-4")}
-            >
-              쿠키정책
-            </Link>
-          </p>
+          <div className="relative flex justify-center text-xs uppercase">
+            <span className="bg-background px-2 text-muted-foreground">
+              또는
+            </span>
+          </div>
         </div>
+        <p className="px-8 text-center text-sm text-muted-foreground">
+          <Link
+            to={PAGE_ENDPOINTS.AUTH.SIGNIN}
+            unstable_viewTransition
+            className="hover:text-brand underline underline-offset-4"
+          >
+            이미 계정이 있으신가요? 로그인
+          </Link>
+        </p>
       </div>
     </div>
   );
