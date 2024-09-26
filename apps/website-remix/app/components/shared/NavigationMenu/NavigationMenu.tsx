@@ -17,14 +17,19 @@ import {
 import { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import { Icons } from "~/components/icons";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
+import { useSignOut } from "~/hooks/useSignOut";
+import { useOptionalUser } from "~/hooks/useUser";
 import { useOptimisticThemeMode } from "~/utils/theme";
 
 export default function NavigationMenu() {
   const fetcher = useFetcher<RoutesActionData>();
   const requestInfo = useRequestInfo();
+  const user = useOptionalUser();
 
   const optimisticMode = useOptimisticThemeMode();
   const mode = optimisticMode ?? requestInfo.userPrefs.theme ?? "system";
+
+  const { signOut, isLoading } = useSignOut();
 
   const onThemeChange = (e: React.MouseEvent<HTMLDivElement, MouseEvent>) => {
     const theme = e.currentTarget.getAttribute("data-value") ?? "system";
@@ -36,6 +41,10 @@ export default function NavigationMenu() {
       encType: "multipart/form-data",
       method: "post",
     });
+  };
+
+  const onLogout = () => {
+    signOut();
   };
 
   return (
@@ -104,9 +113,27 @@ export default function NavigationMenu() {
           문제 신고
         </DropdownMenuItem>
         <DropdownMenuSeparator className="my-0 h-[1.2px]" />
-        <DropdownMenuItem className="cursor-pointer select-none rounded-none px-4 py-3 text-[15px] font-semibold tracking-normal focus:bg-transparent active:bg-primary-foreground">
-          <div aria-label="Log out">로그아웃</div>
-        </DropdownMenuItem>
+        {user ? (
+          <DropdownMenuItem
+            className="cursor-pointer select-none rounded-none px-4 py-3 text-[15px] font-semibold tracking-normal focus:bg-transparent active:bg-primary-foreground"
+            onClick={onLogout}
+          >
+            {isLoading ? (
+              <Icons.spinner className="mr-2 size-4 animate-spin" />
+            ) : null}
+            <div aria-label="Log out">로그아웃</div>
+          </DropdownMenuItem>
+        ) : (
+          <DropdownMenuItem
+            className="cursor-pointer select-none rounded-none px-4 py-3 text-[15px] font-semibold tracking-normal focus:bg-transparent active:bg-primary-foreground"
+            onClick={onLogout}
+          >
+            {isLoading ? (
+              <Icons.spinner className="mr-2 size-4 animate-spin" />
+            ) : null}
+            <div aria-label="Log out">로그인 / 회원가입</div>
+          </DropdownMenuItem>
+        )}
       </DropdownMenuContent>
     </DropdownMenu>
   );

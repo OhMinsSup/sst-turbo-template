@@ -7,6 +7,12 @@ import { t3EnvPlugin } from "@template/vite/t3-env";
 
 import { t3EnvFn } from "./env";
 
+declare module "@remix-run/server-runtime" {
+  interface Future {
+    unstable_singleFetch: true; // 👈 enable _types_ for single-fetch
+  }
+}
+
 installGlobals({ nativeFetch: true });
 
 export default defineConfig({
@@ -19,7 +25,8 @@ export default defineConfig({
         v3_fetcherPersist: true,
         v3_relativeSplatPath: true,
         v3_throwAbortReason: true,
-        unstable_singleFetch: true,
+        unstable_optimizeDeps: true,
+        unstable_singleFetch: true, // 👈 enable single-fetch
         unstable_lazyRouteDiscovery: true,
       },
     }),

@@ -108,45 +108,7 @@ export class AuthService {
    * @param {RefreshTokenDTO} input
    */
   async refresh(input: RefreshTokenDTO) {
-    let jwtDto: JwtPayload;
-    try {
-      jwtDto = await this.jwt.verifyAsync<JwtPayload>(input.refreshToken, {
-        secret: this.env.getRefreshTokenSecret(),
-      });
-    } catch (e) {
-      assertHttpError(
-        e instanceof Error,
-        {
-          resultCode: HttpResultStatus.TOKEN_EXPIRED,
-          message: e.message,
-          result: null,
-        },
-        "Unauthorized",
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    assertHttpError(
-      !jwtDto || (jwtDto && !jwtDto.sub),
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "token sub invalid",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
-
-    assertHttpError(
-      !jwtDto.jti,
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "token refresh jti invalid",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
+    const jwtDto = await this.token.getRefreshTokenPayload(input.refreshToken);
 
     const token = await this.token.findByTokenId(jwtDto.jti);
     assertHttpError(
@@ -181,7 +143,10 @@ export class AuthService {
       });
 
       const accessToken = this.token.generateAccessToken(user.id);
-      const refreshToken = await this.token.generateRefreshToken(user.id);
+      const refreshToken = await this.token.generateRefreshToken(
+        user.id,
+        accessToken.token,
+      );
 
       return {
         resultCode: HttpResultStatus.OK,
@@ -258,7 +223,10 @@ export class AuthService {
     );
 
     const accessToken = this.token.generateAccessToken(user.id);
-    const refreshToken = await this.token.generateRefreshToken(user.id);
+    const refreshToken = await this.token.generateRefreshToken(
+      user.id,
+      accessToken.token,
+    );
 
     // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
     await this.token.deleteByExpiresAtTokens({
@@ -325,7 +293,11 @@ export class AuthService {
       );
 
       const accessToken = this.token.generateAccessToken(user.id);
-      const refreshToken = await this.token.generateRefreshToken(user.id, tx);
+      const refreshToken = await this.token.generateRefreshToken(
+        user.id,
+        accessToken.token,
+        tx,
+      );
 
       // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
       const conditionExpiredAt = subMilliseconds(
@@ -365,34 +337,7 @@ export class AuthService {
    * @param {SignoutDTO} input
    */
   async signout(input: SignoutDTO) {
-    let jwtDto: JwtPayload;
-    try {
-      jwtDto = await this.jwt.verifyAsync<JwtPayload>(input.accessToken, {
-        secret: this.env.getAccessTokenSecret(),
-      });
-    } catch {
-      assertHttpError(
-        true,
-        {
-          resultCode: HttpResultStatus.TOKEN_EXPIRED,
-          message: "Unauthorized",
-          result: null,
-        },
-        "Unauthorized",
-        HttpStatus.UNAUTHORIZED,
-      );
-    }
-
-    assertHttpError(
-      !jwtDto || (jwtDto && !jwtDto.sub),
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "Unauthorized",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
+    const jwtDto = await this.token.getAccessTokenPayload(input.accessToken);
 
     const user = await this.user.checkUserById(jwtDto.sub);
     assertHttpError(
@@ -406,7 +351,7 @@ export class AuthService {
       HttpStatus.NOT_FOUND,
     );
 
-    await this.token.deleteByTokenId(jwtDto.jti);
+    await this.token.deleteByAccessToken(input.accessToken);
 
     return {
       resultCode: HttpResultStatus.OK,

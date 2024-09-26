@@ -366,7 +366,7 @@ export class AuthClient extends Core {
       if (jwt) {
         const data = await this.api.rpc("me").setAuthToken(jwt).get();
         return {
-          user: data as unknown as ApiBuilderReturnValue<"me", "GET">["result"],
+          user: data.result,
           error: null,
         };
       }
@@ -398,7 +398,7 @@ export class AuthClient extends Core {
           .get();
 
         return {
-          user: data as unknown as ApiBuilderReturnValue<"me", "GET">["result"],
+          user: data.result,
           error: null,
         };
       });

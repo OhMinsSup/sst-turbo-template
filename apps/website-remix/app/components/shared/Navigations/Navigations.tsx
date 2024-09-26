@@ -13,7 +13,7 @@ export default function Navigations() {
       <Link
         to={PAGE_ENDPOINTS.ROOT}
         unstable_viewTransition
-        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-50 active:scale-90 sm:px-8 sm:py-5"
+        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-100 active:scale-90 dark:hover:bg-slate-800 dark:hover:bg-opacity-75 sm:px-8 sm:py-5"
       >
         <Icons.home2
           className={cn(
@@ -27,7 +27,7 @@ export default function Navigations() {
       <Link
         to={"/search"}
         unstable_viewTransition
-        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-50 active:scale-90 sm:px-8 sm:py-5"
+        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-100 active:scale-90 dark:hover:bg-slate-800 dark:hover:bg-opacity-75 sm:px-8 sm:py-5"
       >
         <Icons.search2
           className={cn(
@@ -42,7 +42,7 @@ export default function Navigations() {
       <Link
         to={"/activity"}
         unstable_viewTransition
-        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-50 active:scale-90 sm:px-8 sm:py-5"
+        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-100 active:scale-90 dark:hover:bg-slate-800 dark:hover:bg-opacity-75 sm:px-8 sm:py-5"
       >
         <Icons.activity
           className={cn(
@@ -60,7 +60,7 @@ export default function Navigations() {
         // to={`/@${user?.username}`}
         to={"/"}
         unstable_viewTransition
-        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-50 active:scale-90 sm:px-8 sm:py-5"
+        className="flex w-full transform items-center justify-center rounded-lg p-4 transition-all duration-150 ease-out hover:scale-100 hover:bg-slate-100 active:scale-90 dark:hover:bg-slate-800 dark:hover:bg-opacity-75 sm:px-8 sm:py-5"
       >
         <Icons.profile
           className={cn(

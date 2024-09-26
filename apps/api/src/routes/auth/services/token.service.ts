@@ -2,11 +2,13 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import type { Prisma, Token } from "@template/db";
+import { HttpResultStatus, HttpStatus } from "@template/sdk";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { AppTokenType } from "../../../libs/constants";
+import { assertHttpError } from "../../../libs/error";
 import { JwtPayload } from "../strategies/jwt.auth.strategy";
 
 @Injectable()
@@ -34,6 +36,27 @@ export class TokenService {
    */
   async deleteByTokenId(tokenId: string) {
     return await this.prisma.token.delete({ where: { id: tokenId } });
+  }
+
+  /**
+   * @description Delete tokens by userId
+   * @param {string} userId
+   */
+  async deleteByUserIdTokens(userId: string) {
+    return await this.prisma.token.deleteMany({ where: { userId } });
+  }
+
+  /**
+   * @description Delete tokens by accessToken
+   * @param {string} accessToken
+   */
+  async deleteByAccessToken(accessToken: string) {
+    return await this.prisma.token.deleteMany({
+      where: {
+        token: accessToken,
+        type: AppTokenType.RefreshToken,
+      },
+    });
   }
 
   /**
@@ -89,15 +112,20 @@ export class TokenService {
    */
   async generateRefreshToken(
     userId: string,
+    accessToken: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     const secret = this.env.getRefreshTokenSecret();
     const expiresAt = this.env.getRefreshTokenExpiresAt();
 
-    const refreshTokenPayload: Pick<Token, "type" | "expires" | "userId"> = {
+    const refreshTokenPayload: Pick<
+      Token,
+      "type" | "expires" | "userId" | "token"
+    > = {
       userId,
       expires: expiresAt,
       type: AppTokenType.RefreshToken,
+      token: accessToken,
     };
 
     const jwtPayload = {
@@ -117,5 +145,90 @@ export class TokenService {
       }),
       expiresAt,
     };
+  }
+
+  /**
+   * @description Get access token payload
+   * @param {string} accessToken
+   */
+  async getAccessTokenPayload(accessToken: string) {
+    let jwtDto: JwtPayload;
+    try {
+      jwtDto = await this.jwt.verifyAsync<JwtPayload>(accessToken, {
+        secret: this.env.getAccessTokenSecret(),
+      });
+    } catch {
+      assertHttpError(
+        true,
+        {
+          resultCode: HttpResultStatus.TOKEN_EXPIRED,
+          message: "Unauthorized",
+          result: null,
+        },
+        "Unauthorized",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    assertHttpError(
+      !jwtDto || (jwtDto && !jwtDto.sub),
+      {
+        resultCode: HttpResultStatus.TOKEN_EXPIRED,
+        message: "Unauthorized",
+        result: null,
+      },
+      "Unauthorized",
+      HttpStatus.UNAUTHORIZED,
+    );
+
+    return jwtDto;
+  }
+
+  /**
+   * @description Get refresh token payload
+   * @param {string} refreshToken
+   */
+  async getRefreshTokenPayload(refreshToken: string) {
+    let jwtDto: JwtPayload;
+    try {
+      jwtDto = await this.jwt.verifyAsync<JwtPayload>(refreshToken, {
+        secret: this.env.getRefreshTokenSecret(),
+      });
+    } catch (e) {
+      assertHttpError(
+        e instanceof Error,
+        {
+          resultCode: HttpResultStatus.TOKEN_EXPIRED,
+          message: e.message,
+          result: null,
+        },
+        "Unauthorized",
+        HttpStatus.UNAUTHORIZED,
+      );
+    }
+
+    assertHttpError(
+      !jwtDto || (jwtDto && !jwtDto.sub),
+      {
+        resultCode: HttpResultStatus.TOKEN_EXPIRED,
+        message: "token sub invalid",
+        result: null,
+      },
+      "Unauthorized",
+      HttpStatus.UNAUTHORIZED,
+    );
+
+    assertHttpError(
+      !jwtDto.jti,
+      {
+        resultCode: HttpResultStatus.TOKEN_EXPIRED,
+        message: "token refresh jti invalid",
+        result: null,
+      },
+      "Unauthorized",
+      HttpStatus.UNAUTHORIZED,
+    );
+
+    return jwtDto;
   }
 }

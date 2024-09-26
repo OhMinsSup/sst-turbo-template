@@ -44,13 +44,12 @@ export async function getUserId(client: AuthRemixServerClient) {
   }
 
   const { user } = await client.getUser();
+  console.log("user!! ==>", user, user?.id);
   if (!user) {
-    await client.signOut();
-
     throw createHttpError({
       statusMessage: "Unauthorized",
       statusCode: HttpStatus.UNAUTHORIZED,
-      data: "Unauthorized",
+      data: "User not found",
     });
   }
 
