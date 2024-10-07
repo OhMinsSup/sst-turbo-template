@@ -26,7 +26,7 @@ export default function SignUpForm() {
   const submit = useSubmit();
   const actionData = useActionData<RoutesActionData>();
 
-  const isSubmittingForm = navigation.state !== "idle";
+  const isSubmittingForm = navigation.state === "submitting";
 
   const form = useForm<FormFieldSignUpSchema>({
     resolver: zodResolver(schema.signUp),

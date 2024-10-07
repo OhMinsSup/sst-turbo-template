@@ -1,5 +1,5 @@
 import React from "react";
-import { useFetcher } from "@remix-run/react";
+import { useFetcher, useNavigate } from "@remix-run/react";
 
 import { cn } from "@template/ui";
 import {
@@ -16,6 +16,7 @@ import {
 
 import { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import { Icons } from "~/components/icons";
+import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useSignOut } from "~/hooks/useSignOut";
 import { useOptionalUser } from "~/hooks/useUser";
@@ -25,6 +26,7 @@ export default function NavigationMenu() {
   const fetcher = useFetcher<RoutesActionData>();
   const requestInfo = useRequestInfo();
   const user = useOptionalUser();
+  const navigate = useNavigate();
 
   const optimisticMode = useOptimisticThemeMode();
   const mode = optimisticMode ?? requestInfo.userPrefs.theme ?? "system";
@@ -45,6 +47,12 @@ export default function NavigationMenu() {
 
   const onLogout = () => {
     signOut();
+  };
+
+  const onSignInWithSignUp = () => {
+    navigate(PAGE_ENDPOINTS.AUTH.SIGNIN, {
+      unstable_viewTransition: true,
+    });
   };
 
   return (
@@ -126,7 +134,7 @@ export default function NavigationMenu() {
         ) : (
           <DropdownMenuItem
             className="cursor-pointer select-none rounded-none px-4 py-3 text-[15px] font-semibold tracking-normal focus:bg-transparent active:bg-primary-foreground"
-            onClick={onLogout}
+            onClick={onSignInWithSignUp}
           >
             {isLoading ? (
               <Icons.spinner className="mr-2 size-4 animate-spin" />

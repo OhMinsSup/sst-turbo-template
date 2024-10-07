@@ -25,7 +25,8 @@ export default function SignInForm() {
   const submit = useSubmit();
   const actionData = useActionData<RoutesActionData>();
 
-  const isSubmittingForm = navigation.state !== "idle";
+  const isSubmittingForm = navigation.state === "submitting";
+  console.log("isSubmittingForm", navigation.state);
 
   const form = useForm<FormFieldSignInSchema>({
     progressive: true,

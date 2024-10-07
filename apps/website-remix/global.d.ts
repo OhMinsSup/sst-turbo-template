@@ -67,7 +67,6 @@
     readonly npm_package_dependencies_isbot: string;
     readonly USER_ZDOTDIR: string;
     readonly __CFBundleIdentifier: string;
-    readonly BLOCKSIZE: string;
     readonly npm_command: string;
     readonly npm_package_devDependencies_tailwindcss: string;
     readonly npm_package_dependencies__remix_run_serve: string;
@@ -111,7 +110,6 @@
     readonly npm_package_dependencies__template_sdk: string;
     readonly npm_package_dependencies__remix_run_node: string;
     readonly npm_package_scripts_clean: string;
-    readonly SQLITE_EXEMPT_PATH_FROM_VNODE_GUARDS: string;
     readonly npm_node_execpath: string;
     readonly COLORTERM: string;
     readonly NODE_ENV: string;

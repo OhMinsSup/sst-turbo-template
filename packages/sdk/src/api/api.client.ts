@@ -3,7 +3,7 @@ import { ofetch } from "ofetch";
 import { withBase, withoutTrailingSlash } from "ufo";
 
 import type { FnNameKey, Options, RpcOptions } from "./types";
-import { ApiTransformBuilder } from "./api.transform.builder";
+import { ApiHttpBuilder } from "./api.http.builder";
 
 export class ApiClient {
   protected url: string;
@@ -38,7 +38,7 @@ export class ApiClient {
   }
 
   rpc<FnKey extends FnNameKey>(fnKey: FnKey, options: RpcOptions = {}) {
-    return new ApiTransformBuilder<FnKey>({
+    return new ApiHttpBuilder<FnKey>({
       fnKey,
       fetchClient: this.fetchClient,
       url: this.url,

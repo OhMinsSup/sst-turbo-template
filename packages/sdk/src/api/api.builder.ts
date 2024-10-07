@@ -1,18 +1,15 @@
-import type { $Fetch, FetchOptions } from "ofetch";
+import type { $Fetch } from "ofetch";
 
 import type {
   $OfetchOptions,
+  ApiBody,
   ApiBuilderReturnValue,
-  ApiInput,
+  ApiQuery,
   BuilderConstructorOptions,
-  Endpoints,
   FnNameKey,
   HeadersInit,
   MethodType,
 } from "./types";
-import { HttpStatus } from "./constants";
-import { createHttpError } from "./errors";
-import { schema } from "./schema";
 
 export default class ApiBuilder<
   FnKey extends FnNameKey = FnNameKey,
@@ -21,6 +18,8 @@ export default class ApiBuilder<
   protected fnKey: FnKey;
 
   protected url: string;
+
+  protected pathname: string;
 
   protected fetchClient: $Fetch;
 
@@ -32,45 +31,11 @@ export default class ApiBuilder<
 
   protected headers: HeadersInit;
 
-  protected body?: ApiInput<FnKey, MethodKey> | undefined;
+  protected body?: ApiBody<FnKey, MethodKey> | undefined;
 
   protected signal?: AbortSignal;
 
-  protected path?: Record<string, string>;
-
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected searchParams?: Record<string, any>;
-
-  protected endpoints: Endpoints = {
-    signUp: {
-      pathname: "/auth/signup",
-      schema: schema.signUp,
-    },
-    signIn: {
-      pathname: "/auth/signin",
-      schema: schema.signIn,
-    },
-    refresh: {
-      pathname: "/auth/refresh",
-      schema: schema.refresh,
-    },
-    verify: {
-      pathname: "/auth/verify",
-      schema: schema.verify,
-    },
-    me: {
-      pathname: "/users",
-      schema: undefined,
-    },
-    byUserId: {
-      pathname: (id: string) => `/users/${id}`,
-      schema: undefined,
-    },
-    signOut: {
-      pathname: "/auth/signout",
-      schema: schema.signOut,
-    },
-  };
+  protected searchParams?: ApiQuery<FnKey, MethodKey>;
 
   constructor(builder: BuilderConstructorOptions<FnKey, MethodKey>) {
     this.fnKey = builder.fnKey;
@@ -82,7 +47,7 @@ export default class ApiBuilder<
     this.body = builder.body;
     this.signal = builder.signal;
     this.searchParams = builder.searchParams;
-    this.path = builder.path;
+    this.pathname = builder.pathname;
     if (builder.shouldThrowOnError) {
       this.shouldThrowOnError = builder.shouldThrowOnError;
     }
@@ -100,63 +65,17 @@ export default class ApiBuilder<
       | undefined
       | null,
   ): PromiseLike<TResult1 | TResult2> {
-    const _endpoint = this.endpoints[this.fnKey];
-    const _path = this.path;
-
-    let pathname: string | null = null;
-    if (typeof _endpoint.pathname === "function" && _path) {
-      pathname = _endpoint.pathname(...Object.values(_path));
-    } else if (typeof _endpoint.pathname === "string" && _path) {
-      // ex) /users/:id -> /users/1, /users/:id/:name -> /users/1/john
-      pathname = Object.entries(_path).reduce(
-        (acc, [key, value]) => acc.replace(new RegExp(`:${key}`, "g"), value),
-        _endpoint.pathname,
-      );
-    } else if (typeof _endpoint.pathname === "string") {
-      pathname = _endpoint.pathname;
-    }
-
-    if (!pathname) {
-      throw createHttpError({
-        statusMessage: "Not Found",
-        statusCode: HttpStatus.NOT_FOUND,
-        message: "Invalid pathname",
-      });
-    }
-
-    let _body = this.body;
-
-    // body validate
-    if (!["GET", "HEAD"].includes(this.method) && _body && _endpoint.schema) {
-      const input = _endpoint.schema.safeParse(_body);
-      if (!input.success) {
-        throw createHttpError({
-          statusMessage: "Bad Request",
-          statusCode: HttpStatus.BAD_REQUEST,
-          message: "Invalid input",
-          data: {
-            [input.error.name]: {
-              message: input.error.message,
-            },
-          },
-        });
-      }
-      _body = input.data as ApiInput<FnKey, MethodKey>;
-    }
-
-    const opts: FetchOptions<"json"> = {
+    const response = this.fetchClient<
+      ApiBuilderReturnValue<FnKey, MethodKey>,
+      "json"
+    >(this.pathname, {
       ...this.options,
       method: this.method,
       headers: this.headers,
       signal: this.signal,
       params: this.searchParams,
-      body: _body,
-    };
-
-    const response = this.fetchClient<
-      ApiBuilderReturnValue<FnKey, MethodKey>,
-      "json"
-    >(pathname, opts);
+      body: this.body,
+    });
 
     return response.then(onfulfilled, onrejected).catch(onrejected);
   }

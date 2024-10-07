@@ -2,15 +2,15 @@ import type { $Fetch } from "ofetch";
 
 import type {
   $OfetchOptions,
-  ApiInput,
+  ApiParams,
   FnNameKey,
   HeadersInit,
   MethodType,
   TransformBuilderConstructorOptions,
 } from "./types";
-import ApiBuilder from "./api.builder";
+import { ApiInputBuilder } from "./api.input.builder";
 
-export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
+export class ApiHttpBuilder<FnKey extends FnNameKey = FnNameKey> {
   protected fnKey: FnKey;
 
   protected url: string;
@@ -23,12 +23,11 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
 
   protected headers: HeadersInit;
 
-  protected path?: Record<string, string>;
-
   protected signal?: AbortSignal;
 
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  protected searchParams?: Record<string, any>;
+  protected path?: ApiParams<FnKey, MethodType>;
+
+  protected method?: MethodType;
 
   constructor(transform: TransformBuilderConstructorOptions<FnKey>) {
     this.fnKey = transform.fnKey;
@@ -43,9 +42,6 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
     if (transform.headers) {
       this.headers = transform.headers;
     }
-    if (transform.path) {
-      this.path = transform.path;
-    }
   }
 
   /**
@@ -59,6 +55,7 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
     this.headers = _cloneHeaders;
     return this;
   }
+
   /**
    * @description Set the headers.
    * @param {HeadersInit} headers
@@ -105,104 +102,86 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
 
   /**
    * Post method.
-   *
-   * @param {ApiInput<FnKey>?} body
    */
-  post<MethodKey extends MethodType = "POST">(
-    body?: ApiInput<FnKey, MethodKey>,
-  ) {
-    return new ApiBuilder<FnKey, MethodKey>({
+  post() {
+    this.method = "POST";
+    return new ApiInputBuilder({
       fnKey: this.fnKey,
       url: this.url,
       fetchClient: this.fetchClient,
-      headers: this.headers,
-      method: "POST" as MethodKey,
-      options: this.options,
-      body,
-      signal: this.signal,
-      path: this.path,
       shouldThrowOnError: this.shouldThrowOnError,
-      searchParams: this.searchParams,
+      method: this.method,
+      options: this.options,
+      headers: this.headers,
+      signal: this.signal,
     });
   }
 
   /**
    * Get method.
    */
-  get<MethodKey extends MethodType = "GET">() {
-    return new ApiBuilder<FnKey, MethodKey>({
+  get() {
+    this.method = "GET";
+    return new ApiInputBuilder({
       fnKey: this.fnKey,
       url: this.url,
       fetchClient: this.fetchClient,
-      headers: this.headers,
-      method: "GET" as MethodKey,
-      options: this.options,
-      signal: this.signal,
-      path: this.path,
       shouldThrowOnError: this.shouldThrowOnError,
-      searchParams: this.searchParams,
+      method: this.method,
+      options: this.options,
+      headers: this.headers,
+      signal: this.signal,
     });
   }
 
   /**
    * Put method.
-   *
-   * @param {ApiInput<FnKey>?} body
    */
-  put<MethodKey extends MethodType = "PUT">(body?: ApiInput<FnKey, MethodKey>) {
-    return new ApiBuilder<FnKey, MethodKey>({
+  put() {
+    this.method = "PUT";
+    return new ApiInputBuilder({
       fnKey: this.fnKey,
       url: this.url,
       fetchClient: this.fetchClient,
-      headers: this.headers,
-      method: "PUT" as MethodKey,
-      options: this.options,
-      body,
-      signal: this.signal,
-      path: this.path,
       shouldThrowOnError: this.shouldThrowOnError,
-      searchParams: this.searchParams,
+      method: this.method,
+      options: this.options,
+      headers: this.headers,
+      signal: this.signal,
     });
   }
 
   /**
    * Delete method.
    */
-  delete<MethodKey extends MethodType = "DELETE">() {
-    return new ApiBuilder<FnKey, MethodKey>({
+  delete() {
+    this.method = "DELETE";
+    return new ApiInputBuilder({
       fnKey: this.fnKey,
       url: this.url,
       fetchClient: this.fetchClient,
-      headers: this.headers,
-      method: "DELETE" as MethodKey,
-      options: this.options,
-      signal: this.signal,
-      path: this.path,
       shouldThrowOnError: this.shouldThrowOnError,
-      searchParams: this.searchParams,
+      method: this.method,
+      options: this.options,
+      headers: this.headers,
+      signal: this.signal,
     });
   }
 
   /**
    * Patch method.
-   *
-   * @param {ApiInput<FnKey>?} body
    */
-  patch<MethodKey extends MethodType = "PATCH">(
-    body?: ApiInput<FnKey, MethodKey>,
-  ) {
-    return new ApiBuilder<FnKey, MethodKey>({
+  patch() {
+    this.method = "PATCH";
+    return new ApiInputBuilder({
       fnKey: this.fnKey,
       url: this.url,
       fetchClient: this.fetchClient,
-      headers: this.headers,
-      method: "PATCH" as MethodKey,
-      options: this.options,
-      body,
-      signal: this.signal,
-      path: this.path,
       shouldThrowOnError: this.shouldThrowOnError,
-      searchParams: this.searchParams,
+      method: this.method,
+      options: this.options,
+      headers: this.headers,
+      signal: this.signal,
     });
   }
 
@@ -213,27 +192,6 @@ export class ApiTransformBuilder<FnKey extends FnNameKey = FnNameKey> {
    */
   abortSignal(signal: AbortSignal): this {
     this.signal = signal;
-    return this;
-  }
-
-  /**
-   * Set the pathObject for the fetch request.
-   *
-   * @param {Record<string, string>?} params
-   */
-  setPath(params?: Record<string, string>) {
-    this.path = params;
-    return this;
-  }
-
-  /**
-   *
-   * Set the searchParams for the fetch request.
-   *
-   * @param {Record<string, unknown>?} params
-   */
-  setSearchParams(params?: Record<string, unknown>) {
-    this.searchParams = params;
     return this;
   }
 

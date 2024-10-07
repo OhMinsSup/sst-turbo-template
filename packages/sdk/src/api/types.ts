@@ -1,14 +1,16 @@
 import type { $Fetch, FetchOptions } from "ofetch";
 
-import type { UserExternalPayload } from "@template/db/selectors";
+import type { PostPayload, UserExternalPayload } from "@template/db/selectors";
 
 import type { HttpResultStatus } from "./constants";
 import type {
+  FormFieldCreatePostSchema,
   FormFieldRefreshTokenSchema,
   FormFieldSignInSchema,
   FormFieldSignoutSchema,
   FormFieldSignUpSchema,
   FormFieldVerifyTokenSchema,
+  QueryGetInfinitePostSchema,
   Schema,
 } from "./schema";
 
@@ -30,12 +32,15 @@ export interface ClientResponse<Data = unknown> {
 
 export interface Endpoint {
   pathname: string | ((...args: any[]) => string);
-  schema:
+  searchParamsSchema?: Schema["getInfinitePost"] | undefined;
+  paramsSchema?: Schema["byUserId"] | undefined;
+  bodySchema?:
     | Schema["signUp"]
     | Schema["signIn"]
     | Schema["refresh"]
     | Schema["verify"]
     | Schema["signOut"]
+    | Schema["createPost"]
     | undefined;
 }
 
@@ -47,6 +52,8 @@ export interface Endpoints {
   verify: Endpoint;
   me: Endpoint;
   byUserId: Endpoint;
+  getInfinitePost: Endpoint;
+  createPost: Endpoint;
 }
 
 export type EndpointsKey = keyof Endpoints;
@@ -88,10 +95,42 @@ export interface RpcOptions {
   options?: $OfetchOptions;
 }
 
-// api.filter.ts -----------------------------------
+// api.input.ts -----------------------------------
+export interface ApiInputBuilderConstructorOptions<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> {
+  fnKey: FnKey;
+  url: string;
+  fetchClient: $Fetch;
+  shouldThrowOnError?: boolean;
+  method: MethodKey;
+  options?: $OfetchOptions;
+  headers?: HeadersInit;
+  signal?: AbortSignal;
+}
 
+// api.http.builder.ts -----------------------------------
 // api.transform.builder.ts -----------------------------------
-export type ApiInput<
+export type ApiQuery<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> = MethodKey extends "GET"
+  ? FnKey extends "getInfinitePost"
+    ? QueryGetInfinitePostSchema
+    : never
+  : never;
+
+export type ApiParams<
+  FnKey extends FnNameKey,
+  MethodKey extends MethodType,
+> = MethodKey extends "GET"
+  ? FnKey extends "byUserId"
+    ? { id: string }
+    : never
+  : never;
+
+export type ApiBody<
   FnKey extends FnNameKey,
   MethodKey extends MethodType,
 > = FnKey extends "signUp"
@@ -114,7 +153,11 @@ export type ApiInput<
           ? MethodKey extends "POST"
             ? FormFieldSignoutSchema
             : undefined
-          : never;
+          : FnKey extends "createPost"
+            ? MethodKey extends "POST"
+              ? FormFieldCreatePostSchema
+              : never
+            : never;
 
 export interface TransformBuilderConstructorOptions<FnKey extends FnNameKey> {
   fnKey: FnKey;
@@ -134,15 +177,14 @@ export interface BuilderConstructorOptions<
   fnKey: FnKey;
   url: string;
   fetchClient: $Fetch;
+  pathname: string;
   shouldThrowOnError?: boolean;
   method: MethodKey;
   options?: $OfetchOptions;
   headers?: HeadersInit;
-  body?: ApiInput<FnKey, MethodKey>;
+  body?: ApiBody<FnKey, MethodKey>;
   signal?: AbortSignal;
-  path?: Record<string, string>;
-  // eslint-disable-next-line @typescript-eslint/no-explicit-any
-  searchParams?: Record<string, any>;
+  searchParams?: ApiQuery<FnKey, MethodKey>;
 }
 
 // response types -----------------------------------
@@ -164,6 +206,20 @@ export interface AuthResponse
 
 export type UserResponse = UserExternalPayload;
 
+export interface DataIdResponse<IdType = string> {
+  dataId: IdType;
+}
+
+export interface ListResponse<Data> {
+  totalCount: number;
+  list: Data[];
+  pageInfo: {
+    currentPage: number;
+    hasNextPage: boolean;
+    nextPage: number | null;
+  };
+}
+
 // api.builder.ts -----------------------------------
 
 type ApiResponse<FnKey, MethodKey> = FnKey extends "signUp"
@@ -182,19 +238,27 @@ type ApiResponse<FnKey, MethodKey> = FnKey extends "signUp"
         ? MethodKey extends "POST"
           ? boolean
           : never
-        : FnKey extends "me"
-          ? MethodKey extends "GET"
-            ? UserResponse
+        : FnKey extends "signOut"
+          ? MethodKey extends "POST"
+            ? boolean
             : never
-          : FnKey extends "byUserId"
+          : FnKey extends "me"
             ? MethodKey extends "GET"
               ? UserResponse
               : never
-            : FnKey extends "signOut"
-              ? MethodKey extends "POST"
-                ? boolean
+            : FnKey extends "byUserId"
+              ? MethodKey extends "GET"
+                ? UserResponse
                 : never
-              : never;
+              : FnKey extends "getInfinitePost"
+                ? MethodKey extends "GET"
+                  ? ListResponse<PostPayload>
+                  : never
+                : FnKey extends "createPost"
+                  ? MethodKey extends "POST"
+                    ? DataIdResponse
+                    : never
+                  : never;
 
 export type ApiBuilderReturnValue<
   FnKey extends FnNameKey,

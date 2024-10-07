@@ -15,5 +15,5 @@ export class CreatePostDTO {
     type: String,
     required: true,
   })
-  text: string;
+  readonly text: string;
 }

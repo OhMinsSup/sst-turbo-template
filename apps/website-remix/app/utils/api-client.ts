@@ -16,3 +16,5 @@ const getApiClient = () => {
 };
 
 export { getApiClient, createApiClient };
+
+getApiClient().rpc("getInfinitePost").get();

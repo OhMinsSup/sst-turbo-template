@@ -214,7 +214,11 @@ export class AuthClient extends Core {
   async signUp(credentials: FormFieldSignUpSchema, throwOnError?: boolean) {
     try {
       // 인증요청
-      const data = await this.api.rpc("signUp").post(credentials);
+      const data = await this.api
+        .rpc("signUp")
+        .post()
+        .setSafeBody(credentials)
+        .run();
 
       switch (data.resultCode) {
         case HttpResultStatus.OK: {
@@ -273,7 +277,11 @@ export class AuthClient extends Core {
   async signIn(credentials: FormFieldSignInSchema, throwOnError?: boolean) {
     try {
       // 인증요청
-      const data = await this.api.rpc("signIn").post(credentials);
+      const data = await this.api
+        .rpc("signIn")
+        .post()
+        .setSafeBody(credentials)
+        .run();
 
       switch (data.resultCode) {
         case HttpResultStatus.OK: {
@@ -364,7 +372,7 @@ export class AuthClient extends Core {
     try {
       // 토큰이 존재한다면, 토큰을 이용해서 유저 정보를 가져옵니다.
       if (jwt) {
-        const data = await this.api.rpc("me").setAuthToken(jwt).get();
+        const data = await this.api.rpc("me").setAuthToken(jwt).get().run();
         return {
           user: data.result,
           error: null,
@@ -395,7 +403,8 @@ export class AuthClient extends Core {
         const data = await this.api
           .rpc("me")
           .setAuthToken(session.access_token)
-          .get();
+          .get()
+          .run();
 
         return {
           user: data.result,
@@ -564,7 +573,11 @@ export class AuthClient extends Core {
       // 토큰이 있다면 로그아웃 요청
       if (accessToken) {
         try {
-          await this.api.rpc("signOut").post({ accessToken });
+          await this.api
+            .rpc("signOut")
+            .post()
+            .setSafeBody({ accessToken })
+            .run();
         } catch (e) {
           this.error("[#_signOut()] ==> signOut error", e);
 
@@ -738,7 +751,11 @@ export class AuthClient extends Core {
   ) {
     try {
       // 토근 갱신 요청
-      const data = await this.api.rpc("refresh").patch({ refreshToken });
+      const data = await this.api
+        .rpc("refresh")
+        .patch()
+        .setSafeBody({ refreshToken })
+        .run();
 
       switch (data.resultCode) {
         case HttpResultStatus.OK: {

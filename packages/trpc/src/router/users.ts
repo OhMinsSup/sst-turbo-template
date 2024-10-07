@@ -7,6 +7,7 @@ export const usersRouter = {
     return await ctx.client
       .rpc("me")
       .setAuthToken(ctx.session.access_token)
-      .get();
+      .get()
+      .run();
   }),
 } satisfies TRPCRouterRecord;
