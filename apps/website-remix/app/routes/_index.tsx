@@ -1,3 +1,4 @@
+import { MobileNavigation } from "~/components/shared/MobileNavigation";
 import { SiteHeader } from "~/components/shared/SiteHeader";
 
 export { loader } from "~/.server/routes/index/index.loader";
@@ -47,6 +48,7 @@ export default function Index() {
           </ul>
         </div>
       </main>
+      <MobileNavigation />
     </>
   );
 }

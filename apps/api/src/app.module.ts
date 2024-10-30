@@ -8,11 +8,9 @@ import { IntegrationsModule } from "./integrations/integrations.module";
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { AuthModule } from "./routes/auth/auth.module";
 import { UsersModule } from "./routes/users/users.module";
-import { PostsModule } from './routes/posts/posts.module';
-import { NotificationsModule } from './routes/notifications/notifications.module';
 
 @Module({
-  imports: [IntegrationsModule, AuthModule, UsersModule, PostsModule, NotificationsModule],
+  imports: [IntegrationsModule, AuthModule, UsersModule],
   controllers: [AppController],
   providers: [
     AppService,

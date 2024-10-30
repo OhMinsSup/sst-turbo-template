@@ -72,7 +72,6 @@ export class AuthClient extends Core {
   protected refreshingDeferred: Deferred<CallRefreshTokenResult> | null = null;
 
   protected initializePromise: Promise<InitializeResult> | null = null;
-  protected suppressGetSessionWarning = false;
 
   protected lock: LockFunc;
   protected lockAcquired = false;

@@ -7,28 +7,28 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { NestFactory } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
+import { ValidationError } from "class-validator";
 import compression from "compression";
 import helmet from "helmet";
 
 import { AppModule } from "./app.module";
+import { SuccessInterceptor } from "./interceptors/sucess.interceptor";
+import { CustomValidationError } from "./shared/dtos/response/validation-exception-response.dto";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = app.get(ConfigService);
 
+  app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
+      // transform으로 형식변환가능한지 체크 dto에 transfrom 없어도 typescript type 보고 형변환 해줌
+      //  enableImplicitConversion 옵션은 타입스크립트의 타입으로 추론가능하게 설정함
       transform: true,
-      stopAtFirstError: true,
-      forbidUnknownValues: false,
-      exceptionFactory: (errors) => {
-        const result = errors.map((error) => ({
-          [error.property]: {
-            message: error.constraints[Object.keys(error.constraints)[0]],
-          },
-        }));
-        return new BadRequestException(result);
+      transformOptions: { enableImplicitConversion: true },
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        return new CustomValidationError(validationErrors);
       },
     }),
   );
@@ -66,12 +66,22 @@ async function bootstrap() {
     .setTitle("API Document")
     .setDescription("API Document")
     .setVersion("1.0")
-    .addBearerAuth()
-    .addCookieAuth(config.get("COOKIE_TOKEN_NAME") ?? "access_token")
+    .addBearerAuth({
+      // I was also testing it without prefix 'Bearer ' before the JWT
+      description: "JWT token",
+      name: "authorization",
+      bearerFormat: "Bearer", // I`ve tested not to use this field, but the result was the same
+      scheme: "Bearer",
+      type: "http", // I`ve attempted type: 'apiKey' too
+      in: "Header",
+    })
+    .addCookieAuth(config.get("ACCESS_TOKEN_NAME"))
     .build();
 
   const document = SwaggerModule.createDocument(app, swagger);
-  SwaggerModule.setup("api/docs", app, document);
+  SwaggerModule.setup("api/docs", app, document, {
+    jsonDocumentUrl: "/api/docs/api-json",
+  });
 
   app.use(helmet());
   app.use(compression());

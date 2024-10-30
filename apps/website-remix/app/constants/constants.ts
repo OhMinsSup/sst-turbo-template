@@ -6,6 +6,8 @@ export const PAGE_ENDPOINTS = {
     SIGNIN: "/signin",
     SIGNUP: "/signup",
   },
+  SEARCH: "/search",
+  ACTIVITY: "/activity",
 } as const;
 
 export const SITE_CONFIG = {

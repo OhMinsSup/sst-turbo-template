@@ -1,14 +1,13 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, UnauthorizedException } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import type { Prisma, Token } from "@template/db";
-import { HttpResultStatus, HttpStatus } from "@template/sdk";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { AppTokenType } from "../../../libs/constants";
-import { assertHttpError } from "../../../libs/error";
+import { AuthErrorDefine, AuthTokenInvalidErrorCode } from "../errors";
 import { JwtPayload } from "../strategies/jwt.auth.strategy";
 
 @Injectable()
@@ -152,34 +151,20 @@ export class TokenService {
    * @param {string} accessToken
    */
   async getAccessTokenPayload(accessToken: string) {
-    let jwtDto: JwtPayload;
+    let jwtDto: JwtPayload | null = null;
     try {
       jwtDto = await this.jwt.verifyAsync<JwtPayload>(accessToken, {
         secret: this.env.getAccessTokenSecret(),
       });
     } catch {
-      assertHttpError(
-        true,
-        {
-          resultCode: HttpResultStatus.TOKEN_EXPIRED,
-          message: "Unauthorized",
-          result: null,
-        },
-        "Unauthorized",
-        HttpStatus.UNAUTHORIZED,
-      );
+      // Nothing to do
     }
 
-    assertHttpError(
-      !jwtDto || (jwtDto && !jwtDto.sub),
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "Unauthorized",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
+    if (!jwtDto || (jwtDto && !jwtDto.sub)) {
+      throw new UnauthorizedException(
+        AuthErrorDefine[AuthTokenInvalidErrorCode],
+      );
+    }
 
     return jwtDto;
   }
@@ -189,45 +174,26 @@ export class TokenService {
    * @param {string} refreshToken
    */
   async getRefreshTokenPayload(refreshToken: string) {
-    let jwtDto: JwtPayload;
+    let jwtDto: JwtPayload | null = null;
     try {
       jwtDto = await this.jwt.verifyAsync<JwtPayload>(refreshToken, {
         secret: this.env.getRefreshTokenSecret(),
       });
-    } catch (e) {
-      assertHttpError(
-        e instanceof Error,
-        {
-          resultCode: HttpResultStatus.TOKEN_EXPIRED,
-          message: e.message,
-          result: null,
-        },
-        "Unauthorized",
-        HttpStatus.UNAUTHORIZED,
+    } catch {
+      // Nothing to do
+    }
+
+    if (!jwtDto || (jwtDto && !jwtDto.sub)) {
+      throw new UnauthorizedException(
+        AuthErrorDefine[AuthTokenInvalidErrorCode],
       );
     }
 
-    assertHttpError(
-      !jwtDto || (jwtDto && !jwtDto.sub),
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "token sub invalid",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
-
-    assertHttpError(
-      !jwtDto.jti,
-      {
-        resultCode: HttpResultStatus.TOKEN_EXPIRED,
-        message: "token refresh jti invalid",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
+    if (!jwtDto.jti) {
+      throw new UnauthorizedException(
+        AuthErrorDefine[AuthTokenInvalidErrorCode],
+      );
+    }
 
     return jwtDto;
   }
