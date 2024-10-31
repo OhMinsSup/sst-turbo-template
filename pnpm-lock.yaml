@@ -630,6 +630,49 @@ importers:
         specifier: ^2.0.5
         version: 2.0.5(@types/node@22.5.2)(terser@5.31.6)
 
+  packages/api:
+    dependencies:
+      '@template/common':
+        specifier: workspace:*
+        version: link:../common
+      '@template/utils':
+        specifier: workspace:*
+        version: link:../utils
+      openapi-fetch:
+        specifier: ^0.13.0
+        version: 0.13.0
+    devDependencies:
+      '@template/api-types':
+        specifier: workspace:*
+        version: link:../api-types
+      '@template/db':
+        specifier: workspace:*
+        version: link:../db
+      '@template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@template/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: 'catalog:'
+        version: 9.9.1(jiti@1.21.6)
+      openapi-typescript-helpers:
+        specifier: ^0.0.15
+        version: 0.0.15
+      prettier:
+        specifier: 'catalog:'
+        version: 3.3.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.2.4(@swc/core@1.7.23(@swc/helpers@0.5.13))(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.5.4
+
   packages/api-types:
     devDependencies:
       '@template/prettier-config':
@@ -641,6 +684,52 @@ importers:
       prettier:
         specifier: 'catalog:'
         version: 3.3.3
+
+  packages/auth:
+    dependencies:
+      '@template/api':
+        specifier: workspace:*
+        version: link:../api
+      '@template/common':
+        specifier: workspace:*
+        version: link:../common
+      '@template/utils':
+        specifier: workspace:*
+        version: link:../utils
+      cookie:
+        specifier: ^0.6.0
+        version: 0.6.0
+      date-fns:
+        specifier: 'catalog:'
+        version: 3.6.0
+      uncrypto:
+        specifier: ^0.1.3
+        version: 0.1.3
+    devDependencies:
+      '@template/api-types':
+        specifier: workspace:*
+        version: link:../api-types
+      '@template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@template/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: 'catalog:'
+        version: 9.9.1(jiti@1.21.6)
+      prettier:
+        specifier: 'catalog:'
+        version: 3.3.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.2.4(@swc/core@1.7.23(@swc/helpers@0.5.13))(jiti@1.21.6)(postcss@8.4.44)(tsx@4.19.0)(typescript@5.5.4)(yaml@2.5.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.5.4
 
   packages/common:
     devDependencies:
@@ -1053,7 +1142,7 @@ importers:
         version: 7.35.1(eslint@9.9.1(jiti@1.21.6))
       eslint-plugin-react-hooks:
         specifier: rc
-        version: 5.1.0-rc-0bc30748-20241028(eslint@9.9.1(jiti@1.21.6))
+        version: 5.1.0-rc-603e6108-20241029(eslint@9.9.1(jiti@1.21.6))
       eslint-plugin-simple-import-sort:
         specifier: ^12.1.1
         version: 12.1.1(eslint@9.9.1(jiti@1.21.6))
@@ -5666,8 +5755,8 @@ packages:
     peerDependencies:
       eslint: ^3 || ^4 || ^5 || ^6 || ^7 || ^8
 
-  eslint-plugin-react-hooks@5.1.0-rc-0bc30748-20241028:
-    resolution: {integrity: sha512-rewMgmolwvtkbULITBMnN/TE7k+OdAxDvvyalLijoD3ZfZMgjrlfOXQgZFPkwAXS5SQOBklagQmqnB7E6gD8ew==}
+  eslint-plugin-react-hooks@5.1.0-rc-603e6108-20241029:
+    resolution: {integrity: sha512-btivWAKpwyymHoOUyoc3evCcmAWSZw+qlDe/nhtFKDs0agXQrqfLBfmfwZb7sY1VWiKVaqEKPhhK19WNOxssNw==}
     engines: {node: '>=10'}
     peerDependencies:
       eslint: ^3.0.0 || ^4.0.0 || ^5.0.0 || ^6.0.0 || ^7.0.0 || ^8.0.0-0 || ^9.0.0
@@ -7801,6 +7890,12 @@ packages:
   open@9.1.0:
     resolution: {integrity: sha512-OS+QTnw1/4vrf+9hh1jc1jnYjzSG4ttTBB8UxOwAnInG3Uo4ssetzC1ihqaIHjLJnA5GGlRl6QlZXOTQhRBUvg==}
     engines: {node: '>=14.16'}
+
+  openapi-fetch@0.13.0:
+    resolution: {integrity: sha512-6Nlf/BDbtyHwHdNrLPUiyt4CZMzL3ZyAt55yWH8W7+Z+8aYWnvca4uZHQHXViy8KcnCMqAhLM/bifh2Yjjkf6w==}
+
+  openapi-typescript-helpers@0.0.15:
+    resolution: {integrity: sha512-opyTPaunsklCBpTK8JGef6mfPhLSnyy5a0IN9vKtx3+4aExf+KxEqYwIy3hqkedXIB97u357uLMJsOnm3GVjsw==}
 
   openapi-typescript@6.7.6:
     resolution: {integrity: sha512-c/hfooPx+RBIOPM09GSxABOZhYPblDoyaGhqBkD/59vtpN21jEuWKDlM0KYTvqJVlSYjKs0tBcIdeXKChlSPtw==}
@@ -15243,7 +15338,7 @@ snapshots:
       safe-regex-test: 1.0.3
       string.prototype.includes: 2.0.0
 
-  eslint-plugin-react-hooks@5.1.0-rc-0bc30748-20241028(eslint@9.9.1(jiti@1.21.6)):
+  eslint-plugin-react-hooks@5.1.0-rc-603e6108-20241029(eslint@9.9.1(jiti@1.21.6)):
     dependencies:
       eslint: 9.9.1(jiti@1.21.6)
 
@@ -18020,6 +18115,12 @@ snapshots:
       define-lazy-prop: 3.0.0
       is-inside-container: 1.0.0
       is-wsl: 2.2.0
+
+  openapi-fetch@0.13.0:
+    dependencies:
+      openapi-typescript-helpers: 0.0.15
+
+  openapi-typescript-helpers@0.0.15: {}
 
   openapi-typescript@6.7.6:
     dependencies:

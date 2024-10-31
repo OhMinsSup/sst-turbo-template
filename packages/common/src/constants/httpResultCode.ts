@@ -9,6 +9,7 @@ export enum HttpResultCode {
   INCORRECT_PASSWORD = 1005, // 잘못된 패스워드
   // 권한
   UNAUTHORIZED = 4001, // 권한 없음
+  SUSPENDED_ACCOUNT = 4002, // 계정 정지
   // 토큰
   INVALID_TOKEN = 6001, // 유효하지 않은 토큰
   EXPIRED_TOKEN = 6002, // 만료된 토큰

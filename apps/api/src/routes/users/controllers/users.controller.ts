@@ -1,12 +1,16 @@
-import { Controller, Get, Param } from "@nestjs/common";
+import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 import { HttpResultStatus } from "@template/sdk";
 
 import { AuthUser } from "../../../decorators/auth-user.decorator";
+import { ErrorResponse } from "../../../decorators/error-response.decorator";
+import { SuccessResponse } from "../../../decorators/success-response.decorator";
 import { JwtAuth } from "../../../guards/jwt.auth.guard";
 import { OptionalJwtAuth } from "../../../guards/optional-jwt.auth.guard";
+import { UserExternalResponseDto } from "../../../shared/dtos/response/users/user-response.dto";
+import { UserErrorDefine, UserNotExistErrorCode } from "../errors";
 import { UsersService } from "../services/users.service";
 
 @ApiTags("사용자")
@@ -15,22 +19,33 @@ import { UsersService } from "../services/users.service";
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
-  @Get()
+  @Get("me")
   @ApiOperation({ summary: "로그인 사용자 정보" })
   @JwtAuth()
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: UserExternalResponseDto,
+      exampleDescription: "로그인 사용자 정보 조회에 성공한 경우 발생하는 응답",
+      exampleTitle: "로그인 사용자 정보 조회 성공",
+    },
+  ])
   me(@AuthUser() user: UserExternalPayload) {
-    return {
-      resultCode: HttpResultStatus.OK,
-      message: null,
-      error: null,
-      result: user,
-    };
+    return this.service.me(user);
   }
 
   @Get(":id")
   @ApiOperation({ summary: "아이디로 사용자 정보 조회" })
   @OptionalJwtAuth()
+  @SuccessResponse(HttpStatus.OK, [
+    {
+      model: UserExternalResponseDto,
+      exampleDescription:
+        "아이디로 사용자 정보 조회에 성공한 경우 발생하는 응답",
+      exampleTitle: "아이디로 사용자 정보 조회 성공",
+    },
+  ])
+  @ErrorResponse(HttpStatus.NOT_FOUND, [UserErrorDefine[UserNotExistErrorCode]])
   async byUserId(@Param("id") id: string) {
-    return await this.service.getExternalUserById(id);
+    return this.service.byUserId(id);
   }
 }

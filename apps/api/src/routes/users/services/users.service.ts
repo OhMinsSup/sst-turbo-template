@@ -1,10 +1,13 @@
-import { Injectable } from "@nestjs/common";
+import { Injectable, NotFoundException } from "@nestjs/common";
+import { UserExternalResponseDto } from "src/shared/dtos/response/users/user-response.dto";
 
 import { Prisma } from "@template/db";
 import {
   getExternalUserSelector,
   getInternalUserSelector,
+  UserExternalPayload,
 } from "@template/db/selectors";
+import { HttpResultStatus } from "@template/sdk";
 
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -18,6 +21,39 @@ export class UsersService {
     private readonly prisma: PrismaService,
     private readonly logger: LoggerService,
   ) {}
+
+  /**
+   * @description Get the current user
+   * @param {UserExternalPayload} user
+   */
+  async me(user: UserExternalPayload): Promise<{
+    resultCode: HttpResultStatus;
+    data: UserExternalPayload;
+  }> {
+    return {
+      resultCode: HttpResultStatus.OK,
+      data: user,
+    };
+  }
+
+  /**
+   * @description Get a user by id
+   * @param {string} id
+   */
+  async byUserId(id: string): Promise<{
+    resultCode: HttpResultStatus;
+    data: UserExternalResponseDto;
+  }> {
+    const data = await this.getExternalUserById(id);
+    if (!data) {
+      throw new NotFoundException("User not found");
+    }
+
+    return {
+      resultCode: HttpResultStatus.OK,
+      data,
+    };
+  }
 
   /**
    * @description Create a user

@@ -105,23 +105,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/v1/users": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 로그인 사용자 정보 */
-    get: operations["UsersController_me"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/v1/users/{id}": {
     parameters: {
       query?: never;
@@ -131,6 +114,23 @@ export interface paths {
     };
     /** 아이디로 사용자 정보 조회 */
     get: operations["UsersController_byUserId"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/users/me": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 로그인 사용자 정보 */
+    get: operations["UsersController_me"];
     put?: never;
     post?: never;
     delete?: never;
@@ -261,6 +261,7 @@ export interface components {
         | 1004
         | 1005
         | 4001
+        | 4002
         | 6001
         | 6002
         | 6003
@@ -337,6 +338,7 @@ export interface components {
         | 1004
         | 1005
         | 4001
+        | 4002
         | 6001
         | 6002
         | 6003
@@ -416,6 +418,47 @@ export interface components {
       /** @description 갱신 토큰 */
       refreshToken: components["schemas"]["TokenDto"];
     };
+    UserExternalResponseDto: {
+      /**
+       * Format: date-time
+       * @description 사용자 삭제 시간
+       */
+      deletedAt: string;
+      /** @description 사용자 이메일 */
+      email: string;
+      /**
+       * Format: date-time
+       * @description 사용자 이메일 인증 여부
+       */
+      emailVerified: string;
+      /** @description 사용자 아이디 */
+      id: string;
+      /** @description 사용자 이미지 */
+      image: string;
+      /** @description 사용자 계정 정지 여부 */
+      isSuspended: boolean;
+      /**
+       * Format: date-time
+       * @description 사용자 마지막 활동 시간
+       */
+      lastActiveAt: string;
+      /** @description 사용자 이름 */
+      name: string;
+      /** @description 사용자 프로필 */
+      UserProfile: components["schemas"]["UserProfileDto"];
+      /** @description 사용자 설정 */
+      UserSettings: components["schemas"]["UserSettingsDto"];
+    };
+    UserProfileDto: {
+      /** @description 사용자 자기 소개 */
+      bio: string;
+      /** @description 사용자 웹사이트 */
+      website: string;
+    };
+    UserSettingsDto: {
+      /** @description 사용자 개인 정보 설정 */
+      privacySettings: boolean;
+    };
     ValidationExceptionResponseDto: {
       /**
        * @description 에러명
@@ -441,6 +484,7 @@ export interface components {
         | 1004
         | 1005
         | 4001
+        | 4002
         | 6001
         | 6002
         | 6003
@@ -770,23 +814,6 @@ export interface operations {
       };
     };
   };
-  UsersController_me: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   UsersController_byUserId: {
     parameters: {
       query?: never;
@@ -802,7 +829,42 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": {
+            [key: string]: components["schemas"]["SuccessResponseDto"];
+          } & components["schemas"]["UserExternalResponseDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: components["schemas"]["ErrorResponseDto"];
+          } & components["schemas"]["HttpExceptionResponseDto"];
+        };
+      };
+    };
+  };
+  UsersController_me: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": {
+            [key: string]: components["schemas"]["SuccessResponseDto"];
+          } & components["schemas"]["UserExternalResponseDto"];
+        };
       };
     };
   };

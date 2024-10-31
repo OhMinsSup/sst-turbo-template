@@ -17,6 +17,8 @@ export const AuthTokenExpiredErrorCode = "Auth-0008";
 export const AuthVerificationTokenValidationErrorCode = "Auth-0009";
 export const AuthTokenInvalidErrorCode = "Auth-0010";
 export const AuthTokenNotExistErrorCode = "Auth-0011";
+export const AuthNotLoginErrorCode = "Auth-0012";
+export const AuthUserSuspensionErrorCode = "Auth-0013";
 
 type Keys =
   | typeof AuthAlreadyExistEmailErrorCode
@@ -30,7 +32,9 @@ type Keys =
   | typeof AuthTokenExpiredErrorCode
   | typeof AuthVerificationTokenValidationErrorCode
   | typeof AuthTokenInvalidErrorCode
-  | typeof AuthTokenNotExistErrorCode;
+  | typeof AuthTokenNotExistErrorCode
+  | typeof AuthNotLoginErrorCode
+  | typeof AuthUserSuspensionErrorCode;
 
 export const AuthErrorDefine: Record<Keys, ErrorResponseOption> = {
   [AuthValidationErrorCode]: {
@@ -141,5 +145,19 @@ export const AuthErrorDefine: Record<Keys, ErrorResponseOption> = {
     exampleTitle: "토큰 없음",
     message: "토큰이 존재하지 않습니다. 다시 인증해 주세요.",
     resultCode: HttpResultCode.NOT_EXIST_TOKEN,
+  },
+  [AuthNotLoginErrorCode]: {
+    model: UnauthorizedException,
+    exampleDescription: "로그인하지 않은 사용자",
+    exampleTitle: "로그인하지 않은 사용자",
+    message: "로그인하지 않은 사용자입니다. 로그인 후 이용해 주세요.",
+    resultCode: HttpResultCode.UNAUTHORIZED,
+  },
+  [AuthUserSuspensionErrorCode]: {
+    model: UnauthorizedException,
+    exampleDescription: "정지된 계정",
+    exampleTitle: "정지된 계정",
+    message: "정지된 계정입니다. 관리자에게 문의해 주세요.",
+    resultCode: HttpResultCode.SUSPENDED_ACCOUNT,
   },
 };
