@@ -2,7 +2,6 @@ import { Controller, Get, HttpStatus, Param } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
 import type { UserExternalPayload } from "@template/db/selectors";
-import { HttpResultStatus } from "@template/sdk";
 
 import { AuthUser } from "../../../decorators/auth-user.decorator";
 import { ErrorResponse } from "../../../decorators/error-response.decorator";

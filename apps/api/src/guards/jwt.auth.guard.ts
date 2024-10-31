@@ -1,14 +1,17 @@
 import {
   applyDecorators,
-  HttpStatus,
   Injectable,
+  UnauthorizedException,
   UseGuards,
 } from "@nestjs/common";
 import { AuthGuard } from "@nestjs/passport";
 import { JsonWebTokenError } from "jsonwebtoken";
-import { assertHttpError } from "src/libs/error";
 
-import { HttpResultStatus } from "@template/sdk";
+import {
+  AuthErrorDefine,
+  AuthNotExistUserErrorCode,
+  AuthTokenExpiredErrorCode,
+} from "../routes/auth/errors";
 
 @Injectable()
 export class JwtAuthGuard extends AuthGuard(["jwt"]) {
@@ -17,16 +20,11 @@ export class JwtAuthGuard extends AuthGuard(["jwt"]) {
   }
 
   handleRequest(err: any, user: any, info: any) {
-    assertHttpError(
-      !user,
-      {
-        resultCode: HttpResultStatus.NOT_EXIST,
-        message: "Unauthorized",
-        result: null,
-      },
-      "Unauthorized",
-      HttpStatus.UNAUTHORIZED,
-    );
+    if (!user) {
+      throw new UnauthorizedException(
+        AuthErrorDefine[AuthNotExistUserErrorCode],
+      );
+    }
 
     if (err) {
       throw err;
@@ -37,15 +35,8 @@ export class JwtAuthGuard extends AuthGuard(["jwt"]) {
         info = String(info);
       }
 
-      assertHttpError(
-        true,
-        {
-          resultCode: HttpResultStatus.TOKEN_EXPIRED,
-          message: "Unauthorized",
-          result: info,
-        },
-        "Unauthorized",
-        HttpStatus.UNAUTHORIZED,
+      throw new UnauthorizedException(
+        AuthErrorDefine[AuthTokenExpiredErrorCode],
       );
     }
 

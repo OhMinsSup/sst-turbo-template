@@ -1,3 +1,4 @@
+import { HttpResultStatus } from "";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UserExternalResponseDto } from "src/shared/dtos/response/users/user-response.dto";
 
@@ -7,7 +8,6 @@ import {
   getInternalUserSelector,
   UserExternalPayload,
 } from "@template/db/selectors";
-import { HttpResultStatus } from "@template/sdk";
 
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";

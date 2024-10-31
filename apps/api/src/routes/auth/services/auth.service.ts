@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { subMilliseconds } from "date-fns";
 
-import { HttpResultStatus } from "@template/sdk";
+import { HttpResultCode } from "@template/common";
 
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -74,7 +74,7 @@ export class AuthService {
     }
 
     return {
-      resultCode: HttpResultStatus.OK,
+      resultCode: HttpResultCode.OK,
       result: true,
     };
   }
@@ -84,7 +84,7 @@ export class AuthService {
    * @param {RefreshTokenDTO} input
    */
   async refresh(input: RefreshTokenDTO): Promise<{
-    resultCode: HttpResultStatus;
+    resultCode: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const jwtDto = await this.token.getRefreshTokenPayload(input.refreshToken);
@@ -112,7 +112,7 @@ export class AuthService {
     );
 
     return {
-      resultCode: HttpResultStatus.OK,
+      resultCode: HttpResultCode.OK,
       data: {
         id: user.id,
         email: user.email,
@@ -131,7 +131,7 @@ export class AuthService {
    * @param {SigninDTO} input
    */
   async signin(input: SigninDTO): Promise<{
-    resultCode: HttpResultStatus;
+    resultCode: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const user = await this.user.getInternalUserByEmail(input.email);
@@ -166,7 +166,7 @@ export class AuthService {
     });
 
     return {
-      resultCode: HttpResultStatus.OK,
+      resultCode: HttpResultCode.OK,
       data: {
         id: user.id,
         email: user.email,
@@ -185,7 +185,7 @@ export class AuthService {
    * @param {SignupDTO} input
    */
   async signup(input: SignupDTO): Promise<{
-    resultCode: HttpResultStatus;
+    resultCode: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const user = await this.user.checkUserByEmail(input.email);
@@ -240,7 +240,7 @@ export class AuthService {
       );
 
       return {
-        resultCode: HttpResultStatus.OK,
+        resultCode: HttpResultCode.OK,
         data: {
           id: user.id,
           email: user.email,
@@ -260,7 +260,7 @@ export class AuthService {
    * @param {SignoutDTO} input
    */
   async signout(input: SignoutDTO): Promise<{
-    resultCode: HttpResultStatus;
+    resultCode: HttpResultCode;
     data: boolean;
   }> {
     const jwtDto = await this.token.getAccessTokenPayload(input.accessToken);
@@ -277,7 +277,7 @@ export class AuthService {
     await this.token.deleteByAccessToken(input.accessToken);
 
     return {
-      resultCode: HttpResultStatus.OK,
+      resultCode: HttpResultCode.OK,
       data: true,
     };
   }

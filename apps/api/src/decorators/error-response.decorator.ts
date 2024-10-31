@@ -6,7 +6,7 @@ import {
 } from "@nestjs/common";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 
-import { HttpResultStatus } from "@template/sdk";
+import { HttpResultCode } from "@template/common";
 
 import { ErrorResponseDto } from "../shared/dtos/response/error-response.dto";
 import { HttpExceptionResponseDto } from "../shared/dtos/response/http-exception-response.dto";
@@ -70,7 +70,7 @@ export const ErrorResponse = (
         innerErrorDto = new HttpExceptionResponseDto(
           error.model.name,
           error.message,
-          error.resultCode ?? HttpResultStatus.FAIL,
+          error.resultCode ?? HttpResultCode.FAIL,
         );
       }
       const commonErrorInstance =
