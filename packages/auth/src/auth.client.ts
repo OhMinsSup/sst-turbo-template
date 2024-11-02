@@ -312,8 +312,8 @@ export class AuthClient extends Core {
         body,
       });
 
-    if (data) {
-      const session = this._makeSession(data);
+    if (data?.data) {
+      const session = this._makeSession(data.data);
       await this._saveSession(session);
       await this._notifyAllSubscribers("SIGNED_IN", session);
       return { data, session, error };
@@ -347,9 +347,9 @@ export class AuthClient extends Core {
         body,
       });
 
-    if (data) {
+    if (data?.data) {
       // 세션 객체 생성
-      const session = this._makeSession(data);
+      const session = this._makeSession(data.data);
       // 세션 객체 스토리지에 저장
       await this._saveSession(session);
       // 로그인에 대한 이벤트 등록
@@ -421,7 +421,7 @@ export class AuthClient extends Core {
           .run();
 
         return {
-          user: data,
+          user: data?.data,
           error,
         };
       }
@@ -452,7 +452,7 @@ export class AuthClient extends Core {
           .run();
 
         return {
-          user: data,
+          user: data?.data,
           error,
         };
       });
@@ -838,13 +838,13 @@ export class AuthClient extends Core {
         },
       });
 
-    if (data) {
-      const session = this._makeSession(data);
-      return { data, session, error: undefined };
+    if (data?.data) {
+      const session = this._makeSession(data.data);
+      return { data: data.data, session, error: undefined };
     }
 
     return {
-      data,
+      data: data?.data,
       session: undefined,
       error,
     };
