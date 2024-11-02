@@ -543,7 +543,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthResponseDto"];
+          };
         };
       };
       400: {
@@ -551,12 +553,11 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & (
-            | components["schemas"]["ValidationExceptionResponseDto"]
-            | components["schemas"]["HttpExceptionResponseDto"]
-          );
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       401: {
@@ -564,9 +565,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       404: {
@@ -574,9 +575,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -600,7 +601,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthResponseDto"];
+          };
         };
       };
       400: {
@@ -608,12 +611,11 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & (
-            | components["schemas"]["ValidationExceptionResponseDto"]
-            | components["schemas"]["HttpExceptionResponseDto"]
-          );
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       401: {
@@ -621,9 +623,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       404: {
@@ -631,9 +633,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -657,7 +659,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["Boolean"];
+          };
         };
       };
       400: {
@@ -665,12 +669,11 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & (
-            | components["schemas"]["ValidationExceptionResponseDto"]
-            | components["schemas"]["HttpExceptionResponseDto"]
-          );
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       401: {
@@ -678,9 +681,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       404: {
@@ -688,9 +691,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -714,7 +717,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthResponseDto"];
+          };
         };
       };
       400: {
@@ -722,12 +727,11 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & (
-            | components["schemas"]["ValidationExceptionResponseDto"]
-            | components["schemas"]["HttpExceptionResponseDto"]
-          );
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -751,7 +755,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["Boolean"];
+          };
         };
       };
       400: {
@@ -759,12 +765,11 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & (
-            | components["schemas"]["ValidationExceptionResponseDto"]
-            | components["schemas"]["HttpExceptionResponseDto"]
-          );
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       401: {
@@ -772,9 +777,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
       404: {
@@ -782,9 +787,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -805,7 +810,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["UserExternalResponseDto"];
+          };
         };
       };
       404: {
@@ -813,9 +820,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["ErrorResponseDto"];
-          } & components["schemas"]["HttpExceptionResponseDto"];
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
         };
       };
     };
@@ -834,7 +841,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["UserExternalResponseDto"];
+          };
         };
       };
     };
