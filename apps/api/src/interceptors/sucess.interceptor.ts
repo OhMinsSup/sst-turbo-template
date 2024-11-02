@@ -19,6 +19,8 @@ export class SuccessInterceptor implements NestInterceptor {
 
     return next
       .handle()
-      .pipe(map((data) => ({ statusCode, success: true, ...data })));
+      .pipe(
+        map((data) => ({ statusCode, resultCode: data.code, data: data.data })),
+      );
   }
 }

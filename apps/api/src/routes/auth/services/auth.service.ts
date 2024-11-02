@@ -61,7 +61,10 @@ export class AuthService {
    * @description Verify Token Handler
    * @param {VerifyTokenDTO} input
    */
-  async verifyToken(input: VerifyTokenDTO) {
+  async verifyToken(input: VerifyTokenDTO): Promise<{
+    code: HttpResultCode;
+    data: boolean;
+  }> {
     const jwtDto = await this.token.getAccessTokenPayload(input.token);
     const token = await this.token.findByTokenId(jwtDto.jti);
     if (!token) {
@@ -74,8 +77,8 @@ export class AuthService {
     }
 
     return {
-      resultCode: HttpResultCode.OK,
-      result: true,
+      code: HttpResultCode.OK,
+      data: true,
     };
   }
 
@@ -84,7 +87,7 @@ export class AuthService {
    * @param {RefreshTokenDTO} input
    */
   async refresh(input: RefreshTokenDTO): Promise<{
-    resultCode: HttpResultCode;
+    code: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const jwtDto = await this.token.getRefreshTokenPayload(input.refreshToken);
@@ -112,7 +115,7 @@ export class AuthService {
     );
 
     return {
-      resultCode: HttpResultCode.OK,
+      code: HttpResultCode.OK,
       data: {
         id: user.id,
         email: user.email,
@@ -131,7 +134,7 @@ export class AuthService {
    * @param {SigninDTO} input
    */
   async signin(input: SigninDTO): Promise<{
-    resultCode: HttpResultCode;
+    code: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const user = await this.user.getInternalUserByEmail(input.email);
@@ -166,7 +169,7 @@ export class AuthService {
     });
 
     return {
-      resultCode: HttpResultCode.OK,
+      code: HttpResultCode.OK,
       data: {
         id: user.id,
         email: user.email,
@@ -185,7 +188,7 @@ export class AuthService {
    * @param {SignupDTO} input
    */
   async signup(input: SignupDTO): Promise<{
-    resultCode: HttpResultCode;
+    code: HttpResultCode;
     data: AuthResponseDto;
   }> {
     const user = await this.user.checkUserByEmail(input.email);
@@ -240,7 +243,7 @@ export class AuthService {
       );
 
       return {
-        resultCode: HttpResultCode.OK,
+        code: HttpResultCode.OK,
         data: {
           id: user.id,
           email: user.email,
@@ -260,7 +263,7 @@ export class AuthService {
    * @param {SignoutDTO} input
    */
   async signout(input: SignoutDTO): Promise<{
-    resultCode: HttpResultCode;
+    code: HttpResultCode;
     data: boolean;
   }> {
     const jwtDto = await this.token.getAccessTokenPayload(input.accessToken);
@@ -277,7 +280,7 @@ export class AuthService {
     await this.token.deleteByAccessToken(input.accessToken);
 
     return {
-      resultCode: HttpResultCode.OK,
+      code: HttpResultCode.OK,
       data: true,
     };
   }

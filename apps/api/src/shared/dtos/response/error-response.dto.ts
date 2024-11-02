@@ -2,24 +2,19 @@ import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { EnumToArray } from "../../enumNumberToArray";
+import { HttpResultCode } from "@template/common";
 
 export class ErrorResponseDto<T> {
-  @ApiProperty({ enum: EnumToArray(HttpStatus), description: "상태코드" })
+  @ApiProperty({ enum: HttpStatus, description: "상태코드" })
   @Expose()
-  readonly statusCode: number;
+  statusCode: number;
 
-  @ApiProperty({ type: String, description: "에러 발생시간" })
+  @ApiProperty({
+    enum: HttpResultCode,
+    description: "결과 코드",
+  })
   @Expose()
-  readonly timestamp: Date;
-
-  @ApiProperty({ type: String, description: "에러 발생 url" })
-  @Expose()
-  readonly path: string;
-
-  @ApiProperty({ type: String, description: "에러 발생 메소드" })
-  @Expose()
-  readonly method: string;
+  resultCode: number;
 
   @ApiProperty({
     type: "generic",

@@ -275,9 +275,9 @@ export class AuthClient extends Core {
   /**
    * @memberof AuthClient
    * @description 클라이언트 저장소에 저장된 세션 정보
-   * @returns {Promise<LoadSession | undefined>}
+   * @returns {Promise<LoadSession>}
    */
-  async getSession(): Promise<LoadSession | undefined> {
+  async getSession(): Promise<LoadSession> {
     if (this.initializePromise) {
       await this.initializePromise;
     }

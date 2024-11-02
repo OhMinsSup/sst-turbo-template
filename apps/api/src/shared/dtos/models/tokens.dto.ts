@@ -16,6 +16,7 @@ export class TokenDto {
     description: "만료일",
     type: Date,
     required: true,
+    format: "date-time",
   })
   @Expose()
   readonly expiresAt: Date;

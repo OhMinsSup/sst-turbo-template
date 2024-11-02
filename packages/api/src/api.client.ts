@@ -2,6 +2,8 @@ import type { Client, ClientOptions, Middleware } from "openapi-fetch";
 import type { HttpMethod } from "openapi-typescript-helpers";
 import createClient, { removeTrailingSlash } from "openapi-fetch";
 
+import type { paths } from "@template/api-types";
+
 import type { ApiClientOptions } from "./types";
 import { ApiPath } from "./api.path";
 
@@ -65,3 +67,12 @@ export class ApiClient<Paths extends {}> {
     return this;
   }
 }
+
+const client = createClient<paths>();
+
+const t = await client.POST("/api/v1/auth/signin", {
+  body: {
+    email: "",
+    password: "",
+  },
+});

@@ -1,7 +1,7 @@
-import { HttpResultStatus } from "";
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { UserExternalResponseDto } from "src/shared/dtos/response/users/user-response.dto";
 
+import { HttpResultCode } from "@template/common";
 import { Prisma } from "@template/db";
 import {
   getExternalUserSelector,
@@ -27,11 +27,11 @@ export class UsersService {
    * @param {UserExternalPayload} user
    */
   async me(user: UserExternalPayload): Promise<{
-    resultCode: HttpResultStatus;
+    code: HttpResultCode;
     data: UserExternalPayload;
   }> {
     return {
-      resultCode: HttpResultStatus.OK,
+      code: HttpResultCode.OK,
       data: user,
     };
   }
@@ -41,7 +41,7 @@ export class UsersService {
    * @param {string} id
    */
   async byUserId(id: string): Promise<{
-    resultCode: HttpResultStatus;
+    code: HttpResultCode;
     data: UserExternalResponseDto;
   }> {
     const data = await this.getExternalUserById(id);
@@ -50,7 +50,7 @@ export class UsersService {
     }
 
     return {
-      resultCode: HttpResultStatus.OK,
+      code: HttpResultCode.OK,
       data,
     };
   }

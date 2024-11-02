@@ -3,16 +3,12 @@ import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignInSchema } from "@template/sdk";
-import { isFetchError, isHttpError, RequestMethod } from "@template/sdk";
+import { HttpStatusCode } from "@template/common";
 
 import {
   createRemixServerClient,
   requireAnonymous,
 } from "~/.server/utils/auth";
-import {
-  errorJsonDataResponse,
-  validateRequestMethods,
-} from "~/.server/utils/response";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -23,34 +19,61 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
-  try {
-    validateRequestMethods(request, [RequestMethod.POST]);
+  await requireAnonymous(client);
 
-    await requireAnonymous(client);
+  const formData = await request.formData();
 
-    const formData = await request.formData();
+  const input = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+  } as FormFieldSignInSchema;
 
-    const input = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    } as FormFieldSignInSchema;
+  const { error, data } = await client.signIn(input);
 
-    await client.signIn(input, true);
+  console.log("error ==>", error);
+  console.log("data ==>", data);
 
-    return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-      headers,
-    });
-  } catch (error) {
-    if (isFetchError<RemixDataFlow.Response>(error)) {
-      return json(errorJsonDataResponse(error.data?.message));
+  if (error) {
+    switch (error.statusCode) {
+      case HttpStatusCode.NOT_FOUND: {
+        return json({
+          success: false,
+          error: {
+            email: {
+              message: error.message,
+            },
+          },
+        });
+      }
+      case HttpStatusCode.UNAUTHORIZED: {
+        return json({
+          success: false,
+          error: {
+            password: {
+              message: error.message,
+            },
+          },
+        });
+      }
+      case 400: {
+        return json({
+          success: false,
+          error: Object.fromEntries(
+            Object.entries(error.validationErrorInfo).map(([key, value]) => [
+              key,
+              {
+                message: value,
+              },
+            ]),
+          ),
+        });
+      }
     }
-
-    if (isHttpError(error)) {
-      return json(errorJsonDataResponse(error.message));
-    }
-
-    throw error;
   }
+
+  return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
+    headers,
+  });
 };
 
 export type RoutesActionData = typeof action;

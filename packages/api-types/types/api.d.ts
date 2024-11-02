@@ -159,10 +159,25 @@ export interface components {
     ErrorResponseDto: {
       /** @description HttpExceptionResponseDto,ValidationExceptionResponseDto 두가지가 올수있습니다. */
       error: Record<string, never>;
-      /** @description 에러 발생 메소드 */
-      method: string;
-      /** @description 에러 발생 url */
-      path: string;
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 7000
+        | 7001;
       /**
        * @description 상태코드
        * @enum {number}
@@ -216,8 +231,6 @@ export interface components {
         | 503
         | 504
         | 505;
-      /** @description 에러 발생시간 */
-      timestamp: string;
     };
     HttpExceptionResponseDto: {
       /**
@@ -248,25 +261,6 @@ export interface components {
         | "ThrottlerException";
       /** @description 에러메시지 */
       message: string;
-      /**
-       * @description 에러 코드
-       * @enum {number}
-       */
-      resultCode:
-        | 1
-        | -1
-        | 1001
-        | 1002
-        | 1003
-        | 1004
-        | 1005
-        | 4001
-        | 4002
-        | 6001
-        | 6002
-        | 6003
-        | 7000
-        | 7001;
     };
     RefreshTokenDTO: {
       /**
@@ -397,8 +391,6 @@ export interface components {
         | 503
         | 504
         | 505;
-      /** @description 성공여부 */
-      success: boolean;
     };
     TokenDto: {
       /**
@@ -423,25 +415,25 @@ export interface components {
        * Format: date-time
        * @description 사용자 삭제 시간
        */
-      deletedAt: string;
+      deletedAt: string | null;
       /** @description 사용자 이메일 */
       email: string;
       /**
        * Format: date-time
        * @description 사용자 이메일 인증 여부
        */
-      emailVerified: string;
+      emailVerified: string | null;
       /** @description 사용자 아이디 */
       id: string;
       /** @description 사용자 이미지 */
-      image: string;
+      image: string | null;
       /** @description 사용자 계정 정지 여부 */
       isSuspended: boolean;
       /**
        * Format: date-time
        * @description 사용자 마지막 활동 시간
        */
-      lastActiveAt: string;
+      lastActiveAt: string | null;
       /** @description 사용자 이름 */
       name: string;
       /** @description 사용자 프로필 */
@@ -451,9 +443,9 @@ export interface components {
     };
     UserProfileDto: {
       /** @description 사용자 자기 소개 */
-      bio: string;
+      bio: string | null;
       /** @description 사용자 웹사이트 */
-      website: string;
+      website: string | null;
     };
     UserSettingsDto: {
       /** @description 사용자 개인 정보 설정 */
@@ -462,39 +454,32 @@ export interface components {
     ValidationExceptionResponseDto: {
       /**
        * @description 에러명
-       * @example ValidationError
+       * @enum {string}
        */
-      error: string;
-      /**
-       * @description 에러메시지
-       * @example 검증오류
-       */
+      error:
+        | "BadRequestException"
+        | "ForbiddenException"
+        | "NotFoundException"
+        | "UnauthorizedException"
+        | "NotAcceptableException"
+        | "RequestTimeoutException"
+        | "ConflictException"
+        | "GoneException"
+        | "HttpVersionNotSupportedException"
+        | "PayloadTooLargeException"
+        | "UnsupportedMediaTypeException"
+        | "UnprocessableEntityException"
+        | "InternalServerErrorException"
+        | "NotImplementedException"
+        | "ImATeapotException"
+        | "MethodNotAllowedException"
+        | "BadGatewayException"
+        | "ServiceUnavailableException"
+        | "GatewayTimeoutException"
+        | "PreconditionFailedException"
+        | "ThrottlerException";
+      /** @description 에러메시지 */
       message: string;
-      /**
-       * @description 에러 코드
-       * @default 7000
-       * @enum {number}
-       */
-      resultCode:
-        | 1
-        | -1
-        | 1001
-        | 1002
-        | 1003
-        | 1004
-        | 1005
-        | 4001
-        | 4002
-        | 6001
-        | 6002
-        | 6003
-        | 7000
-        | 7001;
-      /**
-       * @description 400 검증오류 고정
-       * @example 400
-       */
-      statusCode: number;
       /**
        * @description 필드 : [에러정보] 형식의 에러정보가 담긴 객체입니다.
        * @example {
@@ -558,9 +543,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["AuthResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       400: {
@@ -617,9 +600,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["AuthResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       400: {
@@ -676,9 +657,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["Boolean"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       400: {
@@ -735,9 +714,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["AuthResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       400: {
@@ -774,9 +751,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["Boolean"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       400: {
@@ -830,9 +805,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["UserExternalResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
       404: {
@@ -861,9 +834,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": {
-            [key: string]: components["schemas"]["SuccessResponseDto"];
-          } & components["schemas"]["UserExternalResponseDto"];
+          "application/json": components["schemas"]["SuccessResponseDto"];
         };
       };
     };

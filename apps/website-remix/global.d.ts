@@ -6,6 +6,7 @@
     [key: string]: string;
     readonly DATABASE_URL: string;
     readonly AUTH_SECRET: string;
+    readonly NODE_ENV: string;
     readonly SERVER_PORT: string;
     readonly LOGGER_DRIVER: string;
     readonly LOG_LEVELS: string;
@@ -24,6 +25,7 @@
     readonly npm_package_devDependencies_typescript: string;
     readonly npm_package_devDependencies__template_tsconfig: string;
     readonly npm_package_dependencies_lucide_react: string;
+    readonly ANDROID_HOME: string;
     readonly NVM_CD_FLAGS: string;
     readonly npm_package_devDependencies_vite: string;
     readonly TERM: string;
@@ -60,6 +62,7 @@
     readonly npm_config_frozen_lockfile: string;
     readonly npm_package_devDependencies__types_react_dom: string;
     readonly npm_package_devDependencies__remix_run_dev: string;
+    readonly npm_package_dependencies__template_api_types: string;
     readonly npm_package_dependencies__remix_run_react: string;
     readonly PATH: string;
     readonly npm_package_scripts_typecheck: string;
@@ -72,6 +75,7 @@
     readonly npm_package_dependencies__remix_run_serve: string;
     readonly PWD: string;
     readonly npm_package_dependencies_remix_utils: string;
+    readonly JAVA_HOME: string;
     readonly npm_lifecycle_event: string;
     readonly npm_package_dependencies_date_fns: string;
     readonly npm_package_dependencies__t3_oss_env_core: string;
@@ -81,6 +85,7 @@
     readonly npm_package_scripts_start: string;
     readonly npm_package_scripts_build: string;
     readonly npm_config_node_linker: string;
+    readonly npm_package_dependencies__template_api: string;
     readonly VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     readonly XPC_FLAGS: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
@@ -94,6 +99,8 @@
     readonly HOME: string;
     readonly VSCODE_GIT_ASKPASS_MAIN: string;
     readonly npm_package_devDependencies__template_prettier_config: string;
+    readonly npm_package_dependencies__template_common: string;
+    readonly npm_package_dependencies__template_auth: string;
     readonly LOGNAME: string;
     readonly npm_lifecycle_script: string;
     readonly npm_package_dependencies_zod: string;
@@ -112,7 +119,7 @@
     readonly npm_package_scripts_clean: string;
     readonly npm_node_execpath: string;
     readonly COLORTERM: string;
-    readonly NODE_ENV: string;
+    readonly VITE_USER_NODE_ENV: string;
   }
 }
   

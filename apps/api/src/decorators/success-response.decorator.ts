@@ -2,6 +2,8 @@ import { applyDecorators, HttpStatus, Type } from "@nestjs/common";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 import merge from "lodash/merge";
 
+import { HttpResultCode } from "@template/common";
+
 import { SuccessResponseDto } from "../shared/dtos/response/success-response.dto";
 import { makeInstanceByApiProperty } from "../shared/makeInstanceByApiProperty";
 
@@ -30,6 +32,10 @@ interface SuccessResponseOption {
    * pageDto<generic> 인경우?
    */
   generic?: Type<any>;
+  /**
+   * 에러 코드에 대해 기술합니다.
+   */
+  resultCode?: number;
 }
 /**
  * 여러 응답값을 손쉽게 적기위한 데토레이터 입니다
@@ -45,9 +51,7 @@ export const SuccessResponse = (
     .map((response: SuccessResponseOption) => {
       // base CommonResponse 를 만듭니다.
       const commonResponseInstance =
-        makeInstanceByApiProperty<SuccessResponseDto<any, any>>(
-          SuccessResponseDto,
-        );
+        makeInstanceByApiProperty<SuccessResponseDto<any>>(SuccessResponseDto);
 
       const DtoModel = response.model;
 
@@ -67,6 +71,9 @@ export const SuccessResponse = (
       } else {
         commonResponseInstance.data = dtoData;
       }
+
+      commonResponseInstance.resultCode =
+        response.resultCode ?? HttpResultCode.OK;
 
       // 예시 정보를 만든다 ( 스웨거의 examplse)
       return {

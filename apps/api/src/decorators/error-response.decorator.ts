@@ -45,7 +45,6 @@ export interface ErrorResponseOption {
  * 기본적으로 status 코드가 같으면 하나밖에 못적기때문에 example을 추가하기위해서 커스텀 하였습니다.
  * @param StatusCode 응답 코드입니다. HttpStatus enum 값을 사용하시면됩니다. 보통사용하시는 BadRequestException은 400번입니다.
  * @param errorResponseOptions ErrorResponseOption[] 같은 코드에 여러 example을 추가하기위한 옵션입니다.
- * @returns
  */
 export const ErrorResponse = (
   StatusCode: HttpStatus,
@@ -70,12 +69,12 @@ export const ErrorResponse = (
         innerErrorDto = new HttpExceptionResponseDto(
           error.model.name,
           error.message,
-          error.resultCode ?? HttpResultCode.FAIL,
         );
       }
       const commonErrorInstance =
         makeInstanceByApiProperty<ErrorResponseDto<any>>(ErrorResponseDto);
       commonErrorInstance.error = innerErrorDto;
+      commonErrorInstance.resultCode = error.resultCode ?? HttpResultCode.FAIL;
       return {
         [error.exampleTitle]: {
           value: commonErrorInstance,

@@ -6,7 +6,7 @@ import { TokensDto } from "../../models/tokens.dto";
 export class AuthResponseDto {
   @ApiProperty({
     description: "유저 아이디",
-    type: String,
+    type: "string",
     required: true,
   })
   @Expose()
@@ -14,7 +14,7 @@ export class AuthResponseDto {
 
   @ApiProperty({
     description: "유저 이메일",
-    type: String,
+    type: "string",
     required: true,
   })
   @Expose()
@@ -22,7 +22,7 @@ export class AuthResponseDto {
 
   @ApiProperty({
     description: "유저 이름",
-    type: String,
+    type: "string",
     required: true,
   })
   @Expose()
@@ -30,7 +30,7 @@ export class AuthResponseDto {
 
   @ApiProperty({
     description: "유저 이미지",
-    type: String,
+    type: "string",
     nullable: true,
   })
   @Expose()

@@ -1,10 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { HttpResultCode } from "@template/common";
-
-import { EnumToArray } from "../../enumNumberToArray";
-import { HttpErrorNameEnum } from "../../httpErrorNameEnum";
+import { HttpErrorNameEnum } from "@template/common";
 
 export class HttpExceptionResponseDto {
   @ApiProperty({
@@ -15,22 +12,14 @@ export class HttpExceptionResponseDto {
   error: string;
 
   @ApiProperty({
-    type: String,
+    type: "string",
     description: "에러메시지",
   })
   @Expose()
   message: string;
 
-  @ApiProperty({
-    enum: EnumToArray(HttpResultCode),
-    description: "에러 코드",
-  })
-  @Expose()
-  resultCode: number;
-
-  constructor(error: string, message: string, resultCode: number) {
+  constructor(error: string, message: string) {
     this.error = error;
     this.message = message;
-    this.resultCode = resultCode;
   }
 }

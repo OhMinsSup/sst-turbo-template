@@ -88,13 +88,6 @@ export function makeInstanceByApiProperty<T>(
   //  mappingDto 를 만듬
   for (const property of properties) {
     const propertyType = property.type;
-    // console.log(
-    //   'fiste',
-    //   propertyType,
-    //   property,
-    //   mappingDto[property.fieldName]
-    // );
-
     // property.type apiproperty에 type 을 기술 않할 수 있으므로 undefiend 체크
     if (propertyType) {
       // 이건 커스텀임 generic을 위한 커스텀

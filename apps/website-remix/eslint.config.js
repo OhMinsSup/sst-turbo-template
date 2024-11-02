@@ -35,6 +35,7 @@ export default [
       "no-restricted-properties": "off",
       "@typescript-eslint/no-unsafe-enum-comparison": "off",
       "@typescript-eslint/only-throw-error": "off",
+      "@typescript-eslint/no-unsafe-member-access": "off",
     },
   },
 ];

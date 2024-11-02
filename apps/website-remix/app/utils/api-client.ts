@@ -1,14 +1,16 @@
-import type { ApiClient } from "@template/sdk";
-import { createClient } from "@template/sdk";
+import type { ApiClient } from "@template/api";
+import type { paths } from "@template/api-types";
+import { createApiClient } from "@template/api";
 
-const createApiClient = (options?: Parameters<typeof createClient>[1]) =>
-  createClient(import.meta.env.NEXT_PUBLIC_SERVER_URL, options);
+import { publicConfig } from "~/config/config.public";
 
-let apiClientSingleton: ApiClient | undefined = undefined;
+let apiClientSingleton: ApiClient<paths> | undefined = undefined;
 const getApiClient = () => {
   if (typeof window === "undefined") {
     // Server: always make a new query client
-    return createApiClient();
+    return createApiClient({
+      baseUrl: publicConfig.serverUrl,
+    });
   } else {
     // Browser: use singleton pattern to keep the same query client
     return (apiClientSingleton ??= createApiClient());
@@ -16,5 +18,3 @@ const getApiClient = () => {
 };
 
 export { getApiClient, createApiClient };
-
-getApiClient().rpc("getInfinitePost").get();

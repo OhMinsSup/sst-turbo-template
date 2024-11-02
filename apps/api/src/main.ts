@@ -1,11 +1,12 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
 import {
   BadRequestException,
+  ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { NestFactory } from "@nestjs/core";
+import { NestFactory, Reflector } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import { ValidationError } from "class-validator";
 import compression from "compression";
@@ -19,7 +20,12 @@ async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = app.get(ConfigService);
-
+  // 글로벌로 class 직렬화 선택
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludeExtraneousValues: true,
+    }),
+  );
   app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({

@@ -2,6 +2,8 @@ import { Body, Controller, HttpStatus, Patch, Post } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
+import { HttpResultCode } from "@template/common";
+
 import { ErrorResponse } from "../../../decorators/error-response.decorator";
 import { SuccessResponse } from "../../../decorators/success-response.decorator";
 import { AuthResponseDto } from "../../../shared/dtos/response/auth/auth-response.dto";
@@ -44,6 +46,7 @@ export class AuthController {
       model: AuthResponseDto,
       exampleDescription: "이메일 회원가입에 성공한 경우 발생하는 응답",
       exampleTitle: "이메일 회원가입 성공",
+      resultCode: HttpResultCode.OK,
     },
   ])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -67,6 +70,7 @@ export class AuthController {
       model: AuthResponseDto,
       exampleDescription: "이메일 로그인에 성공한 경우 발생하는 응답",
       exampleTitle: "이메일 로그인 성공",
+      resultCode: HttpResultCode.OK,
     },
   ])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -95,6 +99,7 @@ export class AuthController {
       model: Boolean,
       exampleDescription: "로그아웃에 성공한 경우 발생하는 응답",
       exampleTitle: "로그아웃 성공",
+      resultCode: HttpResultCode.OK,
     },
   ])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -124,6 +129,7 @@ export class AuthController {
       model: Boolean,
       exampleDescription: "토큰 검증에 성공한 경우 발생하는 응답",
       exampleTitle: "토큰 검증 성공",
+      resultCode: HttpResultCode.OK,
     },
   ])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
@@ -153,6 +159,7 @@ export class AuthController {
       model: AuthResponseDto,
       exampleDescription: "토큰 갱신에 성공한 경우 발생하는 응답",
       exampleTitle: "토큰 갱신 성공",
+      resultCode: HttpResultCode.OK,
     },
   ])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [

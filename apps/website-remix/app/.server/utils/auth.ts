@@ -1,11 +1,12 @@
 import { redirect } from "@remix-run/node";
 
-import { createHttpError, HttpStatus } from "@template/sdk";
 import {
   createAuthServerClient,
   parseCookieHeader,
   serializeCookieHeader,
-} from "@template/sdk/auth/server";
+} from "@template/auth/server";
+
+import { getApiClient } from "~/utils/api-client";
 
 interface CreateRemixServerClientOptions {
   headers: Headers;
@@ -17,7 +18,7 @@ export const createRemixServerClient = ({
   headers,
 }: CreateRemixServerClientOptions) => {
   return createAuthServerClient({
-    url: import.meta.env.NEXT_PUBLIC_SERVER_URL,
+    api: getApiClient(),
     logDebugMessages: false,
     cookies: {
       getAll() {

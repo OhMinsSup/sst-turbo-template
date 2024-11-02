@@ -5,7 +5,6 @@ import {
   createRemixServerClient,
   requireAnonymous,
 } from "~/.server/utils/auth";
-import { createApiClient } from "~/utils/api-client";
 
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const headers = new Headers();

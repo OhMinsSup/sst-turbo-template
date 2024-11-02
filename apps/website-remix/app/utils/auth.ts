@@ -1,9 +1,11 @@
-import { createAuthBrowserClient } from "@template/sdk/auth/client";
+import { createAuthBrowserClient } from "@template/auth/client";
+
+import { getApiClient } from "./api-client";
 
 export const createRemixBrowserClient = () => {
   return createAuthBrowserClient({
     isSingleton: true,
     logDebugMessages: false,
-    url: import.meta.env.NEXT_PUBLIC_SERVER_URL,
+    api: getApiClient(),
   });
 };

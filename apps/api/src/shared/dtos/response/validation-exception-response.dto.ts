@@ -2,42 +2,22 @@ import { HttpException, HttpStatus, ValidationError } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
 import { Expose } from "class-transformer";
 
-import { HttpResultCode } from "@template/common";
-
-import { EnumToArray } from "../../enumNumberToArray";
+import { HttpErrorNameEnum } from "@template/common";
 
 export class ValidationExceptionResponseDto {
   @ApiProperty({
-    type: String,
+    enum: HttpErrorNameEnum,
     description: "에러명",
-    example: "ValidationError",
   })
   @Expose()
-  error = "ValidationError";
+  error: string;
 
   @ApiProperty({
-    type: String,
+    type: "string",
     description: "에러메시지",
-    example: "검증오류",
   })
   @Expose()
-  message = "검증오류";
-
-  @ApiProperty({
-    type: Number,
-    description: "400 검증오류 고정",
-    example: HttpStatus.BAD_REQUEST,
-  })
-  @Expose()
-  statusCode = HttpStatus.BAD_REQUEST;
-
-  @ApiProperty({
-    enum: EnumToArray(HttpResultCode),
-    description: "에러 코드",
-    default: HttpResultCode.INVALID_REQUEST,
-  })
-  @Expose()
-  resultCode = HttpResultCode.INVALID_REQUEST;
+  message: string;
 
   @ApiProperty({
     description: "필드 : [에러정보] 형식의 에러정보가 담긴 객체입니다.",
@@ -48,6 +28,8 @@ export class ValidationExceptionResponseDto {
 
   constructor(validationErrorInfo: Record<string, Array<string>>) {
     this.validationErrorInfo = validationErrorInfo;
+    this.error = "ValidationError";
+    this.message = "검증 오류";
   }
 }
 
@@ -77,7 +59,6 @@ export class CustomValidationError extends HttpException {
         error: "ValidationError",
         message: "검증 오류",
         validationErrorInfo: objectsOfError,
-        resultCode: HttpResultCode.FAIL,
       },
       HttpStatus.BAD_REQUEST,
     );

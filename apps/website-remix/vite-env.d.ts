@@ -11,6 +11,7 @@
   declare module '$env/static/private' {
     export const DATABASE_URL: string;
     export const AUTH_SECRET: string;
+    export const NODE_ENV: string;
     export const SERVER_PORT: string;
     export const LOGGER_DRIVER: string;
     export const LOG_LEVELS: string;
@@ -29,6 +30,7 @@
     export const npm_package_devDependencies_typescript: string;
     export const npm_package_devDependencies__template_tsconfig: string;
     export const npm_package_dependencies_lucide_react: string;
+    export const ANDROID_HOME: string;
     export const NVM_CD_FLAGS: string;
     export const npm_package_devDependencies_vite: string;
     export const TERM: string;
@@ -65,6 +67,7 @@
     export const npm_config_frozen_lockfile: string;
     export const npm_package_devDependencies__types_react_dom: string;
     export const npm_package_devDependencies__remix_run_dev: string;
+    export const npm_package_dependencies__template_api_types: string;
     export const npm_package_dependencies__remix_run_react: string;
     export const PATH: string;
     export const npm_package_scripts_typecheck: string;
@@ -77,6 +80,7 @@
     export const npm_package_dependencies__remix_run_serve: string;
     export const PWD: string;
     export const npm_package_dependencies_remix_utils: string;
+    export const JAVA_HOME: string;
     export const npm_lifecycle_event: string;
     export const npm_package_dependencies_date_fns: string;
     export const npm_package_dependencies__t3_oss_env_core: string;
@@ -86,6 +90,7 @@
     export const npm_package_scripts_start: string;
     export const npm_package_scripts_build: string;
     export const npm_config_node_linker: string;
+    export const npm_package_dependencies__template_api: string;
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;
     export const npm_package_dependencies__tanstack_react_query: string;
@@ -99,6 +104,8 @@
     export const HOME: string;
     export const VSCODE_GIT_ASKPASS_MAIN: string;
     export const npm_package_devDependencies__template_prettier_config: string;
+    export const npm_package_dependencies__template_common: string;
+    export const npm_package_dependencies__template_auth: string;
     export const LOGNAME: string;
     export const npm_lifecycle_script: string;
     export const npm_package_dependencies_zod: string;
@@ -117,7 +124,7 @@
     export const npm_package_scripts_clean: string;
     export const npm_node_execpath: string;
     export const COLORTERM: string;
-    export const NODE_ENV: string;
+    export const VITE_USER_NODE_ENV: string;
 }
   
   declare module '$env/static/public' {
