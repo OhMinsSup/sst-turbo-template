@@ -97,13 +97,23 @@ export const ErrorResponse = (
       content: {
         "application/json": {
           schema: {
-            additionalProperties: { $ref: getSchemaPath(ErrorResponseDto) },
-            oneOf: flagValidationErrorExist
-              ? [
-                  { $ref: getSchemaPath(ValidationExceptionResponseDto) },
-                  { $ref: getSchemaPath(HttpExceptionResponseDto) },
-                ]
-              : [{ $ref: getSchemaPath(HttpExceptionResponseDto) }],
+            allOf: [
+              { $ref: getSchemaPath(ErrorResponseDto) },
+              {
+                properties: {
+                  error: {
+                    oneOf: flagValidationErrorExist
+                      ? [
+                          {
+                            $ref: getSchemaPath(ValidationExceptionResponseDto),
+                          },
+                          { $ref: getSchemaPath(HttpExceptionResponseDto) },
+                        ]
+                      : [{ $ref: getSchemaPath(HttpExceptionResponseDto) }],
+                  },
+                },
+              },
+            ],
           },
           examples: examples,
         },

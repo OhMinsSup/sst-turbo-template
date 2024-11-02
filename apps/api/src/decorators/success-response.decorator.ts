@@ -117,12 +117,14 @@ export const SuccessResponse = (
       content: {
         "application/json": {
           schema: {
-            // 베이스 스키마
-            additionalProperties: {
-              $ref: getSchemaPath(SuccessResponseDto),
-            },
-            // dto 스키마들
-            oneOf: [...pathsOfDto, ...pathsOfGeneric],
+            allOf: [
+              { $ref: getSchemaPath(SuccessResponseDto) },
+              {
+                properties: {
+                  data: { oneOf: [...pathsOfDto, ...pathsOfGeneric] },
+                },
+              },
+            ],
           },
           // 예시값
           examples: examples,
