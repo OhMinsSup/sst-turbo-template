@@ -18,14 +18,49 @@ export class ApiBuilder<
   Path extends PathsWithMethod<Paths, Method>,
   Init extends MaybeOptionalInit<Paths[Path], Method>,
 > {
+  /**
+   * @memberof ApiBuilder
+   * @instance
+   * @protected
+   * @property {Client<Paths, MediaType>} client
+   * @description openapi-fetch의 Client 인스턴스
+   */
   protected client: Client<Paths, MediaType>;
 
+  /**
+   * @memberof ApiBuilder
+   * @instance
+   * @protected
+   * @property {Path} path
+   * @description API 요청을 보낼 때 사용할 path
+   */
   protected path: Path;
 
+  /**
+   * @memberof ApiBuilder
+   * @instance
+   * @protected
+   * @property {Method} method
+   * @description API 요청을 보낼 때 사용할 method
+   */
   protected method: Method;
 
+  /**
+   * @memberof ApiBuilder
+   * @instance
+   * @protected
+   * @property {InitParam<Init>?} requestInit
+   * @description API 요청을 보낼 때 사용할 request init
+   */
   protected requestInit?: InitParam<Init>;
 
+  /**
+   * @memberof ApiBuilder
+   * @instance
+   * @protected
+   * @property {Headers?} headers
+   * @description API 요청을 보낼 때 사용할 headers
+   */
   protected headers?: Headers;
 
   constructor(options: ApiBuilderOptions<Paths, Method, Path, Init>) {
