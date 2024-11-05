@@ -13,7 +13,12 @@ const getApiClient = () => {
     });
   } else {
     // Browser: use singleton pattern to keep the same query client
-    return (apiClientSingleton ??= createApiClient());
+    if (!apiClientSingleton) {
+      apiClientSingleton = createApiClient({
+        baseUrl: publicConfig.serverUrl,
+      });
+    }
+    return apiClientSingleton;
   }
 };
 

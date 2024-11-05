@@ -5,8 +5,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useFormState } from "react-dom";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignUpSchema } from "@template/sdk";
-import { schema } from "@template/sdk";
+import type { FormFieldSignUpSchema } from "@template/validators/auth";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -19,6 +18,7 @@ import {
 } from "@template/ui/form";
 import { Input } from "@template/ui/input";
 import { isBoolean, isUndefined } from "@template/utils/assertion";
+import { signUpSchema } from "@template/validators/auth";
 
 import type { State } from "~/components/auth/SignupForm/signup.action";
 import { submitAction } from "~/components/auth/SignupForm/signup.action";
@@ -34,7 +34,7 @@ export default function SignupForm() {
   );
 
   const form = useForm<FormFieldSignUpSchema>({
-    resolver: zodResolver(schema.signUp),
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
       password: "",

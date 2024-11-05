@@ -1,14 +1,14 @@
 import { cookies } from "next/headers";
 
-import { createAuthServerClient } from "@template/sdk/auth/server";
+import { createAuthServerClient } from "@template/auth/server";
 
-import { env } from "~/env";
+import { getApiClient } from "~/utils/api-client";
 
 export function createClient() {
   const cookieStore = cookies();
 
   return createAuthServerClient({
-    url: env.NEXT_PUBLIC_SERVER_URL,
+    api: getApiClient(),
     logDebugMessages: false,
     cookies: {
       getAll() {

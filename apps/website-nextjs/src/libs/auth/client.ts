@@ -1,10 +1,10 @@
-import { createAuthBrowserClient } from "@template/sdk/auth/client";
+import { createAuthBrowserClient } from "@template/auth/client";
 
-import { env } from "~/env";
+import { getApiClient } from "~/utils/api-client";
 
 export function createClient() {
   return createAuthBrowserClient({
-    url: env.NEXT_PUBLIC_SERVER_URL,
+    api: getApiClient(),
     logDebugMessages: false,
   });
 }

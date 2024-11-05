@@ -4,8 +4,7 @@ import type { FieldErrors } from "react-hook-form";
 import { revalidatePath } from "next/cache";
 import { redirect } from "next/navigation";
 
-import type { ClientResponse, FormFieldSignUpSchema } from "@template/sdk";
-import { HttpResultStatus, isFetchError } from "@template/sdk";
+import type { FormFieldSignUpSchema } from "@template/validators/auth";
 
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { createClient } from "~/libs/auth/server";
@@ -31,23 +30,23 @@ export async function submitAction(_: State, input: FormFieldSignUpSchema) {
     isRedirect = true;
   } catch (error) {
     isRedirect = false;
-    if (isFetchError<ClientResponse>(error) && error.data) {
-      switch (error.data.resultCode) {
-        case HttpResultStatus.INVALID: {
-          return (
-            Array.isArray(error.data.message)
-              ? error.data.message.at(0)
-              : defaultErrorMessage
-          ) as State;
-        }
-        case HttpResultStatus.NOT_EXIST: {
-          return error.data.message as State;
-        }
-        default: {
-          return defaultErrorMessage as State;
-        }
-      }
-    }
+    // if (isFetchError<ClientResponse>(error) && error.data) {
+    //   switch (error.data.resultCode) {
+    //     case HttpResultStatus.INVALID: {
+    //       return (
+    //         Array.isArray(error.data.message)
+    //           ? error.data.message.at(0)
+    //           : defaultErrorMessage
+    //       ) as State;
+    //     }
+    //     case HttpResultStatus.NOT_EXIST: {
+    //       return error.data.message as State;
+    //     }
+    //     default: {
+    //       return defaultErrorMessage as State;
+    //     }
+    //   }
+    // }
   } finally {
     if (isRedirect) {
       revalidatePath("/", "layout");
