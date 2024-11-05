@@ -13,11 +13,7 @@ export default function SignInLayout({ children }: SignInLayoutProps) {
     <div className="z-50 mx-auto w-full max-w-[370px] py-16">
       {children}
       <div className="text-center">
-        <Link
-          to="/"
-          unstable_viewTransition
-          className="text-sm text-muted-foreground"
-        >
+        <Link to="/" viewTransition className="text-sm text-muted-foreground">
           비밀번호를 잊으셨나요?
         </Link>
       </div>
@@ -36,7 +32,7 @@ export default function SignInLayout({ children }: SignInLayoutProps) {
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
             to={PAGE_ENDPOINTS.AUTH.SIGNUP}
-            unstable_viewTransition
+            viewTransition
             className="hover:text-brand underline underline-offset-4"
           >
             아직 계정이 없으신가요? 회원가입

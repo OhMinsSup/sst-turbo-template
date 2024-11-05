@@ -29,7 +29,7 @@ export default function SignUpLayout({ children }: SignUpLayoutProps) {
         <p className="px-8 text-center text-sm text-muted-foreground">
           <Link
             to={PAGE_ENDPOINTS.AUTH.SIGNIN}
-            unstable_viewTransition
+            viewTransition
             className="hover:text-brand underline underline-offset-4"
           >
             이미 계정이 있으신가요? 로그인

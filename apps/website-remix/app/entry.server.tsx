@@ -16,6 +16,8 @@ import { cors } from "remix-utils/cors";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 
+import { NonceProvider } from "~/utils/nonce-provider";
+
 const ABORT_DELAY = 5_000;
 
 export default function handleRequest(
@@ -34,12 +36,14 @@ export default function handleRequest(
         responseStatusCode,
         responseHeaders,
         remixContext,
+        loadContext,
       )
     : handleBrowserRequest(
         request,
         responseStatusCode,
         responseHeaders,
         remixContext,
+        loadContext,
       );
 }
 
@@ -48,6 +52,7 @@ function handleBotRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  loadContext: AppLoadContext,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
@@ -98,15 +103,20 @@ function handleBrowserRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
+  loadContext: AppLoadContext,
 ) {
+  const nonce = loadContext.cspNonce?.toString() ?? "";
+  console.log("Bot detected, rendering static shell.", loadContext, nonce);
   return new Promise((resolve, reject) => {
     let shellRendered = false;
     const { pipe, abort } = renderToPipeableStream(
-      <RemixServer
-        context={remixContext}
-        url={request.url}
-        abortDelay={ABORT_DELAY}
-      />,
+      <NonceProvider value={nonce}>
+        <RemixServer
+          context={remixContext}
+          url={request.url}
+          abortDelay={ABORT_DELAY}
+        />
+      </NonceProvider>,
       {
         onShellReady() {
           shellRendered = true;

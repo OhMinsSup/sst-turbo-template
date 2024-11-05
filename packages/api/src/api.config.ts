@@ -117,22 +117,19 @@ export class ApiConfig<
     const newHeaders = new Headers();
     newHeaders.set("Authorization", `${type} ${token}`);
 
-    if (this.headers instanceof Headers) {
-      this.headers.forEach((value, key) => {
-        newHeaders.set(key, value);
-      });
-    } else if (typeof this.headers === "object") {
-      Object.entries(this.headers).forEach(([key, value]) => {
-        if (!isNullOrUndefined(value)) {
-          if (typeof value === "number" || typeof value === "boolean") {
-            newHeaders.set(key, value.toString());
-          } else if (typeof value === "string") {
-            newHeaders.set(key, value);
-          } else {
-            newHeaders.set(key, JSON.stringify(value));
-          }
+    if (this.headers) {
+      if (this.headers instanceof Headers) {
+        for (const [key, value] of newHeaders.entries()) {
+          this.headers.set(key, value);
         }
-      });
+      } else if (typeof this.headers === "object") {
+        this.headers = {
+          ...this.headers,
+          ...Object.fromEntries(newHeaders.entries()),
+        };
+      }
+    } else {
+      this.headers = newHeaders;
     }
 
     return this;
@@ -147,19 +144,19 @@ export class ApiConfig<
     if (headers instanceof Headers) {
       this.headers = headers;
     } else {
-      const headers = new Headers();
+      const newHeaders = new Headers();
       Object.entries(headers).forEach(([key, value]) => {
         if (!isNullOrUndefined(value)) {
           if (typeof value === "number" || typeof value === "boolean") {
-            headers.set(key, value.toString());
+            newHeaders.set(key, value.toString());
           } else if (typeof value === "string") {
-            headers.set(key, value);
+            newHeaders.set(key, value);
           } else {
-            headers.set(key, JSON.stringify(value));
+            newHeaders.set(key, JSON.stringify(value));
           }
         }
       });
-      this.headers = headers;
+      this.headers = newHeaders;
     }
     return this;
   }

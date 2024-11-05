@@ -33,8 +33,8 @@ export class JwtAuthStrategy extends PassportStrategy(Strategy, "jwt") {
   ) {
     super({
       jwtFromRequest: ExtractJwt.fromExtractors([
-        fromCookie(env.getAccessTokenName()),
         ExtractJwt.fromAuthHeaderAsBearerToken(),
+        fromCookie(env.getAccessTokenName()),
       ]),
       secretOrKey: env.getAccessTokenSecret(),
     });

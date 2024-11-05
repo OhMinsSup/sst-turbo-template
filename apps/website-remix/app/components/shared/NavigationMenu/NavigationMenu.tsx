@@ -51,7 +51,7 @@ export default function NavigationMenu() {
 
   const onSignInWithSignUp = () => {
     navigate(PAGE_ENDPOINTS.AUTH.SIGNIN, {
-      unstable_viewTransition: true,
+      viewTransition: true,
     });
   };
 
