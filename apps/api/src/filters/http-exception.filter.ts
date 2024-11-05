@@ -8,6 +8,7 @@ import {
 } from "@nestjs/common";
 import { ThrottlerException } from "@nestjs/throttler";
 import { Request, Response } from "express";
+import { ErrorResponseOption } from "src/decorators/error-response.decorator";
 
 import { HttpResultCode } from "@template/common";
 
@@ -52,11 +53,11 @@ export class HttpExceptionFilter implements ExceptionFilter {
         };
       } else {
         // 에러 코드화를 진행할 부분
-        const objError = getError as HttpExceptionResponseDto;
-        resultCode = HttpResultCode.FAIL;
+        const objError = getError as ErrorResponseOption;
+        resultCode = objError.resultCode;
         error = {
-          message: objError.message,
           error: exception.name,
+          message: objError.message as string,
         };
       }
     } else {
@@ -81,7 +82,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const errorResponse = {
       statusCode,
       resultCode,
-      error: error,
+      error,
     };
 
     Logger.warn("errorResponse", JSON.stringify(errorResponse));
