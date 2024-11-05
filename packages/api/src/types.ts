@@ -49,5 +49,4 @@ export interface ApiBuilderOptions<
   method: Method;
   path: Path;
   requestInit?: InitParam<Init>;
-  headers?: Headers;
 }

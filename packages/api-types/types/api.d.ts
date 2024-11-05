@@ -309,7 +309,7 @@ export interface components {
        * @description The name of the user
        * @example John Doe
        */
-      name: string;
+      name?: string;
       /**
        * Password
        * @description The password of the user

@@ -24,7 +24,6 @@ import { ClientHintCheck } from "./utils/client-hints";
 import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
-export { action } from "~/.server/routes/root/root.action";
 export { meta } from "~/seo/root.meta";
 
 export const links: LinksFunction = () => {
@@ -102,8 +101,6 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
 
 export default function App() {
   const data = useLoaderData<RoutesLoaderData>();
-
-  console.log(data);
 
   return (
     <Document>

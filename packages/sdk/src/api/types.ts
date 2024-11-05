@@ -1,6 +1,6 @@
 import type { $Fetch, FetchOptions } from "ofetch";
 
-import type { PostPayload, UserExternalPayload } from "@template/db/selectors";
+import type { UserExternalPayload } from "@template/db/selectors";
 
 import type { HttpResultStatus } from "./constants";
 import type {
@@ -252,7 +252,7 @@ type ApiResponse<FnKey, MethodKey> = FnKey extends "signUp"
                 : never
               : FnKey extends "getInfinitePost"
                 ? MethodKey extends "GET"
-                  ? ListResponse<PostPayload>
+                  ? ListResponse<any>
                   : never
                 : FnKey extends "createPost"
                   ? MethodKey extends "POST"

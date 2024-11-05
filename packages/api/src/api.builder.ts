@@ -54,21 +54,11 @@ export class ApiBuilder<
    */
   protected requestInit?: InitParam<Init>;
 
-  /**
-   * @memberof ApiBuilder
-   * @instance
-   * @protected
-   * @property {Headers?} headers
-   * @description API 요청을 보낼 때 사용할 headers
-   */
-  protected headers?: Headers;
-
   constructor(options: ApiBuilderOptions<Paths, Method, Path, Init>) {
     this.client = options.client;
     this.path = options.path;
     this.method = options.method;
     this.requestInit = options.requestInit;
-    this.headers = options.headers;
   }
 
   then<
@@ -91,10 +81,7 @@ export class ApiBuilder<
     const fetcher = this.client[fnKey];
 
     // @ts-expect-error - openapi-fetch에서는 메소드마다 다른 함수를 호출해야하는데 통일하기 위해 이렇게 작성했습니다.
-    return fetcher(this.path, {
-      headers: this.headers,
-      ...this.requestInit,
-    })
+    return fetcher(this.path, this.requestInit)
       .then(onfulfilled, onrejected)
       .catch(onrejected);
   }

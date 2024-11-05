@@ -1,20 +1,17 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
-import { undefined } from "zod";
 
-import type { FormFieldSignUpSchema } from "@template/sdk";
-import { isFetchError, isHttpError, RequestMethod } from "@template/sdk";
+import type { FormFieldSignUpSchema } from "@template/validators/auth";
+import { HttpStatusCode } from "@template/common";
 
 import {
   createRemixServerClient,
   requireAnonymous,
 } from "~/.server/utils/auth";
-import {
-  errorJsonDataResponse,
-  validateRequestMethods,
-} from "~/.server/utils/response";
+import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
 
 export const action = async ({ request }: ActionFunctionArgs) => {
   const headers = new Headers();
@@ -24,39 +21,47 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
-  try {
-    validateRequestMethods(request, [RequestMethod.POST]);
+  await requireAnonymous(client);
 
-    await requireAnonymous(client);
+  const formData = await request.formData();
 
-    const formData = await request.formData();
+  const input = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    confirmPassword: formData.get("confirmPassword"),
+    name: formData.get("name"),
+    image: formData.get("image"),
+  } as FormFieldSignUpSchema;
 
-    const input = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-      confirmPassword: formData.get("confirmPassword"),
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      name: formData.get("name") || undefined,
-      // eslint-disable-next-line @typescript-eslint/prefer-nullish-coalescing
-      avatarUrl: formData.get("avatarUrl") || undefined,
-    } as FormFieldSignUpSchema;
+  const { error } = await client.signUp(input);
 
-    await client.signUp(input, true);
-
-    return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-      headers,
-    });
-  } catch (error) {
-    if (isFetchError<RemixDataFlow.Response>(error)) {
-      return json(errorJsonDataResponse(error.data?.message));
+  if (error?.error) {
+    switch (error.statusCode) {
+      case HttpStatusCode.NOT_FOUND: {
+        return json({
+          success: false,
+          error: toErrorFormat("email", error),
+        });
+      }
+      case HttpStatusCode.BAD_REQUEST: {
+        return json({
+          success: false,
+          error: toValidationErrorFormat(error),
+        });
+      }
+      default: {
+        return redirectWithToast(request.url, {
+          type: "error",
+          title: "서버 오류",
+          description: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        });
+      }
     }
-
-    if (isHttpError(error)) {
-      return json(errorJsonDataResponse(error.message));
-    }
-
-    throw error;
   }
+
+  return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
+    headers,
+  });
 };
 
 export type RoutesActionData = typeof action;

@@ -308,9 +308,8 @@ export class AuthClient extends Core {
     const { data, error } = await this.api
       .method("post")
       .path("/api/v1/auth/signup")
-      .run({
-        body,
-      });
+      .setBody(body)
+      .run();
 
     if (data?.data) {
       const session = this._makeSession(data.data);
@@ -343,9 +342,8 @@ export class AuthClient extends Core {
     const { data, error } = await this.api
       .method("post")
       .path("/api/v1/auth/signin")
-      .run({
-        body,
-      });
+      .setBody(body)
+      .run();
 
     if (data?.data) {
       // 세션 객체 생성
@@ -651,11 +649,10 @@ export class AuthClient extends Core {
         const result = await this.api
           .method("post")
           .path("/api/v1/auth/signout")
-          .run({
-            body: {
-              accessToken,
-            },
-          });
+          .setBody({
+            accessToken,
+          })
+          .run();
 
         if (result.error) {
           error = result.error;
@@ -832,11 +829,10 @@ export class AuthClient extends Core {
     const { data, error } = await this.api
       .method("patch")
       .path("/api/v1/auth/refresh")
-      .run({
-        body: {
-          refreshToken,
-        },
-      });
+      .setBody({
+        refreshToken,
+      })
+      .run();
 
     if (data?.data) {
       const session = this._makeSession(data.data);

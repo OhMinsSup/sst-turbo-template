@@ -3,8 +3,7 @@ import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignInSchema } from "@template/sdk";
-import { schema } from "@template/sdk";
+import type { FormFieldSignInSchema } from "@template/validators/auth";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -15,8 +14,9 @@ import {
   FormMessage,
 } from "@template/ui/form";
 import { Input } from "@template/ui/input";
+import { signInSchema } from "@template/validators/auth";
 
-import type { RoutesActionData } from "~/.server/routes/auth/signup.action";
+import type { RoutesActionData } from "~/.server/routes/auth/signin.action";
 import { Icons } from "~/components/icons";
 import { InputPassword } from "~/components/shared/InputPassword";
 
@@ -29,14 +29,12 @@ export default function SignInForm() {
 
   const form = useForm<FormFieldSignInSchema>({
     progressive: true,
-    resolver: zodResolver(schema.signIn),
+    resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
       password: "",
     },
-    errors: (actionData?.result ?? undefined) as
-      | FieldErrors<FormFieldSignInSchema>
-      | undefined,
+    errors: actionData?.error ?? undefined,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
@@ -47,6 +45,7 @@ export default function SignInForm() {
     formData.append("password", input.password);
     submit(formData, {
       method: "post",
+      replace: true,
     });
   };
 

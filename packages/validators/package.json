@@ -1,0 +1,66 @@
+{
+  "name": "@template/validators",
+  "version": "0.0.1",
+  "private": true,
+  "license": "MIT",
+  "type": "module",
+  "exports": {
+    "./package.json": "./package.json",
+    "./auth": {
+      "import": {
+        "types": "./dist/auth.d.ts",
+        "default": "./dist/auth.js"
+      },
+      "require": {
+        "types": "./dist/auth.d.cts",
+        "default": "./dist/auth.cjs"
+      }
+    },
+    "./user": {
+      "import": {
+        "types": "./dist/user.d.ts",
+        "default": "./dist/user.js"
+      },
+      "require": {
+        "types": "./dist/user.d.cts",
+        "default": "./dist/user.cjs"
+      }
+    },
+    "./shared": {
+      "import": {
+        "types": "./dist/shared.d.ts",
+        "default": "./dist/shared.js"
+      },
+      "require": {
+        "types": "./dist/shared.d.cts",
+        "default": "./dist/shared.cjs"
+      }
+    }
+  },
+  "files": [
+    "dist"
+  ],
+  "scripts": {
+    "build": "tsup",
+    "build:pkg": "tsup",
+    "clean": "rm -rf .turbo node_modules dist",
+    "dev": "tsup --watch",
+    "format": "prettier --check . --ignore-path ../../.gitignore",
+    "lint": "eslint",
+    "typecheck": "tsc --noEmit --emitDeclarationOnly false"
+  },
+  "prettier": "@template/prettier-config",
+  "dependencies": {
+    "zod": "catalog:"
+  },
+  "devDependencies": {
+    "@template/db": "workspace:*",
+    "@template/eslint-config": "workspace:*",
+    "@template/prettier-config": "workspace:*",
+    "@template/tsconfig": "workspace:*",
+    "eslint": "catalog:",
+    "prettier": "catalog:",
+    "tsup": "catalog:",
+    "typescript": "catalog:"
+  }
+}

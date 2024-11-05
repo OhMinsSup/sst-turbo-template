@@ -69,6 +69,13 @@ export class ApiClient<Paths extends {}> {
         querySerializer: this.querySerializer,
         bodySerializer: this.bodySerializer,
       });
+
+      this.client.use({
+        onRequest: (request) => {
+          console.log("onRequest", request);
+          console.log("onRequest", request.request.body);
+        },
+      });
     }
 
     if (options.middlewares) {

@@ -3,7 +3,6 @@ import { json, redirect } from "@remix-run/node";
 import { invariantResponse } from "@epic-web/invariant";
 
 import type { FomrFieldThemeSchema } from "~/utils/theme";
-import { successJsonDataResponse } from "~/.server/utils/response";
 import { setTheme } from "~/.server/utils/theme";
 import { themeSchema } from "~/utils/theme";
 
@@ -28,7 +27,12 @@ export const action = async (ctx: ActionFunctionArgs) => {
   if (redirectTo) {
     return redirect(redirectTo, responseInit);
   } else {
-    return json(successJsonDataResponse(true), responseInit);
+    return json(
+      {
+        success: true,
+      },
+      responseInit,
+    );
   }
 };
 

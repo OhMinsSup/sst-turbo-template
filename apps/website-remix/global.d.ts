@@ -57,7 +57,6 @@
     readonly npm_package_devDependencies_eslint: string;
     readonly __CF_USER_TEXT_ENCODING: string;
     readonly npm_execpath: string;
-    readonly npm_package_dependencies__template_trpc: string;
     readonly TIPTAP_PRO_TOKEN: string;
     readonly npm_config_frozen_lockfile: string;
     readonly npm_package_devDependencies__types_react_dom: string;
@@ -68,6 +67,7 @@
     readonly npm_package_scripts_typecheck: string;
     readonly _: string;
     readonly npm_package_dependencies_isbot: string;
+    readonly npm_package_dependencies__template_validators: string;
     readonly USER_ZDOTDIR: string;
     readonly __CFBundleIdentifier: string;
     readonly npm_command: string;
@@ -114,7 +114,6 @@
     readonly VSCODE_GIT_ASKPASS_NODE: string;
     readonly GIT_ASKPASS: string;
     readonly npm_config_link_workspace_packages: string;
-    readonly npm_package_dependencies__template_sdk: string;
     readonly npm_package_dependencies__remix_run_node: string;
     readonly npm_package_scripts_clean: string;
     readonly npm_node_execpath: string;

@@ -30,7 +30,7 @@ export class UsersController {
       resultCode: HttpResultCode.OK,
     },
   ])
-  me(@AuthUser() user: UserExternalPayload) {
+  async me(@AuthUser() user: UserExternalPayload) {
     return this.service.me(user);
   }
 

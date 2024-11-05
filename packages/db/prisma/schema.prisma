@@ -11,24 +11,21 @@ datasource db {
 }
 
 model User {
-  id                    String         @id @default(cuid())
-  email                 String         @unique // 이메일
-  emailVerified         DateTime? // true: 이메일 인증 완료, false: 이메일 인증 대기
-  name                  String // 사용자 이름
-  image                 String? // 프로필 이미지 URL
-  createdAt             DateTime       @default(now())
-  updatedAt             DateTime       @updatedAt
-  deletedAt             DateTime? // 삭제 시간
-  lastActiveAt          DateTime? // 마지막 활동 시간
-  isSuspended           Boolean        @default(false) // true: 정지, false: 활성 
-  Password              Password?
-  UserProfile           UserProfile?
-  UserSettings          UserSettings?
-  Account               Account[]
-  Token                 Token[]
-  Post                  Post[]
-  SenderNotifications   Notification[] @relation("sender")
-  ReceiverNotifications Notification[] @relation("receiver")
+  id            String        @id @default(cuid())
+  email         String        @unique // 이메일
+  emailVerified DateTime? // true: 이메일 인증 완료, false: 이메일 인증 대기
+  name          String // 사용자 이름
+  image         String? // 프로필 이미지 URL
+  createdAt     DateTime      @default(now())
+  updatedAt     DateTime      @updatedAt
+  deletedAt     DateTime? // 삭제 시간
+  lastActiveAt  DateTime? // 마지막 활동 시간
+  isSuspended   Boolean       @default(false) // true: 정지, false: 활성 
+  Password      Password?
+  UserProfile   UserProfile?
+  UserSettings  UserSettings?
+  Account       Account[]
+  Token         Token[]
 
   @@map(name: "users")
 }
@@ -90,35 +87,4 @@ model Token {
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("tokens")
-}
-
-model Post {
-  id           String         @id @default(cuid())
-  authorId     String // 작성자 ID
-  text         String // 글 내용
-  createdAt    DateTime       @default(now()) // 작성 시간
-  updatedAt    DateTime       @updatedAt // 수정 시간
-  Author       User           @relation(fields: [authorId], references: [id], onDelete: Cascade)
-  Notification Notification[]
-
-  @@map("posts")
-}
-
-model Notification {
-  id             String   @id @default(cuid())
-  read           Boolean  @default(false) // true: 읽음, false: 안읽음
-  type           String   @default("ADMIN") // ADMIN: 시스템 알림, LIKE: 좋아요, REPLY: 댓글, FOLLOW: 팔로우, REPOST: 리포스트, QUOTE: 인용 리포스트 
-  message        String // 알림 메시지
-  isPublic       Boolean  @default(false) // true: 공개, false: 비공개
-  senderUserId   String // 보낸 사용자 ID
-  receiverUserId String? // 받는 사용자 ID
-  postId         String? // 글 ID
-  createdAt      DateTime @default(now()) // 작성 시간
-  updatedAt      DateTime @updatedAt // 수정 시간
-  SenderUser     User     @relation("sender", fields: [senderUserId], references: [id], onDelete: Cascade)
-  ReceiverUser   User?    @relation("receiver", fields: [receiverUserId], references: [id], onDelete: Cascade)
-  Post           Post?    @relation(fields: [postId], references: [id])
-
-  @@index([receiverUserId])
-  @@map("notifications")
 }

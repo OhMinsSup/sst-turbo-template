@@ -15,7 +15,7 @@ export class EmailUserCreateDTO extends UserPasswordDTO {
     title: "Email",
     description: "The email of the user",
     example: "example@example.com",
-    type: String,
+    type: "string",
     required: true,
   })
   readonly email: string;
@@ -31,8 +31,8 @@ export class EmailUserCreateDTO extends UserPasswordDTO {
     title: "Name",
     description: "The name of the user",
     example: "John Doe",
-    type: String,
-    required: true,
+    type: "string",
+    required: false,
   })
   readonly name?: string;
 
@@ -47,7 +47,7 @@ export class EmailUserCreateDTO extends UserPasswordDTO {
     title: "Image URL",
     description: "The URL of the user's avatar",
     example: "https://example.com/avatar.png",
-    type: String,
+    type: "string",
     required: false,
   })
   readonly image?: string;

@@ -16,7 +16,9 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
 
   await requireAnonymous(client);
 
-  return json({});
+  return json({
+    success: true,
+  });
 };
 
 export type RoutesLoaderData = typeof loader;

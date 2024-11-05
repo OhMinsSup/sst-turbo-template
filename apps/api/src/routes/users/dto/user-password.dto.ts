@@ -16,7 +16,7 @@ export class UserPasswordDTO {
     description: "The password of the user",
     maxLength: 100,
     minLength: 6,
-    type: String,
+    type: "string",
     required: true,
   })
   readonly password: string;

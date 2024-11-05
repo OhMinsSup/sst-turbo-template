@@ -62,7 +62,6 @@
     export const npm_package_devDependencies_eslint: string;
     export const __CF_USER_TEXT_ENCODING: string;
     export const npm_execpath: string;
-    export const npm_package_dependencies__template_trpc: string;
     export const TIPTAP_PRO_TOKEN: string;
     export const npm_config_frozen_lockfile: string;
     export const npm_package_devDependencies__types_react_dom: string;
@@ -73,6 +72,7 @@
     export const npm_package_scripts_typecheck: string;
     export const _: string;
     export const npm_package_dependencies_isbot: string;
+    export const npm_package_dependencies__template_validators: string;
     export const USER_ZDOTDIR: string;
     export const __CFBundleIdentifier: string;
     export const npm_command: string;
@@ -119,7 +119,6 @@
     export const VSCODE_GIT_ASKPASS_NODE: string;
     export const GIT_ASKPASS: string;
     export const npm_config_link_workspace_packages: string;
-    export const npm_package_dependencies__template_sdk: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;
     export const npm_node_execpath: string;

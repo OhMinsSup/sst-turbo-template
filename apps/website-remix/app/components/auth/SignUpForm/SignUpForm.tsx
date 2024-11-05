@@ -3,8 +3,7 @@ import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
-import type { FormFieldSignUpSchema } from "@template/sdk";
-import { schema } from "@template/sdk";
+import type { FormFieldSignUpSchema } from "@template/validators/auth";
 import { cn } from "@template/ui";
 import { Button } from "@template/ui/button";
 import {
@@ -16,6 +15,7 @@ import {
   FormMessage,
 } from "@template/ui/form";
 import { Input } from "@template/ui/input";
+import { signUpSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/routes/auth/signup.action";
 import { Icons } from "~/components/icons";
@@ -29,15 +29,13 @@ export default function SignUpForm() {
   const isSubmittingForm = navigation.state === "submitting";
 
   const form = useForm<FormFieldSignUpSchema>({
-    resolver: zodResolver(schema.signUp),
+    resolver: zodResolver(signUpSchema),
     defaultValues: {
       email: "",
       password: "",
       confirmPassword: "",
     },
-    errors: (actionData?.result ?? undefined) as
-      | FieldErrors<FormFieldSignUpSchema>
-      | undefined,
+    errors: actionData?.error,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
@@ -49,6 +47,7 @@ export default function SignUpForm() {
     formData.append("confirmPassword", input.confirmPassword);
     submit(input, {
       method: "post",
+      replace: true,
     });
   };
 
