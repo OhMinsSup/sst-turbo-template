@@ -6,7 +6,7 @@ import { getMeta } from "~/utils/meta";
 
 export const meta: MetaFunction<RoutesLoaderData> = ({ data }) => {
   if (!data) {
-    return [{ title: "404 Not Found | Remix" }];
+    return [{ title: `404 Not Found | ${SITE_CONFIG.title}` }];
   }
 
   return getMeta({

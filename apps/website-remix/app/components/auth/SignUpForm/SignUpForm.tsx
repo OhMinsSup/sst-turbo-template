@@ -1,4 +1,3 @@
-import type { FieldErrors } from "react-hook-form";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -10,12 +9,10 @@ import {
   FormControl,
   FormField,
   FormItem,
-  FormLabel,
   FormMessage,
 } from "@template/ui/components/form";
 import { Input } from "@template/ui/components/input";
 import { InputPassword } from "@template/ui/components/input-password";
-import { cn } from "@template/ui/lib";
 import { signUpSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/routes/auth/signup.action";
@@ -53,7 +50,6 @@ export default function SignUpForm() {
 
   return (
     <div className="text-center">
-      <span className="select-none font-bold">Instagram 계정으로 회원가입</span>
       <Form {...form}>
         <form
           id="signup-form"
@@ -69,12 +65,6 @@ export default function SignUpForm() {
                   <FormControl>
                     <Input
                       type="email"
-                      className={cn(
-                        "h-14",
-                        error?.message
-                          ? "border-destructive focus-visible:ring-destructive"
-                          : undefined,
-                      )}
                       placeholder="이메일 주소"
                       autoCapitalize="none"
                       autoComplete="email"
@@ -94,12 +84,6 @@ export default function SignUpForm() {
                   <FormControl>
                     <InputPassword
                       placeholder="비밀번호"
-                      className={cn(
-                        "h-14",
-                        error?.message
-                          ? "border-destructive focus-visible:ring-destructive"
-                          : undefined,
-                      )}
                       autoComplete="current-password"
                       dir="auto"
                       {...field}
@@ -117,12 +101,6 @@ export default function SignUpForm() {
                   <FormControl>
                     <InputPassword
                       placeholder="비밀번호 확인"
-                      className={cn(
-                        "h-14",
-                        error?.message
-                          ? "border-destructive focus-visible:ring-destructive"
-                          : undefined,
-                      )}
                       autoComplete="current-password"
                       dir="auto"
                       {...field}
@@ -140,7 +118,7 @@ export default function SignUpForm() {
               data-testid="signup-button"
             >
               {isSubmittingForm ? (
-                <Icons.spinner className="mr-2 size-4 animate-spin" />
+                <Icons.Spinner className="mr-2 size-4 animate-spin" />
               ) : null}
               <span>회원가입</span>
             </Button>

@@ -13,7 +13,6 @@ import {
 } from "@template/ui/components/form";
 import { Input } from "@template/ui/components/input";
 import { InputPassword } from "@template/ui/components/input-password";
-import { cn } from "@template/ui/lib";
 import { signInSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/routes/auth/signin.action";
@@ -50,10 +49,9 @@ export default function SignInForm() {
 
   return (
     <div className="text-center">
-      <span className="select-none font-bold">Instagram 계정으로 로그인</span>
       <Form {...form}>
         <form
-          className="flex w-full flex-col gap-1.5 py-4 text-start"
+          className="flex w-full flex-col gap-1.5 text-start"
           id="signin-form"
           onSubmit={form.handleSubmit(onSubmit)}
         >
@@ -66,12 +64,6 @@ export default function SignInForm() {
                   <FormControl>
                     <Input
                       type="email"
-                      className={cn(
-                        "h-14",
-                        error?.message
-                          ? "border-destructive focus-visible:ring-destructive"
-                          : undefined,
-                      )}
                       placeholder="이메일 주소"
                       autoCapitalize="none"
                       autoComplete="email"
@@ -91,12 +83,6 @@ export default function SignInForm() {
                   <FormControl>
                     <InputPassword
                       placeholder="비밀번호"
-                      className={cn(
-                        "h-14",
-                        error?.message
-                          ? "border-destructive focus-visible:ring-destructive"
-                          : undefined,
-                      )}
                       autoComplete="current-password"
                       dir="auto"
                       {...field}
@@ -108,12 +94,11 @@ export default function SignInForm() {
             />
             <Button
               type="submit"
-              size="lg"
               disabled={isSubmittingForm}
               aria-disabled={isSubmittingForm}
             >
               {isSubmittingForm ? (
-                <Icons.spinner className="mr-2 size-4 animate-spin" />
+                <Icons.Spinner className="mr-2 size-4 animate-spin" />
               ) : null}
               <span>로그인</span>
             </Button>

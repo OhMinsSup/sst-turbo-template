@@ -28,6 +28,16 @@ export { meta } from "~/seo/root.meta";
 
 export const links: LinksFunction = () => {
   return [
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    },
     {
       rel: "manifest",
       href: "/site.webmanifest",
@@ -60,9 +70,9 @@ function Document({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="overscroll-none whitespace-pre-line antialiased">
         {children}
-        <Toaster closeButton position="top-center" />
+        <Toaster />
         <ScrollRestoration />
         <Scripts />
       </body>

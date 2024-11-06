@@ -4,10 +4,7 @@ import { SESSION_DATA_KEY } from "~/constants/constants";
 
 export const clientHint = {
   cookieName: SESSION_DATA_KEY.deviceKey,
-  getValueCode: `
-    const mediaQueryList = window.matchMedia('max-width: 768px');
-    return mediaQueryList.matches ? 'mobile' : 'desktop';
-  `,
+  getValueCode: `window.matchMedia('max-width: 768px').matches ? 'mobile' : 'desktop'`,
   fallback: "desktop",
   transform(value) {
     return value === "mobile" ? "mobile" : "desktop";

@@ -1,8 +1,8 @@
 import React from "react";
 import { Link } from "@remix-run/react";
 
-import { OAuth } from "~/components/auth/OAuth";
-import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { Icons } from "~/components/icons";
+import { PAGE_ENDPOINTS, SITE_CONFIG } from "~/constants/constants";
 
 interface SignInLayoutProps {
   children: React.ReactNode;
@@ -10,35 +10,60 @@ interface SignInLayoutProps {
 
 export default function SignInLayout({ children }: SignInLayoutProps) {
   return (
-    <div className="z-50 mx-auto w-full max-w-[370px] py-16">
-      {children}
-      <div className="text-center">
-        <Link to="/" viewTransition className="text-sm text-muted-foreground">
-          비밀번호를 잊으셨나요?
-        </Link>
-      </div>
-      <div className="mt-6 space-y-5">
-        <div className="relative">
-          <div className="absolute inset-0 flex items-center">
-            <span className="w-full border-t" />
+    <>
+      <div>
+        <header className="fixed left-0 right-0 w-full">
+          <div className="ml-5 mt-4 md:ml-10 md:mt-10">
+            <Link to={PAGE_ENDPOINTS.ROOT}>
+              <Icons.Logo width={112} height={28} />
+            </Link>
           </div>
-          <div className="relative flex justify-center text-xs uppercase">
-            <span className="bg-background px-2 text-muted-foreground">
-              또는
-            </span>
+        </header>
+        <div className="flex min-h-screen items-center justify-center overflow-hidden p-6 md:p-0">
+          <div className="relative z-20 m-auto flex w-full max-w-[380px] flex-col py-8">
+            <div className="relative flex w-full flex-col">
+              <div className="inline-block bg-gradient-to-r from-primary to-[#000] bg-clip-text pb-4 text-transparent dark:via-primary dark:to-[#848484]">
+                <h1 className="pb-1 text-3xl font-medium">
+                  {SITE_CONFIG.title}
+                  <br /> 로그인
+                </h1>
+              </div>
+
+              <p className="pb-1 text-2xl font-medium text-[#878787]">
+                {SITE_CONFIG.title}은 <br />
+                Remix를 사용하여 <br />
+                어드민 구조를 쉽게 만들기 위해 <br />
+                제작되었습니다.
+              </p>
+
+              <div className="pointer-events-auto mb-6 mt-6 flex flex-col">
+                {children}
+                <p className="px-8 py-3 text-center text-xs text-muted-foreground">
+                  <Link
+                    to={PAGE_ENDPOINTS.AUTH.SIGNUP}
+                    viewTransition
+                    className="hover:text-brand underline underline-offset-4"
+                  >
+                    아직 계정이 없으신가요? 회원가입
+                  </Link>
+                </p>
+              </div>
+
+              <p className="text-xs text-[#878787]">
+                계속을 클릭하면 {SITE_CONFIG.title} 의{" "}
+                <a href="https://midday.ai/terms" className="underline">
+                  서비스 약관
+                </a>{" "}
+                및{" "}
+                <a href="https://midday.ai/policy" className="underline">
+                  개인정보 보호정책
+                </a>
+                에 동의하는 것으로 간주됩니다. .
+              </p>
+            </div>
           </div>
         </div>
-        <OAuth />
-        <p className="px-8 text-center text-sm text-muted-foreground">
-          <Link
-            to={PAGE_ENDPOINTS.AUTH.SIGNUP}
-            viewTransition
-            className="hover:text-brand underline underline-offset-4"
-          >
-            아직 계정이 없으신가요? 회원가입
-          </Link>
-        </p>
       </div>
-    </div>
+    </>
   );
 }

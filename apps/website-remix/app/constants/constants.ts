@@ -6,22 +6,21 @@ export const PAGE_ENDPOINTS = {
     SIGNIN: "/signin",
     SIGNUP: "/signup",
   },
-  SEARCH: "/search",
-  ACTIVITY: "/activity",
 } as const;
 
 export const SITE_CONFIG = {
-  title: "Remix - Build Better Websites",
-  keywords: ["Remix", "React", "Framework"],
+  title: "Remix Admin Template",
+  keywords: ["Remix", "React", "Framework", "Admin", "Template"],
   description:
-    "Remix is a full stack web framework that lets you focus on the user interface and work back through web standards to deliver a fast, slick, and resilient user experience. People are gonna love using your stuff.",
+    "Remix Admin Template is a modern and clean admin dashboard template with a clean and modern design. It is built using Remix, React, and Tailwind CSS.",
   ogImage: "/images/og.jpg",
   favicon: "/favicon.ico",
-  apple32x32: "/images/favicon-32.png",
-  apple180x180: "/images/favicon-180.png",
-  apple192x192: "/images/favicon-192.png",
+  favicon32x32: "/images/favicon-32x32.png",
+  favicon16x16: "/images/favicon-16x16.png",
+  apple: "/images/apple-touch-icon.png",
+  android192x192: "/images/android-chrome-192x192.png",
+  android512x512: "/images/android-chrome-512x512.png",
   manifest: "/site.webmanifest",
-  backgroundImage: "/images/bg.webp",
 };
 
 export const SESSION_DATA_KEY = {

@@ -9,8 +9,8 @@ import baseConfig from "@template/tailwind-config/web";
 export default {
   darkMode: ["class"],
   content: [
-    "./src/components/shadcn/**/*.{tsx,ts,js}",
-    "./src/components/shadcn/**/*.*.{tsx,ts,js}",
+    ...baseConfig.content,
+    "./src/components/**/*.*.{tsx,ts,js}",
     "./src/layouts/**/*.*.{tsx,ts,js}",
   ],
   presets: [baseConfig],
