@@ -1,7 +1,7 @@
 import { useFetcher } from "@remix-run/react";
 import { ServerOnly } from "remix-utils/server-only";
 
-import { Button } from "@template/ui/button";
+import { Button } from "@template/ui/components/button";
 
 import type { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import type { Theme } from "~/.server/utils/theme";

@@ -1,6 +1,6 @@
 import { useFetcher } from "@remix-run/react";
 
-import type { RoutesActionData } from "~/.server/routes/root/root.action";
+import type { RoutesActionData } from "~/.server/routes/auth/signout.action";
 
 export const useSignOut = () => {
   const fetcher = useFetcher<RoutesActionData>();
