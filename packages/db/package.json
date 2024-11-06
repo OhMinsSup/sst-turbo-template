@@ -44,7 +44,7 @@
   "scripts": {
     "build": "tsup",
     "build:pkg": "tsup",
-    "clean": "rm -rf .turbo node_modules dist",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
     "db:generate": "pnpm with-env prisma generate",
     "db:migrate:deploy": "pnpm with-env prisma migrate deploy",
     "db:migrate:dev": "pnpm with-env prisma migrate dev",

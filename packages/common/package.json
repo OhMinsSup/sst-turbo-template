@@ -23,7 +23,7 @@
   "scripts": {
     "build": "tsup",
     "build:pkg": "tsup",
-    "clean": "rm -rf .turbo node_modules dist",
+    "clean": "git clean -xdf .cache .turbo dist node_modules",
     "dev": "tsup --watch",
     "format": "prettier --check . --ignore-path ../../.gitignore",
     "lint": "eslint",
