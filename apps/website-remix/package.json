@@ -25,7 +25,6 @@
     "@template/api-types": "workspace:*",
     "@template/auth": "workspace:*",
     "@template/common": "workspace:*",
-    "@template/hooks": "workspace:*",
     "@template/ui": "workspace:*",
     "@template/utils": "workspace:*",
     "@template/validators": "workspace:*",
