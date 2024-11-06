@@ -24,7 +24,6 @@ import type {
 } from "./types";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
-import { Core } from "./auth.core";
 import {
   AUTO_REFRESH_TICK_DURATION,
   AUTO_REFRESH_TICK_THRESHOLD,
@@ -48,7 +47,22 @@ import { polyfillGlobalThis } from "./utils/polyfills";
 // 전역 객체에 대한 폴리필을 적용합니다.
 polyfillGlobalThis();
 
-export class AuthClient extends Core {
+export class AuthClient {
+  /**
+   * @memberof AuthClient
+   * @protected
+   * @description 디버그 메시지를 출력할지 여부
+   * @type {boolean} - logDebugMessages
+   */
+  protected logDebugMessages = false;
+  /**
+   * @memberof AuthClient
+   * @protected
+   * @description API 클라이언트
+   * @type {AuthClientOptions["api"]} - api
+   */
+  protected api: AuthClientOptions["api"];
+
   /**
    * @memberof AuthClient
    * @protected
@@ -163,10 +177,8 @@ export class AuthClient extends Core {
   protected broadcastChannel: BroadcastChannel | null = null;
 
   constructor(options: AuthClientOptions) {
-    super({
-      logDebugMessages: options.logDebugMessages,
-      api: options.api,
-    });
+    this.logDebugMessages = options.logDebugMessages ?? false;
+    this.api = options.api;
     this.persistSession = options.persistSession ?? true;
     this.storageKey = options.storageKey ?? STORAGE_KEY;
     this.autoRefreshToken = isTrusted(options.autoRefreshToken);
@@ -1060,12 +1072,12 @@ export class AuthClient extends Core {
           const proxySession: Session = new Proxy(currentSession, {
             get: (target, prop: string, receiver) => {
               if (!suppressWarning && prop === "user") {
-                // only show warning when the user object is being accessed from the server
-                console.warn(
-                  'Warning: You are accessing the "user" object from the server side. This is only safe to do on the client side. You should only access the "user" object on the client side to avoid exposing sensitive information.',
+                // 서버에서 사용자 객체에 액세스하는 경우에만 경고를 표시합니다.
+                this.warn(
+                  'Warning: Direct access to the "user" property of the session object is not allowed. Use the "getSession()" method to access the user object.',
                 );
-                suppressWarning = true; // keeps this proxy instance from logging additional warnings
-                this.suppressGetSessionWarning = true; // keeps this client's future proxy instances from warning
+                suppressWarning = true; // 이 프록시 인스턴스가 추가 경고를 기록하지 않게함
+                this.suppressGetSessionWarning = true; // 이 클라이언트의 향후 프록시 인스턴스가 경고되지 않게함
               }
               return Reflect.get(target, prop, receiver) as unknown as Session;
             },
@@ -1379,5 +1391,31 @@ export class AuthClient extends Core {
         this.error(err);
       }
     });
+  }
+
+  protected debug(...args: unknown[]) {
+    if (this.logDebugMessages) {
+      console.debug(
+        `[Debug message][${isBrowser() ? "client" : "server"}] `,
+        ...args,
+      );
+    }
+    return this;
+  }
+
+  protected error(...args: unknown[]) {
+    console.error(
+      `[Error message][${isBrowser() ? "client" : "server"}] `,
+      ...args,
+    );
+    return this;
+  }
+
+  protected warn(...args: unknown[]) {
+    console.warn(
+      `[Warning message][${isBrowser() ? "client" : "server"}] `,
+      ...args,
+    );
+    return this;
   }
 }
