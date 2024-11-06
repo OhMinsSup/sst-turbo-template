@@ -12,12 +12,12 @@ import {
   FormMessage,
 } from "@template/ui/components/form";
 import { Input } from "@template/ui/components/input";
+import { InputPassword } from "@template/ui/components/input-password";
 import { cn } from "@template/ui/lib";
 import { signInSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/routes/auth/signin.action";
 import { Icons } from "~/components/icons";
-import { InputPassword } from "~/components/shared/InputPassword";
 
 export default function SignInForm() {
   const navigation = useNavigation();

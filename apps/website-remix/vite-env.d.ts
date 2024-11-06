@@ -94,7 +94,6 @@
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;
     export const npm_package_dependencies__tanstack_react_query: string;
-    export const npm_package_dependencies__template_hooks: string;
     export const XPC_SERVICE_NAME: string;
     export const npm_package_devDependencies_autoprefixer: string;
     export const VSCODE_INJECTION: string;

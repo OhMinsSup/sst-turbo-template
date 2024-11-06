@@ -10,7 +10,7 @@ interface ClientOnlyProps {
 // eslint-disable-next-line @typescript-eslint/no-empty-function
 const emptySubscribe = () => () => {};
 
-export default function ClientOnly({ children, fallback }: ClientOnlyProps) {
+function ClientOnly({ children, fallback }: ClientOnlyProps) {
   const value = useSyncExternalStore(
     emptySubscribe,
     () => "client",
@@ -23,3 +23,5 @@ export default function ClientOnly({ children, fallback }: ClientOnlyProps) {
 
   return <>{children}</>;
 }
+
+export { ClientOnly };

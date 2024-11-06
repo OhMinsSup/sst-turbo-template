@@ -1,4 +1,4 @@
-import type { LucideProps } from "lucide-react";
+import type { LucideProps } from "@template/ui/components/icons";
 import {
   AlertTriangle,
   AlignLeft,
@@ -38,7 +38,7 @@ import {
   User,
   Users,
   X,
-} from "lucide-react";
+} from "@template/ui/components/icons";
 
 export const Icons = {
   eye: Eye,

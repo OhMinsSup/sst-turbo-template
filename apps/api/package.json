@@ -8,6 +8,7 @@
   "scripts": {
     "build": "nest build",
     "clean": "git clean -xdf .turbo dist node_modules",
+    "dev": "pnpm with-env nest start --watch",
     "format": "prettier --write \"src/**/*.ts\" \"test/**/*.ts\"",
     "lint": "eslint \"{src,apps,libs,test}/**/*.ts\" --fix",
     "start": "nest start",

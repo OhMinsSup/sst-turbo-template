@@ -1,8 +1,5 @@
 import { Outlet } from "@remix-run/react";
 
-import { Banner } from "~/components/shared/Banner";
-import { SiteFooter } from "~/components/shared/SiteFooter";
-
 export { loader } from "~/.server/routes/auth/auth.loader";
 
 export default function Routes() {

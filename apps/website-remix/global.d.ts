@@ -89,7 +89,6 @@
     readonly VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     readonly XPC_FLAGS: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
-    readonly npm_package_dependencies__template_hooks: string;
     readonly XPC_SERVICE_NAME: string;
     readonly npm_package_devDependencies_autoprefixer: string;
     readonly VSCODE_INJECTION: string;
