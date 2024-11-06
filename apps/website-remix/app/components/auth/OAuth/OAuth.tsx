@@ -1,6 +1,6 @@
 import React from "react";
 
-import { Button } from "@template/ui/button";
+import { Button } from "@template/ui/components/button";
 
 import { Icons } from "~/components/icons";
 

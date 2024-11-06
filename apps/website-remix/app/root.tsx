@@ -8,13 +8,13 @@ import {
   useRevalidator,
 } from "@remix-run/react";
 
-import "./styles/tailwind.css";
+import "@template/ui/globals.css";
 
 import type { LinksFunction, SerializeFrom } from "@remix-run/node";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 
-import { cn } from "@template/ui";
+import { cn } from "@template/ui/lib";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { GlobalMeta } from "./components/shared/GlobalMeta";

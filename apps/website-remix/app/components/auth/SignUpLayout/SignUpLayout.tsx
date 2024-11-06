@@ -1,9 +1,6 @@
 import React from "react";
 import { Link } from "@remix-run/react";
 
-import { cn } from "@template/ui";
-import { buttonVariants } from "@template/ui/button";
-
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 

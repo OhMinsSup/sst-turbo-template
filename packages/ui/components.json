@@ -3,15 +3,17 @@
   "style": "new-york",
   "rsc": true,
   "tsx": true,
+  "iconLibrary": "lucide",
   "tailwind": {
     "config": "./tailwind.config.ts",
-    "css": "unused.css",
-    "baseColor": "slate",
+    "css": "./globals.css",
+    "baseColor": "zinc",
     "cssVariables": true
   },
   "aliases": {
-    "utils": "@template/ui",
-    "components": "src",
-    "ui": "src"
+    "components": "src/components/shadcn",
+    "ui": "src/components/shadcn",
+    "hooks": "src/hooks",
+    "utils": "@template/ui"
   }
 }

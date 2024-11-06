@@ -4,8 +4,7 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
 import type { FormFieldSignUpSchema } from "@template/validators/auth";
-import { cn } from "@template/ui";
-import { Button } from "@template/ui/button";
+import { Button } from "@template/ui/components/button";
 import {
   Form,
   FormControl,
@@ -13,8 +12,9 @@ import {
   FormItem,
   FormLabel,
   FormMessage,
-} from "@template/ui/form";
-import { Input } from "@template/ui/input";
+} from "@template/ui/components/form";
+import { Input } from "@template/ui/components/input";
+import { cn } from "@template/ui/lib";
 import { signUpSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/routes/auth/signup.action";
