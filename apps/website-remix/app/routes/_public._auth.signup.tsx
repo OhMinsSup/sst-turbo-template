@@ -1,11 +1,7 @@
-import { Outlet } from "@remix-run/react";
+import { SignUpForm } from "~/components/auth/SignUpForm";
 
-import { SignUpLayout } from "~/components/auth/SignUpLayout";
+export { action } from "~/.server/routes/auth/signup.action";
 
 export default function Routes() {
-  return (
-    <SignUpLayout>
-      <Outlet />
-    </SignUpLayout>
-  );
+  return <SignUpForm />;
 }

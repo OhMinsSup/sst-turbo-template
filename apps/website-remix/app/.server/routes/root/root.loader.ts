@@ -3,7 +3,7 @@ import { json } from "@remix-run/node";
 
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
-import { createRemixServerClient } from "~/.server/utils/auth";
+import { createRemixServerAuthClient } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/utils/client-hints";
@@ -14,7 +14,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
   const { toast, headers: toastHeaders } = await getToast(request);
   const requestInfo = getRequestInfo(request.headers);
 
-  const client = createRemixServerClient({
+  const client = createRemixServerAuthClient({
     request,
     headers,
   });

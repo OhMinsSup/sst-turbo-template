@@ -21,6 +21,8 @@ export const SITE_CONFIG = {
   android192x192: "/images/android-chrome-192x192.png",
   android512x512: "/images/android-chrome-512x512.png",
   manifest: "/site.webmanifest",
+  404: "/images/404.png",
+  500: "/images/500.png",
 };
 
 export const SESSION_DATA_KEY = {

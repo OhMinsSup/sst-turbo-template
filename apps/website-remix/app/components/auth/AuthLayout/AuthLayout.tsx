@@ -1,20 +1,28 @@
 import React from "react";
 import { Link } from "@remix-run/react";
 
+import {
+  Accordion,
+  AccordionContent,
+  AccordionItem,
+  AccordionTrigger,
+} from "@template/ui/components/accordion";
+import { Button } from "@template/ui/components/button";
+
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS, SITE_CONFIG } from "~/constants/constants";
 
-interface SignInLayoutProps {
+interface AuthLayoutProps {
   children: React.ReactNode;
 }
 
-export default function SignInLayout({ children }: SignInLayoutProps) {
+export default function AuthLayout({ children }: AuthLayoutProps) {
   return (
     <>
       <div>
         <header className="fixed left-0 right-0 w-full">
           <div className="ml-5 mt-4 md:ml-10 md:mt-10">
-            <Link to={PAGE_ENDPOINTS.ROOT}>
+            <Link to={PAGE_ENDPOINTS.ROOT} viewTransition>
               <Icons.Logo width={112} height={28} />
             </Link>
           </div>
@@ -38,15 +46,30 @@ export default function SignInLayout({ children }: SignInLayoutProps) {
 
               <div className="pointer-events-auto mb-6 mt-6 flex flex-col">
                 {children}
-                <p className="px-8 py-3 text-center text-xs text-muted-foreground">
-                  <Link
-                    to={PAGE_ENDPOINTS.AUTH.SIGNUP}
-                    viewTransition
-                    className="hover:text-brand underline underline-offset-4"
-                  >
-                    아직 계정이 없으신가요? 회원가입
-                  </Link>
-                </p>
+
+                <Accordion
+                  type="single"
+                  collapsible
+                  className="mt-6 border-t-[1px] pt-2"
+                >
+                  <AccordionItem value="item-1" className="border-0">
+                    <AccordionTrigger className="flex justify-center space-x-2 text-sm">
+                      <span>더 많은 옵션</span>
+                    </AccordionTrigger>
+                    <AccordionContent className="mt-4">
+                      <div className="flex flex-col space-y-4">
+                        <Button variant="outline">
+                          <Icons.GitHub className="mr-2 h-4 w-4" />
+                          Github으로 로그인
+                        </Button>
+                        <Button variant="outline">
+                          <Icons.Google className="mr-2 h-4 w-4" />
+                          Google로 로그인
+                        </Button>
+                      </div>
+                    </AccordionContent>
+                  </AccordionItem>
+                </Accordion>
               </div>
 
               <p className="text-xs text-[#878787]">

@@ -1,5 +1,11 @@
 import { Outlet } from "@remix-run/react";
 
+import { AuthLayout } from "~/components/auth/AuthLayout";
+
 export default function Routes() {
-  return <Outlet />;
+  return (
+    <AuthLayout>
+      <Outlet />
+    </AuthLayout>
+  );
 }

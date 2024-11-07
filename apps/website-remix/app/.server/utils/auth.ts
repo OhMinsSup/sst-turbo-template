@@ -8,15 +8,15 @@ import {
 
 import { getApiClient } from "~/utils/api-client";
 
-interface CreateRemixServerClientOptions {
+interface CreateRemixServerAuthClientOptions {
   headers: Headers;
   request: Request;
 }
 
-export const createRemixServerClient = ({
+export const createRemixServerAuthClient = ({
   request,
   headers,
-}: CreateRemixServerClientOptions) => {
+}: CreateRemixServerAuthClientOptions) => {
   return createAuthServerClient({
     api: getApiClient(),
     logDebugMessages: false,
@@ -36,7 +36,9 @@ export const createRemixServerClient = ({
   });
 };
 
-export type AuthRemixServerClient = ReturnType<typeof createRemixServerClient>;
+export type AuthRemixServerClient = ReturnType<
+  typeof createRemixServerAuthClient
+>;
 
 export async function getUserId(client: AuthRemixServerClient) {
   const { session } = await client.getSession();

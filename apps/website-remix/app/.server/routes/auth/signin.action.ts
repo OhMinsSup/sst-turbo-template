@@ -6,7 +6,7 @@ import type { FormFieldSignInSchema } from "@template/validators/auth";
 import { HttpStatusCode } from "@template/common";
 
 import {
-  createRemixServerClient,
+  createRemixServerAuthClient,
   requireAnonymous,
 } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
@@ -16,7 +16,7 @@ import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
 export const action = async ({ request }: ActionFunctionArgs) => {
   const headers = new Headers();
 
-  const client = createRemixServerClient({
+  const client = createRemixServerAuthClient({
     request,
     headers,
   });

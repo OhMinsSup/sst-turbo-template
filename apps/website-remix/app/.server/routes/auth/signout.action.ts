@@ -5,7 +5,10 @@ import { safeRedirect } from "remix-utils/safe-redirect";
 import { HttpStatusCode, isAuthError } from "@template/common";
 import { combineHeaders } from "@template/utils/request";
 
-import { createRemixServerClient, requireUserId } from "~/.server/utils/auth";
+import {
+  createRemixServerAuthClient,
+  requireUserId,
+} from "~/.server/utils/auth";
 import { toValidationErrorFormat } from "~/utils/error";
 
 export const loader = () => {
@@ -15,7 +18,7 @@ export const loader = () => {
 export const action = async ({ request }: ActionFunctionArgs) => {
   const headers = new Headers();
 
-  const client = createRemixServerClient({
+  const client = createRemixServerAuthClient({
     request,
     headers,
   });
