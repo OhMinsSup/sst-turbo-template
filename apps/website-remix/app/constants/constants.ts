@@ -6,10 +6,16 @@ export const PAGE_ENDPOINTS = {
     SIGNIN: "/signin",
     SIGNUP: "/signup",
   },
+  PROTECTED: {
+    ADMIN: {
+      ROOT: "/admin",
+    },
+  },
 } as const;
 
 export const SITE_CONFIG = {
   title: "Remix Admin Template",
+  shotTitle: "Remix",
   keywords: ["Remix", "React", "Framework", "Admin", "Template"],
   description:
     "Remix Admin Template is a modern and clean admin dashboard template with a clean and modern design. It is built using Remix, React, and Tailwind CSS.",

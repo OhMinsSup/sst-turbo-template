@@ -83,6 +83,7 @@ export type LockFunc = <R>(
   name: string,
   acquireTimeout: number,
   fn: () => Promise<R>,
+  logDebugMessages?: boolean,
 ) => Promise<R>;
 
 export interface InitializeResult {

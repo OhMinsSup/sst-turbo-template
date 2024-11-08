@@ -1,8 +1,38 @@
 import type { LucideProps } from "@template/ui/components/icons";
-import { LoaderCircle } from "@template/ui/components/icons";
+import {
+  AudioWaveform,
+  Bell,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Laptop,
+  LoaderCircle,
+  Map,
+  Moon,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+  Sun,
+} from "@template/ui/components/icons";
 
 export const Icons = {
   Spinner: LoaderCircle,
+  AudioWaveform,
+  BookOpen,
+  Bot,
+  Command,
+  Frame,
+  GalleryVerticalEnd,
+  Map,
+  PieChart,
+  Settings2,
+  SquareTerminal,
+  Bell,
+  Sun,
+  Moon,
+  Laptop,
   Logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />

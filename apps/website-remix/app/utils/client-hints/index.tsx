@@ -5,10 +5,6 @@
 import { useEffect } from "react";
 import { useRevalidator } from "@remix-run/react";
 import { getHintUtils } from "@epic-web/client-hints";
-import {
-  clientHint as colorSchemeHint,
-  subscribeToSchemeChange,
-} from "@epic-web/client-hints/color-scheme";
 import { clientHint as timeZoneHint } from "@epic-web/client-hints/time-zone";
 
 import { SESSION_DATA_KEY } from "~/constants/constants";
@@ -19,10 +15,6 @@ import {
 } from "./device-type";
 
 const hintsUtils = getHintUtils({
-  theme: {
-    ...colorSchemeHint,
-    cookieName: SESSION_DATA_KEY.themeKey,
-  },
   timeZone: {
     ...timeZoneHint,
     cookieName: SESSION_DATA_KEY.timezoneKey,
@@ -47,7 +39,6 @@ export function useHints() {
  */
 export function ClientHintCheck() {
   const { revalidate } = useRevalidator();
-  useEffect(() => subscribeToSchemeChange(() => revalidate()), [revalidate]);
 
   useEffect(() => subscribeToDeviceChange(() => revalidate()), [revalidate]);
 

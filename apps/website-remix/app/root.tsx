@@ -9,22 +9,25 @@ import {
 } from "@remix-run/react";
 
 import "@template/ui/globals.css";
+import "./styles.css";
 
 import type { LinksFunction, SerializeFrom } from "@remix-run/node";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
 import { cn } from "@template/ui/lib";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
-import { ShowToast, Toaster } from "./components/shared/Toast";
+import { ShowToast } from "./components/shared/Toast";
+import { SITE_CONFIG } from "./constants/constants";
 import { createRemixBrowserClient } from "./utils/auth";
 import { ClientHintCheck } from "./utils/client-hints";
 import { getQueryClient } from "./utils/query-client";
 
 export { loader } from "~/.server/routes/root/root.loader";
-export { meta } from "~/seo/root.meta";
+export { meta } from "~/utils/seo/root.meta";
 
 export const links: LinksFunction = () => {
   return [
@@ -40,14 +43,11 @@ export const links: LinksFunction = () => {
     },
     {
       rel: "manifest",
-      href: "/site.webmanifest",
+      href: SITE_CONFIG.manifest,
       crossOrigin: "use-credentials",
     },
-    { rel: "icon", type: "image/svg+xml", href: "/favicon.ico" },
-    { rel: "icon", href: "/images/favicon-32.png", sizes: "32x32" },
-    { rel: "icon", href: "/images/favicon-128.png", sizes: "128x128" },
-    { rel: "icon", href: "/images/favicon-180.png", sizes: "180x180" },
-    { rel: "icon", href: "/images/favicon-192.png", sizes: "192x192" },
+    { rel: "icon", type: "image/svg+xml", href: SITE_CONFIG.favicon },
+    { rel: "icon", href: SITE_CONFIG.favicon32x32, sizes: "32x32" },
   ];
 };
 
@@ -59,7 +59,7 @@ function Document({ children }: Props) {
   const data = useLoaderData<RoutesLoaderData>();
   return (
     <html
-      lang="en"
+      lang="kr"
       itemScope
       itemType="http://schema.org/WebSite"
       className={cn(data.requestInfo.userPrefs.theme)}
@@ -70,9 +70,9 @@ function Document({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body className="overscroll-none whitespace-pre-line antialiased">
+      <body className="overscroll-none whitespace-pre-line bg-background antialiased">
         {children}
-        <Toaster />
+        <Toaster theme={data.requestInfo.userPrefs.theme ?? undefined} />
         <ScrollRestoration />
         <Scripts />
       </body>

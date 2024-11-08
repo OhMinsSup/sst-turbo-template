@@ -15,7 +15,7 @@ catalog:
   "@t3-oss/env-core": "^0.11.0"
   "react-hook-form": "^7.53.0"
   "@hookform/resolvers": "^3.9.0"
-  zustand: "^4.5.4"
+  zustand: "^5.0.1"
 
   eslint: ^9.9.1
   prettier: ^3.3.3

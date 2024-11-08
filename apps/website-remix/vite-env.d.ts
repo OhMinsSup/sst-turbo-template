@@ -29,7 +29,6 @@
     export const INIT_CWD: string;
     export const npm_package_devDependencies_typescript: string;
     export const npm_package_devDependencies__template_tsconfig: string;
-    export const npm_package_dependencies_lucide_react: string;
     export const ANDROID_HOME: string;
     export const NVM_CD_FLAGS: string;
     export const npm_package_devDependencies_vite: string;
@@ -58,6 +57,7 @@
     export const PNPM_SCRIPT_SRC_DIR: string;
     export const npm_package_devDependencies_vite_tsconfig_paths: string;
     export const npm_package_devDependencies__template_tailwind_config: string;
+    export const npm_package_dependencies_zustand: string;
     export const SSH_AUTH_SOCK: string;
     export const npm_package_devDependencies_eslint: string;
     export const __CF_USER_TEXT_ENCODING: string;

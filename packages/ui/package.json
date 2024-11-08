@@ -25,7 +25,7 @@
       "types": "./dist/src/components/shadcn/*.d.ts",
       "default": "./src/components/shadcn/*.tsx"
     },
-    "./common-components": {
+    "./common-components/*": {
       "types": "./dist/src/components/common/*.d.ts",
       "default": "./src/components/common/*.tsx"
     }
@@ -91,6 +91,7 @@
     "vaul": "^1.1.1"
   },
   "devDependencies": {
+    "@template/auth": "workspace:*",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",

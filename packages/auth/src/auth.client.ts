@@ -625,6 +625,7 @@ export class AuthClient {
             this.lockAcquired = false;
           }
         },
+        this.logDebugMessages,
       );
     } finally {
       this.debug(debugName, "end");

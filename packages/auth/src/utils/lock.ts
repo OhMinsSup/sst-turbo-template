@@ -3,12 +3,15 @@
  * @param {string} name
  * @param {number} acquireTimeout
  * @param {() => Promise<R>} fn
+ * @param {boolean} lockDebugMessages
  * @returns {Promise<R>}
  */
 export async function lockNoOp<R>(
   name: string,
   acquireTimeout: number,
   fn: () => Promise<R>,
+  // eslint-disable-next-line @typescript-eslint/no-unused-vars
+  lockDebugMessages = false,
 ): Promise<R> {
   return await fn();
 }
@@ -28,12 +31,15 @@ export class NavigatorLockAcquireTimeoutError extends LockAcquireTimeoutError {}
  * @param {string} name
  * @param {number} acquireTimeout
  * @param {() => Promise<R>} fn
+ * @param {boolean} lockDebugMessages
  * @returns {Promise<R>}
  */
 export async function navigatorLock<R>(
   name: string,
   acquireTimeout: number,
   fn: () => Promise<R>,
+
+  lockDebugMessages = false,
 ): Promise<R> {
   const abortController = new AbortController();
 
@@ -42,9 +48,11 @@ export async function navigatorLock<R>(
   if (acquireTimeout > 0) {
     setTimeout(() => {
       abortController.abort();
-      console.log(
-        `Aborted acquiring Navigator LockManager lock "${name}" after ${acquireTimeout}ms`,
-      );
+      if (lockDebugMessages) {
+        console.log(
+          `Aborted acquiring Navigator LockManager lock "${name}" after ${acquireTimeout}ms`,
+        );
+      }
     }, acquireTimeout);
   }
 
@@ -66,11 +74,15 @@ export async function navigatorLock<R>(
 
   const callback: LockGrantedCallback = async (lock) => {
     if (lock) {
-      console.log(`Acquired Navigator LockManager lock "${name}"`);
+      if (lockDebugMessages) {
+        console.log(`Acquired Navigator LockManager lock "${name}"`);
+      }
       try {
         return await fn();
       } finally {
-        console.log(`Released Navigator LockManager lock "${name}"`);
+        if (lockDebugMessages) {
+          console.log(`Released Navigator LockManager lock "${name}"`);
+        }
       }
     } else {
       if (acquireTimeout === 0) {

@@ -24,7 +24,6 @@
     readonly INIT_CWD: string;
     readonly npm_package_devDependencies_typescript: string;
     readonly npm_package_devDependencies__template_tsconfig: string;
-    readonly npm_package_dependencies_lucide_react: string;
     readonly ANDROID_HOME: string;
     readonly NVM_CD_FLAGS: string;
     readonly npm_package_devDependencies_vite: string;
@@ -53,6 +52,7 @@
     readonly PNPM_SCRIPT_SRC_DIR: string;
     readonly npm_package_devDependencies_vite_tsconfig_paths: string;
     readonly npm_package_devDependencies__template_tailwind_config: string;
+    readonly npm_package_dependencies_zustand: string;
     readonly SSH_AUTH_SOCK: string;
     readonly npm_package_devDependencies_eslint: string;
     readonly __CF_USER_TEXT_ENCODING: string;

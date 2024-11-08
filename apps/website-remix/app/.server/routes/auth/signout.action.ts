@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
-import { safeRedirect } from "remix-utils/safe-redirect";
+import { redirect } from "@remix-run/node";
 
 import { HttpStatusCode, isAuthError } from "@template/common";
 import { combineHeaders } from "@template/utils/request";
@@ -9,10 +8,11 @@ import {
   createRemixServerAuthClient,
   requireUserId,
 } from "~/.server/utils/auth";
-import { toValidationErrorFormat } from "~/utils/error";
+import { redirectWithToast } from "~/.server/utils/toast";
+import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 export const loader = () => {
-  return safeRedirect("/");
+  throw new Response("Not found", { status: 404 });
 };
 
 export const action = async ({ request }: ActionFunctionArgs) => {
@@ -23,60 +23,62 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
-  try {
-    await requireUserId({
-      client,
-      request,
-    });
-  } catch (error) {
-    console.error(error);
-    return json({
-      success: false,
-    });
-  }
+  await requireUserId({
+    client,
+    request,
+  });
+
+  const formData = await request.formData();
+
+  const redirectTo = formData.get("redirectTo") as string;
 
   const { error } = await client.signOut();
 
+  console.log("error", error);
+
   if (isAuthError(error)) {
-    // popup error
-    return json({
-      success: false,
+    return redirectWithToast(redirectTo, {
+      type: "error",
+      title: "인증 오류",
+      description: "세션 정보가 없거나 토큰이 유효하지 않습니다.",
     });
   }
 
   if (error?.error) {
     switch (error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
-        return json({
-          success: false,
-          error: {},
+        return redirectWithToast(redirectTo, {
+          type: "error",
+          title: "인증 오류",
+          description: "유저가 존재하지 않습니다.",
         });
       }
       case HttpStatusCode.UNAUTHORIZED: {
-        return json({
-          success: false,
-          error: {},
+        return redirectWithToast(redirectTo, {
+          type: "error",
+          title: "인증 오류",
+          description: "세션 정보가 없거나 토큰이 유효하지 않습니다.",
         });
       }
       case HttpStatusCode.BAD_REQUEST: {
-        return json({
-          success: false,
-          error: toValidationErrorFormat(error),
+        return redirectWithToast(redirectTo, {
+          type: "error",
+          title: "인증 오류",
+          description: "토큰값이 유효하지 않습니다.",
         });
       }
       default: {
-        console.error("Unhandled error", error);
+        return redirectWithToast(redirectTo, {
+          type: "error",
+          title: "서버 오류",
+          description: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+        });
       }
     }
   }
-  return json(
-    {
-      success: true,
-    },
-    {
-      headers: combineHeaders(headers),
-    },
-  );
+  return redirect(PAGE_ENDPOINTS.AUTH.SIGNIN, {
+    headers: combineHeaders(headers),
+  });
 };
 
 export type RoutesActionData = typeof action;

@@ -25,19 +25,19 @@ export default function ThemeSwitch({ userPreference }: ThemeSwitchProps) {
   const modeLabel = {
     light: (
       <>
-        <Icons.sun />
+        <Icons.Sun />
         <span className="sr-only">Toggle theme</span>
       </>
     ),
     dark: (
       <>
-        <Icons.moon />
+        <Icons.Moon />
         <span className="sr-only">Toggle theme</span>
       </>
     ),
     system: (
       <>
-        <Icons.laptop />
+        <Icons.Laptop />
         <span className="sr-only">Toggle theme</span>
       </>
     ),
