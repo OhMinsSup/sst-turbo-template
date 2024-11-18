@@ -1,6 +1,7 @@
-import { applyDecorators, HttpStatus, Type } from "@nestjs/common";
+import type { HttpStatus, Type } from "@nestjs/common";
+import { applyDecorators } from "@nestjs/common";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
-import merge from "lodash/merge";
+import { merge } from "lodash-es";
 
 import { HttpResultCode } from "@template/common";
 

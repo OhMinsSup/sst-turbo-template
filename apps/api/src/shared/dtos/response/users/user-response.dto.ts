@@ -1,118 +1,66 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 
-import { UserProfile, UserSettings } from "@template/db";
-import { UserExternalPayload } from "@template/db/selectors";
-
-class UserProfileDto implements Pick<UserProfile, "bio" | "website"> {
+export class RoleResponseDto {
   @ApiProperty({
-    description: "사용자 자기 소개",
-    type: "string",
-    nullable: true,
-  })
-  @Expose()
-  readonly bio: string | null;
-
-  @ApiProperty({
-    description: "사용자 웹사이트",
-    type: "string",
-    nullable: true,
-  })
-  @Expose()
-  readonly website: string | null;
-}
-
-class UserSettingsDto implements Pick<UserSettings, "privacySettings"> {
-  @ApiProperty({
-    description: "사용자 개인 정보 설정",
-    type: Boolean,
+    title: "기호",
+    description: "역할 기호",
+    example: "USER",
     required: true,
   })
   @Expose()
-  readonly privacySettings: boolean;
+  readonly symbol: string;
 }
 
-export class UserExternalResponseDto implements UserExternalPayload {
+export class UserResponseDto {
   @ApiProperty({
-    type: "string",
-    description: "사용자 아이디",
+    title: "ID",
+    description: "사용자 ID",
+    example: "123e4567-e89b-12d3-a456-426614174000",
     required: true,
   })
   @Expose()
   readonly id: string;
 
   @ApiProperty({
-    description: "사용자 이름",
-    type: "string",
-    required: true,
-  })
-  @Expose()
-  readonly name: string;
-
-  @ApiProperty({
+    title: "이메일",
     description: "사용자 이메일",
-    type: "string",
+    example: "test@naver.com",
     required: true,
   })
   @Expose()
   readonly email: string;
 
   @ApiProperty({
-    description: "사용자 이메일 인증 여부",
-    type: Date,
-    format: "date-time",
-    nullable: true,
+    title: "이름",
+    description: "사용자 이름",
+    example: "홍길동",
+    required: true,
   })
   @Expose()
-  readonly emailVerified: Date | null;
+  readonly username: string;
 
   @ApiProperty({
-    description: "사용자 이미지",
-    type: "string",
-    nullable: true,
-  })
-  @Expose()
-  readonly image: string | null;
-
-  @ApiProperty({
-    description: "사용자 마지막 활동 시간",
+    title: "이메일 확인 일시",
+    description: "이메일 확인 일시",
     type: Date,
-    nullable: true,
+    required: false,
     format: "date-time",
   })
   @Expose()
-  readonly lastActiveAt: Date | null;
+  readonly emailConfirmedAt: Date | null;
 
   @ApiProperty({
-    description: "사용자 계정 정지 여부",
-    type: Boolean,
+    title: "정지 여부",
+    description: "정지 여부",
+    example: false,
     required: true,
   })
   @Expose()
   readonly isSuspended: boolean;
 
-  @ApiProperty({
-    description: "사용자 삭제 시간",
-    type: Date,
-    nullable: true,
-    format: "date-time",
-  })
+  @ApiProperty({ description: "역할", type: RoleResponseDto })
+  @Type(() => RoleResponseDto)
   @Expose()
-  readonly deletedAt: Date | null;
-
-  @ApiProperty({
-    description: "사용자 프로필",
-    type: UserProfileDto,
-    required: true,
-  })
-  @Expose()
-  readonly UserProfile: UserProfileDto;
-
-  @ApiProperty({
-    description: "사용자 설정",
-    type: UserSettingsDto,
-    required: true,
-  })
-  @Expose()
-  readonly UserSettings: UserSettingsDto;
+  readonly Role: RoleResponseDto;
 }

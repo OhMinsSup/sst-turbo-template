@@ -1,43 +1,62 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Expose } from "class-transformer";
 
-import { TokensDto } from "../../models/tokens.dto";
+import { HttpResultCode } from "@template/common";
 
-export class AuthResponseDto {
+export class AuthTokenResponseDto {
   @ApiProperty({
-    description: "유저 아이디",
-    type: "string",
+    description: "토큰",
+    example:
+      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
+    type: String,
     required: true,
   })
   @Expose()
-  readonly id: string;
+  readonly token: string;
 
   @ApiProperty({
-    description: "유저 이메일",
-    type: "string",
+    description: "토큰타입",
+    example: "Bearer",
+    type: String,
     required: true,
   })
   @Expose()
-  readonly email: string;
+  readonly tokenType: string;
 
   @ApiProperty({
-    description: "유저 이름",
-    type: "string",
+    description: "만료시간",
+    example: "30m",
+    type: String,
     required: true,
   })
   @Expose()
-  readonly name: string;
+  readonly expiresIn: string;
 
   @ApiProperty({
-    description: "유저 이미지",
-    type: "string",
-    nullable: true,
+    description: "만료일",
+    type: Date,
+    required: true,
+    format: "date-time",
   })
   @Expose()
-  readonly image: string | null;
+  readonly expiresAt: Date;
 
-  @ApiProperty({ description: "유저 토큰", type: TokensDto })
-  @Type(() => TokensDto)
+  @ApiProperty({ description: "Refresh 토큰", type: String })
   @Expose()
-  readonly tokens: TokensDto;
+  readonly refreshToken: string;
 }
+
+export const AuthSuccessDefine = {
+  signup: {
+    model: AuthTokenResponseDto,
+    exampleDescription: "이메일 회원가입에 성공한 경우 발생하는 응답",
+    exampleTitle: "이메일 회원가입 성공",
+    resultCode: HttpResultCode.OK,
+  },
+  signin: {
+    model: AuthTokenResponseDto,
+    exampleDescription: "이메일 로그인에 성공한 경우 발생하는 응답",
+    exampleTitle: "이메일 로그인 성공",
+    resultCode: HttpResultCode.OK,
+  },
+};

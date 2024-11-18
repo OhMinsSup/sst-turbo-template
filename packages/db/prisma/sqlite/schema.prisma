@@ -78,9 +78,10 @@ model Account {
 
 model Token {
     id        String   @id @default(cuid())
-    type      String // RefreshToken, AccessToken
-    userId    String
-    expires   DateTime
+    type      String // RefreshToken
+    userId    String // 사용자 ID
+    expires   DateTime // 만료 시간
+    token     String? // RefreshToken인 경우 해당 refresh token과 쌍을 이룬 access token 값
     createdAt DateTime @default(now())
     updatedAt DateTime @updatedAt
     User      User     @relation(fields: [userId], references: [id], onDelete: Cascade)

@@ -1,15 +1,13 @@
+import type { ExecutionContext } from "@nestjs/common";
 import type { Request as ExpressRequest } from "express";
-import {
-  createParamDecorator,
-  ExecutionContext,
-  ForbiddenException,
-} from "@nestjs/common";
+import { createParamDecorator, ForbiddenException } from "@nestjs/common";
 
-import type { PassportUser } from "../routes/auth/strategies/jwt.auth.strategy";
-import { AuthErrorDefine, AuthNotLoginErrorCode } from "../routes/auth/errors";
+import type { UserExternalPayload } from "@template/db/selectors";
+
+import { AuthErrorDefine } from "../routes/auth/errors/auth-error.service";
 
 export interface Request extends ExpressRequest {
-  user?: PassportUser;
+  user?: UserExternalPayload;
 }
 
 interface DecoratorOptions {
@@ -18,19 +16,19 @@ interface DecoratorOptions {
 
 export const AuthUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
+    const request = ctx.switchToHttp().getRequest<Request>();
 
-    if (!options?.allowUndefined && (!request.user || !request.user.user)) {
-      throw new ForbiddenException(AuthErrorDefine[AuthNotLoginErrorCode]);
+    if (!request.user) {
+      throw new ForbiddenException(AuthErrorDefine.notLogin);
     }
 
-    return request.user ? request.user.user : undefined;
+    return request.user;
   },
 );
 
 export const OptionalAuthUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    return request.user ? request.user.user : null;
+    return request.user ? request.user : null;
   },
 );

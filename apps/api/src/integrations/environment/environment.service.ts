@@ -63,38 +63,17 @@ export class EnvironmentService {
   // -----------------------------------------------------------------------------
   // token
   // -----------------------------------------------------------------------------
-  getAccessTokenExpiresIn(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_EXPIRES_IN");
+  getJwtExpiresIn(): string {
+    return this.configService.get<string>("JWT_EXPIRES_IN");
   }
 
-  getAccessTokenExpiresAt() {
-    const expiresIn = this.getAccessTokenExpiresIn();
-    return addMilliseconds(new Date().getTime(), ms(expiresIn));
+  getJwtExpiresAt(issuedAt: Date) {
+    const expiresIn = this.getJwtExpiresIn();
+    return addMilliseconds(issuedAt, ms(expiresIn));
   }
 
-  getAccessTokenSecret(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_SECRET");
-  }
-
-  getAccessTokenName(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_NAME");
-  }
-
-  getRefreshTokenExpiresIn(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_EXPIRES_IN");
-  }
-
-  getRefreshTokenExpiresAt() {
-    const expiresIn = this.getRefreshTokenExpiresIn();
-    return addMilliseconds(new Date().getTime(), ms(expiresIn));
-  }
-
-  getRefreshTokenSecret(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_SECRET");
-  }
-
-  getRefreshTokenName(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_NAME");
+  getJwtSecret(): string {
+    return this.configService.get<string>("JWT_SECRET");
   }
 
   // -----------------------------------------------------------------------------

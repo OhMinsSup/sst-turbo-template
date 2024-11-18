@@ -1,287 +1,303 @@
+import type { Request } from "express";
 import {
   BadRequestException,
+  Inject,
   Injectable,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
-import { subMilliseconds } from "date-fns";
+import { REQUEST } from "@nestjs/core";
 
-import { HttpResultCode } from "@template/common";
+import { HttpResultCode, Provider, Role } from "@template/common";
 
-import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
-import { AppTokenType } from "../../../libs/constants";
+import { hash } from "../../../libs/hash";
+import { RoleService } from "../../../routes/role/services/role.service";
 import { UsersService } from "../../../routes/users/services/users.service";
-import { AuthResponseDto } from "../../../shared/dtos/response/auth/auth-response.dto";
-import { RefreshTokenDTO } from "../dto/refresh-token.dto";
-import { SigninDTO } from "../dto/signin.dto";
-import { SignoutDTO } from "../dto/signout.dto";
-import { SignupDTO } from "../dto/signup.dto";
-import { VerifyTokenDTO } from "../dto/verify-token.dto";
-import {
-  AuthAlreadyExistEmailErrorCode,
-  AuthErrorDefine,
-  AuthIncorrectPasswordErrorCode,
-  AuthNotExistEmailErrorCode,
-  AuthNotExistUserErrorCode,
-  AuthTokenNotExistErrorCode,
-} from "../errors";
+import { SignInDTO } from "../dto/signin.dto";
+import { SignUpDTO } from "../dto/signup.dto";
+import { TokenDTO } from "../dto/token.dto";
+import { AuthErrorService } from "../errors/auth-error.service";
+import { IdentityService } from "./identity.service";
 import { PasswordService } from "./password.service";
+import { SessionService } from "./session.service";
 import { TokenService } from "./token.service";
 
-const generatorName = (seed: string) => {
-  const makeRandomString = (length: number) => {
-    let text = "";
-    const possible =
-      "ABCDEFGHIJKLMNOPQRSTUVWXYZabcdefghijklmnopqrstuvwxyz0123456789";
-
-    for (let i = 0; i < length; i++) {
-      text += possible.charAt(Math.floor(Math.random() * possible.length));
-    }
-
-    return text;
-  };
-
-  return `${seed}_${makeRandomString(10)}`;
-};
+export interface JwtPayload {
+  sub: string;
+  email: string;
+  role: Role;
+  sessionId: string;
+  iat: number;
+  exp: number;
+}
 
 @Injectable()
 export class AuthService {
-  private _contextName = "auth - service";
-
   constructor(
     private readonly prisma: PrismaService,
-    private readonly logger: LoggerService,
-    private readonly token: TokenService,
-    private readonly user: UsersService,
-    private readonly password: PasswordService,
+    private readonly tokenService: TokenService,
+    private readonly usersService: UsersService,
+    private readonly passwordServie: PasswordService,
+    private readonly roleService: RoleService,
+    private readonly identityService: IdentityService,
+    private readonly sessionService: SessionService,
+    private readonly authError: AuthErrorService,
+    @Inject(REQUEST) private request: Request,
   ) {}
 
   /**
-   * @description Verify Token Handler
-   * @param {VerifyTokenDTO} input
+   * @description 로그인
+   * @param {SignInDTO} input
    */
-  async verifyToken(input: VerifyTokenDTO): Promise<{
-    code: HttpResultCode;
-    data: boolean;
-  }> {
-    const jwtDto = await this.token.getAccessTokenPayload(input.token);
-    const token = await this.token.findByTokenId(jwtDto.jti);
-    if (!token) {
-      throw new NotFoundException(AuthErrorDefine[AuthTokenNotExistErrorCode]);
+  async signIn(input: SignInDTO) {
+    switch (input.provider) {
+      case Provider.EMAIL: {
+        return await this._signInWithEmail(input);
+      }
+      default: {
+        throw new UnauthorizedException(this.authError.unsupportedAuthMethod());
+      }
     }
-
-    const user = await this.user.checkUserById(jwtDto.sub);
-    if (!user) {
-      throw new NotFoundException(AuthErrorDefine[AuthNotExistUserErrorCode]);
-    }
-
-    return {
-      code: HttpResultCode.OK,
-      data: true,
-    };
   }
 
   /**
-   * @description Refresh Handler
-   * @param {RefreshTokenDTO} input
+   * @description 이메일로 로그인
+   * @param {SignInDTO} input
    */
-  async refresh(input: RefreshTokenDTO): Promise<{
-    code: HttpResultCode;
-    data: AuthResponseDto;
-  }> {
-    const jwtDto = await this.token.getRefreshTokenPayload(input.refreshToken);
-    const token = await this.token.findByTokenId(jwtDto.jti);
-    if (!token) {
-      throw new NotFoundException(AuthErrorDefine[AuthTokenNotExistErrorCode]);
-    }
-
-    const user = await this.user.getUserById(jwtDto.sub);
-    if (!user) {
-      throw new NotFoundException(AuthErrorDefine[AuthNotExistUserErrorCode]);
-    }
-
-    // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
-    await this.token.deleteByExpiresAtTokens({
-      userId: user.id,
-      expiresAt: subMilliseconds(token.expires.getTime(), 1000),
-      tokenType: AppTokenType.RefreshToken,
-    });
-
-    const accessToken = this.token.generateAccessToken(user.id);
-    const refreshToken = await this.token.generateRefreshToken(
-      user.id,
-      accessToken.token,
+  private async _signInWithEmail(input: SignInDTO) {
+    const user = await this.usersService.isDuplicatedEmailWithEncryptedPassword(
+      input.email,
     );
 
-    return {
-      code: HttpResultCode.OK,
-      data: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-        tokens: {
-          accessToken,
-          refreshToken,
-        },
-      },
-    };
-  }
-
-  /**
-   * @description Signin Handler
-   * @param {SigninDTO} input
-   */
-  async signin(input: SigninDTO): Promise<{
-    code: HttpResultCode;
-    data: AuthResponseDto;
-  }> {
-    const user = await this.user.getInternalUserByEmail(input.email);
-
     if (!user) {
-      throw new NotFoundException(AuthErrorDefine[AuthNotExistEmailErrorCode]);
+      throw new NotFoundException(this.authError.notFoundUser());
     }
 
-    const isMatch = await this.password.compare(
+    const compare = await this.passwordServie.compare(
       input.password,
-      user.Password.salt,
-      user.Password.hash,
+      user.encryptedSalt,
+      user.encryptedPassword,
     );
 
-    if (!isMatch) {
-      throw new UnauthorizedException(
-        AuthErrorDefine[AuthIncorrectPasswordErrorCode],
-      );
-    }
-
-    const accessToken = this.token.generateAccessToken(user.id);
-    const refreshToken = await this.token.generateRefreshToken(
-      user.id,
-      accessToken.token,
-    );
-
-    // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
-    await this.token.deleteByExpiresAtTokens({
-      userId: user.id,
-      expiresAt: subMilliseconds(refreshToken.expiresAt.getTime(), 1000),
-      tokenType: AppTokenType.RefreshToken,
-    });
-
-    return {
-      code: HttpResultCode.OK,
-      data: {
-        id: user.id,
-        email: user.email,
-        name: user.name,
-        image: user.image,
-        tokens: {
-          accessToken,
-          refreshToken,
-        },
-      },
-    };
-  }
-
-  /**
-   * @description Signup Handler
-   * @param {SignupDTO} input
-   */
-  async signup(input: SignupDTO): Promise<{
-    code: HttpResultCode;
-    data: AuthResponseDto;
-  }> {
-    const user = await this.user.checkUserByEmail(input.email);
-
-    if (user) {
-      throw new BadRequestException(
-        AuthErrorDefine[AuthAlreadyExistEmailErrorCode],
-        "중복 회원가입 요청할때 발생하는 오류",
-      );
+    if (!compare) {
+      throw new BadRequestException(this.authError.incorrectPassword());
     }
 
     return await this.prisma.$transaction(async (tx) => {
-      const { hashedPassword, salt } = await this.password.hashPassword(
-        input.password,
-      );
-
-      const emailSplit = input.email.split("@").at(0) ?? "username";
-
-      const user = await this.user.createUser(
-        {
-          email: input.email,
-          name: input.name ?? generatorName(emailSplit),
-          password: hashedPassword,
-          salt: salt,
-        },
-        tx,
-      );
-
-      // 인증 토큰 생성
-      const accessToken = this.token.generateAccessToken(user.id);
-      // 리프레시 토큰 생성
-      const refreshToken = await this.token.generateRefreshToken(
+      // Identity 찾기
+      let identity = await this.identityService.findIdentityByIdAndProvider(
         user.id,
-        accessToken.token,
+        Provider.EMAIL,
         tx,
       );
 
-      // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
-      const conditionExpiredAt = subMilliseconds(
-        refreshToken.expiresAt.getTime(),
-        1000,
-      );
+      if (!identity) {
+        // Identity 생성
+        identity = await this.identityService.createNewIdentity(
+          {
+            userId: user.id,
+            provider: Provider.EMAIL,
+            identityData: {
+              sub: user.id,
+              email: user.email,
+            },
+          },
+          tx,
+        );
 
-      // 현재 발급한 token의 만료일 이전에 만료된 token을 삭제
-      await this.token.deleteByExpiresAtTokens(
-        {
-          userId: user.id,
-          expiresAt: conditionExpiredAt,
-          tokenType: AppTokenType.RefreshToken,
-        },
+        // User와 Identity를 연결
+        await this.identityService.linkIdentityToUser(user.id, identity.id, tx);
+      }
+
+      const issueTokenParams = {
+        userId: user.id,
+        ip: hash(this.request.ip),
+        userAgent: this.request.headers["user-agent"],
+      };
+
+      // Refresh Token 발급
+      const token = await this.tokenService.issueRefreshToken(
+        issueTokenParams,
         tx,
       );
+
+      try {
+        // 마지막 로그인 시간 업데이트
+        await this.usersService.updateLastSignInAt(user.id, tx);
+        await this.identityService.updateLastSignInAt(identity.id, user.id, tx);
+      } catch (error) {
+        console.error(error);
+      }
 
       return {
         code: HttpResultCode.OK,
-        data: {
-          id: user.id,
-          email: user.email,
-          name: user.name,
-          image: user.image,
-          tokens: {
-            accessToken,
-            refreshToken,
-          },
-        },
+        data: token,
       };
     });
   }
 
   /**
-   * @description Signout Handler
-   * @param {SignoutDTO} input
+   * @description 회원가입
+   * @param {SignupDTO} input
    */
-  async signout(input: SignoutDTO): Promise<{
-    code: HttpResultCode;
-    data: boolean;
-  }> {
-    const jwtDto = await this.token.getAccessTokenPayload(input.accessToken);
-    const token = await this.token.findByTokenId(jwtDto.jti);
-    if (!token) {
-      throw new NotFoundException(AuthErrorDefine[AuthTokenNotExistErrorCode]);
+  async signUp(input: SignUpDTO) {
+    switch (input.provider) {
+      case Provider.EMAIL: {
+        return await this._signUpWithEmail(input);
+      }
+      default: {
+        throw new UnauthorizedException(this.authError.unsupportedAuthMethod());
+      }
+    }
+  }
+
+  /**
+   * @description 이메일로 회원가입
+   * @param {SignupDTO} input
+   */
+  private async _signUpWithEmail(input: SignUpDTO) {
+    // 이메일 중복 체크
+    const user = await this.usersService.isDuplicatedEmail(input.email);
+
+    if (user) {
+      // 이미 존재하는 이메일
+      throw new BadRequestException(this.authError.emailAlreadyExists());
     }
 
-    const user = await this.user.checkUserById(jwtDto.sub);
+    return await this.prisma.$transaction(async (tx) => {
+      const { hashedPassword: password, salt } =
+        await this.passwordServie.hashPassword(input.password);
+
+      const newUserParams = {
+        email: input.email,
+        username: this.usersService.makeRandomUsername(input.username),
+        password,
+        salt,
+      };
+
+      // 이메일로 유저 생성
+      const user = await this.usersService.createNewUser(newUserParams, tx);
+
+      const role = await this.roleService.findRole(Role.USER, tx);
+      if (!role) {
+        // Role이 없는 경우
+        throw new NotFoundException(this.authError.roleNotFound());
+      }
+
+      // 가져온 Role과 User를 연결
+      await this.roleService.linkRoleToUser(user.id, role.id, tx);
+
+      // Identity 찾기
+      let identity = await this.identityService.findIdentityByIdAndProvider(
+        user.id,
+        Provider.EMAIL,
+        tx,
+      );
+
+      if (!identity) {
+        // Identity 생성
+        identity = await this.identityService.createNewIdentity(
+          {
+            userId: user.id,
+            provider: Provider.EMAIL,
+            identityData: {
+              sub: user.id,
+              email: user.email,
+            },
+          },
+          tx,
+        );
+
+        // User와 Identity를 연결
+        await this.identityService.linkIdentityToUser(user.id, identity.id, tx);
+      }
+
+      const issueTokenParams = {
+        userId: user.id,
+        ip: hash(this.request.ip),
+        userAgent: this.request.headers["user-agent"],
+      };
+
+      // Refresh Token 발급
+      const token = await this.tokenService.issueRefreshToken(
+        issueTokenParams,
+        tx,
+      );
+
+      try {
+        // 마지막 로그인 시간 업데이트
+        await this.usersService.updateLastSignInAt(user.id, tx);
+        await this.identityService.updateLastSignInAt(identity.id, user.id, tx);
+      } catch (error) {
+        console.error(error);
+      }
+
+      return {
+        code: HttpResultCode.OK,
+        data: token,
+      };
+    });
+  }
+
+  /**
+   * @description 토큰 발급
+   * @param {TokenDTO} input
+   */
+  async token(input: TokenDTO) {
+    return await this.refreshTokenGrant(input);
+  }
+
+  async refreshTokenGrant(input: TokenDTO) {
+    const retryStart = Date.now();
+    let retry = true;
+
+    const retryLoopDuration = 5.0;
+
+    while (retry && Date.now() - retryStart < retryLoopDuration) {
+      retry = false;
+      console.log("retry");
+      const data = await this.usersService.findUserWithRefreshToken(
+        input.refreshToken,
+      );
+
+      if (!data) {
+        throw new UnauthorizedException(this.authError.invalidToken());
+      }
+
+      if (data.user.isSuspended) {
+        throw new UnauthorizedException(this.authError.suspensionUser());
+      }
+    }
+  }
+
+  /**
+   * @description 토큰을 이용하여 사용자 또는 세션을 로드합니다.
+   * @param {JwtPayload} payload
+   */
+  async maybeLoadUserOrSession(payload: JwtPayload) {
+    if (!payload.sub) {
+      throw new UnauthorizedException(this.authError.invalidToken());
+    }
+
+    const user = await this.usersService.findUserByIdExternal(payload.sub);
+
     if (!user) {
-      throw new NotFoundException(AuthErrorDefine[AuthNotExistUserErrorCode]);
+      throw new NotFoundException(this.authError.notFoundUser());
     }
 
-    await this.token.deleteByAccessToken(input.accessToken);
+    if (payload.sessionId) {
+      const session = await this.sessionService.findSessionByID(
+        payload.sessionId,
+      );
+
+      if (!session) {
+        throw new UnauthorizedException(this.authError.notLogin());
+      }
+    }
 
     return {
-      code: HttpResultCode.OK,
-      data: true,
+      user,
     };
   }
 }

@@ -30,6 +30,8 @@ build
 # misc
 .DS_Store
 *.pem
+.cache/
+.cache/
 
 # debug
 npm-debug.log*
@@ -57,3 +59,4 @@ dist/
 # sqlite
 *.sqlite
 *.db
+*.db-journal

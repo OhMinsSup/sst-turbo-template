@@ -3,7 +3,7 @@ import { CustomValidationError } from "src/shared/dtos/response/validation-excep
 
 import { HttpResultCode } from "@template/common";
 
-import { ErrorResponseOption } from "../../../decorators/error-response.decorator";
+import type { ErrorResponseOption } from "../../../decorators/error-response.decorator";
 
 export const AuthValidationErrorCode = "Auth-0000";
 export const AuthAlreadyExistEmailErrorCode = "Auth-0001";
@@ -19,6 +19,7 @@ export const AuthTokenInvalidErrorCode = "Auth-0010";
 export const AuthTokenNotExistErrorCode = "Auth-0011";
 export const AuthNotLoginErrorCode = "Auth-0012";
 export const AuthUserSuspensionErrorCode = "Auth-0013";
+export const AuthUnsupportedSignupMethodErrorCode = "Auth-0014";
 
 type Keys =
   | typeof AuthAlreadyExistEmailErrorCode
@@ -34,7 +35,8 @@ type Keys =
   | typeof AuthTokenInvalidErrorCode
   | typeof AuthTokenNotExistErrorCode
   | typeof AuthNotLoginErrorCode
-  | typeof AuthUserSuspensionErrorCode;
+  | typeof AuthUserSuspensionErrorCode
+  | typeof AuthUnsupportedSignupMethodErrorCode;
 
 export const AuthErrorDefine: Record<Keys, ErrorResponseOption> = {
   [AuthValidationErrorCode]: {
@@ -159,5 +161,12 @@ export const AuthErrorDefine: Record<Keys, ErrorResponseOption> = {
     exampleTitle: "정지된 계정",
     message: "정지된 계정입니다. 관리자에게 문의해 주세요.",
     resultCode: HttpResultCode.SUSPENDED_ACCOUNT,
+  },
+  [AuthUnsupportedSignupMethodErrorCode]: {
+    model: UnauthorizedException,
+    exampleDescription: "지원하지 않는 가입 방법",
+    exampleTitle: "지원하지 않는 가입 방법",
+    message: "지원하지 않는 가입 방법입니다. 다른 가입 방법을 이용해 주세요.",
+    resultCode: HttpResultCode.FAIL,
   },
 };

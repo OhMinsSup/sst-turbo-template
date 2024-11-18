@@ -1,4 +1,4 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 
 import { AppController } from "./app.controller";
@@ -7,10 +7,11 @@ import { HttpExceptionFilter } from "./filters/http-exception.filter";
 import { IntegrationsModule } from "./integrations/integrations.module";
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { AuthModule } from "./routes/auth/auth.module";
+import { RoleModule } from "./routes/role/role.module";
 import { UsersModule } from "./routes/users/users.module";
 
 @Module({
-  imports: [IntegrationsModule, AuthModule, UsersModule],
+  imports: [IntegrationsModule, AuthModule, UsersModule, RoleModule],
   controllers: [AppController],
   providers: [
     AppService,

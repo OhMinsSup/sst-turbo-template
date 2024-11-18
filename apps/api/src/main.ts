@@ -1,6 +1,6 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
+import type { ValidationError } from "class-validator";
 import {
-  BadRequestException,
   ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
@@ -8,7 +8,6 @@ import {
 import { ConfigService } from "@nestjs/config";
 import { NestFactory, Reflector } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
-import { ValidationError } from "class-validator";
 import compression from "compression";
 import helmet from "helmet";
 
@@ -56,6 +55,7 @@ async function bootstrap() {
         allowedHosts.push(/^http:\/\/localhost/);
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let corsOptions: any;
       const valid = allowedHosts.some((regex) => regex.test(origin));
       if (valid) {
@@ -63,6 +63,7 @@ async function bootstrap() {
       } else {
         corsOptions = { origin: false }; // disable CORS for this request
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       callback(null, corsOptions);
     },
     credentials: true,
@@ -81,7 +82,6 @@ async function bootstrap() {
       type: "http", // I`ve attempted type: 'apiKey' too
       in: "Header",
     })
-    .addCookieAuth(config.get("ACCESS_TOKEN_NAME"))
     .build();
 
   const document = SwaggerModule.createDocument(app, swagger);
@@ -94,4 +94,6 @@ async function bootstrap() {
 
   await app.listen(config.get("SERVER_PORT"));
 }
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();
