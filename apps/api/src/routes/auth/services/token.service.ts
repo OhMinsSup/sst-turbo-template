@@ -27,9 +27,9 @@ interface GenerateAccessTokenParams {
 @Injectable()
 export class TokenService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly env: EnvironmentService,
-    private readonly jwt: JwtService,
+    private readonly jwtService: JwtService,
     private readonly sessionService: SessionService,
   ) {}
 
@@ -90,7 +90,7 @@ export class TokenService {
       token.sessionId = session.id;
     }
 
-    const ctx = tx ? tx.refreshToken : this.prisma.refreshToken;
+    const ctx = tx ? tx.refreshToken : this.prismaService.refreshToken;
     return await ctx.create({ data: token });
   }
 
@@ -121,7 +121,7 @@ export class TokenService {
       Role: { symbol },
     } = session.User;
 
-    const token = await this.jwt.signAsync(
+    const token = await this.jwtService.signAsync(
       {
         email,
         role: symbol,

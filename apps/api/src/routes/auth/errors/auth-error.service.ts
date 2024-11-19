@@ -33,6 +33,13 @@ export const AuthErrorDefine = {
     message: "지원하지 않는 가입 방법입니다. 다른 가입 방법을 이용해 주세요.",
     resultCode: HttpResultCode.FAIL,
   },
+  unsupportedGrantType: {
+    model: UnauthorizedException,
+    exampleDescription: "지원하지 않는 인증 방식",
+    exampleTitle: "지원하지 않는 인증 방식",
+    message: "지원하지 않는 인증 방식입니다. 다른 인증 방식을 이용해 주세요.",
+    resultCode: HttpResultCode.FAIL,
+  },
   signupValidation: {
     model: CustomValidationError,
     exampleDescription: "요청 데이터 검증 오류",
@@ -72,14 +79,14 @@ export const AuthErrorDefine = {
     resultCode: HttpResultCode.UNAUTHORIZED,
   },
   suspensionUser: {
-    model: UnauthorizedException,
+    model: ForbiddenException,
     exampleDescription: "정지된 계정",
     exampleTitle: "정지된 계정",
     message: "정지된 계정입니다. 관리자에게 문의해 주세요.",
     resultCode: HttpResultCode.SUSPENDED_ACCOUNT,
   },
   invalidToken: {
-    model: UnauthorizedException,
+    model: BadRequestException,
     exampleDescription: "유효하지 않은 토큰",
     exampleTitle: "유효하지 않은 토큰",
     message: "유효하지 않은 토큰입니다. 다시 인증해 주세요.",
@@ -105,6 +112,13 @@ export const AuthErrorDefine = {
     exampleTitle: "비밀번호 불일치",
     message: "비밀번호가 일치하지 않습니다. 다시 시도해 주세요.",
     resultCode: HttpResultCode.INCORRECT_PASSWORD,
+  },
+  expiredToken: {
+    model: BadRequestException,
+    exampleDescription: "만료된 토큰",
+    exampleTitle: "만료된 토큰",
+    message: "만료된 토큰입니다. 다시 인증해 주세요.",
+    resultCode: HttpResultCode.EXPIRED_TOKEN,
   },
 };
 
@@ -188,5 +202,21 @@ export class AuthErrorService {
    */
   incorrectPassword(): ErrorResponseOption {
     return AuthErrorDefine.incorrectPassword;
+  }
+
+  /**
+   * @description 지원하지 않는 인증 방식
+   * @returns {ErrorResponseOption}
+   */
+  unsupportedGrantType(): ErrorResponseOption {
+    return AuthErrorDefine.unsupportedGrantType;
+  }
+
+  /**
+   * @description 만료된 토큰
+   * @returns {ErrorResponseOption}
+   */
+  expiredToken(): ErrorResponseOption {
+    return AuthErrorDefine.expiredToken;
   }
 }

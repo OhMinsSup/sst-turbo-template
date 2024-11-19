@@ -16,10 +16,15 @@ interface CreateNewUserParams extends EmailUserCreateDTO {
   username: string;
 }
 
+interface FindUserWithRefreshTokenParams {
+  token: string;
+  forUpdate?: boolean;
+}
+
 @Injectable()
 export class UsersService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly sessionService: SessionService,
     private readonly tokenService: TokenService,
   ) {}
@@ -33,7 +38,7 @@ export class UsersService {
     { email, username, password, salt }: CreateNewUserParams,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.create({
       data: {
         email,
@@ -53,7 +58,7 @@ export class UsersService {
     email: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { email },
       select: { id: true },
@@ -69,7 +74,7 @@ export class UsersService {
     email: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { email },
       select: {
@@ -90,7 +95,7 @@ export class UsersService {
     id: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { id, deletedAt: null },
       select: getExternalUserSelector(),
@@ -103,7 +108,7 @@ export class UsersService {
    * @param {Prisma.TransactionClient?} tx
    */
   async findUserByEmailExternal(email: string, tx?: Prisma.TransactionClient) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { email, deletedAt: null },
       select: getExternalUserSelector(),
@@ -119,7 +124,7 @@ export class UsersService {
     id: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { id, deletedAt: null },
       select: getInternalUserSelector(),
@@ -132,7 +137,7 @@ export class UsersService {
    * @param {Prisma.TransactionClient?} tx
    */
   async findUserByEmailInternal(email: string, tx?: Prisma.TransactionClient) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { email, deletedAt: null },
       select: getInternalUserSelector(),
@@ -173,7 +178,7 @@ export class UsersService {
     userId: string,
     tx?: Prisma.TransactionClient | undefined,
   ) {
-    const ctx = tx ? tx.user : this.prisma.user;
+    const ctx = tx ? tx.user : this.prismaService.user;
     return ctx.update({
       where: { id: userId },
       data: { lastSignInAt: new Date() },
@@ -182,39 +187,39 @@ export class UsersService {
 
   /**
    * @description Refresh Token을 이용하여 사용자 또는 세션을 로드합니다.
-   * @param {string} token
+   * @param {FindUserWithRefreshTokenParams} params
    * @param {Prisma.TransactionClient?} tx
    */
   async findUserWithRefreshToken(
-    token: string,
+    params: FindUserWithRefreshTokenParams,
     tx?: Prisma.TransactionClient | undefined,
   ) {
-    const tokenData = await this.tokenService.findRefreshTokenByToken(
-      token,
+    const token = await this.tokenService.findRefreshTokenByToken(
+      params.token,
       tx,
     );
 
-    if (!tokenData) {
+    if (!token) {
       return null;
     }
 
-    const userData = await this.findUserByIdExternal(tokenData.userId, tx);
-    if (!userData) {
+    const user = await this.findUserByIdExternal(token.userId, tx);
+    if (!user) {
       return null;
     }
 
-    const sessionData = await this.sessionService.findSessionByID(
-      tokenData.sessionId,
+    const session = await this.sessionService.findSessionByID(
+      token.sessionId,
       tx,
     );
-    if (!sessionData) {
+    if (!session) {
       return null;
     }
 
     return {
-      user: userData,
-      session: sessionData,
-      refreshToken: tokenData,
+      user,
+      session,
+      refreshToken: token,
     };
   }
 }

@@ -1,5 +1,8 @@
-/* eslint-disable @typescript-eslint/ban-types */
-import { ApiPropertyOptions } from "@nestjs/swagger";
+/* eslint-disable @typescript-eslint/no-unsafe-return */
+/* eslint-disable @typescript-eslint/no-unsafe-argument */
+/* eslint-disable @typescript-eslint/no-unsafe-function-type */
+/* eslint-disable @typescript-eslint/no-explicit-any */
+import type { ApiPropertyOptions } from "@nestjs/swagger";
 
 import { isFunction } from "@template/utils/assertion";
 
@@ -9,9 +12,7 @@ const API_MODEL_PROPERTIES = `${DECORATORS_PREFIX}/apiModelProperties`;
 const API_MODEL_PROPERTIES_ARRAY = `${DECORATORS_PREFIX}/apiModelPropertiesArray`;
 
 //nest js 에서 사용중인 Type ( 생성자 )객체
-export interface Type<T = any> extends Function {
-  new (...args: any[]): T;
-}
+export type Type<T = any> = new (...args: any[]) => T;
 
 // () => type 형태의 순환참조로 기술했을때 가져오는 함수
 function isLazyTypeFunc(

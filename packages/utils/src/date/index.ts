@@ -1,3 +1,3 @@
-import { addSeconds, isBefore, subMinutes, toDate } from "date-fns";
+import { addSeconds, isAfter, isBefore, subMinutes, toDate } from "date-fns";
 
-export { addSeconds, isBefore, subMinutes, toDate };
+export { addSeconds, isBefore, subMinutes, toDate, isAfter };

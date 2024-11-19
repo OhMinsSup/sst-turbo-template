@@ -4,6 +4,7 @@ import { ThrottlerModule } from "@nestjs/throttler";
 
 import { EnvironmentModule } from "./environment/environment.module";
 import { EnvironmentService } from "./environment/environment.service";
+import { GlobalErrorModule } from "./errors/global-error.module";
 import { LoggerModule } from "./logger/logger.module";
 import { loggerModuleFactory } from "./logger/logger.module-definition";
 import { PrismaModule } from "./prisma/prisma.module";
@@ -37,6 +38,7 @@ import { PrismaModule } from "./prisma/prisma.module";
       inject: [EnvironmentService],
     }),
     PrismaModule,
+    GlobalErrorModule,
   ],
   exports: [],
   providers: [],

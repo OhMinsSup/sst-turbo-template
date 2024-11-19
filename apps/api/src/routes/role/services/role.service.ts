@@ -3,18 +3,12 @@ import { Injectable } from "@nestjs/common";
 import { Role } from "@template/common";
 import { Prisma } from "@template/db";
 
-import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { RoleCreateDTO } from "../dto/role-create.dto";
 
 @Injectable()
 export class RoleService {
-  private _contextName = "role - service";
-
-  constructor(
-    private readonly prisma: PrismaService,
-    private readonly logger: LoggerService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * @description Role 가져오기
@@ -25,7 +19,7 @@ export class RoleService {
     role: Role,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.role : this.prisma.role;
+    const ctx = tx ? tx.role : this.prismaService.role;
     return await ctx.findUnique({
       where: {
         symbol: role,
@@ -42,7 +36,7 @@ export class RoleService {
     role: Role,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.role : this.prisma.role;
+    const ctx = tx ? tx.role : this.prismaService.role;
     return await ctx.findUniqueOrThrow({
       where: {
         symbol: role,
@@ -59,7 +53,7 @@ export class RoleService {
     input: RoleCreateDTO,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.role : this.prisma.role;
+    const ctx = tx ? tx.role : this.prismaService.role;
     return await ctx.create({
       data: {
         name: input.name,
@@ -80,7 +74,7 @@ export class RoleService {
     roleId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.role : this.prisma.role;
+    const ctx = tx ? tx.role : this.prismaService.role;
     return await ctx.update({
       where: {
         id: roleId,

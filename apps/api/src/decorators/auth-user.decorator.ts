@@ -4,7 +4,7 @@ import { createParamDecorator, ForbiddenException } from "@nestjs/common";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 
-import { AuthErrorDefine } from "../routes/auth/errors/auth-error.service";
+import { AuthErrorDefine } from "../routes/auth/errors";
 
 export interface Request extends ExpressRequest {
   user?: UserExternalPayload;

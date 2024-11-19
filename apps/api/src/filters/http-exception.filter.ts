@@ -9,16 +9,18 @@ import {
 import { ThrottlerException } from "@nestjs/throttler";
 import { Request, Response } from "express";
 import { ErrorResponseOption } from "src/decorators/error-response.decorator";
+import { GlobalErrorService } from "src/integrations/errors/global-error.service";
 
 import { HttpResultCode } from "@template/common";
 
 import { HttpExceptionResponseDto } from "../shared/dtos/response/http-exception-response.dto";
 import { CustomValidationError } from "../shared/dtos/response/validation-exception-response.dto";
-import { GlobalErrorDefine, GlobalThrottlerErrorCode } from "../shared/errors";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor() {}
+  constructor(private readonly globalError: GlobalErrorService) {}
+
+  // eslint-disable-next-line @typescript-eslint/require-await
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
     const response = ctx.getResponse<Response>();
@@ -28,14 +30,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let resultCode: HttpResultCode;
     let error: HttpExceptionResponseDto;
 
-    console.error(exception);
-
     // 많은 요청이 들어왔을 때
     if (exception instanceof ThrottlerException) {
       statusCode = HttpStatus.TOO_MANY_REQUESTS;
-      resultCode = GlobalErrorDefine[GlobalThrottlerErrorCode].resultCode;
+      const throttler = this.globalError.throttler();
+      resultCode = throttler.resultCode;
       error = {
-        message: GlobalErrorDefine[GlobalThrottlerErrorCode].message as string,
+        message: throttler.message as string,
         error: ThrottlerException.name,
       };
     } else if (exception instanceof CustomValidationError) {

@@ -11,14 +11,16 @@ import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { Observable } from "rxjs";
 
+import { TokenType } from "@template/common";
+
 import type { JwtPayload } from "../routes/auth/services/auth.service";
-import { AuthErrorService } from "../routes/auth/errors/auth-error.service";
+import { AuthErrorService } from "../routes/auth/errors";
 import { AuthService } from "../routes/auth/services/auth.service";
 
 @Injectable()
 export class JwtAuthGuard implements CanActivate {
   constructor(
-    private jwt: JwtService,
+    private jwtService: JwtService,
     private authService: AuthService,
     private authError: AuthErrorService,
     private reflector: Reflector,
@@ -41,7 +43,7 @@ export class JwtAuthGuard implements CanActivate {
   private async validateRequest(request: Request, _: ExecutionContext) {
     const tokenString = this.extractTokenFromHeader(request);
 
-    const payload = await this.jwt.verifyAsync<JwtPayload>(tokenString);
+    const payload = await this.jwtService.verifyAsync<JwtPayload>(tokenString);
 
     const { user } = await this.authService.maybeLoadUserOrSession(payload);
 
@@ -59,7 +61,7 @@ export class JwtAuthGuard implements CanActivate {
       );
     }
 
-    const tokenString = authorization.split("Bearer ").at(-1);
+    const tokenString = authorization.split(`${TokenType.Bearer} `).at(-1);
     if (!tokenString) {
       throw new UnauthorizedException(
         this.authError.invalidAuthorizationHeader(),

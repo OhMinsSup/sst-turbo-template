@@ -8,13 +8,13 @@ import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 
 import { HttpResultCode } from "@template/common";
 
+import { makeInstanceByApiProperty } from "../libs/makeInstanceByApiProperty";
 import { ErrorResponseDto } from "../shared/dtos/response/error-response.dto";
 import { HttpExceptionResponseDto } from "../shared/dtos/response/http-exception-response.dto";
 import {
   CustomValidationError,
   ValidationExceptionResponseDto,
 } from "../shared/dtos/response/validation-exception-response.dto";
-import { makeInstanceByApiProperty } from "../shared/makeInstanceByApiProperty";
 
 export interface ErrorResponseOption {
   /**

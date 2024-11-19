@@ -5,6 +5,7 @@ export const getBaseSessionSelector = () => {
     id: true,
     userId: true,
     refreshedAt: true,
+    notAfter: true,
     userAgent: true,
     ip: true,
   });
@@ -20,6 +21,7 @@ export const getSessionWithoutUserIdSelector = () => {
   return Prisma.validator<Prisma.SessionSelect>()({
     id: true,
     refreshedAt: true,
+    notAfter: true,
     userAgent: true,
     ip: true,
   });

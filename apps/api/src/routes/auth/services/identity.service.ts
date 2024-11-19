@@ -18,7 +18,7 @@ interface UpdateIdentityParams extends CreateNewIdentityParams {
 
 @Injectable()
 export class IdentityService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * @description Identity 가져오기 (providerId와 provider가 일치하는 ID를 검색합니다.)
@@ -31,7 +31,7 @@ export class IdentityService {
     provider: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return ctx.findFirst({
       where: {
         provider,
@@ -52,7 +52,7 @@ export class IdentityService {
     provider: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return ctx.findFirstOrThrow({
       where: {
         provider,
@@ -73,7 +73,7 @@ export class IdentityService {
     identityId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return await ctx.update({
       where: {
         id: identityId,
@@ -104,7 +104,7 @@ export class IdentityService {
 
     const now = new Date();
     const email = "email" in identityData ? identityData.email : undefined;
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return await ctx.create({
       data: {
         provider,
@@ -134,7 +134,7 @@ export class IdentityService {
 
     const now = new Date();
     const email = "email" in identityData ? identityData.email : undefined;
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return await ctx.update({
       where: {
         id: identityId,
@@ -164,7 +164,7 @@ export class IdentityService {
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     const now = new Date();
-    const ctx = tx ? tx.identity : this.prisma.identity;
+    const ctx = tx ? tx.identity : this.prismaService.identity;
     return ctx.update({
       where: {
         id: identityId,

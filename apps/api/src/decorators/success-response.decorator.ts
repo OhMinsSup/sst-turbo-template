@@ -5,8 +5,8 @@ import { merge } from "lodash-es";
 
 import { HttpResultCode } from "@template/common";
 
+import { makeInstanceByApiProperty } from "../libs/makeInstanceByApiProperty";
 import { SuccessResponseDto } from "../shared/dtos/response/success-response.dto";
-import { makeInstanceByApiProperty } from "../shared/makeInstanceByApiProperty";
 
 interface SuccessResponseOption {
   /**

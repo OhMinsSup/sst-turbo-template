@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { Prisma } from "@template/db";
+import type { Prisma, Session } from "@template/db";
 import {
   getBaseUserSelector,
   getSessionWithoutUserIdSelector,
@@ -17,8 +17,6 @@ interface CreateNewSessionParams {
 @Injectable()
 export class SessionService {
   constructor(private readonly prisma: PrismaService) {}
-
-  checkValidity() {}
 
   /**
    * @description 새로운 세션을 생성합니다.
@@ -38,6 +36,8 @@ export class SessionService {
       },
       select: {
         ...getSessionWithoutUserIdSelector(),
+        updatedAt: true,
+        createdAt: true,
         User: {
           select: {
             ...getBaseUserSelector(),
@@ -68,6 +68,8 @@ export class SessionService {
       },
       select: {
         ...getSessionWithoutUserIdSelector(),
+        updatedAt: true,
+        createdAt: true,
         User: {
           select: {
             ...getBaseUserSelector(),
@@ -98,6 +100,8 @@ export class SessionService {
       },
       select: {
         ...getSessionWithoutUserIdSelector(),
+        updatedAt: true,
+        createdAt: true,
         User: {
           select: {
             ...getBaseUserSelector(),

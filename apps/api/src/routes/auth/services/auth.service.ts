@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import {
   BadRequestException,
+  ForbiddenException,
   Inject,
   Injectable,
   NotFoundException,
@@ -9,6 +10,7 @@ import {
 import { REQUEST } from "@nestjs/core";
 
 import { HttpResultCode, Provider, Role } from "@template/common";
+import { isAfter } from "@template/utils/date";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { hash } from "../../../libs/hash";
@@ -16,8 +18,9 @@ import { RoleService } from "../../../routes/role/services/role.service";
 import { UsersService } from "../../../routes/users/services/users.service";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
+import { GrantType, TokenParamsDTO } from "../dto/token-params.dto";
 import { TokenDTO } from "../dto/token.dto";
-import { AuthErrorService } from "../errors/auth-error.service";
+import { AuthErrorService } from "../errors";
 import { IdentityService } from "./identity.service";
 import { PasswordService } from "./password.service";
 import { SessionService } from "./session.service";
@@ -35,7 +38,7 @@ export interface JwtPayload {
 @Injectable()
 export class AuthService {
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly tokenService: TokenService,
     private readonly usersService: UsersService,
     private readonly passwordServie: PasswordService,
@@ -84,7 +87,7 @@ export class AuthService {
       throw new BadRequestException(this.authError.incorrectPassword());
     }
 
-    return await this.prisma.$transaction(async (tx) => {
+    return await this.prismaService.$transaction(async (tx) => {
       // Identity 찾기
       let identity = await this.identityService.findIdentityByIdAndProvider(
         user.id,
@@ -165,7 +168,7 @@ export class AuthService {
       throw new BadRequestException(this.authError.emailAlreadyExists());
     }
 
-    return await this.prisma.$transaction(async (tx) => {
+    return await this.prismaService.$transaction(async (tx) => {
       const { hashedPassword: password, salt } =
         await this.passwordServie.hashPassword(input.password);
 
@@ -243,9 +246,14 @@ export class AuthService {
   /**
    * @description 토큰 발급
    * @param {TokenDTO} input
+   * @param {TokenParamsDTO} params
    */
-  async token(input: TokenDTO) {
-    return await this.refreshTokenGrant(input);
+  async token(input: TokenDTO, params: TokenParamsDTO) {
+    if (params.grant_type === GrantType.REFRESH_TOKEN) {
+      return await this.refreshTokenGrant(input);
+    }
+
+    throw new UnauthorizedException(this.authError.unsupportedGrantType());
   }
 
   async refreshTokenGrant(input: TokenDTO) {
@@ -256,18 +264,27 @@ export class AuthService {
 
     while (retry && Date.now() - retryStart < retryLoopDuration) {
       retry = false;
-      console.log("retry");
-      const data = await this.usersService.findUserWithRefreshToken(
-        input.refreshToken,
-      );
+      const data = await this.usersService.findUserWithRefreshToken({
+        token: input.refreshToken,
+      });
 
       if (!data) {
-        throw new UnauthorizedException(this.authError.invalidToken());
+        throw new BadRequestException(this.authError.invalidToken());
       }
 
+      const { session } = data;
+
+      // 사용자가 정지되었는지 확인
       if (data.user.isSuspended) {
-        throw new UnauthorizedException(this.authError.suspensionUser());
+        throw new ForbiddenException(this.authError.suspensionUser());
       }
+
+      // 세션이 만료되었는지 확인
+      if (session.notAfter && isAfter(retryStart, session.notAfter)) {
+        throw new BadRequestException(this.authError.expiredToken());
+      }
+
+      return await this.prismaService.$transaction(async (tx) => {});
     }
   }
 
@@ -277,7 +294,7 @@ export class AuthService {
    */
   async maybeLoadUserOrSession(payload: JwtPayload) {
     if (!payload.sub) {
-      throw new UnauthorizedException(this.authError.invalidToken());
+      throw new BadRequestException(this.authError.invalidToken());
     }
 
     const user = await this.usersService.findUserByIdExternal(payload.sub);

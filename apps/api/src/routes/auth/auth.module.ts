@@ -4,7 +4,7 @@ import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 import { RoleService } from "../role/services/role.service";
 import { UsersService } from "../users/services/users.service";
 import { AuthController } from "./controllers/auth.controller";
-import { AuthErrorService } from "./errors/auth-error.service";
+import { AuthErrorService } from "./errors";
 import { AuthService } from "./services/auth.service";
 import { IdentityService } from "./services/identity.service";
 import { PasswordService } from "./services/password.service";

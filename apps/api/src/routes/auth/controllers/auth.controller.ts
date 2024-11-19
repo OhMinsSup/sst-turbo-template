@@ -1,5 +1,5 @@
-import { Body, Controller, HttpStatus, Post } from "@nestjs/common";
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, HttpStatus, Param, Post } from "@nestjs/common";
+import { ApiBody, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
 import { ErrorResponse } from "../../../decorators/error-response.decorator";
@@ -7,11 +7,9 @@ import { SuccessResponse } from "../../../decorators/success-response.decorator"
 import { AuthSuccessDefine } from "../../../shared/dtos/response/auth/auth-response.dto";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
+import { TokenParamsDTO } from "../dto/token-params.dto";
 import { TokenDTO } from "../dto/token.dto";
-import {
-  AuthErrorDefine,
-  AuthErrorService,
-} from "../errors/auth-error.service";
+import { AuthErrorDefine, AuthErrorService } from "../errors";
 import { AuthService } from "../services/auth.service";
 
 @ApiTags("인증")
@@ -60,12 +58,17 @@ export class AuthController {
   @SkipThrottle()
   @Post("token")
   @ApiOperation({ summary: "토큰 재발급" })
+  @ApiQuery({
+    required: true,
+    description: "토큰 재발급 API",
+    type: TokenParamsDTO,
+  })
   @ApiBody({
     required: true,
     description: "토큰 재발급 API",
     type: TokenDTO,
   })
-  async token(@Body() body: TokenDTO) {
-    return await this.service.token(body);
+  async token(@Body() body: TokenDTO, @Param() params: TokenParamsDTO) {
+    return await this.service.token(body, params);
   }
 }
