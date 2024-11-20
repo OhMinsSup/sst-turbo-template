@@ -26,7 +26,7 @@ export const AuthErrorDefine = {
     message: "잘못된 요청입니다. 다시 시도해 주세요.",
     resultCode: HttpResultCode.FAIL,
   },
-  unsupportedSignupMethod: {
+  unsupportedAuthMethod: {
     model: UnauthorizedException,
     exampleDescription: "지원하지 않는 가입 방법",
     exampleTitle: "지원하지 않는 가입 방법",
@@ -120,6 +120,21 @@ export const AuthErrorDefine = {
     message: "만료된 토큰입니다. 다시 인증해 주세요.",
     resultCode: HttpResultCode.EXPIRED_TOKEN,
   },
+  refreshTokenAlreadyUsed: {
+    model: BadRequestException,
+    exampleDescription: "리프레시 토큰이 이미 사용된 경우 발생하는 에러",
+    exampleTitle: "리프레시 토큰 사용됨",
+    message: "리프레시 토큰이 이미 사용되었습니다. 다시 시도해 주세요.",
+    resultCode: HttpResultCode.ALREADY_USED_REFRESH_TOKEN,
+  },
+  tokenValidation: {
+    model: CustomValidationError,
+    exampleDescription: "요청 데이터 검증 오류",
+    exampleTitle: "검증 오류",
+    message: {
+      refreshToken: ["잘못된 토큰 형식입니다."],
+    },
+  },
 };
 
 @Injectable()
@@ -145,7 +160,7 @@ export class AuthErrorService {
    * @returns {ErrorResponseOption}
    */
   unsupportedAuthMethod(): ErrorResponseOption {
-    return AuthErrorDefine.unsupportedSignupMethod;
+    return AuthErrorDefine.unsupportedAuthMethod;
   }
 
   /**
@@ -218,5 +233,13 @@ export class AuthErrorService {
    */
   expiredToken(): ErrorResponseOption {
     return AuthErrorDefine.expiredToken;
+  }
+
+  /**
+   * @description 리프레시 토큰이 이미 사용된 경우 발생하는 에러
+   * @returns {ErrorResponseOption}
+   */
+  refreshTokenAlreadyUsed(): ErrorResponseOption {
+    return AuthErrorDefine.refreshTokenAlreadyUsed;
   }
 }

@@ -1,16 +1,17 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsJWT } from "class-validator";
+import { IsString, MinLength } from "class-validator";
 
 export class TokenDTO {
-  @IsJWT({
-    message: "잘못된 토큰 형식입니다.",
+  @IsString({
+    message: "잘못된 형식의 토큰입니다.",
+  })
+  @MinLength(1, {
+    message: "토큰은 최소 1글자 이상이어야 합니다.",
   })
   @ApiProperty({
-    title: "Refresh Token",
-    description: "The refresh token of the user",
-    example:
-      "eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c",
-    type: String,
+    title: "재발급 토큰",
+    description: "재발급 토큰",
+    type: "string",
     required: true,
   })
   readonly refreshToken: string;

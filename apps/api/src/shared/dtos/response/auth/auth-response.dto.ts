@@ -59,4 +59,10 @@ export const AuthSuccessDefine = {
     exampleTitle: "이메일 로그인 성공",
     resultCode: HttpResultCode.OK,
   },
+  "token+refresh_token": {
+    model: AuthTokenResponseDto,
+    exampleDescription: "토큰 재발급에 성공한 경우 발생하는 응답",
+    exampleTitle: "토큰 재발급 성공",
+    resultCode: HttpResultCode.OK,
+  },
 };

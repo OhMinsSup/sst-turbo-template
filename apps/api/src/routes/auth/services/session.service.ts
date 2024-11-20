@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
-import type { Prisma, Session } from "@template/db";
+import type { Prisma } from "@template/db";
 import {
   getBaseUserSelector,
   getSessionWithoutUserIdSelector,
@@ -14,9 +14,15 @@ interface CreateNewSessionParams {
   userAgent?: string;
 }
 
+interface UpdateSessionParams
+  extends Pick<CreateNewSessionParams, "ip" | "userAgent"> {
+  refreshedAt: Date;
+  sessionId: string;
+}
+
 @Injectable()
 export class SessionService {
-  constructor(private readonly prisma: PrismaService) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * @description 새로운 세션을 생성합니다.
@@ -27,7 +33,7 @@ export class SessionService {
     { userId, ip, userAgent }: CreateNewSessionParams,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.session : this.prisma.session;
+    const ctx = tx ? tx.session : this.prismaService.session;
     return ctx.create({
       data: {
         userId,
@@ -61,7 +67,7 @@ export class SessionService {
     sessionId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.session : this.prisma.session;
+    const ctx = tx ? tx.session : this.prismaService.session;
     return ctx.findUnique({
       where: {
         id: sessionId,
@@ -93,10 +99,47 @@ export class SessionService {
     sessionId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const ctx = tx ? tx.session : this.prisma.session;
+    const ctx = tx ? tx.session : this.prismaService.session;
     return ctx.findUniqueOrThrow({
       where: {
         id: sessionId,
+      },
+      select: {
+        ...getSessionWithoutUserIdSelector(),
+        updatedAt: true,
+        createdAt: true,
+        User: {
+          select: {
+            ...getBaseUserSelector(),
+            Role: {
+              select: {
+                symbol: true,
+              },
+            },
+          },
+        },
+      },
+    });
+  }
+
+  /**
+   * @description 세션을 업데이트합니다.
+   * @param {UpdateSessionParams} param
+   * @param {Prisma.TransactionClient?} tx
+   */
+  updateSession(
+    { sessionId, ip, userAgent, refreshedAt }: UpdateSessionParams,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const ctx = tx ? tx.session : this.prismaService.session;
+    return ctx.update({
+      where: {
+        id: sessionId,
+      },
+      data: {
+        ip,
+        userAgent,
+        refreshedAt,
       },
       select: {
         ...getSessionWithoutUserIdSelector(),

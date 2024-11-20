@@ -17,7 +17,7 @@ interface CreateNewUserParams extends EmailUserCreateDTO {
 }
 
 interface FindUserWithRefreshTokenParams {
-  token: string;
+  refreshToken: string;
   forUpdate?: boolean;
 }
 
@@ -191,11 +191,11 @@ export class UsersService {
    * @param {Prisma.TransactionClient?} tx
    */
   async findUserWithRefreshToken(
-    params: FindUserWithRefreshTokenParams,
+    { refreshToken }: FindUserWithRefreshTokenParams,
     tx?: Prisma.TransactionClient | undefined,
   ) {
     const token = await this.tokenService.findRefreshTokenByToken(
-      params.token,
+      refreshToken,
       tx,
     );
 
@@ -219,7 +219,7 @@ export class UsersService {
     return {
       user,
       session,
-      refreshToken: token,
+      token,
     };
   }
 }

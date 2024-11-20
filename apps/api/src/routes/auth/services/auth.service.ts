@@ -4,12 +4,14 @@ import {
   ForbiddenException,
   Inject,
   Injectable,
+  InternalServerErrorException,
   NotFoundException,
   UnauthorizedException,
 } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 
-import { HttpResultCode, Provider, Role } from "@template/common";
+import { HttpResultCode, Provider, Role, TokenType } from "@template/common";
+import { Prisma, RefreshToken } from "@template/db";
 import { isAfter } from "@template/utils/date";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -18,7 +20,7 @@ import { RoleService } from "../../../routes/role/services/role.service";
 import { UsersService } from "../../../routes/users/services/users.service";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
-import { GrantType, TokenParamsDTO } from "../dto/token-params.dto";
+import { GrantType, TokenQueryDTO } from "../dto/token-query.dto";
 import { TokenDTO } from "../dto/token.dto";
 import { AuthErrorService } from "../errors";
 import { IdentityService } from "./identity.service";
@@ -46,6 +48,7 @@ export class AuthService {
     private readonly identityService: IdentityService,
     private readonly sessionService: SessionService,
     private readonly authError: AuthErrorService,
+
     @Inject(REQUEST) private request: Request,
   ) {}
 
@@ -223,10 +226,7 @@ export class AuthService {
       };
 
       // Refresh Token 발급
-      const token = await this.tokenService.issueRefreshToken(
-        issueTokenParams,
-        tx,
-      );
+      const token = await this.tokenService.issueRefreshToken(issueTokenParams);
 
       try {
         // 마지막 로그인 시간 업데이트
@@ -246,36 +246,38 @@ export class AuthService {
   /**
    * @description 토큰 발급
    * @param {TokenDTO} input
-   * @param {TokenParamsDTO} params
+   * @param {TokenQueryDTO} params
    */
-  async token(input: TokenDTO, params: TokenParamsDTO) {
-    if (params.grant_type === GrantType.REFRESH_TOKEN) {
+  async token(input: TokenDTO, params: TokenQueryDTO) {
+    if (params.grantType === GrantType.REFRESH_TOKEN) {
       return await this.refreshTokenGrant(input);
     }
 
     throw new UnauthorizedException(this.authError.unsupportedGrantType());
   }
 
+  /**
+   * @description refresh token을 이용하여 토큰을 재발급합니다.
+   * @param {TokenDTO} input
+   */
   async refreshTokenGrant(input: TokenDTO) {
     const retryStart = Date.now();
+    const retryLoopDuration = 5000;
     let retry = true;
-
-    const retryLoopDuration = 5.0;
 
     while (retry && Date.now() - retryStart < retryLoopDuration) {
       retry = false;
-      const data = await this.usersService.findUserWithRefreshToken({
-        token: input.refreshToken,
-      });
+
+      const data = await this.usersService.findUserWithRefreshToken(input);
 
       if (!data) {
         throw new BadRequestException(this.authError.invalidToken());
       }
 
-      const { session } = data;
+      const { session, token, user } = data;
 
       // 사용자가 정지되었는지 확인
-      if (data.user.isSuspended) {
+      if (user.isSuspended) {
         throw new ForbiddenException(this.authError.suspensionUser());
       }
 
@@ -284,7 +286,102 @@ export class AuthService {
         throw new BadRequestException(this.authError.expiredToken());
       }
 
-      return await this.prismaService.$transaction(async (tx) => {});
+      return await this.prismaService.$transaction(
+        async (tx) => {
+          let issuedToken: RefreshToken | null = null;
+          if (token.revoked) {
+            const activeRefreshToken =
+              await this.tokenService.findCurrentlyActiveRefreshToken(
+                session.id,
+                tx,
+              );
+            if (
+              activeRefreshToken &&
+              activeRefreshToken.parent == token.token
+            ) {
+              // Token was revoked, but it's the
+              // parent of the currently active one.
+              // This indicates that the client was
+              // not able to store the result when it
+              // refreshed token. This case is
+              // allowed, provided we return back the
+              // active refresh token instead of
+              // creating a new one.
+              issuedToken = activeRefreshToken;
+            } else {
+              // For a revoked refresh token to be reused, it
+              // has to fall within the reuse interval.
+              if (isAfter(retryStart, token.updatedAt)) {
+                try {
+                  await this.tokenService.revokeTokenFamily(
+                    {
+                      sessionId: token.sessionId,
+                      token: token.token,
+                    },
+                    tx,
+                  );
+                } catch (error) {
+                  throw new InternalServerErrorException(error);
+                }
+
+                throw new BadRequestException(
+                  this.authError.refreshTokenAlreadyUsed(),
+                );
+              }
+            }
+          }
+
+          const ip = hash(this.request.ip);
+          const userAgent = this.request.headers["user-agent"];
+
+          if (!issuedToken) {
+            issuedToken = await this.tokenService.grantRefreshTokenSwap(
+              {
+                userId: user.id,
+                ip,
+                userAgent,
+                token,
+              },
+              tx,
+            );
+          }
+
+          await this.sessionService.updateSession(
+            {
+              sessionId: issuedToken.sessionId,
+              ip,
+              userAgent,
+              refreshedAt: new Date(),
+            },
+            tx,
+          );
+
+          const newToken = await this.tokenService.generateAccessToken(
+            {
+              sessionId: issuedToken.sessionId,
+              userId: issuedToken.userId,
+            },
+            tx,
+          );
+
+          return {
+            code: HttpResultCode.OK,
+            data: {
+              token: newToken.token,
+              tokenType: TokenType.Bearer,
+              expiresIn: newToken.expiresIn,
+              expiresAt: newToken.expiresAt,
+              refreshToken: issuedToken.token,
+              user: newToken.session.User,
+            },
+          };
+        },
+        {
+          maxWait: 5000, // 최대 대기 시간 설정 (default: 2000)
+          timeout: 10000, // 타임아웃 설정 (default: 5000)
+          isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // 격리 수준 지정
+        },
+      );
     }
   }
 

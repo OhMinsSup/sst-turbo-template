@@ -1,5 +1,5 @@
-import { Body, Controller, HttpStatus, Param, Post } from "@nestjs/common";
-import { ApiBody, ApiOperation, ApiQuery, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, HttpStatus, Post, Query } from "@nestjs/common";
+import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
 import { ErrorResponse } from "../../../decorators/error-response.decorator";
@@ -7,18 +7,15 @@ import { SuccessResponse } from "../../../decorators/success-response.decorator"
 import { AuthSuccessDefine } from "../../../shared/dtos/response/auth/auth-response.dto";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
-import { TokenParamsDTO } from "../dto/token-params.dto";
+import { TokenQueryDTO } from "../dto/token-query.dto";
 import { TokenDTO } from "../dto/token.dto";
-import { AuthErrorDefine, AuthErrorService } from "../errors";
+import { AuthErrorDefine } from "../errors";
 import { AuthService } from "../services/auth.service";
 
 @ApiTags("인증")
 @Controller("auth")
 export class AuthController {
-  constructor(
-    private readonly service: AuthService,
-    private readonly authError: AuthErrorService,
-  ) {}
+  constructor(private readonly service: AuthService) {}
 
   @Throttle({ default: { limit: 10, ttl: 60 } })
   @Post("signUp")
@@ -32,6 +29,9 @@ export class AuthController {
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
     AuthErrorDefine.emailAlreadyExists,
     AuthErrorDefine.signupValidation,
+  ])
+  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+    AuthErrorDefine.unsupportedAuthMethod,
   ])
   @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.roleNotFound])
   async signUp(@Body() body: SignUpDTO) {
@@ -50,6 +50,9 @@ export class AuthController {
     AuthErrorDefine.incorrectPassword,
     AuthErrorDefine.signinValidation,
   ])
+  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+    AuthErrorDefine.unsupportedAuthMethod,
+  ])
   @SuccessResponse(HttpStatus.OK, [AuthSuccessDefine.signin])
   async signIn(@Body() body: SignInDTO) {
     return await this.service.signIn(body);
@@ -58,17 +61,23 @@ export class AuthController {
   @SkipThrottle()
   @Post("token")
   @ApiOperation({ summary: "토큰 재발급" })
-  @ApiQuery({
-    required: true,
-    description: "토큰 재발급 API",
-    type: TokenParamsDTO,
-  })
   @ApiBody({
     required: true,
     description: "토큰 재발급 API",
     type: TokenDTO,
   })
-  async token(@Body() body: TokenDTO, @Param() params: TokenParamsDTO) {
-    return await this.service.token(body, params);
+  @ErrorResponse(HttpStatus.BAD_REQUEST, [
+    AuthErrorDefine.tokenValidation,
+    AuthErrorDefine.expiredToken,
+    AuthErrorDefine.invalidToken,
+    AuthErrorDefine.refreshTokenAlreadyUsed,
+  ])
+  @ErrorResponse(HttpStatus.FORBIDDEN, [AuthErrorDefine.suspensionUser])
+  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+    AuthErrorDefine.unsupportedGrantType,
+  ])
+  @SuccessResponse(HttpStatus.OK, [AuthSuccessDefine["token+refresh_token"]])
+  async token(@Body() body: TokenDTO, @Query() query: TokenQueryDTO) {
+    return await this.service.token(body, query);
   }
 }
