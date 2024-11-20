@@ -65,4 +65,10 @@ export const AuthSuccessDefine = {
     exampleTitle: "토큰 재발급 성공",
     resultCode: HttpResultCode.OK,
   },
+  logout: {
+    model: Boolean,
+    exampleDescription: "로그아웃에 성공한 경우 발생하는 응답",
+    exampleTitle: "로그아웃 성공",
+    resultCode: HttpResultCode.OK,
+  },
 };

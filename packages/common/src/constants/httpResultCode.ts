@@ -15,6 +15,7 @@ export enum HttpResultCode {
   EXPIRED_TOKEN = 6002, // 만료된 토큰
   NOT_EXIST_TOKEN = 6003, // 존재하지 않는 토큰
   ALREADY_USED_REFRESH_TOKEN = 6004, // 리프레시 토큰 사용됨
+  TOO_MANY_REFRESH_TOKEN = 6005, // 리프레시 토큰 과다
   // 요청
   INVALID_REQUEST = 7000, // 잘못된 요청
   TOO_MANY_REQUESTS = 7001, // 과도한 요청

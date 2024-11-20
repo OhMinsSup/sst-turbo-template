@@ -1,6 +1,7 @@
 import type { Request } from "express";
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Inject,
   Injectable,
@@ -10,10 +11,12 @@ import {
 } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
 
+import type { UserExternalPayload } from "@template/db/selectors";
 import { HttpResultCode, Provider, Role, TokenType } from "@template/common";
-import { Prisma, RefreshToken } from "@template/db";
+import { Prisma, RefreshToken, Session } from "@template/db";
 import { isAfter } from "@template/utils/date";
 
+import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { hash } from "../../../libs/hash";
 import { RoleService } from "../../../routes/role/services/role.service";
@@ -48,7 +51,7 @@ export class AuthService {
     private readonly identityService: IdentityService,
     private readonly sessionService: SessionService,
     private readonly authError: AuthErrorService,
-
+    private readonly logger: LoggerService,
     @Inject(REQUEST) private request: Request,
   ) {}
 
@@ -72,9 +75,7 @@ export class AuthService {
    * @param {SignInDTO} input
    */
   private async _signInWithEmail(input: SignInDTO) {
-    const user = await this.usersService.isDuplicatedEmailWithEncryptedPassword(
-      input.email,
-    );
+    const user = await this.usersService.isDuplicatedEmail(input.email);
 
     if (!user) {
       throw new NotFoundException(this.authError.notFoundUser());
@@ -92,39 +93,23 @@ export class AuthService {
 
     return await this.prismaService.$transaction(async (tx) => {
       // Identity 찾기
-      let identity = await this.identityService.findIdentityByIdAndProvider(
+      const identity = await this.identityService.findIdentityByIdAndProvider(
         user.id,
         Provider.EMAIL,
         tx,
       );
 
       if (!identity) {
-        // Identity 생성
-        identity = await this.identityService.createNewIdentity(
-          {
-            userId: user.id,
-            provider: Provider.EMAIL,
-            identityData: {
-              sub: user.id,
-              email: user.email,
-            },
-          },
-          tx,
-        );
-
-        // User와 Identity를 연결
-        await this.identityService.linkIdentityToUser(user.id, identity.id, tx);
+        throw new NotFoundException(this.authError.notFoundUser());
       }
-
-      const issueTokenParams = {
-        userId: user.id,
-        ip: hash(this.request.ip),
-        userAgent: this.request.headers["user-agent"],
-      };
 
       // Refresh Token 발급
       const token = await this.tokenService.issueRefreshToken(
-        issueTokenParams,
+        {
+          userId: user.id,
+          ip: hash(this.request.ip),
+          userAgent: this.request.headers["user-agent"],
+        },
         tx,
       );
 
@@ -133,7 +118,7 @@ export class AuthService {
         await this.usersService.updateLastSignInAt(user.id, tx);
         await this.identityService.updateLastSignInAt(identity.id, user.id, tx);
       } catch (error) {
-        console.error(error);
+        this.logger.error(error, "AuthService.signIn");
       }
 
       return {
@@ -175,15 +160,16 @@ export class AuthService {
       const { hashedPassword: password, salt } =
         await this.passwordServie.hashPassword(input.password);
 
-      const newUserParams = {
-        email: input.email,
-        username: this.usersService.makeRandomUsername(input.username),
-        password,
-        salt,
-      };
-
       // 이메일로 유저 생성
-      const user = await this.usersService.createNewUser(newUserParams, tx);
+      const user = await this.usersService.createNewUser(
+        {
+          email: input.email,
+          username: this.usersService.makeRandomUsername(input.username),
+          password,
+          salt,
+        },
+        tx,
+      );
 
       const role = await this.roleService.findRole(Role.USER, tx);
       if (!role) {
@@ -219,14 +205,12 @@ export class AuthService {
         await this.identityService.linkIdentityToUser(user.id, identity.id, tx);
       }
 
-      const issueTokenParams = {
+      // Refresh Token 발급
+      const token = await this.tokenService.issueRefreshToken({
         userId: user.id,
         ip: hash(this.request.ip),
         userAgent: this.request.headers["user-agent"],
-      };
-
-      // Refresh Token 발급
-      const token = await this.tokenService.issueRefreshToken(issueTokenParams);
+      });
 
       try {
         // 마지막 로그인 시간 업데이트
@@ -308,10 +292,12 @@ export class AuthService {
               // active refresh token instead of
               // creating a new one.
               issuedToken = activeRefreshToken;
+              console.log("Revoked token is being reused(1)");
             } else {
               // For a revoked refresh token to be reused, it
               // has to fall within the reuse interval.
               if (isAfter(retryStart, token.updatedAt)) {
+                console.log("Revoked token is being reused(2)");
                 try {
                   await this.tokenService.revokeTokenFamily(
                     {
@@ -383,6 +369,26 @@ export class AuthService {
         },
       );
     }
+
+    throw new ConflictException(this.authError.tooManyTokenRefreshRequests());
+  }
+
+  /**
+   * @description 로그아웃
+   * @param {UserExternalPayload} user
+   */
+  async logout(user: UserExternalPayload) {
+    return await this.prismaService.$transaction(async (tx) => {
+      await tx.session.deleteMany({
+        where: {
+          userId: user.id,
+        },
+      });
+      return {
+        code: HttpResultCode.OK,
+        data: true,
+      };
+    });
   }
 
   /**
@@ -400,10 +406,10 @@ export class AuthService {
       throw new NotFoundException(this.authError.notFoundUser());
     }
 
+    let session: Session | undefined;
+
     if (payload.sessionId) {
-      const session = await this.sessionService.findSessionByID(
-        payload.sessionId,
-      );
+      session = await this.sessionService.findSessionByID(payload.sessionId);
 
       if (!session) {
         throw new UnauthorizedException(this.authError.notLogin());
@@ -412,6 +418,7 @@ export class AuthService {
 
     return {
       user,
+      session,
     };
   }
 }

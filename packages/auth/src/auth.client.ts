@@ -307,19 +307,19 @@ export class AuthClient {
    * @param {paths["/api/v1/auth/signup"]["post"]["requestBody"]["content"]["application/json"]} body - 회원가입 정보
    */
   async signUp(
-    body: paths["/api/v1/auth/signup"]["post"]["requestBody"]["content"]["application/json"],
+    body: paths["/api/v1/auth/signUp"]["post"]["requestBody"]["content"]["application/json"],
   ): Promise<{
     data:
-      | paths["/api/v1/auth/signup"]["post"]["responses"]["200"]["content"]["application/json"]
+      | paths["/api/v1/auth/signUp"]["post"]["responses"]["200"]["content"]["application/json"]
       | undefined;
     session: Session | undefined;
     error:
-      | paths["/api/v1/auth/signup"]["post"]["responses"]["400"]["content"]["application/json"]
+      | paths["/api/v1/auth/signUp"]["post"]["responses"]["400"]["content"]["application/json"]
       | undefined;
   }> {
     const { data, error } = await this.api
       .method("post")
-      .path("/api/v1/auth/signup")
+      .path("/api/v1/auth/signUp")
       .setBody(body)
       .run();
 
@@ -339,21 +339,21 @@ export class AuthClient {
    * @param {paths["/api/v1/auth/signin"]["post"]["requestBody"]["content"]["application/json"]} body - 로그인 정보
    */
   async signIn(
-    body: paths["/api/v1/auth/signin"]["post"]["requestBody"]["content"]["application/json"],
+    body: paths["/api/v1/auth/signIn"]["post"]["requestBody"]["content"]["application/json"],
   ): Promise<{
     data:
-      | paths["/api/v1/auth/signin"]["post"]["responses"]["200"]["content"]["application/json"]
+      | paths["/api/v1/auth/signIn"]["post"]["responses"]["200"]["content"]["application/json"]
       | undefined;
     session: Session | undefined;
     error:
-      | paths["/api/v1/auth/signin"]["post"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/signin"]["post"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/signin"]["post"]["responses"]["404"]["content"]["application/json"]
+      | paths["/api/v1/auth/signIn"]["post"]["responses"]["400"]["content"]["application/json"]
+      | paths["/api/v1/auth/signIn"]["post"]["responses"]["401"]["content"]["application/json"]
+      | paths["/api/v1/auth/signIn"]["post"]["responses"]["404"]["content"]["application/json"]
       | undefined;
   }> {
     const { data, error } = await this.api
       .method("post")
-      .path("/api/v1/auth/signin")
+      .path("/api/v1/auth/signIn")
       .setBody(body)
       .run();
 
@@ -488,7 +488,7 @@ export class AuthClient {
    * @returns {Session}
    */
   private _makeSession(
-    data: components["schemas"]["AuthResponseDto"],
+    data: components["schemas"]["AuthTokenResponseDto"],
   ): Session {
     const {
       tokens: { accessToken, refreshToken },
@@ -830,20 +830,25 @@ export class AuthClient {
    * @param {string} refreshToken - 갱신 토큰
    */
   private async _refreshAccessToken(refreshToken: string): Promise<{
-    data: components["schemas"]["AuthResponseDto"] | undefined;
+    data: components["schemas"]["AuthTokenResponseDto"] | undefined;
     session: Session | undefined;
     error:
-      | paths["/api/v1/auth/refresh"]["patch"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/refresh"]["patch"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/refresh"]["patch"]["responses"]["404"]["content"]["application/json"]
+      | paths["/api/v1/auth/token"]["post"]["responses"]["400"]["content"]["application/json"]
+      | paths["/api/v1/auth/token"]["post"]["responses"]["401"]["content"]["application/json"]
+      | paths["/api/v1/auth/token"]["post"]["responses"]["404"]["content"]["application/json"]
       | undefined;
   }> {
     // 토근 갱신 요청
     const { data, error } = await this.api
-      .method("patch")
-      .path("/api/v1/auth/refresh")
+      .method("post")
+      .path("/api/v1/auth/token")
       .setBody({
         refreshToken,
+      })
+      .setParams({
+        query: {
+          grantType: "refresh_token",
+        },
       })
       .run();
 

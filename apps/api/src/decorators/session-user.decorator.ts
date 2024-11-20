@@ -16,21 +16,21 @@ interface DecoratorOptions {
   allowUndefined?: boolean;
 }
 
-export const AuthUser = createParamDecorator(
+export const SessionUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
 
-    if (!request.user) {
+    if (!request.session) {
       throw new ForbiddenException(AuthErrorDefine.notLogin);
     }
 
-    return request.user;
+    return request.session;
   },
 );
 
-export const OptionalAuthUser = createParamDecorator(
+export const OptionalSessionUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    return request.user ? request.user : null;
+    return request.session ? request.session : null;
   },
 );

@@ -63,7 +63,7 @@ export class SessionService {
    * @param {string} sessionId
    * @param {Prisma.TransactionClient?} tx
    */
-  findSessionByID(
+  findSessionByIDWithUser(
     sessionId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
@@ -90,12 +90,24 @@ export class SessionService {
     });
   }
 
+  findSessionByID(
+    sessionId: string,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const ctx = tx ? tx.session : this.prismaService.session;
+    return ctx.findUnique({
+      where: {
+        id: sessionId,
+      },
+    });
+  }
+
   /**
    * @description 세션을 ID로 찾습니다. 없으면 에러를 발생시킵니다.
    * @param {string} sessionId
    * @param {Prisma.TransactionClient?} tx
    */
-  findSessionByIDOrThrowError(
+  findSessionByIDWithUserOrThrowError(
     sessionId: string,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {

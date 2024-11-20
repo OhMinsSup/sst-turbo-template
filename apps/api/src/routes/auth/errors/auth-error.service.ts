@@ -1,5 +1,6 @@
 import {
   BadRequestException,
+  ConflictException,
   ForbiddenException,
   Injectable,
   NotFoundException,
@@ -135,6 +136,15 @@ export const AuthErrorDefine = {
       refreshToken: ["잘못된 토큰 형식입니다."],
     },
   },
+  tooManyTokenRefreshRequests: {
+    model: ConflictException,
+    exampleDescription:
+      "동일한 세션 또는 새로 고침 토큰에 대한 동시 토큰 새로 골침 요청이 너무 많습니다.",
+    exampleTitle: "토큰 새로 고침 과다",
+    message:
+      "동일한 세션 또는 새로 고침 토큰에 대한 동시 토큰 새로 고침 요청이 너무 많습니다.",
+    resultCode: HttpResultCode.TOO_MANY_REFRESH_TOKEN,
+  },
 };
 
 @Injectable()
@@ -241,5 +251,13 @@ export class AuthErrorService {
    */
   refreshTokenAlreadyUsed(): ErrorResponseOption {
     return AuthErrorDefine.refreshTokenAlreadyUsed;
+  }
+
+  /**
+   * @description 리프레시 토큰 과다 사용
+   * @returns {ErrorResponseOption}
+   */
+  tooManyTokenRefreshRequests(): ErrorResponseOption {
+    return AuthErrorDefine.tooManyTokenRefreshRequests;
   }
 }

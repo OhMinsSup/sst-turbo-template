@@ -45,10 +45,11 @@ export class JwtAuthGuard implements CanActivate {
 
     const payload = await this.jwtService.verifyAsync<JwtPayload>(tokenString);
 
-    const { user } = await this.authService.maybeLoadUserOrSession(payload);
+    const { user, session } =
+      await this.authService.maybeLoadUserOrSession(payload);
 
     const newObj: Request = request;
-    Object.assign(newObj, { user });
+    Object.assign(newObj, { user, session });
 
     return true;
   }

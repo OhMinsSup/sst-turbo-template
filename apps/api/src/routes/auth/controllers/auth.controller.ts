@@ -1,9 +1,13 @@
 import { Body, Controller, HttpStatus, Post, Query } from "@nestjs/common";
 import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
+import { AuthUser } from "src/decorators/auth-user.decorator";
+
+import type { UserExternalPayload } from "@template/db/selectors";
 
 import { ErrorResponse } from "../../../decorators/error-response.decorator";
 import { SuccessResponse } from "../../../decorators/success-response.decorator";
+import { JwtAuth } from "../../../guards/jwt-auth.guard";
 import { AuthSuccessDefine } from "../../../shared/dtos/response/auth/auth-response.dto";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
@@ -46,6 +50,7 @@ export class AuthController {
     description: "로그인 API",
     type: SignInDTO,
   })
+  @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
   @ErrorResponse(HttpStatus.BAD_REQUEST, [
     AuthErrorDefine.incorrectPassword,
     AuthErrorDefine.signinValidation,
@@ -79,5 +84,20 @@ export class AuthController {
   @SuccessResponse(HttpStatus.OK, [AuthSuccessDefine["token+refresh_token"]])
   async token(@Body() body: TokenDTO, @Query() query: TokenQueryDTO) {
     return await this.service.token(body, query);
+  }
+
+  @Throttle({ default: { limit: 10, ttl: 60 } })
+  @Post("logout")
+  @ApiOperation({ summary: "로그아웃" })
+  @JwtAuth()
+  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+    AuthErrorDefine.invalidAuthorizationHeader,
+    AuthErrorDefine.notLogin,
+  ])
+  @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
+  @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
+  @SuccessResponse(HttpStatus.NO_CONTENT, [AuthSuccessDefine.logout])
+  async logout(@AuthUser() user: UserExternalPayload) {
+    return await this.service.logout(user);
   }
 }

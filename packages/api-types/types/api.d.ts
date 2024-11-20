@@ -4,57 +4,7 @@
  */
 
 export interface paths {
-  "/api/v1": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["AppController_getHello"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/auth/refresh": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    /** 토큰 갱신 */
-    patch: operations["AuthController_refresh"];
-    trace?: never;
-  };
-  "/api/v1/auth/signin": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get?: never;
-    put?: never;
-    /** 이메일 로그인 */
-    post: operations["AuthController_signin"];
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/auth/signout": {
+  "/api/v1/auth/logout": {
     parameters: {
       query?: never;
       header?: never;
@@ -64,14 +14,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** 로그아웃 */
-    post: operations["AuthController_signout"];
+    post: operations["AuthController_logout"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/v1/auth/signup": {
+  "/api/v1/auth/signIn": {
     parameters: {
       query?: never;
       header?: never;
@@ -81,14 +31,14 @@ export interface paths {
     get?: never;
     put?: never;
     /** 이메일 회원가입 */
-    post: operations["AuthController_signup"];
+    post: operations["AuthController_signIn"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/v1/auth/verify": {
+  "/api/v1/auth/signUp": {
     parameters: {
       query?: never;
       header?: never;
@@ -97,23 +47,39 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 토큰 검증 */
-    post: operations["AuthController_verifyToken"];
+    /** 이메일 회원가입 */
+    post: operations["AuthController_signUp"];
     delete?: never;
     options?: never;
     head?: never;
     patch?: never;
     trace?: never;
   };
-  "/api/v1/users/{id}": {
+  "/api/v1/auth/token": {
     parameters: {
       query?: never;
       header?: never;
       path?: never;
       cookie?: never;
     };
-    /** 아이디로 사용자 정보 조회 */
-    get: operations["UsersController_byUserId"];
+    get?: never;
+    put?: never;
+    /** 토큰 재발급 */
+    post: operations["AuthController_token"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/hello": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["AppController_getHello"];
     put?: never;
     post?: never;
     delete?: never;
@@ -143,17 +109,29 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    AuthResponseDto: {
-      /** @description 유저 이메일 */
-      email: string;
-      /** @description 유저 아이디 */
-      id: string;
-      /** @description 유저 이미지 */
-      image: string | null;
-      /** @description 유저 이름 */
-      name: string;
-      /** @description 유저 토큰 */
-      tokens: components["schemas"]["TokensDto"];
+    AuthTokenResponseDto: {
+      /**
+       * Format: date-time
+       * @description 만료일
+       */
+      expiresAt: string;
+      /**
+       * @description 만료시간
+       * @example 30m
+       */
+      expiresIn: string;
+      /** @description Refresh 토큰 */
+      refreshToken: string;
+      /**
+       * @description 토큰
+       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+       */
+      token: string;
+      /**
+       * @description 토큰타입
+       * @example Bearer
+       */
+      tokenType: string;
     };
     Boolean: Record<string, never>;
     ErrorResponseDto: {
@@ -176,6 +154,8 @@ export interface components {
         | 6001
         | 6002
         | 6003
+        | 6004
+        | 6005
         | 7000
         | 7001;
       /**
@@ -262,18 +242,18 @@ export interface components {
       /** @description 에러메시지 */
       message: string;
     };
-    RefreshTokenDTO: {
+    RoleResponseDto: {
       /**
-       * Refresh Token
-       * @description The refresh token of the user
-       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+       * 기호
+       * @description 역할 기호
+       * @example USER
        */
-      refreshToken: string;
+      symbol: string;
     };
-    SigninDTO: {
+    SignInDTO: {
       /**
        * Email
-       * @description The email of the user
+       * @description 이메일 주소
        * @example example@example.com
        */
       email: string;
@@ -282,39 +262,39 @@ export interface components {
        * @description The password of the user
        */
       password: string;
-    };
-    SignoutDTO: {
       /**
-       * Access Token
-       * @description The access token of the user
-       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
+       * Provider
+       * @description 인증 방식
+       * @example email
+       * @enum {string}
        */
-      accessToken: string;
+      provider: "email";
     };
-    SignupDTO: {
+    SignUpDTO: {
       /**
        * Email
-       * @description The email of the user
+       * @description 이메일 주소
        * @example example@example.com
        */
       email: string;
       /**
-       * Image URL
-       * @description The URL of the user's avatar
-       * @example https://example.com/avatar.png
+       * Password
+       * @description The password of the user
        */
-      image?: string;
+      password: string;
       /**
-       * Name
-       * @description The name of the user
+       * Provider
+       * @description 인증 방식
+       * @example email
+       * @enum {string}
+       */
+      provider: "email";
+      /**
+       * Usernaem
+       * @description 유저의 이름
        * @example John Doe
        */
-      name?: string;
-      /**
-       * Password
-       * @description The password of the user
-       */
-      password: string;
+      username?: string;
     };
     SuccessResponseDto: {
       /** @description object 또는 array 형식 또는 프리미티 형식. */
@@ -336,6 +316,8 @@ export interface components {
         | 6001
         | 6002
         | 6003
+        | 6004
+        | 6005
         | 7000
         | 7001;
       /**
@@ -392,64 +374,46 @@ export interface components {
         | 504
         | 505;
     };
-    TokenDto: {
+    TokenDTO: {
       /**
-       * Format: date-time
-       * @description 만료일
+       * 재발급 토큰
+       * @description 재발급 토큰
        */
-      expiresAt: string;
-      /**
-       * @description 토큰
-       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-       */
-      token: string;
+      refreshToken: string;
     };
-    TokensDto: {
-      /** @description 인증 토큰 */
-      accessToken: components["schemas"]["TokenDto"];
-      /** @description 갱신 토큰 */
-      refreshToken: components["schemas"]["TokenDto"];
-    };
-    UserExternalResponseDto: {
+    UserResponseDto: {
       /**
-       * Format: date-time
-       * @description 사용자 삭제 시간
+       * 이메일
+       * @description 사용자 이메일
+       * @example test@naver.com
        */
-      deletedAt: string | null;
-      /** @description 사용자 이메일 */
       email: string;
       /**
+       * 이메일 확인 일시
        * Format: date-time
-       * @description 사용자 이메일 인증 여부
+       * @description 이메일 확인 일시
        */
-      emailVerified: string | null;
-      /** @description 사용자 아이디 */
-      id: string;
-      /** @description 사용자 이미지 */
-      image: string | null;
-      /** @description 사용자 계정 정지 여부 */
-      isSuspended: boolean;
+      emailConfirmedAt?: string;
       /**
-       * Format: date-time
-       * @description 사용자 마지막 활동 시간
+       * ID
+       * @description 사용자 ID
+       * @example 123e4567-e89b-12d3-a456-426614174000
        */
-      lastActiveAt: string | null;
-      /** @description 사용자 이름 */
-      name: string;
-      /** @description 사용자 프로필 */
-      UserProfile: components["schemas"]["UserProfileDto"];
-      /** @description 사용자 설정 */
-      UserSettings: components["schemas"]["UserSettingsDto"];
-    };
-    UserProfileDto: {
-      /** @description 사용자 자기 소개 */
-      bio: string | null;
-      /** @description 사용자 웹사이트 */
-      website: string | null;
-    };
-    UserSettingsDto: {
-      /** @description 사용자 개인 정보 설정 */
-      privacySettings: boolean;
+      id: string;
+      /**
+       * 정지 여부
+       * @description 정지 여부
+       * @example false
+       */
+      isSuspended: boolean;
+      /** @description 역할 */
+      Role: components["schemas"]["RoleResponseDto"];
+      /**
+       * 이름
+       * @description 사용자 이름
+       * @example 홍길동
+       */
+      username: string;
     };
     ValidationExceptionResponseDto: {
       /**
@@ -490,14 +454,6 @@ export interface components {
        */
       validationErrorInfo: Record<string, never>;
     };
-    VerifyTokenDTO: {
-      /**
-       * Token
-       * @description The token to verify
-       * @example eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJzdWIiOiIxMjM0NTY3ODkwIiwibmFtZSI6IkpvaG4gRG9lIiwiaWF0IjoxNTE2MjM5MDIyfQ.SflKxwRJSMeKKF2QT4fwpMeJf36POk6yJV_adQssw5c
-       */
-      token: string;
-    };
   };
   responses: never;
   parameters: never;
@@ -507,6 +463,237 @@ export interface components {
 }
 export type $defs = Record<string, never>;
 export interface operations {
+  AuthController_logout: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      204: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["Boolean"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
+  AuthController_signIn: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description 로그인 API */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SignInDTO"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthTokenResponseDto"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
+  AuthController_signUp: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description 회원가입 API */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["SignUpDTO"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthTokenResponseDto"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
+  AuthController_token: {
+    parameters: {
+      query: {
+        /**
+         * @description 검증 타입
+         * @example refresh_token
+         */
+        grantType: "refresh_token";
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description 토큰 재발급 API */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["TokenDTO"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["AuthTokenResponseDto"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      403: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
   AppController_getHello: {
     parameters: {
       query?: never;
@@ -521,309 +708,6 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
-      };
-    };
-  };
-  AuthController_refresh: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 토큰 갱신 API */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["RefreshTokenDTO"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthResponseDto"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-    };
-  };
-  AuthController_signin: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 로그인 API */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SigninDTO"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthResponseDto"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-    };
-  };
-  AuthController_signout: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 로그아웃 API */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SignoutDTO"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["Boolean"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-    };
-  };
-  AuthController_signup: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 회원가입 API */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["SignupDTO"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthResponseDto"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-    };
-  };
-  AuthController_verifyToken: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** @description 토큰 검증 API */
-    requestBody: {
-      content: {
-        "application/json": components["schemas"]["VerifyTokenDTO"];
-      };
-    };
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["Boolean"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-    };
-  };
-  UsersController_byUserId: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path: {
-        id: string;
-      };
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["UserExternalResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
       };
     };
   };
@@ -842,7 +726,37 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["UserExternalResponseDto"];
+            data?: components["schemas"]["UserResponseDto"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
           };
         };
       };

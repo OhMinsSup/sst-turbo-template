@@ -3,7 +3,6 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import type { Prisma, RefreshToken } from "@template/db";
-import { TokenType } from "@template/common";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -114,7 +113,10 @@ export class TokenService {
     { userId, sessionId }: GenerateAccessTokenParams,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const session = await this.sessionService.findSessionByID(sessionId, tx);
+    const session = await this.sessionService.findSessionByIDWithUser(
+      sessionId,
+      tx,
+    );
     if (!session) {
       throw new Error("Session not found");
     }
@@ -188,14 +190,19 @@ export class TokenService {
     { sessionId, token }: RevokeTokenFamilyParams,
     tx: Prisma.TransactionClient = undefined,
   ) {
-    const tablename = "RefreshToken";
+    const tablename = "refresh_tokens";
     const ctx = tx ? tx : this.prismaService;
 
     if (sessionId) {
-      await ctx.$executeRawUnsafe(
-        `UPDATE ${tablename} SET revoked = true, updated_at = now() WHERE session_id = $1 AND revoked = false;`,
-        sessionId,
-      );
+      await ctx.refreshToken.updateMany({
+        where: {
+          sessionId,
+          revoked: false,
+        },
+        data: {
+          revoked: true,
+        },
+      });
     } else if (token) {
       await ctx.$executeRawUnsafe(
         `

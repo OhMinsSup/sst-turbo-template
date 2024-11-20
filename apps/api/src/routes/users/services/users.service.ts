@@ -61,22 +61,6 @@ export class UsersService {
     const ctx = tx ? tx.user : this.prismaService.user;
     return await ctx.findUnique({
       where: { email },
-      select: { id: true },
-    });
-  }
-
-  /**
-   * @description 암호화된 비밀번호와 Salt, ID를 반환합니다.
-   * @param {string} email
-   * @param {Prisma.TransactionClient?} tx
-   */
-  async isDuplicatedEmailWithEncryptedPassword(
-    email: string,
-    tx: Prisma.TransactionClient | undefined = undefined,
-  ) {
-    const ctx = tx ? tx.user : this.prismaService.user;
-    return await ctx.findUnique({
-      where: { email },
       select: {
         id: true,
         encryptedPassword: true,
