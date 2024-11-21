@@ -3,7 +3,7 @@ import { json, redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignInSchema } from "@template/validators/auth";
-import { HttpStatusCode } from "@template/common";
+import { HttpResultCode, HttpStatusCode } from "@template/common";
 
 import {
   createRemixServerAuthClient,
@@ -21,6 +21,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
+  console.log("client", client);
+
   await requireAnonymous(client);
 
   const formData = await request.formData();
@@ -28,29 +30,31 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   const input = {
     email: formData.get("email"),
     password: formData.get("password"),
+    provider: "email",
   } as FormFieldSignInSchema;
 
+  console.log("input", input);
+
   const { error } = await client.signIn(input);
+
+  console.log("error", error);
 
   if (error?.error) {
     switch (error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
-        return json({
+        return {
           success: false,
           error: toErrorFormat("email", error),
-        });
-      }
-      case HttpStatusCode.UNAUTHORIZED: {
-        return json({
-          success: false,
-          error: toErrorFormat("password", error),
-        });
+        };
       }
       case HttpStatusCode.BAD_REQUEST: {
-        return json({
+        return {
           success: false,
-          error: toValidationErrorFormat(error),
-        });
+          error:
+            error.resultCode === HttpResultCode.INCORRECT_PASSWORD
+              ? toErrorFormat("password", error)
+              : toValidationErrorFormat(error),
+        };
       }
       default: {
         return redirectWithToast(request.url, {

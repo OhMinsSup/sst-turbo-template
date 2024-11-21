@@ -2,13 +2,13 @@ import { create } from "zustand";
 
 type LoadingState = "idle" | "loading";
 
-type State = {
+interface State {
   loadingState: LoadingState;
-};
+}
 
-type Action = {
+interface Action {
   setLoadingState: (loadingState: LoadingState) => void;
-};
+}
 
 export const useLoadingStore = create<State & Action>((set) => ({
   loadingState: "idle",

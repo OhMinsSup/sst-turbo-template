@@ -60,7 +60,7 @@ export default function SignUpForm() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -79,7 +79,7 @@ export default function SignUpForm() {
             <FormField
               control={form.control}
               name="password"
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <InputPassword
@@ -96,7 +96,7 @@ export default function SignUpForm() {
             <FormField
               control={form.control}
               name="confirmPassword"
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <InputPassword

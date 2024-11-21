@@ -38,6 +38,7 @@ export default function SignInForm() {
   });
 
   const onSubmit = (input: FormFieldSignInSchema) => {
+    console.log("input", input);
     const formData = new FormData();
     formData.append("email", input.email);
     formData.append("password", input.password);
@@ -59,7 +60,7 @@ export default function SignInForm() {
             <FormField
               control={form.control}
               name="email"
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <Input
@@ -78,7 +79,7 @@ export default function SignInForm() {
             <FormField
               control={form.control}
               name="password"
-              render={({ field, fieldState: { error } }) => (
+              render={({ field }) => (
                 <FormItem>
                   <FormControl>
                     <InputPassword
@@ -94,8 +95,8 @@ export default function SignInForm() {
             />
             <Button
               type="submit"
-              disabled={isSubmittingForm}
-              aria-disabled={isSubmittingForm}
+              // disabled={isSubmittingForm}
+              // aria-disabled={isSubmittingForm}
             >
               {isSubmittingForm ? (
                 <Icons.Spinner className="mr-2 size-4 animate-spin" />

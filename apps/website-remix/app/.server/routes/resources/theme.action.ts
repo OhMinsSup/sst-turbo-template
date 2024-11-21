@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { data, redirect } from "@remix-run/node";
 import { invariantResponse } from "@epic-web/invariant";
 
 import type { FomrFieldThemeSchema } from "~/utils/theme";
@@ -27,7 +27,7 @@ export const action = async (ctx: ActionFunctionArgs) => {
   if (redirectTo) {
     return redirect(redirectTo, responseInit);
   } else {
-    return json(
+    return data(
       {
         success: true,
       },

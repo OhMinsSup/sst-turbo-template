@@ -6,13 +6,12 @@ import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 function isSession(
   session: SerializeFrom<RoutesLoaderData>["session"],
 ): session is SerializeFrom<RoutesLoaderData>["session"] {
-  if (typeof session === "undefined" || session === null) {
+  if (typeof session === "undefined") {
     return false;
   }
 
   return (
     typeof session === "object" &&
-    session !== null &&
     "access_token" in session &&
     "refresh_token" in session &&
     "expires_at" in session

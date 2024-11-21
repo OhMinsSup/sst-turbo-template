@@ -6,13 +6,15 @@ export const signInSchema = z.object({
     .string()
     .min(6, "비밀번호는 6글자 이상이어야 합니다.")
     .max(100, "비밀번호는 100글자 이하여야 합니다."),
+  provider: z.enum(["email"], {
+    message: "잘못된 인증 방식입니다.",
+  }),
 });
 
 export const signUpSchema = z
   .object({
     confirmPassword: z.string().min(6, "비밀번호는 6글자 이상이어야 합니다."),
-    name: z.string().max(50, "이름은 50글자 이하여야 합니다.").optional(),
-    image: z.string().url().optional(),
+    username: z.string().max(50, "이름은 50글자 이하여야 합니다.").optional(),
   })
   .merge(signInSchema)
   .refine((data) => data.password === data.confirmPassword, {
@@ -20,32 +22,18 @@ export const signUpSchema = z
     path: ["confirmPassword"],
   });
 
-export const refreshTokenSchema = z.object({
-  refreshToken: z.string().min(1, "Refresh Token이 필요합니다."),
-});
-
-export const verifySchema = z.object({
-  token: z.string().min(1, "토큰이 필요합니다."),
-});
-
-export const signOutSchema = z.object({
-  accessToken: z.string().min(1, "Access Token이 필요합니다."),
+export const tokenSchema = z.object({
+  refreshToken: z.string().min(1, "토큰이 필요합니다."),
 });
 
 export const schema = {
   signIn: signInSchema,
   signUp: signUpSchema,
-  refresh: refreshTokenSchema,
-  verify: verifySchema,
-  signOut: signOutSchema,
+  token: tokenSchema,
 };
 
 export type FormFieldSignInSchema = z.infer<typeof schema.signIn>;
 
 export type FormFieldSignUpSchema = z.infer<typeof schema.signUp>;
 
-export type FormFieldRefreshTokenSchema = z.infer<typeof schema.refresh>;
-
-export type FormFieldVerifyTokenSchema = z.infer<typeof schema.verify>;
-
-export type FormFieldSignoutSchema = z.infer<typeof schema.signOut>;
+export type FormFieldTokenSchema = z.infer<typeof schema.token>;

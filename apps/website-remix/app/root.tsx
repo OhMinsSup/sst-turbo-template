@@ -72,7 +72,20 @@ function Document({ children }: Props) {
       </head>
       <body className="overscroll-none whitespace-pre-line bg-background antialiased">
         {children}
-        <Toaster theme={data.requestInfo.userPrefs.theme ?? undefined} />
+        <Toaster
+          theme={data.requestInfo.userPrefs.theme ?? undefined}
+          toastOptions={{
+            classNames: {
+              toast:
+                "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+              description: "group-[.toast]:text-muted-foreground",
+              actionButton:
+                "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+              cancelButton:
+                "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            },
+          }}
+        />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -102,6 +115,7 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
     });
 
     return () => subscription.unsubscribe();
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [session]);
 
   return (

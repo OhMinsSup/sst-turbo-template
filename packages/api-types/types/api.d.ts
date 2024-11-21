@@ -132,6 +132,8 @@ export interface components {
        * @example Bearer
        */
       tokenType: string;
+      /** @description 세션 유저 정보 */
+      user: components["schemas"]["UserResponseDto"];
     };
     Boolean: Record<string, never>;
     ErrorResponseDto: {
@@ -382,6 +384,12 @@ export interface components {
       refreshToken: string;
     };
     UserResponseDto: {
+      /**
+       * 삭제일
+       * Format: date-time
+       * @description 삭제일
+       */
+      deletedAt: string;
       /**
        * 이메일
        * @description 사용자 이메일

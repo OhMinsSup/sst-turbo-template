@@ -1,5 +1,3 @@
-import type { components, paths } from "@template/api-types";
-import type { AuthError } from "@template/common";
 import { createAuthError, HttpStatusCode, isAuthError } from "@template/common";
 import {
   isBrowser,
@@ -7,7 +5,7 @@ import {
   isPromiseLike,
   isTrusted,
 } from "@template/utils/assertion";
-import { addSeconds, isBefore, subMinutes, toDate } from "@template/utils/date";
+import { addSeconds, isBefore } from "@template/utils/date";
 
 import type {
   AuthChangeEvent,
@@ -18,9 +16,17 @@ import type {
   InitializeResult,
   LoadSession,
   LockFunc,
+  MakeSessionParams,
   Session,
+  SignInBody,
+  SignInResponse,
+  SignOutError,
+  SignOutResponse,
+  SignUpBody,
+  SignUpResponse,
   Subscription,
   SupportedStorage,
+  TokenResponse,
 } from "./types";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
@@ -32,6 +38,8 @@ import {
 } from "./constants";
 import { Deferred } from "./utils/deferred";
 import {
+  getExpiresAt,
+  getExpiresIn,
   getItemAsync,
   isSupportedBroadcastChannel,
   isSupportedNavigatorLocks,
@@ -225,7 +233,6 @@ export class AuthClient {
 
       this.broadcastChannel?.addEventListener(
         "message",
-
         this._handleMessage.bind(this),
       );
     }
@@ -304,19 +311,9 @@ export class AuthClient {
   /**
    * @memberof AuthClient
    * @description 회원가입
-   * @param {paths["/api/v1/auth/signup"]["post"]["requestBody"]["content"]["application/json"]} body - 회원가입 정보
+   * @param {SignUpBody} body - 회원가입 정보
    */
-  async signUp(
-    body: paths["/api/v1/auth/signUp"]["post"]["requestBody"]["content"]["application/json"],
-  ): Promise<{
-    data:
-      | paths["/api/v1/auth/signUp"]["post"]["responses"]["200"]["content"]["application/json"]
-      | undefined;
-    session: Session | undefined;
-    error:
-      | paths["/api/v1/auth/signUp"]["post"]["responses"]["400"]["content"]["application/json"]
-      | undefined;
-  }> {
+  async signUp(body: SignUpBody): Promise<SignUpResponse> {
     const { data, error } = await this.api
       .method("post")
       .path("/api/v1/auth/signUp")
@@ -336,21 +333,9 @@ export class AuthClient {
   /**
    * @memberof AuthClient
    * @description 로그인
-   * @param {paths["/api/v1/auth/signin"]["post"]["requestBody"]["content"]["application/json"]} body - 로그인 정보
+   * @param {SignInBody} body - 로그인 정보
    */
-  async signIn(
-    body: paths["/api/v1/auth/signIn"]["post"]["requestBody"]["content"]["application/json"],
-  ): Promise<{
-    data:
-      | paths["/api/v1/auth/signIn"]["post"]["responses"]["200"]["content"]["application/json"]
-      | undefined;
-    session: Session | undefined;
-    error:
-      | paths["/api/v1/auth/signIn"]["post"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/signIn"]["post"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/signIn"]["post"]["responses"]["404"]["content"]["application/json"]
-      | undefined;
-  }> {
+  async signIn(body: SignInBody): Promise<SignInResponse> {
     const { data, error } = await this.api
       .method("post")
       .path("/api/v1/auth/signIn")
@@ -396,14 +381,7 @@ export class AuthClient {
    * @memberof AuthClient
    * @description 로그아웃
    */
-  async signOut(): Promise<{
-    error:
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["404"]["content"]["application/json"]
-      | AuthError
-      | undefined;
-  }> {
+  async signOut(): Promise<SignOutResponse> {
     if (this.initializePromise) {
       await this.initializePromise;
     }
@@ -430,15 +408,19 @@ export class AuthClient {
           .setAuthorization(jwt)
           .run();
 
-        return {
-          user: data?.data,
-          error,
-        };
+        if (data?.data) {
+          return {
+            user: data.data,
+            error: undefined,
+          };
+        }
+
+        return { user: undefined, error };
       }
 
       // 유저 정보를 가져오기 위해 세션을 이용합니다.
       return await this._useSession(async (result) => {
-        if (result.error) {
+        if (result.error && isAuthError(result.error)) {
           throw result.error;
         }
 
@@ -461,8 +443,15 @@ export class AuthClient {
           .setAuthorization(result.session.access_token)
           .run();
 
+        if (data?.data) {
+          return {
+            user: data.data,
+            error: undefined,
+          };
+        }
+
         return {
-          user: data?.data,
+          user: undefined,
           error,
         };
       });
@@ -484,25 +473,18 @@ export class AuthClient {
    * @memberof AuthClient
    * @private
    * @description 인증 응답값을 세션값으로 변경
-   * @param {components["schemas"]["AuthResponseDto"]} data - 인증 응답값
+   * @param {MakeSessionParams} data - 인증 응답값
    * @returns {Session}
    */
-  private _makeSession(
-    data: components["schemas"]["AuthTokenResponseDto"],
-  ): Session {
-    const {
-      tokens: { accessToken, refreshToken },
-      ...user
-    } = data;
-
+  private _makeSession(data: MakeSessionParams): Session {
+    const { token, refreshToken, expiresAt, expiresIn, user } = data;
     return {
-      access_token: accessToken.token,
-      refresh_token: refreshToken.token,
-      expires_in: subMinutes(accessToken.expiresAt, 5).getTime(),
-      expires_at: toDate(accessToken.expiresAt).getTime(),
-      refresh_token_expires_at: toDate(refreshToken.expiresAt).getTime(),
+      access_token: token,
+      refresh_token: refreshToken,
+      expires_in: getExpiresIn(expiresIn),
+      expires_at: getExpiresAt(expiresAt),
       user,
-    } as Session;
+    };
   }
 
   /**
@@ -637,14 +619,7 @@ export class AuthClient {
    * @private
    * @description 로그아웃
    */
-  private async _signOut(): Promise<{
-    error:
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/signout"]["post"]["responses"]["404"]["content"]["application/json"]
-      | AuthError
-      | undefined;
-  }> {
+  private async _signOut(): Promise<SignOutResponse> {
     return await this._useSession(async (result) => {
       const { session, error: sessionError } = result;
       if (sessionError) {
@@ -652,19 +627,13 @@ export class AuthClient {
       }
 
       const accessToken = session?.access_token;
-      let error:
-        | paths["/api/v1/auth/signout"]["post"]["responses"]["400"]["content"]["application/json"]
-        | paths["/api/v1/auth/signout"]["post"]["responses"]["401"]["content"]["application/json"]
-        | paths["/api/v1/auth/signout"]["post"]["responses"]["404"]["content"]["application/json"]
-        | undefined;
+      let error: SignOutError | undefined;
       // 토큰이 있다면 로그아웃 요청
       if (accessToken) {
         const result = await this.api
           .method("post")
-          .path("/api/v1/auth/signout")
-          .setBody({
-            accessToken,
-          })
+          .path("/api/v1/auth/logout")
+          .setAuthorization(accessToken)
           .run();
 
         if (result.error) {
@@ -699,7 +668,7 @@ export class AuthClient {
       // 해당 세션이 유효하지 않다면, 세션을 삭제합니다.
       if (!this._isValidSession(currentSession)) {
         this.debug(debugName, "session is not valid");
-        if (currentSession !== null) {
+        if (!isNullOrUndefined(currentSession)) {
           // 세션을 삭제합니다.
           await this._removeSession();
         }
@@ -829,15 +798,9 @@ export class AuthClient {
    * @description 토큰 재발급
    * @param {string} refreshToken - 갱신 토큰
    */
-  private async _refreshAccessToken(refreshToken: string): Promise<{
-    data: components["schemas"]["AuthTokenResponseDto"] | undefined;
-    session: Session | undefined;
-    error:
-      | paths["/api/v1/auth/token"]["post"]["responses"]["400"]["content"]["application/json"]
-      | paths["/api/v1/auth/token"]["post"]["responses"]["401"]["content"]["application/json"]
-      | paths["/api/v1/auth/token"]["post"]["responses"]["404"]["content"]["application/json"]
-      | undefined;
-  }> {
+  private async _refreshAccessToken(
+    refreshToken: string,
+  ): Promise<TokenResponse> {
     // 토근 갱신 요청
     const { data, error } = await this.api
       .method("post")
@@ -854,11 +817,11 @@ export class AuthClient {
 
     if (data?.data) {
       const session = this._makeSession(data.data);
-      return { data: data.data, session, error: undefined };
+      return { data: data, session, error: undefined };
     }
 
     return {
-      data: data?.data,
+      data: undefined,
       session: undefined,
       error,
     };
@@ -873,10 +836,12 @@ export class AuthClient {
    */
   private _isValidSession(maybeSession: unknown): maybeSession is Session {
     const isValidSession =
-      typeof maybeSession === "object" &&
+      typeof maybeSession !== "undefined" &&
       maybeSession !== null &&
+      typeof maybeSession === "object" &&
       "access_token" in maybeSession &&
       "refresh_token" in maybeSession &&
+      "expires_in" in maybeSession &&
       "expires_at" in maybeSession;
 
     return isValidSession;
@@ -1040,13 +1005,15 @@ export class AuthClient {
 
       // 세션을 로드합니다.
       const maybeSession = await getItemAsync(this.storage, this.storageKey);
-
+      this.debug(debugName, "[logging!!!!]", maybeSession);
       if (!isNullOrUndefined(maybeSession)) {
         // 세션이 유효한지 확인합니다.
         if (this._isValidSession(maybeSession)) {
+          this.debug(debugName, "session is valid", maybeSession);
           currentSession = maybeSession;
         } else {
           // 세션이 유효하지 않다면, 세션을 삭제합니다.
+          this.debug(debugName, "session is not valid", maybeSession);
           await this._removeSession();
         }
       }
@@ -1383,7 +1350,9 @@ export class AuthClient {
     return await this._useSession(async (result) => {
       try {
         const { session, error } = result;
-        if (error) throw error;
+        if (error && isAuthError(error)) {
+          throw error;
+        }
 
         await this.stateChangeEmitters
           .get(id)

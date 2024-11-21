@@ -15,12 +15,8 @@
     export const SERVER_PORT: string;
     export const LOGGER_DRIVER: string;
     export const LOG_LEVELS: string;
-    export const ACCESS_TOKEN_NAME: string;
-    export const ACCESS_TOKEN_EXPIRES_IN: string;
-    export const ACCESS_TOKEN_SECRET: string;
-    export const REFRESH_TOKEN_NAME: string;
-    export const REFRESH_TOKEN_EXPIRES_IN: string;
-    export const REFRESH_TOKEN_SECRET: string;
+    export const JWT_EXPIRES_IN: string;
+    export const JWT_SECRET: string;
     export const SESSION_SECRET: string;
     export const NVM_INC: string;
     export const npm_package_devDependencies_prettier: string;

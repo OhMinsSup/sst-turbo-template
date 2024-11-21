@@ -6,7 +6,7 @@ import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 function isUser(
   user: SerializeFrom<RoutesLoaderData>["user"],
 ): user is SerializeFrom<RoutesLoaderData>["user"] {
-  if (typeof user === "undefined" || user === null) {
+  if (typeof user === "undefined") {
     return false;
   }
 

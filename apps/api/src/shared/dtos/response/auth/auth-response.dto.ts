@@ -1,7 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Expose, Type } from "class-transformer";
 
 import { HttpResultCode } from "@template/common";
+
+import { UserResponseDto } from "../users/user-response.dto";
 
 export class AuthTokenResponseDto {
   @ApiProperty({
@@ -44,6 +46,14 @@ export class AuthTokenResponseDto {
   @ApiProperty({ description: "Refresh 토큰", type: String })
   @Expose()
   readonly refreshToken: string;
+
+  @ApiProperty({
+    description: "세션 유저 정보",
+    type: UserResponseDto,
+  })
+  @Type(() => UserResponseDto)
+  @Expose()
+  readonly user: UserResponseDto;
 }
 
 export const AuthSuccessDefine = {

@@ -2,7 +2,6 @@ import { useFetchers } from "@remix-run/react";
 import { z } from "zod";
 
 import { useRequestInfo } from "~/hooks/useRequestInfo";
-import { useHints } from "~/utils/client-hints";
 
 export const themeSchema = z.object({
   theme: z.enum(["light", "dark", "system"]),
@@ -42,11 +41,13 @@ export function useOptimisticThemeMode() {
  * has not set a preference.
  */
 export function useTheme() {
-  const hints = useHints();
   const userPrefs = useRequestInfo();
   const optimisticMode = useOptimisticThemeMode();
+
   if (optimisticMode) {
-    return optimisticMode === "system" ? hints.theme : optimisticMode;
+    return optimisticMode === "system"
+      ? userPrefs.userPrefs.theme
+      : optimisticMode;
   }
-  return userPrefs.userPrefs.theme ?? hints.theme;
+  return userPrefs.userPrefs.theme;
 }

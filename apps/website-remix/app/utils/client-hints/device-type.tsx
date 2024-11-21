@@ -1,4 +1,4 @@
-import { type ClientHint } from "@epic-web/client-hints";
+import type { ClientHint } from "@epic-web/client-hints";
 
 import { SESSION_DATA_KEY } from "~/constants/constants";
 

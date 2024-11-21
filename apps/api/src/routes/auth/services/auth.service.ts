@@ -123,7 +123,14 @@ export class AuthService {
 
       return {
         code: HttpResultCode.OK,
-        data: token,
+        data: {
+          token: token.token,
+          tokenType: TokenType.Bearer,
+          expiresIn: token.expiresIn,
+          expiresAt: token.expiresAt,
+          refreshToken: token.token,
+          user: token.session.User,
+        },
       };
     });
   }
@@ -222,7 +229,14 @@ export class AuthService {
 
       return {
         code: HttpResultCode.OK,
-        data: token,
+        data: {
+          token: token.token,
+          tokenType: TokenType.Bearer,
+          expiresIn: token.expiresIn,
+          expiresAt: token.expiresAt,
+          refreshToken: token.token,
+          user: token.session.User,
+        },
       };
     });
   }

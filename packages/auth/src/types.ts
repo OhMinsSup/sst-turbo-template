@@ -35,10 +35,7 @@ export type SupportedStorage = PromisifyMethods<
   isServer?: boolean;
 };
 
-export type User = Pick<
-  components["schemas"]["AuthResponseDto"],
-  "id" | "email" | "name" | "image"
->;
+export type User = components["schemas"]["UserResponseDto"];
 
 export interface Session {
   /**
@@ -58,9 +55,8 @@ export interface Session {
    */
   expires_at?: number;
   /**
-   * A timestamp of when the refresh token will expire. Returned when a login is confirmed.
+   * The user object.
    */
-  refresh_token_expires_at?: number;
   user: User;
 }
 
@@ -132,7 +128,7 @@ export type LoadSession =
     }
   | {
       session: undefined;
-      error: AuthError;
+      error: AuthError | MeError;
     }
   | {
       session: undefined;
@@ -141,12 +137,12 @@ export type LoadSession =
 
 export type GetUserResponse =
   | {
-      user: components["schemas"]["UserExternalResponseDto"];
+      user: User;
       error: undefined;
     }
   | {
       user: undefined;
-      error: AuthError;
+      error: AuthError | MeError;
     }
   | {
       user: undefined;
@@ -156,4 +152,89 @@ export type GetUserResponse =
 export interface HandleMessageData {
   event: AuthChangeEvent;
   session: Session | undefined;
+}
+
+export type MakeSessionParams = components["schemas"]["AuthTokenResponseDto"];
+
+export type SignInBody =
+  paths["/api/v1/auth/signIn"]["post"]["requestBody"]["content"]["application/json"];
+
+export type SignInData =
+  | paths["/api/v1/auth/signIn"]["post"]["responses"]["200"]["content"]["application/json"]
+  | undefined;
+
+export type SignInError =
+  | paths["/api/v1/auth/signIn"]["post"]["responses"]["400"]["content"]["application/json"]
+  | paths["/api/v1/auth/signIn"]["post"]["responses"]["401"]["content"]["application/json"]
+  | paths["/api/v1/auth/signIn"]["post"]["responses"]["404"]["content"]["application/json"]
+  | undefined;
+
+export interface SignInResponse {
+  data: SignInData;
+  session: Session | undefined;
+  error: SignInError;
+}
+
+export type SignUpBody =
+  paths["/api/v1/auth/signUp"]["post"]["requestBody"]["content"]["application/json"];
+
+export type SignUpData =
+  | paths["/api/v1/auth/signUp"]["post"]["responses"]["200"]["content"]["application/json"]
+  | undefined;
+
+export type SignUpError =
+  | paths["/api/v1/auth/signUp"]["post"]["responses"]["400"]["content"]["application/json"]
+  | paths["/api/v1/auth/signUp"]["post"]["responses"]["401"]["content"]["application/json"]
+  | paths["/api/v1/auth/signUp"]["post"]["responses"]["404"]["content"]["application/json"]
+  | undefined;
+
+export interface SignUpResponse {
+  data: SignUpData;
+  session: Session | undefined;
+  error: SignUpError;
+}
+
+export type TokenData =
+  | paths["/api/v1/auth/token"]["post"]["responses"]["200"]["content"]["application/json"]
+  | undefined;
+
+export type TokenError =
+  | paths["/api/v1/auth/token"]["post"]["responses"]["400"]["content"]["application/json"]
+  | paths["/api/v1/auth/token"]["post"]["responses"]["401"]["content"]["application/json"]
+  | paths["/api/v1/auth/token"]["post"]["responses"]["403"]["content"]["application/json"]
+  | undefined;
+
+export interface TokenResponse {
+  data: TokenData;
+  session: Session | undefined;
+  error: TokenError;
+}
+
+export type MeError =
+  | paths["/api/v1/users/me"]["get"]["responses"]["401"]["content"]["application/json"]
+  | paths["/api/v1/users/me"]["get"]["responses"]["404"]["content"]["application/json"]
+  | paths["/api/v1/users/me"]["get"]["responses"]["400"]["content"]["application/json"]
+  | undefined;
+
+export type MeData =
+  | paths["/api/v1/users/me"]["get"]["responses"]["200"]["content"]["application/json"]
+  | undefined;
+
+export interface MeResponse {
+  data: MeData;
+  error: MeError;
+}
+
+export type SignOutError =
+  | paths["/api/v1/auth/logout"]["post"]["responses"]["400"]["content"]["application/json"]
+  | paths["/api/v1/auth/logout"]["post"]["responses"]["401"]["content"]["application/json"]
+  | paths["/api/v1/auth/logout"]["post"]["responses"]["404"]["content"]["application/json"]
+  | undefined;
+
+export type SignOutData =
+  | paths["/api/v1/auth/logout"]["post"]["responses"]["204"]["content"]["application/json"]
+  | undefined;
+
+export interface SignOutResponse {
+  error: SignOutError | AuthError | undefined;
 }

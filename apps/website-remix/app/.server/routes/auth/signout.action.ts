@@ -34,8 +34,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
 
   const { error } = await client.signOut();
 
-  console.log("error", error);
-
   if (isAuthError(error)) {
     return redirectWithToast(redirectTo, {
       type: "error",

@@ -1,5 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
@@ -26,11 +26,11 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
       const { user } = await client.getUser();
       return user;
     } catch {
-      return null;
+      return undefined;
     }
   })();
 
-  return json(
+  return data(
     {
       requestInfo: {
         hints: getHints(request),

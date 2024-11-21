@@ -1,9 +1,11 @@
 import type { components } from "@template/api-types";
 
+export type HttpErrorData =
+  | components["schemas"]["ValidationExceptionResponseDto"]
+  | components["schemas"]["HttpExceptionResponseDto"];
+
 type ToErrorFormat = components["schemas"]["ErrorResponseDto"] & {
-  error:
-    | components["schemas"]["ValidationExceptionResponseDto"]
-    | components["schemas"]["HttpExceptionResponseDto"];
+  error: HttpErrorData;
 };
 
 type ReturnErrorFormat = Record<
@@ -34,9 +36,7 @@ export function toErrorFormat(
 }
 
 type ToValidationErrorFormat = components["schemas"]["ErrorResponseDto"] & {
-  error:
-    | components["schemas"]["ValidationExceptionResponseDto"]
-    | components["schemas"]["HttpExceptionResponseDto"];
+  error: HttpErrorData;
 };
 
 /**
@@ -65,7 +65,7 @@ export function toValidationErrorFormat(
  * @param {unknown} error
  * @returns {string}
  */
-export function getErrorMessage(error: unknown) {
+export function getErrorMessage(error: unknown): string {
   if (typeof error === "string") return error;
   if (
     error &&

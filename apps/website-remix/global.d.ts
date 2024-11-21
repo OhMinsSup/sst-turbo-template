@@ -10,12 +10,8 @@
     readonly SERVER_PORT: string;
     readonly LOGGER_DRIVER: string;
     readonly LOG_LEVELS: string;
-    readonly ACCESS_TOKEN_NAME: string;
-    readonly ACCESS_TOKEN_EXPIRES_IN: string;
-    readonly ACCESS_TOKEN_SECRET: string;
-    readonly REFRESH_TOKEN_NAME: string;
-    readonly REFRESH_TOKEN_EXPIRES_IN: string;
-    readonly REFRESH_TOKEN_SECRET: string;
+    readonly JWT_EXPIRES_IN: string;
+    readonly JWT_SECRET: string;
     readonly SESSION_SECRET: string;
     readonly NVM_INC: string;
     readonly npm_package_devDependencies_prettier: string;

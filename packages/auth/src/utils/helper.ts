@@ -1,6 +1,7 @@
 import { randomUUID } from "uncrypto";
 
 import { isBrowser } from "@template/utils/assertion";
+import { toDate } from "@template/utils/date";
 
 import type { SupportedStorage } from "../types";
 
@@ -114,4 +115,22 @@ export const isSupportsLocalStorage = () => {
  */
 export function uuid(): string {
   return randomUUID();
+}
+
+/**
+ * @description "expires_in" 값을 number로 변환합니다.
+ * @param {string} expiresIn
+ * @returns
+ */
+export function getExpiresIn(expiresIn: string): number {
+  return parseInt(expiresIn, 10);
+}
+
+/**
+ * #@description "expires_at" 값을 timestamp로 변환합니다.
+ * @param {string} expiresAt
+ * @returns
+ */
+export function getExpiresAt(expiresAt: string): number {
+  return toDate(expiresAt).getTime();
 }

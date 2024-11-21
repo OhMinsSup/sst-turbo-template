@@ -25,7 +25,6 @@ export default function handleRequest(
   remixContext: EntryContext,
   // This is ignored so we can keep it in the template for visibility.  Feel
   // free to delete this parameter in your app if you're not using it!
-  // eslint-disable-next-line @typescript-eslint/no-unused-vars
   loadContext: AppLoadContext,
 ) {
   return isbot(request.headers.get("user-agent") || "")
@@ -50,7 +49,7 @@ function handleBotRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  loadContext: AppLoadContext,
+  _: AppLoadContext,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
@@ -78,6 +77,7 @@ function handleBotRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {
@@ -101,7 +101,7 @@ function handleBrowserRequest(
   responseStatusCode: number,
   responseHeaders: Headers,
   remixContext: EntryContext,
-  loadContext: AppLoadContext,
+  _: AppLoadContext,
 ) {
   return new Promise((resolve, reject) => {
     let shellRendered = false;
@@ -129,6 +129,7 @@ function handleBrowserRequest(
           pipe(body);
         },
         onShellError(error: unknown) {
+          // eslint-disable-next-line @typescript-eslint/prefer-promise-reject-errors
           reject(error);
         },
         onError(error: unknown) {

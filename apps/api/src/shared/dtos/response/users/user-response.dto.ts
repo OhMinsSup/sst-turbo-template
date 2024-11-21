@@ -59,6 +59,16 @@ export class UserResponseDto {
   @Expose()
   readonly isSuspended: boolean;
 
+  @ApiProperty({
+    title: "삭제일",
+    description: "삭제일",
+    type: Date,
+    required: true,
+    format: "date-time",
+  })
+  @Expose()
+  readonly deletedAt: Date;
+
   @ApiProperty({ description: "역할", type: RoleResponseDto })
   @Type(() => RoleResponseDto)
   @Expose()

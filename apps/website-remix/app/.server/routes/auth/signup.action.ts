@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignUpSchema } from "@template/validators/auth";
@@ -29,8 +29,8 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     email: formData.get("email"),
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
-    name: formData.get("name"),
-    image: formData.get("image"),
+    username: formData.get("username"),
+    provider: "email",
   } as FormFieldSignUpSchema;
 
   const { error } = await client.signUp(input);
@@ -38,16 +38,16 @@ export const action = async ({ request }: ActionFunctionArgs) => {
   if (error?.error) {
     switch (error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
-        return json({
+        return {
           success: false,
           error: toErrorFormat("email", error),
-        });
+        };
       }
       case HttpStatusCode.BAD_REQUEST: {
-        return json({
+        return {
           success: false,
           error: toValidationErrorFormat(error),
-        });
+        };
       }
       default: {
         return redirectWithToast(request.url, {
