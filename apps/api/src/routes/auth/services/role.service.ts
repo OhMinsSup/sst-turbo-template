@@ -4,7 +4,12 @@ import { Role } from "@template/common";
 import { Prisma } from "@template/db";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
-import { RoleCreateDTO } from "../dto/role-create.dto";
+
+interface CreateRoleParams {
+  name: string;
+  symbol: Role;
+  description?: string;
+}
 
 @Injectable()
 export class RoleService {
@@ -46,11 +51,11 @@ export class RoleService {
 
   /**
    * @description Role 생성
-   * @param {RoleCreateDTO} input
+   * @param {CreateRoleParams} input
    * @param {Prisma.TransactionClient?} tx
    */
   async createRole(
-    input: RoleCreateDTO,
+    input: CreateRoleParams,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     const ctx = tx ? tx.role : this.prismaService.role;

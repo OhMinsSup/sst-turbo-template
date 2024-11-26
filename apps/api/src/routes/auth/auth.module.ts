@@ -1,13 +1,13 @@
 import { Module } from "@nestjs/common";
 import { JwtAuthGuard } from "src/guards/jwt-auth.guard";
 
-import { RoleService } from "../role/services/role.service";
 import { UsersService } from "../users/services/users.service";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthErrorService } from "./errors";
 import { AuthService } from "./services/auth.service";
 import { IdentityService } from "./services/identity.service";
 import { PasswordService } from "./services/password.service";
+import { RoleService } from "./services/role.service";
 import { SessionService } from "./services/session.service";
 import { TokenService } from "./services/token.service";
 
@@ -30,6 +30,7 @@ import { TokenService } from "./services/token.service";
     JwtAuthGuard,
     SessionService,
     TokenService,
+    RoleService,
   ],
 })
 export class AuthModule {}

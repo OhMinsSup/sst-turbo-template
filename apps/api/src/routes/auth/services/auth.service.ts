@@ -19,7 +19,6 @@ import { isAfter } from "@template/utils/date";
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { hash } from "../../../libs/hash";
-import { RoleService } from "../../../routes/role/services/role.service";
 import { UsersService } from "../../../routes/users/services/users.service";
 import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
@@ -28,6 +27,7 @@ import { TokenDTO } from "../dto/token.dto";
 import { AuthErrorService } from "../errors";
 import { IdentityService } from "./identity.service";
 import { PasswordService } from "./password.service";
+import { RoleService } from "./role.service";
 import { SessionService } from "./session.service";
 import { TokenService } from "./token.service";
 

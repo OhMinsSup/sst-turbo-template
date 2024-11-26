@@ -7,11 +7,11 @@ import { HttpExceptionFilter } from "./filters/http-exception.filter";
 import { IntegrationsModule } from "./integrations/integrations.module";
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { AuthModule } from "./routes/auth/auth.module";
-import { RoleModule } from "./routes/role/role.module";
 import { UsersModule } from "./routes/users/users.module";
+import { WorkspacesModule } from "./routes/workspaces/workspaces.module";
 
 @Module({
-  imports: [IntegrationsModule, AuthModule, UsersModule, RoleModule],
+  imports: [IntegrationsModule, AuthModule, UsersModule, WorkspacesModule],
   controllers: [AppController],
   providers: [
     AppService,

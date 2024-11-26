@@ -30,6 +30,8 @@ model User {
   RefreshToken      RefreshToken[]
   Role              Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
   UserProfile       UserProfile?
+  Workspace         WorkSpace[]
+  Database          Database[]
 
   @@map(name: "users")
 }
@@ -40,7 +42,6 @@ model UserProfile {
   userId String  @unique
   User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
-  @@index([userId], name: "user_profiles_user_id_index")
   @@map("user_profiles")
 }
 
@@ -68,6 +69,9 @@ model Identity {
   updatedAt    DateTime @updatedAt // 업데이트 시간
   User         User     @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
 
+  @@index([providerId, provider], name: "identities_provider_id_provider_index")
+  @@index([userId, provider], name: "identities_user_id_provider_index")
+  @@index([userId], name: "identities_user_id_index")
   @@map(name: "identities")
 }
 
@@ -83,6 +87,8 @@ model RefreshToken {
   User      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
   Session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade) // 세션
 
+  @@index([token], name: "refresh_tokens_token_index")
+  @@index([sessionId, revoked], name: "refresh_tokens_session_id_revoked_index")
   @@map("refresh_tokens")
 }
 
@@ -99,4 +105,35 @@ model Session {
   RefreshToken RefreshToken[]
 
   @@map("sessions")
+}
+
+model WorkSpace {
+  id          Int        @id @default(autoincrement())
+  title       String     @unique // 제목
+  description String? // 설명
+  createdAt   DateTime   @default(now()) // 생성 시간
+  updatedAt   DateTime   @updatedAt // 업데이트 시간
+  deletedAt   DateTime? // 삭제 시간
+  userId      String // 사용자 ID
+  User        User       @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+  Database    Database[]
+
+  @@index([userId], name: "work_spaces_user_id_index")
+  @@map("work_spaces")
+}
+
+model Database {
+  id          Int       @id @default(autoincrement())
+  title       String    @unique // 제목
+  description String? // 설명
+  createdAt   DateTime  @default(now()) // 생성 시간
+  updatedAt   DateTime  @updatedAt // 업데이트 시간
+  deletedAt   DateTime? // 삭제 시간
+  workSpaceId Int // 작업 공간 ID
+  userId      String // 사용자 ID
+  WorkSpace   WorkSpace @relation(fields: [workSpaceId], references: [id], onDelete: Cascade) // 작업 공간
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+
+  @@index([workSpaceId], name: "databases_work_space_id_index")
+  @@map("databases")
 }
