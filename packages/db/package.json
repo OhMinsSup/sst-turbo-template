@@ -76,6 +76,6 @@
     "typescript": "catalog:"
   },
   "prisma": {
-    "seed": "pnpm dlx tsx seed.ts"
+    "seed": "pnpm with-env tsx seed.ts"
   }
 }

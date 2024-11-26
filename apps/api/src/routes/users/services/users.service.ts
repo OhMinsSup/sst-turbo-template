@@ -54,6 +54,9 @@ export class UsersService {
         username,
         encryptedPassword: password,
         encryptedSalt: salt,
+        UserProfile: {
+          create: {},
+        },
       },
     });
   }

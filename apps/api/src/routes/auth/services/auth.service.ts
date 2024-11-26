@@ -224,7 +224,11 @@ export class AuthService {
         await this.usersService.updateLastSignInAt(user.id, tx);
         await this.identityService.updateLastSignInAt(identity.id, user.id, tx);
       } catch (error) {
-        console.error(error);
+        this.logger.error(
+          "AuthService.signUp",
+          "Error while updating last sign in at",
+          error,
+        );
       }
 
       return {
@@ -306,12 +310,10 @@ export class AuthService {
               // active refresh token instead of
               // creating a new one.
               issuedToken = activeRefreshToken;
-              console.log("Revoked token is being reused(1)");
             } else {
               // For a revoked refresh token to be reused, it
               // has to fall within the reuse interval.
               if (isAfter(retryStart, token.updatedAt)) {
-                console.log("Revoked token is being reused(2)");
                 try {
                   await this.tokenService.revokeTokenFamily(
                     {
