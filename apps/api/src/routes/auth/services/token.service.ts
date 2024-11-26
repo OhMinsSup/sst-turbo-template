@@ -3,6 +3,7 @@ import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
 import type { Prisma, RefreshToken } from "@template/db";
+import { getExternalUserSelector } from "@template/db/selectors";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -54,7 +55,7 @@ export class TokenService {
   ) {
     const refreshToken = await this.grantAuthenticatedUser(params, tx);
 
-    const { token, expiresAt, session, expiresIn } =
+    const { token, expiresAt, session, expiresIn, user } =
       await this.generateAccessToken(
         {
           sessionId: refreshToken.sessionId,
@@ -68,6 +69,7 @@ export class TokenService {
       expiresAt,
       expiresIn,
       session,
+      user,
       refreshToken: refreshToken.token,
     };
   }
@@ -121,6 +123,11 @@ export class TokenService {
       throw new Error("Session not found");
     }
 
+    const user = await this.findUserByIdExternal(userId, tx);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
     const issuedAt = new Date();
     const expiresAt = this.env.getJwtExpiresAt(issuedAt);
 
@@ -129,15 +136,10 @@ export class TokenService {
       expiresIn: expiresAt.getTime(),
     };
 
-    const {
-      email,
-      Role: { symbol },
-    } = session.User;
-
     const token = await this.jwtService.signAsync(
       {
-        email,
-        role: symbol,
+        email: user.email,
+        role: user.Role.symbol,
         sessionId,
       },
       jwtOptions,
@@ -148,6 +150,7 @@ export class TokenService {
       expiresAt,
       expiresIn: this.env.getJwtExpiresIn(),
       session,
+      user,
     };
   }
 
@@ -262,5 +265,21 @@ export class TokenService {
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     return await this.createRefreshToken(params, tx);
+  }
+
+  /**
+   * @description Get a user by id (external)
+   * @param {string} id
+   * @param {Prisma.TransactionClient?} tx
+   */
+  async findUserByIdExternal(
+    id: string,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const ctx = tx ? tx.user : this.prismaService.user;
+    return await ctx.findUnique({
+      where: { id, deletedAt: null },
+      select: getExternalUserSelector(),
+    });
   }
 }

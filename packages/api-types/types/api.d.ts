@@ -383,6 +383,13 @@ export interface components {
        */
       refreshToken: string;
     };
+    UserProfileResponseDto: {
+      /**
+       * 이미지
+       * @description 프로필 이미지
+       */
+      image: string;
+    };
     UserResponseDto: {
       /**
        * 삭제일
@@ -422,6 +429,8 @@ export interface components {
        * @example 홍길동
        */
       username: string;
+      /** @description 프로필 */
+      UserProfile: components["schemas"]["UserProfileResponseDto"];
     };
     ValidationExceptionResponseDto: {
       /**

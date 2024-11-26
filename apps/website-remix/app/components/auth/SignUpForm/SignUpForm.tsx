@@ -42,6 +42,9 @@ export default function SignUpForm() {
     formData.append("email", input.email);
     formData.append("password", input.password);
     formData.append("confirmPassword", input.confirmPassword);
+    if (input.username) {
+      formData.append("username", input.username);
+    }
     formData.append("provider", input.provider);
     submit(input, {
       method: "post",

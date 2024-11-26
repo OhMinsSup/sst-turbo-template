@@ -1,10 +1,6 @@
 import { Injectable } from "@nestjs/common";
 
 import type { Prisma } from "@template/db";
-import {
-  getBaseUserSelector,
-  getSessionWithoutUserIdSelector,
-} from "@template/db/selectors";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 
@@ -40,21 +36,6 @@ export class SessionService {
         ip,
         userAgent,
       },
-      select: {
-        ...getSessionWithoutUserIdSelector(),
-        updatedAt: true,
-        createdAt: true,
-        User: {
-          select: {
-            ...getBaseUserSelector(),
-            Role: {
-              select: {
-                symbol: true,
-              },
-            },
-          },
-        },
-      },
     });
   }
 
@@ -71,21 +52,6 @@ export class SessionService {
     return ctx.findUnique({
       where: {
         id: sessionId,
-      },
-      select: {
-        ...getSessionWithoutUserIdSelector(),
-        updatedAt: true,
-        createdAt: true,
-        User: {
-          select: {
-            ...getBaseUserSelector(),
-            Role: {
-              select: {
-                symbol: true,
-              },
-            },
-          },
-        },
       },
     });
   }
@@ -116,21 +82,6 @@ export class SessionService {
       where: {
         id: sessionId,
       },
-      select: {
-        ...getSessionWithoutUserIdSelector(),
-        updatedAt: true,
-        createdAt: true,
-        User: {
-          select: {
-            ...getBaseUserSelector(),
-            Role: {
-              select: {
-                symbol: true,
-              },
-            },
-          },
-        },
-      },
     });
   }
 
@@ -152,21 +103,6 @@ export class SessionService {
         ip,
         userAgent,
         refreshedAt,
-      },
-      select: {
-        ...getSessionWithoutUserIdSelector(),
-        updatedAt: true,
-        createdAt: true,
-        User: {
-          select: {
-            ...getBaseUserSelector(),
-            Role: {
-              select: {
-                symbol: true,
-              },
-            },
-          },
-        },
       },
     });
   }

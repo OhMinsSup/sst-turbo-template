@@ -12,6 +12,15 @@ export class RoleResponseDto {
   readonly symbol: string;
 }
 
+export class UserProfileResponseDto {
+  @ApiProperty({
+    title: "이미지",
+    description: "프로필 이미지",
+  })
+  @Expose()
+  readonly image: string;
+}
+
 export class UserResponseDto {
   @ApiProperty({
     title: "ID",
@@ -73,4 +82,9 @@ export class UserResponseDto {
   @Type(() => RoleResponseDto)
   @Expose()
   readonly Role: RoleResponseDto;
+
+  @ApiProperty({ description: "프로필", type: UserProfileResponseDto })
+  @Type(() => UserProfileResponseDto)
+  @Expose()
+  readonly UserProfile: UserProfileResponseDto;
 }

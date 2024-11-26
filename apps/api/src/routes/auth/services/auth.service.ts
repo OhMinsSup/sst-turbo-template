@@ -129,7 +129,7 @@ export class AuthService {
           expiresIn: token.expiresIn,
           expiresAt: token.expiresAt,
           refreshToken: token.refreshToken,
-          user: token.session.User,
+          user: token.user,
         },
       };
     });
@@ -163,86 +163,102 @@ export class AuthService {
       throw new BadRequestException(this.authError.emailAlreadyExists());
     }
 
-    return await this.prismaService.$transaction(async (tx) => {
-      const { hashedPassword: password, salt } =
-        await this.passwordServie.hashPassword(input.password);
+    return await this.prismaService.$transaction(
+      async (tx) => {
+        const { hashedPassword: password, salt } =
+          await this.passwordServie.hashPassword(input.password);
 
-      // 이메일로 유저 생성
-      const user = await this.usersService.createNewUser(
-        {
-          email: input.email,
-          username: this.usersService.makeRandomUsername(input.username),
-          password,
-          salt,
-        },
-        tx,
-      );
-
-      const role = await this.roleService.findRole(Role.USER, tx);
-      if (!role) {
-        // Role이 없는 경우
-        throw new NotFoundException(this.authError.roleNotFound());
-      }
-
-      // 가져온 Role과 User를 연결
-      await this.roleService.linkRoleToUser(user.id, role.id, tx);
-
-      // Identity 찾기
-      let identity = await this.identityService.findIdentityByIdAndProvider(
-        user.id,
-        Provider.EMAIL,
-        tx,
-      );
-
-      if (!identity) {
-        // Identity 생성
-        identity = await this.identityService.createNewIdentity(
+        // 이메일로 유저 생성
+        const user = await this.usersService.createNewUser(
           {
-            userId: user.id,
-            provider: Provider.EMAIL,
-            identityData: {
-              sub: user.id,
-              email: user.email,
-            },
+            email: input.email,
+            username: this.usersService.makeRandomUsername(input.username),
+            password,
+            salt,
           },
           tx,
         );
 
-        // User와 Identity를 연결
-        await this.identityService.linkIdentityToUser(user.id, identity.id, tx);
-      }
+        const role = await this.roleService.findRole(Role.USER, tx);
+        if (!role) {
+          // Role이 없는 경우
+          throw new NotFoundException(this.authError.roleNotFound());
+        }
 
-      // Refresh Token 발급
-      const token = await this.tokenService.issueRefreshToken({
-        userId: user.id,
-        ip: hash(this.request.ip),
-        userAgent: this.request.headers["user-agent"],
-      });
+        // 가져온 Role과 User를 연결
+        await this.roleService.linkRoleToUser(user.id, role.id, tx);
 
-      try {
-        // 마지막 로그인 시간 업데이트
-        await this.usersService.updateLastSignInAt(user.id, tx);
-        await this.identityService.updateLastSignInAt(identity.id, user.id, tx);
-      } catch (error) {
-        this.logger.error(
-          "AuthService.signUp",
-          "Error while updating last sign in at",
-          error,
+        // Identity 찾기
+        let identity = await this.identityService.findIdentityByIdAndProvider(
+          user.id,
+          Provider.EMAIL,
+          tx,
         );
-      }
 
-      return {
-        code: HttpResultCode.OK,
-        data: {
-          token: token.token,
-          tokenType: TokenType.Bearer,
-          expiresIn: token.expiresIn,
-          expiresAt: token.expiresAt,
-          refreshToken: token.refreshToken,
-          user: token.session.User,
-        },
-      };
-    });
+        if (!identity) {
+          // Identity 생성
+          identity = await this.identityService.createNewIdentity(
+            {
+              userId: user.id,
+              provider: Provider.EMAIL,
+              identityData: {
+                sub: user.id,
+                email: user.email,
+              },
+            },
+            tx,
+          );
+
+          // User와 Identity를 연결
+          await this.identityService.linkIdentityToUser(
+            user.id,
+            identity.id,
+            tx,
+          );
+        }
+
+        // Refresh Token 발급
+        const token = await this.tokenService.issueRefreshToken(
+          {
+            userId: user.id,
+            ip: hash(this.request.ip),
+            userAgent: this.request.headers["user-agent"],
+          },
+          tx,
+        );
+
+        try {
+          // 마지막 로그인 시간 업데이트
+          await this.usersService.updateLastSignInAt(user.id, tx);
+          await this.identityService.updateLastSignInAt(
+            identity.id,
+            user.id,
+            tx,
+          );
+        } catch (error) {
+          this.logger.error(
+            "AuthService.signUp",
+            "Error while updating last sign in at",
+            error,
+          );
+        }
+
+        return {
+          code: HttpResultCode.OK,
+          data: {
+            token: token.token,
+            tokenType: TokenType.Bearer,
+            expiresIn: token.expiresIn,
+            expiresAt: token.expiresAt,
+            refreshToken: token.refreshToken,
+            user: token.user,
+          },
+        };
+      },
+      {
+        isolationLevel: Prisma.TransactionIsolationLevel.Serializable, // 격리 수준 지정
+      },
+    );
   }
 
   /**
@@ -374,7 +390,7 @@ export class AuthService {
               expiresIn: newToken.expiresIn,
               expiresAt: newToken.expiresAt,
               refreshToken: issuedToken.token,
-              user: newToken.session.User,
+              user: newToken.user,
             },
           };
         },
