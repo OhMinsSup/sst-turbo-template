@@ -41,9 +41,9 @@ export default function User() {
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
           <Avatar className="h-8 w-8">
-            <AvatarImage src={user.image ?? undefined} alt={`@${user.name}`} />
+            {/* <AvatarImage src={user.image ?? undefined} alt={`@${user.name}`} /> */}
             <AvatarFallback>
-              {user.name.slice(0, 2).toUpperCase()}
+              {user.username.slice(0, 2).toUpperCase()}
             </AvatarFallback>
           </Avatar>
         </Button>
@@ -51,7 +51,7 @@ export default function User() {
       <DropdownMenuContent className="w-56" align="end" forceMount>
         <DropdownMenuLabel className="font-normal">
           <div className="flex flex-col space-y-1">
-            <p className="text-sm font-medium leading-none">{user.name}</p>
+            <p className="text-sm font-medium leading-none">{user.username}</p>
             <p className="text-xs leading-none text-muted-foreground">
               {user.email}
             </p>

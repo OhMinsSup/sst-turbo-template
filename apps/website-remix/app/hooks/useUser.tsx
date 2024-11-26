@@ -17,7 +17,7 @@ export function useOptionalUser() {
   if (!data || !isUser(data.user)) {
     return undefined;
   }
-  return data.data.user;
+  return data.user as User;
 }
 
 export function useUser() {

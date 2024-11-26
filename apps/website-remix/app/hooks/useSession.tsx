@@ -17,12 +17,12 @@ function isSession(session: Session | undefined): session is Session {
   );
 }
 
-export function useOptionalSession() {
+export function useOptionalSession(): Session | undefined {
   const data = useRouteLoaderData<RoutesLoaderData>("root");
   if (!data || !isSession(data.session)) {
     return undefined;
   }
-  return data.data.session;
+  return data.session as Session;
 }
 
 export function useSession() {
