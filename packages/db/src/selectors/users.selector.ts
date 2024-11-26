@@ -5,6 +5,12 @@ import { getRefreshTokenSelector } from "./refreshToken.selector";
 import { getOnlySymbolRoleSelector } from "./role.selector";
 import { getSessionSelector } from "./session.selector";
 
+export const getUserProfileSelector = () => {
+  return Prisma.validator<Prisma.UserProfileSelect>()({
+    image: true,
+  });
+};
+
 export const getBaseUserSelector = () => {
   return Prisma.validator<Prisma.UserSelect>()({
     id: true,
@@ -21,6 +27,9 @@ export const getUserSelector = () => {
     ...getBaseUserSelector(),
     Role: {
       select: getOnlySymbolRoleSelector(),
+    },
+    UserProfile: {
+      select: getUserProfileSelector(),
     },
   });
 };

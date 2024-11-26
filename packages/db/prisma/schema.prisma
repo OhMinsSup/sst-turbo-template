@@ -31,6 +31,7 @@ model User {
   Session      Session[]
   RefreshToken RefreshToken[]
   Role         Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
+  UserProfile  UserProfile?
 
   @@map(name: "users")
 }
@@ -90,4 +91,12 @@ model Session {
   RefreshToken RefreshToken[]
 
   @@map("sessions")
+}
+
+model UserProfile {
+  image  String? // 이미지
+  User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  userId String  @unique
+
+  @@map("user_profiles")
 }
