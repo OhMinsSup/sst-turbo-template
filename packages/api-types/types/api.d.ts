@@ -105,6 +105,40 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/workspaces": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["WorkspacesController_findAll"];
+    put?: never;
+    /** 워크스페이스 생성 */
+    post: operations["WorkspacesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/workspaces/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 워크스페이스 단건 조회 */
+    get: operations["WorkspacesController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["WorkspacesController_remove"];
+    options?: never;
+    head?: never;
+    patch: operations["WorkspacesController_update"];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -133,9 +167,23 @@ export interface components {
        */
       tokenType: string;
       /** @description 세션 유저 정보 */
-      user: components["schemas"]["UserResponseDto"];
+      user: components["schemas"]["UserEntity"];
     };
     Boolean: Record<string, never>;
+    CreateWorkspaceDto: {
+      /**
+       * 워크스페이스 설명
+       * @description 워크스페이스에 대한 설명
+       * @example This is my workspace
+       */
+      description?: string | null;
+      /**
+       * 워크스페이스 이름
+       * @description 워크스페이스를 대표하는 이름
+       * @example My Workspace
+       */
+      title: string;
+    };
     ErrorResponseDto: {
       /** @description HttpExceptionResponseDto,ValidationExceptionResponseDto 두가지가 올수있습니다. */
       error: Record<string, never>;
@@ -244,7 +292,7 @@ export interface components {
       /** @description 에러메시지 */
       message: string;
     };
-    RoleResponseDto: {
+    RoleEntity: {
       /**
        * 기호
        * @description 역할 기호
@@ -383,7 +431,63 @@ export interface components {
        */
       refreshToken: string;
     };
-    UserProfileResponseDto: {
+    UpdateWorkspaceDto: {
+      /**
+       * 워크스페이스 설명
+       * @description 워크스페이스에 대한 설명
+       * @example This is my workspace
+       */
+      description?: string | null;
+      /**
+       * 워크스페이스 이름
+       * @description 워크스페이스를 대표하는 이름
+       * @example My Workspace
+       */
+      title?: string;
+    };
+    UserEntity: {
+      /**
+       * 삭제일
+       * Format: date-time
+       * @description 삭제일
+       */
+      deletedAt: string;
+      /**
+       * 이메일
+       * @description 사용자 이메일
+       * @example test@naver.com
+       */
+      email: string;
+      /**
+       * 이메일 확인 일시
+       * Format: date-time
+       * @description 이메일 확인 일시
+       */
+      emailConfirmedAt?: string;
+      /**
+       * ID
+       * @description 사용자 ID
+       * @example 123e4567-e89b-12d3-a456-426614174000
+       */
+      id: string;
+      /**
+       * 정지 여부
+       * @description 정지 여부
+       * @example false
+       */
+      isSuspended: boolean;
+      /** @description 역할 */
+      Role: components["schemas"]["RoleEntity"];
+      /**
+       * 이름
+       * @description 사용자 이름
+       * @example 홍길동
+       */
+      username: string;
+      /** @description 프로필 */
+      UserProfile: components["schemas"]["UserProfileEntity"];
+    };
+    UserProfileEntity: {
       /**
        * 이미지
        * @description 프로필 이미지
@@ -422,7 +526,7 @@ export interface components {
        */
       isSuspended: boolean;
       /** @description 역할 */
-      Role: components["schemas"]["RoleResponseDto"];
+      Role: components["schemas"]["RoleEntity"];
       /**
        * 이름
        * @description 사용자 이름
@@ -430,7 +534,7 @@ export interface components {
        */
       username: string;
       /** @description 프로필 */
-      UserProfile: components["schemas"]["UserProfileResponseDto"];
+      UserProfile: components["schemas"]["UserProfileEntity"];
     };
     ValidationExceptionResponseDto: {
       /**
@@ -470,6 +574,29 @@ export interface components {
        *     }
        */
       validationErrorInfo: Record<string, never>;
+    };
+    WorkspaceResponseDto: {
+      /**
+       * Format: date-time
+       * @description 생성일
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @description 삭제일
+       */
+      deletedAt?: string | null;
+      /** @description 워크스페이스 설명 */
+      description?: string | null;
+      /** @description 워크스페이스 ID */
+      id: number;
+      /** @description 워크스페이스 이름 */
+      title: string;
+      /**
+       * Format: date-time
+       * @description 수정일
+       */
+      updatedAt: string;
     };
   };
   responses: never;
@@ -776,6 +903,165 @@ export interface operations {
             error?: components["schemas"]["HttpExceptionResponseDto"];
           };
         };
+      };
+    };
+  };
+  WorkspacesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WorkspacesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateWorkspaceDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["SuccessResponseDto"] & {
+            data?: components["schemas"]["WorkspaceResponseDto"];
+          };
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?:
+              | components["schemas"]["ValidationExceptionResponseDto"]
+              | components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
+  WorkspacesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["ErrorResponseDto"] & {
+            error?: components["schemas"]["HttpExceptionResponseDto"];
+          };
+        };
+      };
+    };
+  };
+  WorkspacesController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  WorkspacesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateWorkspaceDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

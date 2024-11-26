@@ -2,7 +2,7 @@ import { NotFoundException } from "@nestjs/common";
 
 import { HttpResultCode } from "@template/common";
 
-import { ErrorResponseOption } from "../../../decorators/error-response.decorator";
+import type { ErrorResponseOption } from "../../../decorators/error-response.decorator";
 
 export const UserNotExistErrorCode = "User-0000";
 
