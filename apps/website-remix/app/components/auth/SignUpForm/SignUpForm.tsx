@@ -37,16 +37,17 @@ export default function SignUpForm() {
     reValidateMode: "onSubmit",
   });
 
-  const onSubmit = (input: FormFieldSignUpSchema) => {
+  const onSubmit = form.handleSubmit((input: FormFieldSignUpSchema) => {
     const formData = new FormData();
     formData.append("email", input.email);
     formData.append("password", input.password);
     formData.append("confirmPassword", input.confirmPassword);
+    formData.append("provider", input.provider);
     submit(input, {
       method: "post",
       replace: true,
     });
-  };
+  });
 
   return (
     <div className="text-center">
@@ -54,7 +55,7 @@ export default function SignUpForm() {
         <form
           id="signup-form"
           className="flex w-full flex-col gap-1.5 py-4 text-start"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={onSubmit}
         >
           <div className="grid gap-3">
             <FormField

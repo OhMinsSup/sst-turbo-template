@@ -26,7 +26,6 @@ export default function SignInForm() {
   const isSubmittingForm = navigation.state === "submitting";
 
   const form = useForm<FormFieldSignInSchema>({
-    progressive: true,
     resolver: zodResolver(signInSchema),
     defaultValues: {
       email: "",
@@ -37,24 +36,23 @@ export default function SignInForm() {
     reValidateMode: "onSubmit",
   });
 
-  const onSubmit = (input: FormFieldSignInSchema) => {
-    console.log("input", input);
+  const onSubmit = form.handleSubmit((input: FormFieldSignInSchema) => {
     const formData = new FormData();
     formData.append("email", input.email);
     formData.append("password", input.password);
+    formData.append("provider", input.provider);
     submit(formData, {
       method: "post",
       replace: true,
     });
-  };
+  });
 
   return (
     <div className="text-center">
       <Form {...form}>
         <form
           className="flex w-full flex-col gap-1.5 text-start"
-          id="signin-form"
-          onSubmit={form.handleSubmit(onSubmit)}
+          onSubmit={onSubmit}
         >
           <div className="grid gap-3">
             <FormField
@@ -95,8 +93,8 @@ export default function SignInForm() {
             />
             <Button
               type="submit"
-              // disabled={isSubmittingForm}
-              // aria-disabled={isSubmittingForm}
+              disabled={isSubmittingForm}
+              aria-disabled={isSubmittingForm}
             >
               {isSubmittingForm ? (
                 <Icons.Spinner className="mr-2 size-4 animate-spin" />

@@ -1,11 +1,10 @@
-import type { SerializeFrom } from "@remix-run/node";
 import { useRouteLoaderData } from "@remix-run/react";
+
+import type { Session } from "@template/auth";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 
-function isSession(
-  session: SerializeFrom<RoutesLoaderData>["session"],
-): session is SerializeFrom<RoutesLoaderData>["session"] {
+function isSession(session: Session | undefined): session is Session {
   if (typeof session === "undefined") {
     return false;
   }
@@ -23,7 +22,7 @@ export function useOptionalSession() {
   if (!data || !isSession(data.session)) {
     return undefined;
   }
-  return data.session;
+  return data.data.session;
 }
 
 export function useSession() {

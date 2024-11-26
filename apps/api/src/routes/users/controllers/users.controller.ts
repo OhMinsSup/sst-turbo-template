@@ -36,6 +36,6 @@ export class UsersController {
     },
   ])
   me(@AuthUser() user: UserExternalPayload) {
-    return user;
+    return this.service.getMe(user);
   }
 }

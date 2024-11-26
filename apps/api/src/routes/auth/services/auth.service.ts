@@ -128,7 +128,7 @@ export class AuthService {
           tokenType: TokenType.Bearer,
           expiresIn: token.expiresIn,
           expiresAt: token.expiresAt,
-          refreshToken: token.token,
+          refreshToken: token.refreshToken,
           user: token.session.User,
         },
       };
@@ -234,7 +234,7 @@ export class AuthService {
           tokenType: TokenType.Bearer,
           expiresIn: token.expiresIn,
           expiresAt: token.expiresAt,
-          refreshToken: token.token,
+          refreshToken: token.refreshToken,
           user: token.session.User,
         },
       };

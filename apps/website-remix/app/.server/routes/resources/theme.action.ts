@@ -25,7 +25,7 @@ export const action = async (ctx: ActionFunctionArgs) => {
     headers: { "set-cookie": setTheme(theme) },
   };
   if (redirectTo) {
-    return redirect(redirectTo, responseInit);
+    throw redirect(redirectTo, responseInit);
   } else {
     return data(
       {

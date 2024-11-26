@@ -1,11 +1,10 @@
-import type { SerializeFrom } from "@remix-run/node";
 import { useRouteLoaderData } from "@remix-run/react";
+
+import type { User } from "@template/auth";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 
-function isUser(
-  user: SerializeFrom<RoutesLoaderData>["user"],
-): user is SerializeFrom<RoutesLoaderData>["user"] {
+function isUser(user: User | undefined): user is User {
   if (typeof user === "undefined") {
     return false;
   }
@@ -18,7 +17,7 @@ export function useOptionalUser() {
   if (!data || !isUser(data.user)) {
     return undefined;
   }
-  return data.user;
+  return data.data.user;
 }
 
 export function useUser() {

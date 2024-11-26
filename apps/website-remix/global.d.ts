@@ -20,12 +20,14 @@
     readonly INIT_CWD: string;
     readonly npm_package_devDependencies_typescript: string;
     readonly npm_package_devDependencies__template_tsconfig: string;
+    readonly npm_package_dependencies_react_hook_form: string;
     readonly ANDROID_HOME: string;
     readonly NVM_CD_FLAGS: string;
     readonly npm_package_devDependencies_vite: string;
     readonly TERM: string;
     readonly SHELL: string;
     readonly npm_package_dependencies__template_ui: string;
+    readonly npm_package_dependencies__hookform_resolvers: string;
     readonly npm_package_prettier: string;
     readonly TMPDIR: string;
     readonly npm_package_dependencies__paralleldrive_cuid2: string;

@@ -1,6 +1,5 @@
 import { useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
-import { ServerOnly } from "remix-utils/server-only";
 
 import {
   Avatar,

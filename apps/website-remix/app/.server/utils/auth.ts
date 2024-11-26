@@ -1,5 +1,6 @@
 import { redirect } from "@remix-run/node";
 
+import type { Session, User } from "@template/auth";
 import {
   createAuthServerClient,
   parseCookieHeader,
@@ -82,4 +83,34 @@ export async function requireUserId(params: {
     throw redirect(loginRedirect);
   }
   return userId;
+}
+
+export interface UserAndSession {
+  session: Session | undefined;
+  user: User | undefined;
+}
+
+export async function getUserAndSession(
+  client: AuthRemixServerClient,
+): Promise<UserAndSession> {
+  const { session, error: sessionError } = await client.getSession();
+  if (sessionError || !session) {
+    return {
+      session: undefined,
+      user: undefined,
+    };
+  }
+
+  const { user, error: userError } = await client.getUser();
+  if (userError || !user) {
+    return {
+      session,
+      user: undefined,
+    };
+  }
+
+  return {
+    session,
+    user,
+  };
 }

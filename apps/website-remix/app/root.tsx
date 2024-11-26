@@ -11,11 +11,12 @@ import {
 import "@template/ui/globals.css";
 import "./styles.css";
 
-import type { LinksFunction, SerializeFrom } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
+import type { Session } from "@template/auth";
 import { cn } from "@template/ui/lib";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
@@ -56,13 +57,15 @@ interface Props {
 }
 
 function Document({ children }: Props) {
-  const data = useLoaderData<RoutesLoaderData>();
+  const {
+    requestInfo: { userPrefs },
+  } = useLoaderData<RoutesLoaderData>();
   return (
     <html
       lang="kr"
       itemScope
       itemType="http://schema.org/WebSite"
-      className={cn(data.requestInfo.userPrefs.theme)}
+      className={cn(userPrefs.theme)}
     >
       <head>
         <ClientHintCheck />
@@ -73,7 +76,7 @@ function Document({ children }: Props) {
       <body className="overscroll-none whitespace-pre-line bg-background antialiased">
         {children}
         <Toaster
-          theme={data.requestInfo.userPrefs.theme ?? undefined}
+          theme={userPrefs.theme ?? undefined}
           toastOptions={{
             classNames: {
               toast:
@@ -94,7 +97,7 @@ function Document({ children }: Props) {
 }
 
 interface AppWithProviderProps {
-  session?: SerializeFrom<RoutesLoaderData>["session"];
+  session?: Session | undefined;
   children: React.ReactNode;
 }
 
@@ -124,14 +127,14 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
 }
 
 export default function App() {
-  const data = useLoaderData<RoutesLoaderData>();
+  const { session, toast } = useLoaderData<RoutesLoaderData>();
 
   return (
     <Document>
-      <AppWithProvider session={data.session}>
+      <AppWithProvider session={session}>
         <Outlet />
       </AppWithProvider>
-      {data.toast ? <ShowToast toast={data.toast} /> : null}
+      {toast ? <ShowToast toast={toast} /> : null}
     </Document>
   );
 }

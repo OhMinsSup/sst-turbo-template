@@ -5,8 +5,7 @@ import { getApiClient } from "./api-client";
 export const createRemixBrowserClient = () => {
   return createAuthBrowserClient({
     isSingleton: true,
-    // logDebugMessages: false,
-    logDebugMessages: true,
+    logDebugMessages: false,
     api: getApiClient(),
   });
 };

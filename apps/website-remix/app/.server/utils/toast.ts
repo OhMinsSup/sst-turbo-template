@@ -41,7 +41,9 @@ export async function redirectWithToast(
   });
 }
 
-export async function createToastHeaders(toastInput: ToastInput) {
+export async function createToastHeaders(
+  toastInput: ToastInput,
+): Promise<Headers> {
   const session = await toastSessionStorage.getSession();
   const toast = ToastSchema.parse(toastInput);
   session.flash(toastKey, toast);
@@ -49,7 +51,12 @@ export async function createToastHeaders(toastInput: ToastInput) {
   return new Headers({ "set-cookie": cookie });
 }
 
-export async function getToast(request: Request) {
+export interface ToastWithHeaders {
+  toast: Toast | null;
+  headers: Headers | null;
+}
+
+export async function getToast(request: Request): Promise<ToastWithHeaders> {
   const session = await toastSessionStorage.getSession(
     request.headers.get("cookie"),
   );

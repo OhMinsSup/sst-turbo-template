@@ -5,10 +5,7 @@ import { safeRedirect } from "remix-utils/safe-redirect";
 import type { FormFieldSignUpSchema } from "@template/validators/auth";
 import { HttpStatusCode } from "@template/common";
 
-import {
-  createRemixServerAuthClient,
-  requireAnonymous,
-} from "~/.server/utils/auth";
+import { createRemixServerAuthClient } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
@@ -21,8 +18,6 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
-  await requireAnonymous(client);
-
   const formData = await request.formData();
 
   const input = {
@@ -30,7 +25,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     password: formData.get("password"),
     confirmPassword: formData.get("confirmPassword"),
     username: formData.get("username"),
-    provider: "email",
+    provider: formData.get("provider"),
   } as FormFieldSignUpSchema;
 
   const { error } = await client.signUp(input);

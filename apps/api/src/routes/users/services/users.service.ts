@@ -1,9 +1,11 @@
 import { Injectable } from "@nestjs/common";
 
+import { HttpResultCode } from "@template/common";
 import { Prisma } from "@template/db";
 import {
   getExternalUserSelector,
   getInternalUserSelector,
+  UserExternalPayload,
 } from "@template/db/selectors";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -28,6 +30,13 @@ export class UsersService {
     private readonly sessionService: SessionService,
     private readonly tokenService: TokenService,
   ) {}
+
+  getMe(user: UserExternalPayload) {
+    return {
+      code: HttpResultCode.OK,
+      data: user,
+    };
+  }
 
   /**
    * @description 유저 생성

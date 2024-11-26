@@ -1,14 +1,11 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { redirect } from "@remix-run/node";
 import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignInSchema } from "@template/validators/auth";
 import { HttpResultCode, HttpStatusCode } from "@template/common";
 
-import {
-  createRemixServerAuthClient,
-  requireAnonymous,
-} from "~/.server/utils/auth";
+import { createRemixServerAuthClient } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
@@ -21,23 +18,15 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     headers,
   });
 
-  console.log("client", client);
-
-  await requireAnonymous(client);
-
   const formData = await request.formData();
 
   const input = {
     email: formData.get("email"),
     password: formData.get("password"),
-    provider: "email",
+    provider: formData.get("provider"),
   } as FormFieldSignInSchema;
 
-  console.log("input", input);
-
   const { error } = await client.signIn(input);
-
-  console.log("error", error);
 
   if (error?.error) {
     switch (error.statusCode) {

@@ -25,12 +25,14 @@
     export const INIT_CWD: string;
     export const npm_package_devDependencies_typescript: string;
     export const npm_package_devDependencies__template_tsconfig: string;
+    export const npm_package_dependencies_react_hook_form: string;
     export const ANDROID_HOME: string;
     export const NVM_CD_FLAGS: string;
     export const npm_package_devDependencies_vite: string;
     export const TERM: string;
     export const SHELL: string;
     export const npm_package_dependencies__template_ui: string;
+    export const npm_package_dependencies__hookform_resolvers: string;
     export const npm_package_prettier: string;
     export const TMPDIR: string;
     export const npm_package_dependencies__paralleldrive_cuid2: string;

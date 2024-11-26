@@ -3,49 +3,55 @@ import { data } from "@remix-run/node";
 
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
-import { createRemixServerAuthClient } from "~/.server/utils/auth";
+import type { Theme } from "~/.server/utils/theme";
+import {
+  createRemixServerAuthClient,
+  getUserAndSession,
+} from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/utils/client-hints";
 
+export interface RequestInfo {
+  hints: Record<string, string>;
+  origin: string;
+  path: string;
+  userPrefs: {
+    theme: Theme | null;
+  };
+}
+
 export const loader = async ({ request }: LoaderFunctionArgs) => {
   const headers = new Headers();
 
-  const { toast, headers: toastHeaders } = await getToast(request);
-  const requestInfo = getRequestInfo(request.headers);
+  const toastData = await getToast(request);
+  const { domainUrl } = getRequestInfo(request.headers);
 
   const client = createRemixServerAuthClient({
     request,
     headers,
   });
 
-  const { session } = await client.getSession();
+  const auth = await getUserAndSession(client);
 
-  const user = await (async function () {
-    try {
-      const { user } = await client.getUser();
-      return user;
-    } catch {
-      return undefined;
-    }
-  })();
+  const requestInfo: RequestInfo = {
+    hints: getHints(request),
+    origin: domainUrl,
+    path: new URL(request.url).pathname,
+    userPrefs: {
+      theme: getTheme(request),
+    },
+  };
 
   return data(
     {
-      requestInfo: {
-        hints: getHints(request),
-        origin: requestInfo.domainUrl,
-        path: new URL(request.url).pathname,
-        userPrefs: {
-          theme: getTheme(request),
-        },
-      },
-      toast,
-      session,
-      user,
+      requestInfo,
+      toast: toastData.toast,
+      session: auth.session,
+      user: auth.user,
     },
     {
-      headers: combineHeaders(headers, toastHeaders),
+      headers: combineHeaders(headers, toastData.headers),
     },
   );
 };
