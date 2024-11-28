@@ -1,31 +1,39 @@
-import { Controller, Get, HttpStatus } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Controller, Get } from "@nestjs/common";
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 
 import { AuthUser } from "../../../decorators/auth-user.decorator";
-import { ErrorResponse } from "../../../decorators/error-response.decorator";
-import { SuccessResponse } from "../../../decorators/success-response.decorator";
 import { JwtAuth } from "../../../guards/jwt-auth.guard";
-import { AuthErrorDefine } from "../../../routes/auth/errors";
-import { UserSuccessDefine } from "../../../shared/dtos/response/users/user-response.dto";
+import {
+  OpenApiBadRequestErrorDefine,
+  OpenApiNotFoundErrorDefine,
+  OpenApiUnauthorizedErrorDefine,
+} from "../../../routes/auth/open-api";
+import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
+import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { UserResponseDto } from "../../../shared/dtos/response/users/user-response.dto";
+import { OpenApiSuccessResponseDefine } from "../open-api";
 import { UsersService } from "../services/users.service";
 
 @ApiTags("사용자")
 @Controller("users")
+@ApiExtraModels(HttpErrorDto, ValidationErrorDto, UserResponseDto)
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
   @Get("me")
   @ApiOperation({ summary: "로그인 사용자 정보" })
   @JwtAuth()
-  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-    AuthErrorDefine.invalidAuthorizationHeader,
-    AuthErrorDefine.notLogin,
-  ])
-  @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
-  @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
-  @SuccessResponse(HttpStatus.OK, [UserSuccessDefine.me])
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiSuccessResponseDefine.me)
   me(@AuthUser() user: UserExternalPayload) {
     return this.service.getMe(user);
   }

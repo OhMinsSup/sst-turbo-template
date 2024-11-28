@@ -13,7 +13,7 @@ import helmet from "helmet";
 
 import { AppModule } from "./app.module";
 import { SuccessInterceptor } from "./interceptors/sucess.interceptor";
-import { CustomValidationError } from "./shared/dtos/response/validation-exception-response.dto";
+import { CustomValidationError } from "./shared/dtos/models/validation-exception-response.dto";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);

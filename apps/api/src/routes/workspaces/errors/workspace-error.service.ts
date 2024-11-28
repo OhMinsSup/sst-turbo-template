@@ -2,8 +2,7 @@ import { Injectable, NotFoundException } from "@nestjs/common";
 
 import { HttpResultCode } from "@template/common";
 
-import type { ErrorResponseOption } from "../../../decorators/error-response.decorator";
-import { CustomValidationError } from "../../../shared/dtos/response/validation-exception-response.dto";
+import { CustomValidationError } from "../../../shared/dtos/models/validation-exception-response.dto";
 
 export const WorkspaceErrorDefine = {
   workspaceNotFound: {
@@ -33,17 +32,15 @@ export const WorkspaceErrorDefine = {
 export class WorkspaceErrorService {
   /**
    * @description 워크스페이스를 찾을 수 없습니다.
-   * @returns {ErrorResponseOption}
    */
-  workspaceNotFound(): ErrorResponseOption {
+  workspaceNotFound() {
     return WorkspaceErrorDefine.workspaceNotFound;
   }
 
   /**
    * @description 요청 데이터 검증 오류
-   * @returns {ErrorResponseOption}
    */
-  createWorkspaceValidation(): ErrorResponseOption {
+  createWorkspaceValidation() {
     return WorkspaceErrorDefine.createWorkspaceValidation;
   }
 }

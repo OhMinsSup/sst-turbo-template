@@ -30,7 +30,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 이메일 회원가입 */
+    /** 이메일+비밀번호 로그인 */
     post: operations["AuthController_signIn"];
     delete?: never;
     options?: never;
@@ -47,7 +47,7 @@ export interface paths {
     };
     get?: never;
     put?: never;
-    /** 이메일 회원가입 */
+    /** 이메일+비밀번호 회원가입 */
     post: operations["AuthController_signUp"];
     delete?: never;
     options?: never;
@@ -112,6 +112,7 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
+    /** 워크스페이스 목록 */
     get: operations["WorkspacesController_findAll"];
     put?: never;
     /** 워크스페이스 생성 */
@@ -143,7 +144,7 @@ export interface paths {
 export type webhooks = Record<string, never>;
 export interface components {
   schemas: {
-    AuthTokenResponseDto: {
+    AuthEntity: {
       /**
        * Format: date-time
        * @description 만료일
@@ -169,7 +170,84 @@ export interface components {
       /** @description 세션 유저 정보 */
       user: components["schemas"]["UserEntity"];
     };
-    Boolean: Record<string, never>;
+    AuthResponseDto: {
+      /** @description 데이터 응답 */
+      data: components["schemas"]["AuthEntity"];
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
+    };
     CreateWorkspaceDto: {
       /**
        * 워크스페이스 설명
@@ -184,9 +262,10 @@ export interface components {
        */
       title: string;
     };
-    ErrorResponseDto: {
-      /** @description HttpExceptionResponseDto,ValidationExceptionResponseDto 두가지가 올수있습니다. */
-      error: Record<string, never>;
+    CustomValidationError: Record<string, never>;
+    HttpErrorDto: {
+      /** @description Http Exception Response DTO */
+      error: components["schemas"]["HttpExceptionResponseDto"];
       /**
        * @description 결과 코드
        * @enum {number}
@@ -292,63 +371,9 @@ export interface components {
       /** @description 에러메시지 */
       message: string;
     };
-    RoleEntity: {
-      /**
-       * 기호
-       * @description 역할 기호
-       * @example USER
-       */
-      symbol: string;
-    };
-    SignInDTO: {
-      /**
-       * Email
-       * @description 이메일 주소
-       * @example example@example.com
-       */
-      email: string;
-      /**
-       * Password
-       * @description The password of the user
-       */
-      password: string;
-      /**
-       * Provider
-       * @description 인증 방식
-       * @example email
-       * @enum {string}
-       */
-      provider: "email";
-    };
-    SignUpDTO: {
-      /**
-       * Email
-       * @description 이메일 주소
-       * @example example@example.com
-       */
-      email: string;
-      /**
-       * Password
-       * @description The password of the user
-       */
-      password: string;
-      /**
-       * Provider
-       * @description 인증 방식
-       * @example email
-       * @enum {string}
-       */
-      provider: "email";
-      /**
-       * Usernaem
-       * @description 유저의 이름
-       * @example John Doe
-       */
-      username?: string;
-    };
-    SuccessResponseDto: {
-      /** @description object 또는 array 형식 또는 프리미티 형식. */
-      data: Record<string, never>;
+    LogoutResponseDto: {
+      /** @description 데이터 응답 */
+      data: boolean;
       /**
        * @description 결과 코드
        * @enum {number}
@@ -424,6 +449,60 @@ export interface components {
         | 504
         | 505;
     };
+    RoleEntity: {
+      /**
+       * 기호
+       * @description 역할 기호
+       * @example USER
+       */
+      symbol: string;
+    };
+    SignInDTO: {
+      /**
+       * Email
+       * @description 이메일 주소
+       * @example example@example.com
+       */
+      email: string;
+      /**
+       * Password
+       * @description The password of the user
+       */
+      password: string;
+      /**
+       * Provider
+       * @description 인증 방식
+       * @example email
+       * @enum {string}
+       */
+      provider: "email";
+    };
+    SignUpDTO: {
+      /**
+       * Email
+       * @description 이메일 주소
+       * @example example@example.com
+       */
+      email: string;
+      /**
+       * Password
+       * @description The password of the user
+       */
+      password: string;
+      /**
+       * Provider
+       * @description 인증 방식
+       * @example email
+       * @enum {string}
+       */
+      provider: "email";
+      /**
+       * Usernaem
+       * @description 유저의 이름
+       * @example John Doe
+       */
+      username?: string;
+    };
     TokenDTO: {
       /**
        * 재발급 토큰
@@ -495,108 +574,90 @@ export interface components {
       image: string;
     };
     UserResponseDto: {
+      /** @description 데이터 응답 */
+      data: components["schemas"]["UserEntity"];
       /**
-       * 삭제일
-       * Format: date-time
-       * @description 삭제일
+       * @description 결과 코드
+       * @enum {number}
        */
-      deletedAt: string;
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
       /**
-       * 이메일
-       * @description 사용자 이메일
-       * @example test@naver.com
+       * @description 상태코드
+       * @enum {number}
        */
-      email: string;
-      /**
-       * 이메일 확인 일시
-       * Format: date-time
-       * @description 이메일 확인 일시
-       */
-      emailConfirmedAt?: string;
-      /**
-       * ID
-       * @description 사용자 ID
-       * @example 123e4567-e89b-12d3-a456-426614174000
-       */
-      id: string;
-      /**
-       * 정지 여부
-       * @description 정지 여부
-       * @example false
-       */
-      isSuspended: boolean;
-      /** @description 역할 */
-      Role: components["schemas"]["RoleEntity"];
-      /**
-       * 이름
-       * @description 사용자 이름
-       * @example 홍길동
-       */
-      username: string;
-      /** @description 프로필 */
-      UserProfile: components["schemas"]["UserProfileEntity"];
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
     };
-    ValidationExceptionResponseDto: {
-      /**
-       * @description 에러명
-       * @enum {string}
-       */
-      error:
-        | "BadRequestException"
-        | "ForbiddenException"
-        | "NotFoundException"
-        | "UnauthorizedException"
-        | "NotAcceptableException"
-        | "RequestTimeoutException"
-        | "ConflictException"
-        | "GoneException"
-        | "HttpVersionNotSupportedException"
-        | "PayloadTooLargeException"
-        | "UnsupportedMediaTypeException"
-        | "UnprocessableEntityException"
-        | "InternalServerErrorException"
-        | "NotImplementedException"
-        | "ImATeapotException"
-        | "MethodNotAllowedException"
-        | "BadGatewayException"
-        | "ServiceUnavailableException"
-        | "GatewayTimeoutException"
-        | "PreconditionFailedException"
-        | "ThrottlerException";
-      /** @description 에러메시지 */
-      message: string;
-      /**
-       * @description 필드 : [에러정보] 형식의 에러정보가 담긴 객체입니다.
-       * @example {
-       *       "fieldName": [
-       *         "errorinfoOfString"
-       *       ]
-       *     }
-       */
-      validationErrorInfo: Record<string, never>;
-    };
-    WorkspaceResponseDto: {
-      /**
-       * Format: date-time
-       * @description 생성일
-       */
-      createdAt: string;
-      /**
-       * Format: date-time
-       * @description 삭제일
-       */
-      deletedAt?: string | null;
-      /** @description 워크스페이스 설명 */
-      description?: string | null;
-      /** @description 워크스페이스 ID */
-      id: number;
-      /** @description 워크스페이스 이름 */
-      title: string;
-      /**
-       * Format: date-time
-       * @description 수정일
-       */
-      updatedAt: string;
+    ValidationErrorDto: {
+      /** @description Custom Validation Error Response DTO */
+      error: components["schemas"]["CustomValidationError"];
+      /** @description 결과 코드 */
+      resultCode: number;
+      /** @description 상태코드 */
+      statusCode: number;
     };
   };
   responses: never;
@@ -621,9 +682,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["Boolean"];
-          };
+          "application/json": components["schemas"]["LogoutResponseDto"];
         };
       };
       400: {
@@ -631,9 +690,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       401: {
@@ -641,9 +698,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       404: {
@@ -651,9 +706,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
     };
@@ -677,9 +730,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthTokenResponseDto"];
-          };
+          "application/json": components["schemas"]["AuthResponseDto"];
         };
       };
       400: {
@@ -687,11 +738,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
         };
       };
       401: {
@@ -699,9 +748,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       404: {
@@ -709,9 +756,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
     };
@@ -735,9 +780,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthTokenResponseDto"];
-          };
+          "application/json": components["schemas"]["AuthResponseDto"];
         };
       };
       400: {
@@ -745,11 +788,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
         };
       };
       401: {
@@ -757,9 +798,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       404: {
@@ -767,9 +806,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
     };
@@ -799,9 +836,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["AuthTokenResponseDto"];
-          };
+          "application/json": components["schemas"]["AuthResponseDto"];
         };
       };
       400: {
@@ -809,11 +844,9 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
         };
       };
       401: {
@@ -821,9 +854,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       403: {
@@ -831,9 +862,15 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      429: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
     };
@@ -869,9 +906,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["UserResponseDto"];
-          };
+          "application/json": components["schemas"]["UserResponseDto"];
         };
       };
       400: {
@@ -879,9 +914,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       401: {
@@ -889,9 +922,7 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       404: {
@@ -899,16 +930,21 @@ export interface operations {
           [name: string]: unknown;
         };
         content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
     };
   };
   WorkspacesController_findAll: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 페이지 크기 */
+        limit?: number;
+        /** @description 페이지 번호 */
+        pageNo?: number | null;
+        /** @description 작업공간 제목 검색 */
+        title?: string | null;
+      };
       header?: never;
       path?: never;
       cookie?: never;
@@ -936,47 +972,11 @@ export interface operations {
       };
     };
     responses: {
-      200: {
+      201: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["SuccessResponseDto"] & {
-            data?: components["schemas"]["WorkspaceResponseDto"];
-          };
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?:
-              | components["schemas"]["ValidationExceptionResponseDto"]
-              | components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
+        content?: never;
       };
     };
   };
@@ -991,35 +991,11 @@ export interface operations {
     };
     requestBody?: never;
     responses: {
-      400: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["ErrorResponseDto"] & {
-            error?: components["schemas"]["HttpExceptionResponseDto"];
-          };
-        };
+        content?: never;
       };
     };
   };

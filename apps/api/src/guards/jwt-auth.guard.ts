@@ -10,11 +10,11 @@ import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
 import { Request } from "express";
 import { Observable } from "rxjs";
+import { OpenApiErrorDefine } from "src/routes/auth/open-api";
 
 import { TokenType } from "@template/common";
 
 import type { JwtPayload } from "../routes/auth/services/auth.service";
-import { AuthErrorService } from "../routes/auth/errors";
 import { AuthService } from "../routes/auth/services/auth.service";
 
 @Injectable()
@@ -22,7 +22,6 @@ export class JwtAuthGuard implements CanActivate {
   constructor(
     private jwtService: JwtService,
     private authService: AuthService,
-    private authError: AuthErrorService,
     private reflector: Reflector,
   ) {}
 
@@ -58,14 +57,14 @@ export class JwtAuthGuard implements CanActivate {
     const authorization = request.headers.authorization;
     if (!authorization || (authorization && Array.isArray(authorization))) {
       throw new UnauthorizedException(
-        this.authError.invalidAuthorizationHeader(),
+        OpenApiErrorDefine.invalidAuthorizationHeader,
       );
     }
 
     const tokenString = authorization.split(`${TokenType.Bearer} `).at(-1);
     if (!tokenString) {
       throw new UnauthorizedException(
-        this.authError.invalidAuthorizationHeader(),
+        OpenApiErrorDefine.invalidAuthorizationHeader,
       );
     }
 

@@ -8,18 +8,14 @@ import {
 } from "@nestjs/common";
 import { ThrottlerException } from "@nestjs/throttler";
 import { Request, Response } from "express";
-import { ErrorResponseOption } from "src/decorators/error-response.decorator";
-import { GlobalErrorService } from "src/integrations/errors/global-error.service";
 
 import { HttpResultCode } from "@template/common";
 
-import { HttpExceptionResponseDto } from "../shared/dtos/response/http-exception-response.dto";
-import { CustomValidationError } from "../shared/dtos/response/validation-exception-response.dto";
+import { HttpExceptionResponseDto } from "../shared/dtos/models/http-exception-response.dto";
+import { CustomValidationError } from "../shared/dtos/models/validation-exception-response.dto";
 
 @Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(private readonly globalError: GlobalErrorService) {}
-
   // eslint-disable-next-line @typescript-eslint/require-await
   async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
@@ -35,10 +31,12 @@ export class HttpExceptionFilter implements ExceptionFilter {
     // 많은 요청이 들어왔을 때
     if (exception instanceof ThrottlerException) {
       statusCode = HttpStatus.TOO_MANY_REQUESTS;
-      const throttler = this.globalError.throttler();
-      resultCode = throttler.resultCode;
+      const throttler = {
+        message: "ThrottlerException: Too Many Requests",
+      };
+      resultCode = HttpResultCode.TOO_MANY_REQUESTS;
       error = {
-        message: throttler.message as string,
+        message: throttler.message,
         error: ThrottlerException.name,
       };
     } else if (exception instanceof CustomValidationError) {
@@ -58,8 +56,8 @@ export class HttpExceptionFilter implements ExceptionFilter {
         };
       } else {
         // 에러 코드화를 진행할 부분
-        const objError = getError as ErrorResponseOption;
-        resultCode = objError.resultCode;
+        const objError = getError as Record<string, string | number>;
+        resultCode = objError.resultCode as unknown as HttpResultCode;
         error = {
           error: exception.name,
           message: objError.message as string,

@@ -61,10 +61,18 @@ export interface UserAndSession {
   user: User | undefined;
 }
 
+export async function getSession(client: AuthClient) {
+  return await client.getSession();
+}
+
+export async function getUser(client: AuthClient) {
+  return await client.getUser();
+}
+
 export async function getUserAndSession(
   client: AuthClient,
 ): Promise<UserAndSession> {
-  const { session, error: sessionError } = await client.getSession();
+  const { session, error: sessionError } = await getSession(client);
   if (sessionError || !session) {
     return {
       session: undefined,
@@ -72,7 +80,7 @@ export async function getUserAndSession(
     };
   }
 
-  const { user, error: userError } = await client.getUser();
+  const { user, error: userError } = await getUser(client);
   if (userError || !user) {
     return {
       session,

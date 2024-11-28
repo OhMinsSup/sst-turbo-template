@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 
 import { UserEntity } from "../../users/entities/user.entity";
 
+@Exclude()
 export class AuthEntity {
   @ApiProperty({
     description: "토큰",

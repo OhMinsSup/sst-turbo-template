@@ -24,7 +24,7 @@ import { SignInDTO } from "../dto/signin.dto";
 import { SignUpDTO } from "../dto/signup.dto";
 import { GrantType, TokenQueryDTO } from "../dto/token-query.dto";
 import { TokenDTO } from "../dto/token.dto";
-import { AuthErrorService } from "../errors";
+import { OpenApiErrorDefine } from "../open-api";
 import { IdentityService } from "./identity.service";
 import { PasswordService } from "./password.service";
 import { RoleService } from "./role.service";
@@ -50,7 +50,6 @@ export class AuthService {
     private readonly roleService: RoleService,
     private readonly identityService: IdentityService,
     private readonly sessionService: SessionService,
-    private readonly authError: AuthErrorService,
     private readonly logger: LoggerService,
     @Inject(REQUEST) private request: Request,
   ) {}
@@ -65,7 +64,9 @@ export class AuthService {
         return await this._signInWithEmail(input);
       }
       default: {
-        throw new UnauthorizedException(this.authError.unsupportedAuthMethod());
+        throw new UnauthorizedException(
+          OpenApiErrorDefine.unsupportedAuthMethod,
+        );
       }
     }
   }
@@ -78,7 +79,7 @@ export class AuthService {
     const user = await this.usersService.isDuplicatedEmail(input.email);
 
     if (!user) {
-      throw new NotFoundException(this.authError.notFoundUser());
+      throw new BadRequestException(OpenApiErrorDefine.notFoundUser);
     }
 
     const compare = await this.passwordServie.compare(
@@ -88,7 +89,7 @@ export class AuthService {
     );
 
     if (!compare) {
-      throw new BadRequestException(this.authError.incorrectPassword());
+      throw new BadRequestException(OpenApiErrorDefine.incorrectPassword);
     }
 
     return await this.prismaService.$transaction(async (tx) => {
@@ -100,7 +101,7 @@ export class AuthService {
       );
 
       if (!identity) {
-        throw new NotFoundException(this.authError.notFoundUser());
+        throw new NotFoundException(OpenApiErrorDefine.notFoundUser);
       }
 
       // Refresh Token 발급
@@ -145,7 +146,9 @@ export class AuthService {
         return await this._signUpWithEmail(input);
       }
       default: {
-        throw new UnauthorizedException(this.authError.unsupportedAuthMethod());
+        throw new UnauthorizedException(
+          OpenApiErrorDefine.unsupportedAuthMethod,
+        );
       }
     }
   }
@@ -160,7 +163,7 @@ export class AuthService {
 
     if (user) {
       // 이미 존재하는 이메일
-      throw new BadRequestException(this.authError.emailAlreadyExists());
+      throw new BadRequestException(OpenApiErrorDefine.emailAlreadyExists);
     }
 
     return await this.prismaService.$transaction(
@@ -182,7 +185,7 @@ export class AuthService {
         const role = await this.roleService.findRole(Role.USER, tx);
         if (!role) {
           // Role이 없는 경우
-          throw new NotFoundException(this.authError.roleNotFound());
+          throw new NotFoundException(OpenApiErrorDefine.roleNotFound);
         }
 
         // 가져온 Role과 User를 연결
@@ -271,7 +274,7 @@ export class AuthService {
       return await this.refreshTokenGrant(input);
     }
 
-    throw new UnauthorizedException(this.authError.unsupportedGrantType());
+    throw new UnauthorizedException(OpenApiErrorDefine.unsupportedGrantType);
   }
 
   /**
@@ -289,19 +292,19 @@ export class AuthService {
       const data = await this.usersService.findUserWithRefreshToken(input);
 
       if (!data) {
-        throw new BadRequestException(this.authError.invalidToken());
+        throw new BadRequestException(OpenApiErrorDefine.invalidToken);
       }
 
       const { session, token, user } = data;
 
       // 사용자가 정지되었는지 확인
       if (user.isSuspended) {
-        throw new ForbiddenException(this.authError.suspensionUser());
+        throw new ForbiddenException(OpenApiErrorDefine.suspensionUser);
       }
 
       // 세션이 만료되었는지 확인
       if (session.notAfter && isAfter(retryStart, session.notAfter)) {
-        throw new BadRequestException(this.authError.expiredToken());
+        throw new BadRequestException(OpenApiErrorDefine.expiredToken);
       }
 
       return await this.prismaService.$transaction(
@@ -343,7 +346,7 @@ export class AuthService {
                 }
 
                 throw new BadRequestException(
-                  this.authError.refreshTokenAlreadyUsed(),
+                  OpenApiErrorDefine.refreshTokenAlreadyUsed,
                 );
               }
             }
@@ -402,7 +405,7 @@ export class AuthService {
       );
     }
 
-    throw new ConflictException(this.authError.tooManyTokenRefreshRequests());
+    throw new ConflictException(OpenApiErrorDefine.tooManyTokenRefreshRequests);
   }
 
   /**
@@ -429,13 +432,13 @@ export class AuthService {
    */
   async maybeLoadUserOrSession(payload: JwtPayload) {
     if (!payload.sub) {
-      throw new BadRequestException(this.authError.invalidToken());
+      throw new BadRequestException(OpenApiErrorDefine.invalidToken);
     }
 
     const user = await this.usersService.findUserByIdExternal(payload.sub);
 
     if (!user) {
-      throw new NotFoundException(this.authError.notFoundUser());
+      throw new NotFoundException(OpenApiErrorDefine.notFoundUser);
     }
 
     let session: Session | undefined;
@@ -444,7 +447,7 @@ export class AuthService {
       session = await this.sessionService.findSessionByID(payload.sessionId);
 
       if (!session) {
-        throw new UnauthorizedException(this.authError.notLogin());
+        throw new UnauthorizedException(OpenApiErrorDefine.notLogin);
       }
     }
 

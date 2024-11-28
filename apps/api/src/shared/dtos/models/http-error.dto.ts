@@ -1,12 +1,13 @@
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose, Type } from "class-transformer";
+import { Exclude, Expose, Type } from "class-transformer";
 
 import { HttpResultCode } from "@template/common";
 
-import { AuthEntity } from "../../../../routes/auth/entities/auth.entity";
+import { HttpExceptionResponseDto } from "./http-exception-response.dto";
 
-export class AuthResponseDto {
+@Exclude()
+export class HttpErrorDto {
   @ApiProperty({ enum: HttpStatus, description: "상태코드" })
   @Expose()
   readonly statusCode: number;
@@ -19,10 +20,10 @@ export class AuthResponseDto {
   readonly resultCode: number;
 
   @ApiProperty({
-    type: () => AuthEntity,
-    description: "데이터 응답",
+    type: () => HttpExceptionResponseDto,
+    description: "Http Exception Response DTO",
   })
-  @Type(() => AuthEntity)
+  @Type(() => HttpExceptionResponseDto)
   @Expose()
-  readonly data: AuthEntity;
+  readonly error: HttpExceptionResponseDto;
 }

@@ -11,4 +11,9 @@ export const WorkspaceSuccessDefine = {
     exampleTitle: "워크스페이스 생성 성공",
     resultCode: HttpResultCode.OK,
   },
+  list: {
+    model: WorkspaceResponseDto,
+    exampleDescription: "예시",
+    exampleTitle: "예시",
+  },
 };

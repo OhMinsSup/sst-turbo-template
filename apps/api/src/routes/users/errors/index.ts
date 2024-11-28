@@ -2,13 +2,11 @@ import { NotFoundException } from "@nestjs/common";
 
 import { HttpResultCode } from "@template/common";
 
-import type { ErrorResponseOption } from "../../../decorators/error-response.decorator";
-
 export const UserNotExistErrorCode = "User-0000";
 
 type Keys = typeof UserNotExistErrorCode;
 
-export const UserErrorDefine: Record<Keys, ErrorResponseOption> = {
+export const UserErrorDefine = {
   [UserNotExistErrorCode]: {
     model: NotFoundException,
     exampleDescription: "사용자가 존재하지 않음",

@@ -15,15 +15,10 @@ import { ApiOperation, ApiTags } from "@nestjs/swagger";
 import type { UserExternalPayload } from "@template/db/selectors";
 
 import { AuthUser } from "../../../decorators/auth-user.decorator";
-import { ErrorResponse } from "../../../decorators/error-response.decorator";
-import { SuccessResponse } from "../../../decorators/success-response.decorator";
 import { JwtAuth } from "../../../guards/jwt-auth.guard";
-import { AuthErrorDefine } from "../../../routes/auth/errors";
-import { WorkspaceSuccessDefine } from "../../../shared/dtos/response/workspaces/workspace-response.dto";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
-import { WorkspaceErrorDefine } from "../errors/workspace-error.service";
 import { WorkspacesService } from "../services/workspaces.service";
 
 @ApiTags("워크스페이스")
@@ -34,16 +29,16 @@ export class WorkspacesController {
   @Post()
   @ApiOperation({ summary: "워크스페이스 생성" })
   @JwtAuth()
-  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-    AuthErrorDefine.invalidAuthorizationHeader,
-    AuthErrorDefine.notLogin,
-  ])
-  @ErrorResponse(HttpStatus.BAD_REQUEST, [
-    AuthErrorDefine.invalidToken,
-    WorkspaceErrorDefine.createWorkspaceValidation,
-  ])
-  @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
-  @SuccessResponse(HttpStatus.OK, [WorkspaceSuccessDefine.create])
+  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+  //   AuthErrorDefine.invalidAuthorizationHeader,
+  //   AuthErrorDefine.notLogin,
+  // ])
+  // @ErrorResponse(HttpStatus.BAD_REQUEST, [
+  //   AuthErrorDefine.invalidToken,
+  //   WorkspaceErrorDefine.createWorkspaceValidation,
+  // ])
+  // @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
+  // @SuccessResponse(HttpStatus.OK, [WorkspaceSuccessDefine.create])
   create(
     @AuthUser() user: UserExternalPayload,
     @Body() body: CreateWorkspaceDto,
@@ -54,14 +49,14 @@ export class WorkspacesController {
   @Get()
   @ApiOperation({ summary: "워크스페이스 목록" })
   @JwtAuth()
-  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-    AuthErrorDefine.invalidAuthorizationHeader,
-    AuthErrorDefine.notLogin,
-  ])
-  @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
-  @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
-  @SuccessResponse(HttpStatus.OK, [])
-  findAll(
+  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+  //   AuthErrorDefine.invalidAuthorizationHeader,
+  //   AuthErrorDefine.notLogin,
+  // ])
+  // @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
+  // @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
+  // @SuccessPaginationResponse(HttpStatus.OK, [WorkspaceSuccessDefine.list])
+  async findAll(
     @AuthUser() user: UserExternalPayload,
     @Query() query: ListWorkspaceDto,
   ) {
@@ -71,15 +66,15 @@ export class WorkspacesController {
   @Get(":id")
   @ApiOperation({ summary: "워크스페이스 단건 조회" })
   @JwtAuth()
-  @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-    AuthErrorDefine.invalidAuthorizationHeader,
-    AuthErrorDefine.notLogin,
-  ])
-  @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
-  @ErrorResponse(HttpStatus.NOT_FOUND, [
-    AuthErrorDefine.notFoundUser,
-    WorkspaceErrorDefine.workspaceNotFound,
-  ])
+  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
+  //   AuthErrorDefine.invalidAuthorizationHeader,
+  //   AuthErrorDefine.notLogin,
+  // ])
+  // @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
+  // @ErrorResponse(HttpStatus.NOT_FOUND, [
+  //   AuthErrorDefine.notFoundUser,
+  //   WorkspaceErrorDefine.workspaceNotFound,
+  // ])
   findOne(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,

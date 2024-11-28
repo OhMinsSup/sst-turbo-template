@@ -1,9 +1,10 @@
 import { HttpException, HttpStatus, ValidationError } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 
 import { HttpErrorNameEnum } from "@template/common";
 
+@Exclude()
 export class ValidationExceptionResponseDto {
   @ApiProperty({
     enum: HttpErrorNameEnum,
@@ -24,9 +25,9 @@ export class ValidationExceptionResponseDto {
     example: { fieldName: ["errorinfoOfString"] },
   })
   @Expose()
-  validationErrorInfo: Record<string, Array<string>>;
+  validationErrorInfo: Record<string, string[]>;
 
-  constructor(validationErrorInfo: Record<string, Array<string>>) {
+  constructor(validationErrorInfo: Record<string, string[]>) {
     this.validationErrorInfo = validationErrorInfo;
     this.error = "ValidationError";
     this.message = "검증 오류";

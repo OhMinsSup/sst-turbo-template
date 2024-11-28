@@ -4,22 +4,22 @@ import { Expose } from "class-transformer";
 
 import { HttpResultCode } from "@template/common";
 
-export class SuccessResponseDto<T> {
+export class LogoutResponseDto {
   @ApiProperty({ enum: HttpStatus, description: "상태코드" })
   @Expose()
-  statusCode: number;
+  readonly statusCode: number;
 
   @ApiProperty({
     enum: HttpResultCode,
     description: "결과 코드",
   })
   @Expose()
-  resultCode: number;
+  readonly resultCode: number;
 
   @ApiProperty({
-    type: "generic",
-    description: "object 또는 array 형식 또는 프리미티 형식.",
+    type: Boolean,
+    description: "데이터 응답",
   })
   @Expose()
-  data: T;
+  readonly data: boolean;
 }

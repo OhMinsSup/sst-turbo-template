@@ -54,4 +54,12 @@ export class WorkspaceEntity {
   })
   @Expose()
   readonly deletedAt?: Date;
+
+  @ApiProperty({
+    description: "워크스페이스 사용자",
+    type: Number,
+    required: true,
+  })
+  @Expose()
+  readonly userId: number;
 }
