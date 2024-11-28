@@ -34,7 +34,7 @@ export type SupportedStorage = PromisifyMethods<
   isServer?: boolean;
 };
 
-export type User = components["schemas"]["UserResponseDto"];
+export type User = components["schemas"]["UserEntity"];
 
 export interface Session {
   /**
@@ -153,7 +153,8 @@ export interface HandleMessageData {
   session: Session | undefined;
 }
 
-export type MakeSessionParams = components["schemas"]["AuthTokenResponseDto"];
+export type MakeSessionParams =
+  components["schemas"]["AuthResponseDto"]["data"];
 
 export type SignInBody =
   paths["/api/v1/auth/signIn"]["post"]["requestBody"]["content"]["application/json"];
@@ -165,7 +166,6 @@ export type SignInData =
 export type SignInError =
   | paths["/api/v1/auth/signIn"]["post"]["responses"]["400"]["content"]["application/json"]
   | paths["/api/v1/auth/signIn"]["post"]["responses"]["401"]["content"]["application/json"]
-  | paths["/api/v1/auth/signIn"]["post"]["responses"]["404"]["content"]["application/json"]
   | undefined;
 
 export interface SignInResponse {
@@ -184,7 +184,6 @@ export type SignUpData =
 export type SignUpError =
   | paths["/api/v1/auth/signUp"]["post"]["responses"]["400"]["content"]["application/json"]
   | paths["/api/v1/auth/signUp"]["post"]["responses"]["401"]["content"]["application/json"]
-  | paths["/api/v1/auth/signUp"]["post"]["responses"]["404"]["content"]["application/json"]
   | undefined;
 
 export interface SignUpResponse {
@@ -200,7 +199,6 @@ export type TokenData =
 export type TokenError =
   | paths["/api/v1/auth/token"]["post"]["responses"]["400"]["content"]["application/json"]
   | paths["/api/v1/auth/token"]["post"]["responses"]["401"]["content"]["application/json"]
-  | paths["/api/v1/auth/token"]["post"]["responses"]["403"]["content"]["application/json"]
   | undefined;
 
 export interface TokenResponse {
@@ -211,8 +209,6 @@ export interface TokenResponse {
 
 export type MeError =
   | paths["/api/v1/users/me"]["get"]["responses"]["401"]["content"]["application/json"]
-  | paths["/api/v1/users/me"]["get"]["responses"]["404"]["content"]["application/json"]
-  | paths["/api/v1/users/me"]["get"]["responses"]["400"]["content"]["application/json"]
   | undefined;
 
 export type MeData =
@@ -226,8 +222,6 @@ export interface MeResponse {
 
 export type SignOutError =
   | paths["/api/v1/auth/logout"]["post"]["responses"]["400"]["content"]["application/json"]
-  | paths["/api/v1/auth/logout"]["post"]["responses"]["401"]["content"]["application/json"]
-  | paths["/api/v1/auth/logout"]["post"]["responses"]["404"]["content"]["application/json"]
   | undefined;
 
 export type SignOutData =
