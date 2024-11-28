@@ -9,8 +9,9 @@ import {
 } from "@template/ui/components/sidebar";
 
 import { Icons } from "~/components/icons";
-import { SidebarHeader } from "./SidebarHeader";
+import { SidebarLogo } from "./SidebarLogo";
 import { SidebarNavMain } from "./SidebarNavMain";
+import SidebarTeamSwitcher from "./SidebarTeamSwitcher";
 
 // This is sample data.
 const data = {
@@ -146,7 +147,8 @@ export default function DashboardSidebar() {
   return (
     <Sidebar collapsible="icon" className="bg-background">
       <ShadcnSidebarHeader>
-        <SidebarHeader />
+        <SidebarLogo />
+        <SidebarTeamSwitcher teams={data.teams} />
       </ShadcnSidebarHeader>
       <SidebarContent>
         <SidebarNavMain items={data.navMain} />

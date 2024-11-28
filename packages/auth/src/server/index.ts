@@ -12,7 +12,7 @@ import {
   createStorageFromOptions,
 } from "../storages/cookie";
 
-type Options = AuthClientOptions & {
+export type Options = AuthClientOptions & {
   cookieOptions?: CookieOptionsWithName;
   cookies: CookieMethodsServer;
   cookieEncoding?: "raw" | "base64url";

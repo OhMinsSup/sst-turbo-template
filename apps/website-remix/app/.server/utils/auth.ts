@@ -1,47 +1,18 @@
 import { redirect } from "@remix-run/node";
 
-import type { Session, User } from "@template/auth";
-import {
-  createAuthServerClient,
-  parseCookieHeader,
-  serializeCookieHeader,
-} from "@template/auth/server";
+import type { AuthClient, Session, User } from "@template/auth";
+import { remixAuth } from "@template/auth/remix";
 
+import { publicConfig } from "~/config/config.public";
 import { getApiClient } from "~/utils/api-client";
 
-interface CreateRemixServerAuthClientOptions {
-  headers: Headers;
-  request: Request;
-}
+export const auth = remixAuth({
+  baseURL: publicConfig.serverUrl,
+  api: getApiClient(),
+  debug: false,
+});
 
-export const createRemixServerAuthClient = ({
-  request,
-  headers,
-}: CreateRemixServerAuthClientOptions) => {
-  return createAuthServerClient({
-    api: getApiClient(),
-    logDebugMessages: false,
-    cookies: {
-      getAll() {
-        return parseCookieHeader(request.headers.get("Cookie") ?? "");
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
-          headers.append(
-            "Set-Cookie",
-            serializeCookieHeader(name, value, options),
-          ),
-        );
-      },
-    },
-  });
-};
-
-export type AuthRemixServerClient = ReturnType<
-  typeof createRemixServerAuthClient
->;
-
-export async function getUserId(client: AuthRemixServerClient) {
+export async function getUserId(client: AuthClient) {
   const { session } = await client.getSession();
   if (!session) {
     return null;
@@ -55,7 +26,7 @@ export async function getUserId(client: AuthRemixServerClient) {
   return user.id;
 }
 
-export async function requireAnonymous(client: AuthRemixServerClient) {
+export async function requireAnonymous(client: AuthClient) {
   const userId = await getUserId(client);
   if (userId) {
     throw redirect("/");
@@ -65,7 +36,7 @@ export async function requireAnonymous(client: AuthRemixServerClient) {
 export async function requireUserId(params: {
   redirectTo?: string | null;
   request: Request;
-  client: AuthRemixServerClient;
+  client: AuthClient;
 }) {
   const userId = await getUserId(params.client);
   if (!userId) {
@@ -91,7 +62,7 @@ export interface UserAndSession {
 }
 
 export async function getUserAndSession(
-  client: AuthRemixServerClient,
+  client: AuthClient,
 ): Promise<UserAndSession> {
   const { session, error: sessionError } = await client.getSession();
   if (sessionError || !session) {

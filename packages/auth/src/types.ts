@@ -9,7 +9,6 @@ export interface AuthClientOptions {
   persistSession?: boolean;
   autoRefreshToken?: boolean;
   storageKey?: string;
-  headers?: ResponseInit["headers"];
   api: ApiClient<paths>;
 }
 

@@ -1,9 +1,5 @@
-import {
-  applyDecorators,
-  HttpException,
-  HttpStatus,
-  Type,
-} from "@nestjs/common";
+import type { HttpException, HttpStatus, Type } from "@nestjs/common";
+import { applyDecorators } from "@nestjs/common";
 import { ApiExtraModels, ApiResponse, getSchemaPath } from "@nestjs/swagger";
 
 import { HttpResultCode } from "@template/common";
@@ -29,7 +25,7 @@ export interface ErrorResponseOption {
   /**
    * 서비스 레이어에서 적었던 오류 메시지를 기술합니다.
    */
-  message: string | Record<string, Array<string>>;
+  message: string | Record<string, string[]>;
   /**
    * 어떠한 상황일 때 오류가나는지 기술합니다.
    */

@@ -4,10 +4,7 @@ import { redirect } from "@remix-run/node";
 import { HttpStatusCode, isAuthError } from "@template/common";
 import { combineHeaders } from "@template/utils/request";
 
-import {
-  createRemixServerAuthClient,
-  requireUserId,
-} from "~/.server/utils/auth";
+import { auth, requireUserId } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
@@ -15,24 +12,19 @@ export const loader = () => {
   throw new Response("Not found", { status: 404 });
 };
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const headers = new Headers();
-
-  const client = createRemixServerAuthClient({
-    request,
-    headers,
-  });
+export const action = async (args: ActionFunctionArgs) => {
+  const { authClient, headers } = auth.handler(args);
 
   await requireUserId({
-    client,
-    request,
+    client: authClient,
+    request: args.request,
   });
 
-  const formData = await request.formData();
+  const formData = await args.request.formData();
 
   const redirectTo = formData.get("redirectTo") as string;
 
-  const { error } = await client.signOut();
+  const { error } = await authClient.signOut();
 
   if (isAuthError(error)) {
     return redirectWithToast(redirectTo, {

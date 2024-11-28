@@ -26,6 +26,16 @@
         "default": "./dist/user.cjs"
       }
     },
+    "./workspace": {
+      "import": {
+        "types": "./dist/workspace.d.ts",
+        "default": "./dist/workspace.js"
+      },
+      "require": {
+        "types": "./dist/workspace.d.cts",
+        "default": "./dist/workspace.cjs"
+      }
+    },
     "./shared": {
       "import": {
         "types": "./dist/shared.d.ts",

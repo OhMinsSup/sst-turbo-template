@@ -8,6 +8,7 @@ import {
   ParseIntPipe,
   Patch,
   Post,
+  Query,
 } from "@nestjs/common";
 import { ApiOperation, ApiTags } from "@nestjs/swagger";
 
@@ -20,6 +21,7 @@ import { JwtAuth } from "../../../guards/jwt-auth.guard";
 import { AuthErrorDefine } from "../../../routes/auth/errors";
 import { WorkspaceSuccessDefine } from "../../../shared/dtos/response/workspaces/workspace-response.dto";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
+import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import { WorkspaceErrorDefine } from "../errors/workspace-error.service";
 import { WorkspacesService } from "../services/workspaces.service";
@@ -59,8 +61,11 @@ export class WorkspacesController {
   @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
   @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
   @SuccessResponse(HttpStatus.OK, [])
-  findAll(@AuthUser() user: UserExternalPayload) {
-    return this.service.findAll();
+  findAll(
+    @AuthUser() user: UserExternalPayload,
+    @Query() query: ListWorkspaceDto,
+  ) {
+    return this.service.findAll(user, query);
   }
 
   @Get(":id")

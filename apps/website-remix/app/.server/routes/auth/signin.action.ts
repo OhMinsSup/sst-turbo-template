@@ -5,20 +5,15 @@ import { safeRedirect } from "remix-utils/safe-redirect";
 import type { FormFieldSignInSchema } from "@template/validators/auth";
 import { HttpResultCode, HttpStatusCode } from "@template/common";
 
-import { createRemixServerAuthClient } from "~/.server/utils/auth";
+import { auth } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const headers = new Headers();
+export const action = async (args: ActionFunctionArgs) => {
+  const { authClient, headers } = auth.handler(args);
 
-  const client = createRemixServerAuthClient({
-    request,
-    headers,
-  });
-
-  const formData = await request.formData();
+  const formData = await args.request.formData();
 
   const input = {
     email: formData.get("email"),
@@ -26,7 +21,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
     provider: formData.get("provider"),
   } as FormFieldSignInSchema;
 
-  const { error } = await client.signIn(input);
+  const { error } = await authClient.signIn(input);
 
   if (error?.error) {
     switch (error.statusCode) {
@@ -46,7 +41,7 @@ export const action = async ({ request }: ActionFunctionArgs) => {
         };
       }
       default: {
-        return redirectWithToast(request.url, {
+        return redirectWithToast(args.request.url, {
           type: "error",
           title: "서버 오류",
           description: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",

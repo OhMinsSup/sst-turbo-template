@@ -4,10 +4,7 @@ import { data } from "@remix-run/node";
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
 import type { Theme } from "~/.server/utils/theme";
-import {
-  createRemixServerAuthClient,
-  getUserAndSession,
-} from "~/.server/utils/auth";
+import { auth, getUserAndSession } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/utils/client-hints";
@@ -21,25 +18,18 @@ export interface RequestInfo {
   };
 }
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const headers = new Headers();
+export const loader = async (args: LoaderFunctionArgs) => {
+  const toastData = await getToast(args.request);
+  const { domainUrl } = getRequestInfo(args.request.headers);
 
-  const toastData = await getToast(request);
-  const { domainUrl } = getRequestInfo(request.headers);
-
-  const client = createRemixServerAuthClient({
-    request,
-    headers,
-  });
-
-  const auth = await getUserAndSession(client);
+  const { authClient, headers } = auth.handler(args);
 
   const requestInfo: RequestInfo = {
-    hints: getHints(request),
+    hints: getHints(args.request),
     origin: domainUrl,
-    path: new URL(request.url).pathname,
+    path: new URL(args.request.url).pathname,
     userPrefs: {
-      theme: getTheme(request),
+      theme: getTheme(args.request),
     },
   };
 
@@ -47,8 +37,7 @@ export const loader = async ({ request }: LoaderFunctionArgs) => {
     {
       requestInfo,
       toast: toastData.toast,
-      session: auth.session,
-      user: auth.user,
+      ...(await getUserAndSession(authClient)),
     },
     {
       headers: combineHeaders(headers, toastData.headers),

@@ -7,8 +7,8 @@ export const PAGE_ENDPOINTS = {
     SIGNUP: "/signup",
   },
   PROTECTED: {
-    ADMIN: {
-      ROOT: "/admin",
+    DASHBOARD: {
+      ROOT: "/dashboard",
     },
   },
 } as const;

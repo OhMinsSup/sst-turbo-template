@@ -7,6 +7,8 @@ import {
 import { Response } from "express";
 import { map, Observable } from "rxjs";
 
+import { HttpResultCode } from "@template/common";
+
 @Injectable()
 export class SuccessInterceptor implements NestInterceptor {
   intercept(
@@ -17,10 +19,13 @@ export class SuccessInterceptor implements NestInterceptor {
       .switchToHttp()
       .getResponse<Response>().statusCode;
 
-    return next
-      .handle()
-      .pipe(
-        map((data) => ({ statusCode, resultCode: data.code, data: data.data })),
-      );
+    return next.handle().pipe(
+      map((data) => {
+        if ("code" in data) {
+          return { statusCode, resultCode: data.code, data: data.data };
+        }
+        return { statusCode, resultCode: HttpResultCode.OK, data };
+      }),
+    );
   }
 }

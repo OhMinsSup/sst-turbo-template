@@ -1,4 +1,5 @@
-import { ValidateIf, ValidationOptions } from "class-validator";
+import type { ValidationOptions } from "class-validator";
+import { ValidateIf } from "class-validator";
 
 /**
  * Checks if value is missing or is an empty string and if so, ignores all validators.

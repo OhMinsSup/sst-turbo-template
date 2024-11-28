@@ -10,6 +10,7 @@ type AuthClientType = ReturnType<typeof createAuthClient>;
 export {
   AuthClient,
   createAuthClient,
+  type AuthClientOptions,
   type AuthClientType,
   type Session,
   type User,

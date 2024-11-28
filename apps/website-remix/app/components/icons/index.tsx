@@ -4,6 +4,7 @@ import {
   Bell,
   BookOpen,
   Bot,
+  ChevronDown,
   Command,
   Frame,
   GalleryVerticalEnd,
@@ -12,6 +13,7 @@ import {
   Map,
   Moon,
   PieChart,
+  Plus,
   Settings2,
   SquareTerminal,
   Sun,
@@ -19,6 +21,7 @@ import {
 
 export const Icons = {
   Spinner: LoaderCircle,
+  ChevronDown,
   AudioWaveform,
   BookOpen,
   Bot,
@@ -32,6 +35,7 @@ export const Icons = {
   Bell,
   Sun,
   Moon,
+  Plus,
   Laptop,
   Logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>

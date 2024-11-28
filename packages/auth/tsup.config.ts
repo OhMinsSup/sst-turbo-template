@@ -6,6 +6,7 @@ export default defineConfig((options: Options) => ({
     index: "src/index.ts",
     server: "src/server/index.ts",
     client: "src/browser/index.ts",
+    remix: "src/frameworks/remix/index.ts",
   },
   format: ["esm", "cjs"],
   dts: true,

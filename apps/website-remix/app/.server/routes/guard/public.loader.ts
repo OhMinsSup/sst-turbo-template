@@ -1,23 +1,14 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
+import { data } from "@remix-run/node";
 
-import {
-  createRemixServerAuthClient,
-  requireAnonymous,
-} from "~/.server/utils/auth";
+import { auth, requireAnonymous } from "~/.server/utils/auth";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const headers = new Headers();
+export const loader = async (args: LoaderFunctionArgs) => {
+  const { authClient, headers } = auth.handler(args);
 
-  const client = createRemixServerAuthClient({
-    request,
-    headers,
-  });
+  await requireAnonymous(authClient);
 
-  await requireAnonymous(client);
-
-  return {
-    success: true,
-  };
+  return data({ succes: true }, { headers });
 };
 
 export type RoutesLoaderData = typeof loader;

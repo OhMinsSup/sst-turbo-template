@@ -9,7 +9,7 @@ import type { AuthClientOptions } from "../types";
 import { createAuthClient } from "..";
 import { createStorageFromOptions } from "../storages/cookie";
 
-type Options = AuthClientOptions & {
+export type Options = AuthClientOptions & {
   cookieOptions?: CookieOptionsWithName;
   cookies?: CookieMethodsBrowser;
   cookieEncoding?: "raw" | "base64url";
