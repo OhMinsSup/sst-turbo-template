@@ -8,14 +8,11 @@ import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
-import { WorkspaceErrorService } from "../errors/workspace-error.service";
+import { OpenApiErrorDefine } from "../open-api";
 
 @Injectable()
 export class WorkspacesService {
-  constructor(
-    private readonly prismaService: PrismaService,
-    private readonly workpsaceError: WorkspaceErrorService,
-  ) {}
+  constructor(private readonly prismaService: PrismaService) {}
 
   /**
    * @description 워크스페이스 생성
@@ -89,7 +86,7 @@ export class WorkspacesService {
     });
 
     if (!data) {
-      throw new NotFoundException(this.workpsaceError.workspaceNotFound());
+      throw new NotFoundException(OpenApiErrorDefine.workspaceNotFound);
     }
 
     return {
@@ -99,8 +96,7 @@ export class WorkspacesService {
   }
 
   update(id: number, body: UpdateWorkspaceDto) {
-    console.log(body);
-    return `This action updates a #${id} workspace`;
+    return `This action updates a #${id} workspace` + JSON.stringify(body);
   }
 
   remove(id: number) {

@@ -2,7 +2,7 @@ import type { LoaderFunctionArgs } from "@remix-run/node";
 import { data } from "@remix-run/node";
 
 import { auth, getSession } from "~/.server/utils/auth";
-import { getApiClient } from "~/utils/api-client";
+import { api } from "~/utils/api";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);
@@ -13,24 +13,28 @@ export const loader = async (args: LoaderFunctionArgs) => {
     return data({ workspaces: [] }, { headers });
   }
 
-  const { data: result } = await getApiClient()
+  const url = new URL(args.request.url);
+
+  const query = {
+    limit: +(url.searchParams.get("limit") ?? "20"),
+    pageNo: +(url.searchParams.get("pageNo") ?? "1"),
+    title: url.searchParams.get("title"),
+  };
+
+  const { data: result, error } = await api
     .method("get")
     .path("/api/v1/workspaces")
     .setAuthorization(session.access_token)
-    .setParams({ query: { limit: 10 } })
+    .setParams({ query })
     .run();
 
-  console.log(session);
+  if (error) {
+    return data({ workspaces: [] }, { headers });
+  }
 
-  result?.data.list;
   return data(
     {
-      workspaces: result?.data.list.map((data) => {
-        data.id;
-        return {
-          ...data,
-        };
-      }),
+      workspaces: result.data.list,
     },
     { headers },
   );

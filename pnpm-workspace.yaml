@@ -36,3 +36,8 @@ catalogs:
   prisma5:
     prisma: 5.19.1
     "@prisma/client": 5.19.1
+  remix2:
+    "@remix-run/node": "^2.15.0"
+    "@remix-run/react": "^2.15.0"
+    "@remix-run/serve": "^2.15.0"
+    "@remix-run/dev": "^2.15.0"

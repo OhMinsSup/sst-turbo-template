@@ -449,6 +449,14 @@ export interface components {
         | 504
         | 505;
     };
+    PageInfoDto: {
+      /** @description 현재 페이지 */
+      currentPage: number;
+      /** @description 다음 페이지 존재 여부 */
+      hasNextPage: boolean;
+      /** @description 다음 페이지 번호 */
+      nextPage: number | null;
+    };
     RoleEntity: {
       /**
        * 기호
@@ -658,6 +666,193 @@ export interface components {
       resultCode: number;
       /** @description 상태코드 */
       statusCode: number;
+    };
+    WorkspaceDetailResponseDto: {
+      /** @description 데이터 응답 */
+      data: components["schemas"]["WorkspaceEntity"];
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
+    };
+    WorkspaceEntity: {
+      /**
+       * Format: date-time
+       * @description 생성일
+       */
+      createdAt: string;
+      /**
+       * Format: date-time
+       * @description 삭제일
+       */
+      deletedAt?: string | null;
+      /** @description 워크스페이스 설명 */
+      description?: string | null;
+      /** @description 워크스페이스 ID */
+      id: number;
+      /** @description 워크스페이스 이름 */
+      title: string;
+      /**
+       * Format: date-time
+       * @description 수정일
+       */
+      updatedAt: string;
+    };
+    WorkspaceListResponseDto: {
+      /** @description 데이터 응답 */
+      data: components["schemas"]["WorkspacePaginationListDto"];
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
+    };
+    WorkspacePaginationListDto: {
+      /** @description 데이터 목록 */
+      list: components["schemas"]["WorkspaceEntity"][];
+      /** @description 페이지 정보 */
+      pageInfo: components["schemas"]["PageInfoDto"];
+      /** @description 전체 데이터 수 */
+      totalCount: number;
     };
   };
   responses: never;
@@ -955,7 +1150,33 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WorkspaceListResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };
@@ -972,11 +1193,39 @@ export interface operations {
       };
     };
     responses: {
-      201: {
+      200: {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WorkspaceDetailResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };
@@ -995,7 +1244,33 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WorkspaceDetailResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };

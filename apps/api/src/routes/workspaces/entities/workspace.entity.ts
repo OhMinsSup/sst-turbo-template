@@ -1,6 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { Expose } from "class-transformer";
+import { Exclude, Expose } from "class-transformer";
 
+@Exclude()
 export class WorkspaceEntity {
   @ApiProperty({
     description: "워크스페이스 ID",
@@ -54,12 +55,4 @@ export class WorkspaceEntity {
   })
   @Expose()
   readonly deletedAt?: Date;
-
-  @ApiProperty({
-    description: "워크스페이스 사용자",
-    type: Number,
-    required: true,
-  })
-  @Expose()
-  readonly userId: number;
 }

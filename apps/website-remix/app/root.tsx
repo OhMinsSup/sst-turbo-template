@@ -23,9 +23,9 @@ import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast } from "./components/shared/Toast";
 import { SITE_CONFIG } from "./constants/constants";
-import { createRemixBrowserClient } from "./utils/auth";
+import { remixAuthBrowser } from "./utils/auth";
 import { ClientHintCheck } from "./utils/client-hints";
-import { getQueryClient } from "./utils/query-client";
+import { RQClient } from "./utils/query";
 
 export { loader } from "~/.server/routes/root/root.loader";
 export { meta } from "~/utils/seo/root.meta";
@@ -102,16 +102,12 @@ interface AppWithProviderProps {
 }
 
 function AppWithProvider({ children, session }: AppWithProviderProps) {
-  const queryClient = getQueryClient();
-
   const revalidator = useRevalidator();
-
-  const authClient = createRemixBrowserClient();
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = authClient.onAuthStateChange((_, newSession) => {
+    } = remixAuthBrowser.onAuthStateChange((_, newSession) => {
       if (newSession?.expires_at !== session?.expires_at) {
         revalidator.revalidate();
       }
@@ -122,7 +118,7 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
   }, [session]);
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={RQClient}>{children}</QueryClientProvider>
   );
 }
 

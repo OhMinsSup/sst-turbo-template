@@ -4,26 +4,26 @@ import type { AuthClient, Session, User } from "@template/auth";
 import { remixAuth } from "@template/auth/remix";
 
 import { publicConfig } from "~/config/config.public";
-import { getApiClient } from "~/utils/api-client";
+import { api } from "~/utils/api";
 
 export const auth = remixAuth({
   baseURL: publicConfig.serverUrl,
-  api: getApiClient(),
   debug: false,
+  api,
 });
 
 export async function getUserId(client: AuthClient) {
-  const { session } = await client.getSession();
-  if (!session) {
+  const sessionData = await client.getSession();
+  if (!sessionData.session) {
     return null;
   }
 
-  const { user } = await client.getUser();
-  if (!user) {
+  const userData = await client.getUser();
+  if (!userData.user) {
     return null;
   }
 
-  return user.id;
+  return userData.user.id;
 }
 
 export async function requireAnonymous(client: AuthClient) {

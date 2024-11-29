@@ -3,42 +3,60 @@ import {
   Controller,
   Delete,
   Get,
-  HttpStatus,
   Param,
   ParseIntPipe,
   Patch,
   Post,
   Query,
 } from "@nestjs/common";
-import { ApiOperation, ApiTags } from "@nestjs/swagger";
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 
 import { AuthUser } from "../../../decorators/auth-user.decorator";
 import { JwtAuth } from "../../../guards/jwt-auth.guard";
+import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
+import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { WorkspaceDetailResponseDto } from "../../../shared/dtos/response/workspaces/workspace-detail-response.dto";
+import { WorkspaceListResponseDto } from "../../../shared/dtos/response/workspaces/workspace-list-response.dto";
+import {
+  OpenApiBadRequestErrorDefine,
+  OpenApiNotFoundErrorDefine,
+  OpenApiUnauthorizedErrorDefine,
+} from "../../auth/open-api";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
+import {
+  OpenApiSuccessResponseDefine,
+  OpenApiBadRequestErrorDefine as WorkspaceOpenApiBadRequestErrorDefine,
+  OpenApiNotFoundErrorDefine as WorkspaceOpenApiNotFoundErrorDefine,
+} from "../open-api";
 import { WorkspacesService } from "../services/workspaces.service";
 
 @ApiTags("워크스페이스")
 @Controller("workspaces")
+@ApiExtraModels(
+  HttpErrorDto,
+  ValidationErrorDto,
+  WorkspaceListResponseDto,
+  WorkspaceDetailResponseDto,
+)
 export class WorkspacesController {
   constructor(private readonly service: WorkspacesService) {}
 
   @Post()
   @ApiOperation({ summary: "워크스페이스 생성" })
   @JwtAuth()
-  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-  //   AuthErrorDefine.invalidAuthorizationHeader,
-  //   AuthErrorDefine.notLogin,
-  // ])
-  // @ErrorResponse(HttpStatus.BAD_REQUEST, [
-  //   AuthErrorDefine.invalidToken,
-  //   WorkspaceErrorDefine.createWorkspaceValidation,
-  // ])
-  // @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
-  // @SuccessResponse(HttpStatus.OK, [WorkspaceSuccessDefine.create])
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(WorkspaceOpenApiBadRequestErrorDefine.create)
+  @ApiResponse(OpenApiSuccessResponseDefine.create)
   create(
     @AuthUser() user: UserExternalPayload,
     @Body() body: CreateWorkspaceDto,
@@ -49,13 +67,10 @@ export class WorkspacesController {
   @Get()
   @ApiOperation({ summary: "워크스페이스 목록" })
   @JwtAuth()
-  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-  //   AuthErrorDefine.invalidAuthorizationHeader,
-  //   AuthErrorDefine.notLogin,
-  // ])
-  // @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
-  // @ErrorResponse(HttpStatus.NOT_FOUND, [AuthErrorDefine.notFoundUser])
-  // @SuccessPaginationResponse(HttpStatus.OK, [WorkspaceSuccessDefine.list])
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiSuccessResponseDefine.findAll)
   async findAll(
     @AuthUser() user: UserExternalPayload,
     @Query() query: ListWorkspaceDto,
@@ -66,15 +81,11 @@ export class WorkspacesController {
   @Get(":id")
   @ApiOperation({ summary: "워크스페이스 단건 조회" })
   @JwtAuth()
-  // @ErrorResponse(HttpStatus.UNAUTHORIZED, [
-  //   AuthErrorDefine.invalidAuthorizationHeader,
-  //   AuthErrorDefine.notLogin,
-  // ])
-  // @ErrorResponse(HttpStatus.BAD_REQUEST, [AuthErrorDefine.invalidToken])
-  // @ErrorResponse(HttpStatus.NOT_FOUND, [
-  //   AuthErrorDefine.notFoundUser,
-  //   WorkspaceErrorDefine.workspaceNotFound,
-  // ])
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(WorkspaceOpenApiNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiSuccessResponseDefine.findOne)
   findOne(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,

@@ -67,7 +67,7 @@
     "uncrypto": "^0.1.3"
   },
   "devDependencies": {
-    "@remix-run/node": "^2.15.0",
+    "@remix-run/node": "catalog:remix2",
     "@template/api-types": "workspace:*",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",

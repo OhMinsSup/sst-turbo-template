@@ -5,7 +5,7 @@
   /// <reference types="vite/client" />
   
   interface ImportMetaEnv {
-	readonly NEXT_PUBLIC_SERVER_URL: string;
+  readonly NEXT_PUBLIC_SERVER_URL: string;
 }
   
   declare module '$env/static/private' {

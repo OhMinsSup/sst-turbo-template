@@ -13,13 +13,15 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
+    "@epic-web/cachified": "^5.2.0",
     "@epic-web/client-hints": "^1.3.5",
     "@epic-web/invariant": "^1.0.0",
+    "@epic-web/remember": "^1.1.0",
     "@hookform/resolvers": "catalog:",
     "@paralleldrive/cuid2": "^2.2.2",
-    "@remix-run/node": "^2.15.0",
-    "@remix-run/react": "^2.15.0",
-    "@remix-run/serve": "^2.15.0",
+    "@remix-run/node": "catalog:remix2",
+    "@remix-run/react": "catalog:remix2",
+    "@remix-run/serve": "catalog:remix2",
     "@t3-oss/env-core": "catalog:",
     "@tanstack/react-query": "catalog:",
     "@template/api": "workspace:*",
@@ -39,7 +41,7 @@
     "zustand": "catalog:"
   },
   "devDependencies": {
-    "@remix-run/dev": "^2.15.0",
+    "@remix-run/dev": "catalog:remix2",
     "@template/eslint-config": "workspace:*",
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",

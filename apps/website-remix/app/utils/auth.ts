@@ -1,11 +1,13 @@
+import { remember } from "@epic-web/remember";
+
 import { createAuthBrowserClient } from "@template/auth/client";
 
-import { getApiClient } from "./api-client";
+import { api } from "./api";
 
-export const createRemixBrowserClient = () => {
-  return createAuthBrowserClient({
+export const remixAuthBrowser = remember("auth:browser", () =>
+  createAuthBrowserClient({
     isSingleton: true,
     logDebugMessages: false,
-    api: getApiClient(),
-  });
-};
+    api,
+  }),
+);

@@ -119,5 +119,6 @@ export const remixAuth = (options: RemixAuthOptions) => {
         return Promise.resolve(result);
       };
     },
+    getContext: () => remixAuthCtx,
   };
 };

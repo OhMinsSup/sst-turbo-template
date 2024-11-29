@@ -1,3 +1,4 @@
+import { URL } from "url";
 import { Injectable, LogLevel } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { addMilliseconds } from "date-fns";
@@ -28,6 +29,16 @@ export class EnvironmentService {
 
   getDataBaseUrl(): string {
     return this.configService.get<string>("DATABASE_URL");
+  }
+
+  getDatabaseType(): "postgres" | "sqlite" {
+    const url = this.getDataBaseUrl();
+    // URL 파싱
+    const parsedUrl = new URL(url);
+    // 호스트 부분 확인
+    const protocol = parsedUrl.protocol;
+    const sqliteProtocol = ["file:", "sqlite:", "sqlite3:", "memory:"];
+    return sqliteProtocol.includes(protocol) ? "sqlite" : "postgres";
   }
 
   // -----------------------------------------------------------------------------
