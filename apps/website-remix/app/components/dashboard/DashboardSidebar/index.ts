@@ -1,1 +1,4 @@
-export { default as DashboardSidebar } from "./DashboardSidebar";
+export {
+  default as DashboardWorkspaceSidebar,
+  type DashboardWorkspaceSidebarProps,
+} from "./DashboardWorkspaceSidebar";

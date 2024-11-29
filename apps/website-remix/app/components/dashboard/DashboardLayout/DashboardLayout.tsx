@@ -1,32 +1,24 @@
 import React from "react";
 
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@template/ui/components/breadcrumb";
-import { Separator } from "@template/ui/components/separator";
-import {
-  SidebarInset,
-  SidebarProvider,
-  SidebarTrigger,
-} from "@template/ui/components/sidebar";
+import { SidebarInset, SidebarProvider } from "@template/ui/components/sidebar";
 
-import { DashboardSidebar } from "../DashboardSidebar";
+import type { DashboardWorkspaceSidebarProps } from "../DashboardSidebar";
+import { DashboardWorkspaceSidebar } from "../DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
 
-interface DashboardLayoutProps {
+interface DashboardLayoutProps
+  extends Pick<DashboardWorkspaceSidebarProps, "workspaces"> {
   children: React.ReactNode;
 }
 
-export default function DashboardLayout({ children }: DashboardLayoutProps) {
+export default function DashboardLayout({
+  children,
+  workspaces,
+}: DashboardLayoutProps) {
   return (
     <div className="relative bg-background">
       <SidebarProvider>
-        <DashboardSidebar />
+        <DashboardWorkspaceSidebar workspaces={workspaces} />
         <SidebarInset>
           <DashboardHeader />
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

@@ -5,6 +5,7 @@ export default defineConfig((options: Options) => ({
   entry: {
     auth: "src/auth.ts",
     user: "src/user.ts",
+    workspace: "src/workspace.ts",
     shared: "src/shared.ts",
   },
   format: ["esm", "cjs"],

@@ -10,6 +10,10 @@ export const PAGE_ENDPOINTS = {
     DASHBOARD: {
       ROOT: "/dashboard",
     },
+    WORKSPACE: {
+      ID: (workspaceId: string | number) =>
+        `/dashboard/workspaces/${workspaceId}`,
+    },
   },
 } as const;
 

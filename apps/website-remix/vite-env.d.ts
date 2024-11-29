@@ -65,6 +65,7 @@
     export const npm_package_dependencies__remix_run_react: string;
     export const PATH: string;
     export const npm_package_scripts_typecheck: string;
+    export const npm_package_dependencies__epic_web_cachified: string;
     export const npm_package_dependencies_isbot: string;
     export const npm_package_dependencies__template_validators: string;
     export const __CFBundleIdentifier: string;
@@ -94,6 +95,7 @@
     export const npm_package_type: string;
     export const SHLVL: string;
     export const HOME: string;
+    export const npm_package_dependencies__epic_web_remember: string;
     export const npm_package_devDependencies__template_prettier_config: string;
     export const npm_package_dependencies__template_common: string;
     export const npm_package_dependencies__template_auth: string;

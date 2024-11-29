@@ -1,7 +1,7 @@
 import { ApiProperty } from "@nestjs/swagger";
 import { Exclude, Expose, Type } from "class-transformer";
 
-import { CustomValidationError } from "./validation-exception-response.dto";
+import { ValidationExceptionResponseDto } from "./validation-exception-response.dto";
 
 @Exclude()
 export class ValidationErrorDto {
@@ -18,10 +18,10 @@ export class ValidationErrorDto {
   readonly resultCode: number;
 
   @ApiProperty({
-    type: () => CustomValidationError,
+    type: () => ValidationExceptionResponseDto,
     description: "Custom Validation Error Response DTO",
   })
-  @Type(() => CustomValidationError)
+  @Type(() => ValidationExceptionResponseDto)
   @Expose()
-  readonly error: CustomValidationError;
+  readonly error: ValidationExceptionResponseDto;
 }

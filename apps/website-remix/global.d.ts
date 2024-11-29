@@ -60,6 +60,7 @@
     readonly npm_package_dependencies__remix_run_react: string;
     readonly PATH: string;
     readonly npm_package_scripts_typecheck: string;
+    readonly npm_package_dependencies__epic_web_cachified: string;
     readonly npm_package_dependencies_isbot: string;
     readonly npm_package_dependencies__template_validators: string;
     readonly __CFBundleIdentifier: string;
@@ -89,6 +90,7 @@
     readonly npm_package_type: string;
     readonly SHLVL: string;
     readonly HOME: string;
+    readonly npm_package_dependencies__epic_web_remember: string;
     readonly npm_package_devDependencies__template_prettier_config: string;
     readonly npm_package_dependencies__template_common: string;
     readonly npm_package_dependencies__template_auth: string;

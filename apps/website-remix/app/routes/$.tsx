@@ -1,6 +1,6 @@
 import { ErrorBoundary as DefaultErrorBoundary } from "~/components/shared/ErrorBoundary";
 
-export async function loader() {
+export function loader() {
   throw new Response("Not found", { status: 404 });
 }
 

@@ -21,23 +21,23 @@ export const action = async (args: ActionFunctionArgs) => {
     provider: formData.get("provider"),
   } as FormFieldSignInSchema;
 
-  const { error } = await authClient.signIn(input);
+  const result = await authClient.signIn(input);
 
-  if (error?.error) {
-    switch (error.statusCode) {
+  if (result.error) {
+    switch (result.error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
         return {
           success: false,
-          error: toErrorFormat("email", error),
+          error: toErrorFormat("email", result.error),
         };
       }
       case HttpStatusCode.BAD_REQUEST: {
         return {
           success: false,
           error:
-            error.resultCode === HttpResultCode.INCORRECT_PASSWORD
-              ? toErrorFormat("password", error)
-              : toValidationErrorFormat(error),
+            result.error.resultCode === HttpResultCode.INCORRECT_PASSWORD
+              ? toErrorFormat("password", result.error)
+              : toValidationErrorFormat(result.error),
         };
       }
       default: {

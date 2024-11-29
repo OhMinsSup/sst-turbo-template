@@ -1,12 +1,10 @@
 import type { components } from "@template/api-types";
 
 export type HttpErrorData =
-  | components["schemas"]["ValidationExceptionResponseDto"]
-  | components["schemas"]["HttpExceptionResponseDto"];
+  | components["schemas"]["ValidationErrorDto"]
+  | components["schemas"]["HttpErrorDto"];
 
-type ToErrorFormat = components["schemas"]["ErrorResponseDto"] & {
-  error: HttpErrorData;
-};
+type ToErrorFormat = HttpErrorData;
 
 type ReturnErrorFormat = Record<
   string,
@@ -35,23 +33,28 @@ export function toErrorFormat(
   };
 }
 
-type ToValidationErrorFormat = components["schemas"]["ErrorResponseDto"] & {
-  error: HttpErrorData;
-};
-
 /**
  * @description server side open-api error format with react-hook-form error format
- * @param {ToValidationErrorFormat} error
+ * @param {HttpErrorData} error
  * @returns {ReturnErrorFormat}
  */
 export function toValidationErrorFormat(
-  error: ToValidationErrorFormat,
+  error: HttpErrorData,
 ): ReturnErrorFormat {
-  const {
-    error: { validationErrorInfo },
-  } = error;
+  if ("validationErrorInfo" in error.error) {
+    const { validationErrorInfo } = error.error;
+    return Object.fromEntries(
+      Object.entries(validationErrorInfo).map(([key, value]) => [
+        key,
+        {
+          message: value,
+        },
+      ]),
+    );
+  }
+
   return Object.fromEntries(
-    Object.entries(validationErrorInfo).map(([key, value]) => [
+    Object.entries(error).map(([key, value]) => [
       key,
       {
         message: value,

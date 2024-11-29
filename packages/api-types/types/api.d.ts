@@ -262,7 +262,6 @@ export interface components {
        */
       title: string;
     };
-    CustomValidationError: Record<string, never>;
     HttpErrorDto: {
       /** @description Http Exception Response DTO */
       error: components["schemas"]["HttpExceptionResponseDto"];
@@ -661,11 +660,50 @@ export interface components {
     };
     ValidationErrorDto: {
       /** @description Custom Validation Error Response DTO */
-      error: components["schemas"]["CustomValidationError"];
+      error: components["schemas"]["ValidationExceptionResponseDto"];
       /** @description 결과 코드 */
       resultCode: number;
       /** @description 상태코드 */
       statusCode: number;
+    };
+    ValidationExceptionResponseDto: {
+      /**
+       * @description 에러명
+       * @enum {string}
+       */
+      error:
+        | "BadRequestException"
+        | "ForbiddenException"
+        | "NotFoundException"
+        | "UnauthorizedException"
+        | "NotAcceptableException"
+        | "RequestTimeoutException"
+        | "ConflictException"
+        | "GoneException"
+        | "HttpVersionNotSupportedException"
+        | "PayloadTooLargeException"
+        | "UnsupportedMediaTypeException"
+        | "UnprocessableEntityException"
+        | "InternalServerErrorException"
+        | "NotImplementedException"
+        | "ImATeapotException"
+        | "MethodNotAllowedException"
+        | "BadGatewayException"
+        | "ServiceUnavailableException"
+        | "GatewayTimeoutException"
+        | "PreconditionFailedException"
+        | "ThrottlerException";
+      /** @description 에러메시지 */
+      message: string;
+      /**
+       * @description 필드 : [에러정보] 형식의 에러정보가 담긴 객체입니다.
+       * @example {
+       *       "fieldName": [
+       *         "errorinfoOfString"
+       *       ]
+       *     }
+       */
+      validationErrorInfo: Record<string, never>;
     };
     WorkspaceDetailResponseDto: {
       /** @description 데이터 응답 */

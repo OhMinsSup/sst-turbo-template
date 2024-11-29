@@ -1,5 +1,6 @@
 import type { LucideProps } from "@template/ui/components/icons";
 import {
+  ArrowDownUp,
   AudioWaveform,
   Bell,
   BookOpen,
@@ -8,15 +9,19 @@ import {
   Command,
   Frame,
   GalleryVerticalEnd,
+  Hash,
   Laptop,
   LoaderCircle,
   Map,
   Moon,
+  MoreHorizontal,
   PieChart,
   Plus,
+  Settings,
   Settings2,
   SquareTerminal,
   Sun,
+  Trash,
 } from "@template/ui/components/icons";
 
 export const Icons = {
@@ -37,6 +42,11 @@ export const Icons = {
   Moon,
   Plus,
   Laptop,
+  Settings,
+  Trash,
+  MoreHorizontal,
+  ArrowDownUp,
+  Hash,
   Logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>
       <rect width="256" height="256" fill="none" />

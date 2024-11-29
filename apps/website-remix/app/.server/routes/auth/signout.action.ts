@@ -24,9 +24,9 @@ export const action = async (args: ActionFunctionArgs) => {
 
   const redirectTo = formData.get("redirectTo") as string;
 
-  const { error } = await authClient.signOut();
+  const result = await authClient.signOut();
 
-  if (isAuthError(error)) {
+  if (isAuthError(result.error)) {
     return redirectWithToast(redirectTo, {
       type: "error",
       title: "인증 오류",
@@ -34,8 +34,8 @@ export const action = async (args: ActionFunctionArgs) => {
     });
   }
 
-  if (error?.error) {
-    switch (error.statusCode) {
+  if (result.error?.error) {
+    switch (result.error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
         return redirectWithToast(redirectTo, {
           type: "error",
