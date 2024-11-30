@@ -1173,6 +1173,11 @@ export interface operations {
       query?: {
         /** @description 페이지 크기 */
         limit?: number;
+        /**
+         * @description 정렬 기준
+         * @example createdAt
+         */
+        orderBy?: "createdAt" | "updatedAt" | null;
         /** @description 페이지 번호 */
         pageNo?: number | null;
         /** @description 작업공간 제목 검색 */

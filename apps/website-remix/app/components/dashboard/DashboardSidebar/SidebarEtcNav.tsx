@@ -1,11 +1,4 @@
-import { Button } from "@template/ui/components/button";
-import {
-  SidebarGroup,
-  SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
-  useSidebar,
-} from "@template/ui/components/sidebar";
+import { SidebarMenuButton } from "@template/ui/components/sidebar";
 
 import { Icons } from "~/components/icons";
 

@@ -7,7 +7,7 @@ import type { Theme } from "~/.server/utils/theme";
 import { auth, getUserAndSession } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { getHints } from "~/utils/client-hints";
+import { getHints } from "~/libs/client-hints";
 
 export interface RequestInfo {
   hints: Record<string, string>;

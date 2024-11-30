@@ -2,7 +2,7 @@ import type { MetaFunction } from "@remix-run/node";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { SITE_CONFIG } from "~/constants/constants";
-import { getMeta } from "~/utils/meta";
+import { getMeta } from "~/libs/meta";
 
 export const meta: MetaFunction<RoutesLoaderData> = ({ data }) => {
   if (!data) {

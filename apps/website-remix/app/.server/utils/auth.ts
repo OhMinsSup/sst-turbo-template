@@ -4,7 +4,7 @@ import type { AuthClient, Session, User } from "@template/auth";
 import { remixAuth } from "@template/auth/remix";
 
 import { publicConfig } from "~/config/config.public";
-import { api } from "~/utils/api";
+import { api } from "~/libs/api";
 
 export const auth = remixAuth({
   baseURL: publicConfig.serverUrl,

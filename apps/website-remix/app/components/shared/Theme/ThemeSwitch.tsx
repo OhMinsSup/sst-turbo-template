@@ -7,7 +7,7 @@ import type { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import type { Theme } from "~/.server/utils/theme";
 import { Icons } from "~/components/icons";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
-import { useOptimisticThemeMode } from "~/utils/theme";
+import { useOptimisticThemeMode } from "~/libs/theme";
 
 interface ThemeSwitchProps {
   userPreference?: Theme | null;

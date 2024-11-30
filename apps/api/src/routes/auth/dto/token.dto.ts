@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, MinLength } from "class-validator";
 
 export class TokenDTO {
+  @IsNotEmpty()
   @IsString({
     message: "잘못된 형식의 토큰입니다.",
   })

@@ -8,7 +8,7 @@ import { HttpStatusCode } from "@template/common";
 import { auth } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { toErrorFormat, toValidationErrorFormat } from "~/utils/error";
+import { toErrorFormat, toValidationErrorFormat } from "~/libs/error";
 
 export const action = async (args: ActionFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);

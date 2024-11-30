@@ -10,7 +10,7 @@ import {
 
 import type { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
-import { useOptimisticThemeMode } from "~/utils/theme";
+import { useOptimisticThemeMode } from "~/libs/theme";
 
 export function SelectTheme() {
   const fetcher = useFetcher<RoutesActionData>();

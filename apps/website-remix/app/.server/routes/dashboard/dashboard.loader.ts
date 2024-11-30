@@ -3,7 +3,14 @@ import { data, redirect } from "@remix-run/node";
 
 import { auth, getSession } from "~/.server/utils/auth";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { api } from "~/utils/api";
+import { api } from "~/libs/api";
+
+interface Query {
+  limit: number;
+  pageNo: number;
+  title?: string | null;
+  orderBy: "createdAt" | "updatedAt" | undefined;
+}
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);
@@ -22,7 +29,8 @@ export const loader = async (args: LoaderFunctionArgs) => {
     limit: +(url.searchParams.get("limit") ?? "5"),
     pageNo: +(url.searchParams.get("pageNo") ?? "1"),
     title: url.searchParams.get("title"),
-  };
+    orderBy: url.searchParams.get("orderBy") ?? "createdAt",
+  } as Query;
 
   const { data: result, error } = await api
     .method("get")
@@ -32,11 +40,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
     .run();
 
   if (error) {
-    return data({ workspaces: [] }, { headers });
+    return data({ success: false, workspaces: [] }, { headers });
   }
 
   return data(
     {
+      success: true,
       workspaces: result.data.list,
     },
     { headers },

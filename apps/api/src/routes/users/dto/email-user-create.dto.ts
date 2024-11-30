@@ -1,9 +1,11 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEmail, IsOptional, IsString, MaxLength } from "class-validator";
+import { IsEmail, IsNotEmpty, MaxLength } from "class-validator";
+import { IsOptionalString } from "src/decorators/Is-optional-string.decorator";
 
 import { UserPasswordDTO } from "./user-password.dto";
 
 export class EmailUserCreateDTO extends UserPasswordDTO {
+  @IsNotEmpty()
   @IsEmail(undefined, { message: "잘못된 이메일 형식입니다." })
   @ApiProperty({
     title: "Email",
@@ -14,8 +16,7 @@ export class EmailUserCreateDTO extends UserPasswordDTO {
   })
   readonly email: string;
 
-  @IsOptional()
-  @IsString({
+  @IsOptionalString({
     message: "이름은 문자열이어야 합니다.",
   })
   @MaxLength(50, {

@@ -1,7 +1,8 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 
 export class UserPasswordDTO {
+  @IsNotEmpty()
   @IsString({
     message: "비밀번호는 문자열이어야 합니다.",
   })

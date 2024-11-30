@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsString, MaxLength, MinLength } from "class-validator";
+import { IsNotEmpty, IsString, MaxLength, MinLength } from "class-validator";
 import { IsOptionalString } from "src/decorators/Is-optional-string.decorator";
 
 export class CreateWorkspaceDto {
+  @IsNotEmpty()
   @IsString()
   @MinLength(1, { message: "워크스페이스 이름은 1자 이상이어야 합니다." })
   @MaxLength(30, { message: "워크스페이스 이름은 30자 이하여야 합니다." })

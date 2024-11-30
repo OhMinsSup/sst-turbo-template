@@ -6,7 +6,10 @@ import { HttpResultCode } from "@template/common";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
-import { ListWorkspaceDto } from "../dto/list-workspace.dto";
+import {
+  ListWorkspaceDto,
+  WorkspaceOrderByEnum,
+} from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import { OpenApiErrorDefine } from "../open-api";
 
@@ -37,7 +40,7 @@ export class WorkspacesService {
   async findAll(user: UserExternalPayload, query: ListWorkspaceDto) {
     const pageNo = toFinite(query.pageNo);
 
-    const limit = query.limit ? toFinite(query.limit) : 20;
+    const limit = query.limit ? toFinite(query.limit) : 0;
 
     const [totalCount, list] = await Promise.all([
       this.prismaService.workSpace.count({
@@ -52,14 +55,19 @@ export class WorkspacesService {
           ...(query.title && { title: { contains: query.title } }),
         },
         orderBy: {
-          createdAt: "desc",
+          ...(query.orderBy === WorkspaceOrderByEnum.UPDATED_AT
+            ? { updatedAt: "desc" }
+            : {
+                createdAt: "desc",
+              }),
         },
-        take: limit,
-        skip: (pageNo - 1) * limit,
+        take: limit ? limit : undefined,
+        skip: limit ? (pageNo - 1) * limit : undefined,
       }),
     ]);
 
-    const hasNextPage = totalCount > pageNo * limit;
+    const hasNextPage = limit ? totalCount > pageNo * limit : false;
+    const nextPage = limit ? (hasNextPage ? pageNo + 1 : null) : null;
 
     return {
       code: HttpResultCode.OK,
@@ -69,7 +77,7 @@ export class WorkspacesService {
         pageInfo: {
           currentPage: pageNo,
           hasNextPage,
-          nextPage: hasNextPage ? pageNo + 1 : null,
+          nextPage,
         },
       },
     };

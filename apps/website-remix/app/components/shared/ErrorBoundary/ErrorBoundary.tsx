@@ -10,7 +10,7 @@ import { buttonVariants } from "@template/ui/components/button";
 import { cn } from "@template/ui/lib";
 
 import { PAGE_ENDPOINTS, SITE_CONFIG } from "~/constants/constants";
-import { getErrorMessage } from "~/utils/error";
+import { getErrorMessage } from "~/libs/error";
 
 type StatusHandler = (info: {
   error: ErrorResponse;
