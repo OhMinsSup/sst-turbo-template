@@ -3,12 +3,13 @@ import { data, redirect } from "@remix-run/node";
 
 import { HttpStatusCode } from "@template/common";
 
+import { softPurgeWorkspaceList } from "~/.server/cache/workspace";
 import {
   patchFavoriteWorkspace,
   patchFavoriteWorkspaceRequestBody,
   postWorkspace,
   postWorkspaceRequestBody,
-} from "~/.server/data/worksacpe";
+} from "~/.server/data/workspace";
 import { auth, getSession } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
@@ -32,7 +33,9 @@ export const action = async (args: ActionFunctionArgs) => {
   const method = args.request.method.toUpperCase();
 
   if (method === "POST") {
-    const requestBody = await postWorkspaceRequestBody(args.request);
+    const [requestBody, queryHashKey] = await postWorkspaceRequestBody(
+      args.request,
+    );
     const [ok, result, response] = await postWorkspace({
       session,
       requestBody,
@@ -63,6 +66,10 @@ export const action = async (args: ActionFunctionArgs) => {
       }
     }
 
+    if (queryHashKey) {
+      await softPurgeWorkspaceList(queryHashKey);
+    }
+
     return data(
       {
         success: true as const,
@@ -71,9 +78,8 @@ export const action = async (args: ActionFunctionArgs) => {
       { headers },
     );
   } else if (method === "PATCH") {
-    const [workspaceId, requestBody] = await patchFavoriteWorkspaceRequestBody(
-      args.request,
-    );
+    const [workspaceId, requestBody, queryHashKey] =
+      await patchFavoriteWorkspaceRequestBody(args.request);
     const [ok, result] = await patchFavoriteWorkspace({
       workspaceId,
       requestBody,
@@ -87,6 +93,9 @@ export const action = async (args: ActionFunctionArgs) => {
           headers,
         },
       );
+    }
+    if (queryHashKey) {
+      await softPurgeWorkspaceList(queryHashKey);
     }
     return data(
       {

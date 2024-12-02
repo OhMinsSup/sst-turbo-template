@@ -90,6 +90,7 @@
     export const XPC_FLAGS: string;
     export const npm_config_node_gyp: string;
     export const npm_package_dependencies__tanstack_react_query: string;
+    export const npm_package_dependencies_stable_hash: string;
     export const XPC_SERVICE_NAME: string;
     export const npm_package_devDependencies_autoprefixer: string;
     export const npm_package_dependencies__epic_web_invariant: string;

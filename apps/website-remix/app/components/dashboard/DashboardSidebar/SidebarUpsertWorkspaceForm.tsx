@@ -1,5 +1,10 @@
 import React, { useEffect, useState } from "react";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import {
+  useActionData,
+  useLoaderData,
+  useNavigation,
+  useSubmit,
+} from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -26,6 +31,7 @@ import { Textarea } from "@template/ui/components/textarea";
 import { createWorkspaceSchema } from "@template/validators/workspace";
 
 import type { RoutesActionData } from "~/.server/routes/dashboard/dashboard.action";
+import type { RoutesLoaderData } from "~/.server/routes/dashboard/dashboard.loader";
 import { Icons } from "~/components/icons";
 
 interface InternalSidebarApplyWorkspaceFormProps {
@@ -37,6 +43,7 @@ function InternalSidebarUpsertWorkspaceForm({
 }: InternalSidebarApplyWorkspaceFormProps) {
   const submit = useSubmit();
   const actionData = useActionData<RoutesActionData>();
+  const data = useLoaderData<RoutesLoaderData>();
 
   const form = useForm<FormFieldCreateWorkspace>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -55,6 +62,7 @@ function InternalSidebarUpsertWorkspaceForm({
     if (input.description) {
       formData.append("description", input.description);
     }
+    formData.append("queryHashKey", data.queryHashKey);
     submit(input, {
       method: "post",
       replace: true,

@@ -38,6 +38,7 @@
     "react-error-boundary": "^4.1.2",
     "react-hook-form": "catalog:",
     "remix-utils": "^7.7.0",
+    "stable-hash": "^0.0.4",
     "zod": "catalog:",
     "zustand": "catalog:"
   },

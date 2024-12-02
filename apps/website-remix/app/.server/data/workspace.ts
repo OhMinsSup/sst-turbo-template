@@ -5,7 +5,7 @@ import { api } from "~/libs/api";
 
 // Path: apps/website-remix/app/.server/routes/dashboard/dashboard.loader.ts
 
-interface GetWorkspaceListParams {
+export interface GetWorkspaceListParams {
   session: Session;
   query?: paths["/api/v1/workspaces"]["get"]["parameters"]["query"];
 }
@@ -59,10 +59,15 @@ export const getWorkspaceList = async ({
 export const postWorkspaceRequestBody = async (request: Request) => {
   const formData = await request.formData();
 
-  return {
-    title: formData.get("title"),
-    description: formData.get("description"),
-  } as paths["/api/v1/workspaces"]["post"]["requestBody"]["content"]["application/json"];
+  const queryHashKey = formData.get("queryHashKey") as string;
+
+  return [
+    {
+      title: formData.get("title"),
+      description: formData.get("description"),
+    } as paths["/api/v1/workspaces"]["post"]["requestBody"]["content"]["application/json"],
+    queryHashKey,
+  ] as const;
 };
 
 interface PostWorkspaceParams {
@@ -97,11 +102,14 @@ export const patchFavoriteWorkspaceRequestBody = async (request: Request) => {
     throw new Error("workspaceId is required");
   }
 
+  const queryHashKey = formData.get("queryHashKey") as string;
+
   return [
     +workspaceId,
     {
       isFavorite: formData.get("isFavorite") === "true",
     } as paths["/api/v1/workspaces/{id}/favorite"]["patch"]["requestBody"]["content"]["application/json"],
+    queryHashKey,
   ] as const;
 };
 

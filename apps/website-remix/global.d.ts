@@ -85,6 +85,7 @@
     readonly XPC_FLAGS: string;
     readonly npm_config_node_gyp: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
+    readonly npm_package_dependencies_stable_hash: string;
     readonly XPC_SERVICE_NAME: string;
     readonly npm_package_devDependencies_autoprefixer: string;
     readonly npm_package_dependencies__epic_web_invariant: string;

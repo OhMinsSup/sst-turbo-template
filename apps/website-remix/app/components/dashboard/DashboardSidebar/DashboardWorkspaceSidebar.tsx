@@ -31,6 +31,8 @@ export interface WorkspaceMenuItem extends LinkProps {
 export default function DashboardWorkspaceSidebar() {
   const data = useLoaderData<RoutesLoaderData>();
 
+  console.log(data);
+
   return (
     <DashboardSidebarProvider>
       <Sidebar collapsible="icon" className="bg-background">
