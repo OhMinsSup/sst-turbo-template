@@ -1,4 +1,5 @@
-import { useFetcher, useSearchParams } from "@remix-run/react";
+import { useTransition } from "react";
+import { useFetcher } from "@remix-run/react";
 
 import { Button } from "@template/ui/components/button";
 import {
@@ -11,26 +12,55 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
+import { cn } from "@template/ui/lib";
 
+import type { WorkspaceType } from "./SidebarWorkspaceMneuItems";
 import type { RoutesLoaderData } from "~/.server/routes/dashboard/dashboard.loader";
 import { Icons } from "~/components/icons";
+import { useDashboardSidebarProvider } from "./context";
 
-export function SidebarWorkspaceSortingDropdown() {
-  const fetcher = useFetcher<RoutesLoaderData>();
+interface SidebarWorkspaceSortingDropdownProps {
+  workspaceType: WorkspaceType;
+}
 
-  const [, setSearchParams] = useSearchParams();
+export function SidebarWorkspaceSortingDropdown(
+  _: SidebarWorkspaceSortingDropdownProps,
+) {
+  const [, startTransition] = useTransition();
+  const fetcher = useFetcher<RoutesLoaderData>({
+    key: "dashboard:sidebar:workspaces",
+  });
+  const { changeLimit, changeSortTag, query } = useDashboardSidebarProvider();
 
   const onClickDisplayCountItem = (count: number) => {
-    setSearchParams((prev) => {
-      prev.set("limit", count.toString());
-      return prev;
+    changeLimit({
+      value: count,
+    });
+
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value) searchParams.append(key, value);
+    }
+    searchParams.set("limit", count.toString());
+
+    startTransition(() => {
+      fetcher.load(`/dashboard?${searchParams.toString()}`);
     });
   };
 
   const onClickOrderItems = (sort: string) => {
-    setSearchParams((prev) => {
-      prev.set("orderBy", sort);
-      return prev;
+    changeSortTag({
+      value: sort as "createdAt" | "updatedAt" | "order" | undefined,
+    });
+
+    const searchParams = new URLSearchParams();
+    for (const [key, value] of Object.entries(query)) {
+      if (value) searchParams.append(key, value);
+    }
+    searchParams.set("sortTag", sort);
+
+    startTransition(() => {
+      fetcher.load(`/dashboard?${searchParams.toString()}`);
     });
   };
 
@@ -56,12 +86,20 @@ export function SidebarWorkspaceSortingDropdown() {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => onClickOrderItems("createdAt")}>
-                수동
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClickOrderItems("updatedAt")}>
-                최종 수정 일시
-              </DropdownMenuItem>
+              {[
+                { id: "createdAt", name: "생성일시" },
+                { id: "updatedAt", name: "수정 일시" },
+              ].map((item) => (
+                <DropdownMenuItem
+                  key={`sort-${item.id}`}
+                  className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+                  onClick={() => onClickOrderItems(item.id)}
+                  data-selected={query.sortTag === item.id}
+                  aria-selected={query.sortTag === item.id}
+                >
+                  {item.name}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>
@@ -74,21 +112,17 @@ export function SidebarWorkspaceSortingDropdown() {
           </DropdownMenuSubTrigger>
           <DropdownMenuPortal>
             <DropdownMenuSubContent>
-              <DropdownMenuItem onClick={() => onClickDisplayCountItem(5)}>
-                항목 5개
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClickDisplayCountItem(10)}>
-                항목 10개
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClickDisplayCountItem(15)}>
-                항목 15개
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClickDisplayCountItem(20)}>
-                항목 20개
-              </DropdownMenuItem>
-              <DropdownMenuItem onClick={() => onClickDisplayCountItem(0)}>
-                모두
-              </DropdownMenuItem>
+              {[5, 10, 15, 20, 0].map((item) => (
+                <DropdownMenuItem
+                  key={`display-${item}`}
+                  onClick={() => onClickDisplayCountItem(item)}
+                  className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
+                  aria-selected={query.limit === item}
+                  data-selected={query.limit === item}
+                >
+                  {item === 0 ? "모두" : `항목 ${item}개`}
+                </DropdownMenuItem>
+              ))}
             </DropdownMenuSubContent>
           </DropdownMenuPortal>
         </DropdownMenuSub>

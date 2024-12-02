@@ -1,14 +1,21 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { data, redirect } from "@remix-run/node";
 
-import type { FormFieldCreateWorkspace } from "@template/validators/workspace";
 import { HttpStatusCode } from "@template/common";
 
+import {
+  patchFavoriteWorkspace,
+  patchFavoriteWorkspaceRequestBody,
+  postWorkspace,
+  postWorkspaceRequestBody,
+} from "~/.server/data/worksacpe";
 import { auth, getSession } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { api } from "~/libs/api";
-import { toValidationErrorFormat } from "~/libs/error";
+import {
+  defaultToastErrorMessage,
+  toValidationErrorFormat,
+} from "~/libs/error";
 
 export const action = async (args: ActionFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);
@@ -22,55 +29,81 @@ export const action = async (args: ActionFunctionArgs) => {
     );
   }
 
-  const formData = await args.request.formData();
-  const input = {
-    title: formData.get("title"),
-    description: formData.get("description"),
-  } as FormFieldCreateWorkspace;
+  const method = args.request.method.toUpperCase();
 
-  const result = await api
-    .method("post")
-    .path("/api/v1/workspaces")
-    .setBody(input)
-    .setAuthorization(session.access_token)
-    .run();
+  if (method === "POST") {
+    const requestBody = await postWorkspaceRequestBody(args.request);
+    const [ok, result, response] = await postWorkspace({
+      session,
+      requestBody,
+    });
 
-  if (result.error) {
-    switch (result.error.statusCode) {
-      case HttpStatusCode.BAD_REQUEST: {
-        return data(
-          {
-            success: false as const,
-            error: toValidationErrorFormat(result.error),
-          },
-          {
-            headers,
-          },
-        );
-      }
-      default: {
-        throw redirectWithToast(
-          args.request.url,
-          {
-            type: "error",
-            title: "서버 오류",
-            description: result.error.error.message,
-          },
-          {
-            headers,
-          },
-        );
+    if (!ok) {
+      switch (response.statusCode) {
+        case HttpStatusCode.BAD_REQUEST: {
+          return data(
+            {
+              success: false as const,
+              error: toValidationErrorFormat(response),
+            },
+            {
+              headers,
+            },
+          );
+        }
+        default: {
+          throw redirectWithToast(
+            args.request.url,
+            defaultToastErrorMessage(result.message),
+            {
+              headers,
+            },
+          );
+        }
       }
     }
-  }
 
-  return data(
-    {
-      success: true as const,
-      workspace: result.data.data,
-    },
-    { headers },
-  );
+    return data(
+      {
+        success: true as const,
+        workspace: result,
+      },
+      { headers },
+    );
+  } else if (method === "PATCH") {
+    const [workspaceId, requestBody] = await patchFavoriteWorkspaceRequestBody(
+      args.request,
+    );
+    const [ok, result] = await patchFavoriteWorkspace({
+      workspaceId,
+      requestBody,
+      session,
+    });
+    if (!ok) {
+      throw redirectWithToast(
+        args.request.url,
+        defaultToastErrorMessage(result.message),
+        {
+          headers,
+        },
+      );
+    }
+    return data(
+      {
+        success: true as const,
+        workspace: result,
+      } as const,
+      { headers },
+    );
+  } else {
+    throw redirectWithToast(
+      args.request.url,
+      defaultToastErrorMessage("지원하지 않는 메소드입니다."),
+      {
+        headers,
+      },
+    );
+  }
 };
 
 export type RoutesActionData = typeof action;

@@ -140,6 +140,23 @@ export interface paths {
     patch: operations["WorkspacesController_update"];
     trace?: never;
   };
+  "/api/v1/workspaces/{id}/favorite": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 워크스페이스 즐겨찾기 */
+    patch: operations["WorkspacesController_favorite"];
+    trace?: never;
+  };
 }
 export type webhooks = Record<string, never>;
 export interface components {
@@ -261,6 +278,13 @@ export interface components {
        * @example My Workspace
        */
       title: string;
+    };
+    FavoriteWorkspaceDto: {
+      /**
+       * @description 즐겨찾기 여부
+       * @example true
+       */
+      isFavorite: boolean;
     };
     HttpErrorDto: {
       /** @description Http Exception Response DTO */
@@ -661,10 +685,80 @@ export interface components {
     ValidationErrorDto: {
       /** @description Custom Validation Error Response DTO */
       error: components["schemas"]["ValidationExceptionResponseDto"];
-      /** @description 결과 코드 */
-      resultCode: number;
-      /** @description 상태코드 */
-      statusCode: number;
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
     };
     ValidationExceptionResponseDto: {
       /**
@@ -798,6 +892,10 @@ export interface components {
       description?: string | null;
       /** @description 워크스페이스 ID */
       id: number;
+      /** @description 즐겨찾기 여부 */
+      isFavorite: boolean;
+      /** @description 순서 */
+      order: number;
       /** @description 워크스페이스 이름 */
       title: string;
       /**
@@ -1171,15 +1269,19 @@ export interface operations {
   WorkspacesController_findAll: {
     parameters: {
       query?: {
+        /**
+         * @description 즐겨찾기 여부
+         * @example true
+         */
+        isFavorite?: boolean | null;
         /** @description 페이지 크기 */
         limit?: number;
-        /**
-         * @description 정렬 기준
-         * @example createdAt
-         */
-        orderBy?: "createdAt" | "updatedAt" | null;
         /** @description 페이지 번호 */
         pageNo?: number | null;
+        /** @description 정렬 순서 */
+        sortOrder?: "asc" | "desc" | null;
+        /** @description 정렬 기준 */
+        sortTag?: "createdAt" | "updatedAt" | "order" | null;
         /** @description 작업공간 제목 검색 */
         title?: string | null;
       };
@@ -1356,6 +1458,57 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  WorkspacesController_favorite: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["FavoriteWorkspaceDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WorkspaceDetailResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };

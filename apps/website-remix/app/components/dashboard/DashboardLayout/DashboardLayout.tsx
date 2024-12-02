@@ -2,23 +2,18 @@ import React from "react";
 
 import { SidebarInset, SidebarProvider } from "@template/ui/components/sidebar";
 
-import type { DashboardWorkspaceSidebarProps } from "../DashboardSidebar";
 import { DashboardWorkspaceSidebar } from "../DashboardSidebar";
 import { DashboardHeader } from "./DashboardHeader";
 
-interface DashboardLayoutProps
-  extends Pick<DashboardWorkspaceSidebarProps, "workspaces"> {
+interface DashboardLayoutProps {
   children: React.ReactNode;
 }
 
-export default function DashboardLayout({
-  children,
-  workspaces,
-}: DashboardLayoutProps) {
+export default function DashboardLayout({ children }: DashboardLayoutProps) {
   return (
     <div className="relative bg-background">
       <SidebarProvider>
-        <DashboardWorkspaceSidebar workspaces={workspaces} />
+        <DashboardWorkspaceSidebar />
         <SidebarInset>
           <DashboardHeader />
           <div className="flex flex-1 flex-col gap-4 p-4 pt-0">

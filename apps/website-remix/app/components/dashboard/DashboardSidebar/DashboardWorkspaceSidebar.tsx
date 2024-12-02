@@ -1,5 +1,6 @@
 import type { LinkProps } from "@remix-run/react";
 import React from "react";
+import { useLoaderData } from "@remix-run/react";
 
 import type { components } from "@template/api-types";
 import { ScrollArea } from "@template/ui/components/scroll-area";
@@ -11,10 +12,11 @@ import {
   SidebarRail,
 } from "@template/ui/components/sidebar";
 
-import { Icons } from "~/components/icons";
-import { PAGE_ENDPOINTS } from "~/constants/constants";
+import type { RoutesLoaderData } from "~/.server/routes/dashboard/dashboard.loader";
+import { DashboardSidebarProvider } from "./context";
 import SidebarEtcNav from "./SidebarEtcNav";
 import { SidebarLogo } from "./SidebarLogo";
+import { WorkspaceType } from "./SidebarWorkspaceMneuItems";
 import { SidebarWorkspaceNav } from "./SidebarWorkspaceNav";
 
 export interface WorkspaceMenuItem extends LinkProps {
@@ -26,49 +28,29 @@ export interface WorkspaceMenuItem extends LinkProps {
   isActive?: boolean;
 }
 
-function generateWorkspaceItems(
-  workspaces: components["schemas"]["WorkspaceEntity"][],
-): WorkspaceMenuItem[] {
-  return workspaces.map((workspace) => ({
-    meta: workspace,
-    title: workspace.title,
-    to: PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(workspace.id),
-    icon: Icons.Command,
-    viewTransition: true,
-  }));
-}
+export default function DashboardWorkspaceSidebar() {
+  const data = useLoaderData<RoutesLoaderData>();
 
-export interface DashboardWorkspaceSidebarProps {
-  workspaces: components["schemas"]["WorkspaceEntity"][];
-}
-
-export default function DashboardWorkspaceSidebar({
-  workspaces,
-}: DashboardWorkspaceSidebarProps) {
   return (
-    <Sidebar collapsible="icon" className="bg-background">
-      <ShadcnSidebarHeader>
-        <SidebarLogo />
-      </ShadcnSidebarHeader>
-      <SidebarContent>
-        <ScrollArea>
-          <SidebarWorkspaceNav
-            title="즐겨찾기"
-            type="favorite"
-            items={generateWorkspaceItems([])}
-            emptyMessage="즐겨찾기한 워크스페이스가 없습니다."
-          />
-          <SidebarWorkspaceNav
-            type="default"
-            title="워크스페이스"
-            items={generateWorkspaceItems(workspaces)}
-          />
-        </ScrollArea>
-      </SidebarContent>
-      <SidebarFooter>
-        <SidebarEtcNav />
-      </SidebarFooter>
-      <SidebarRail />
-    </Sidebar>
+    <DashboardSidebarProvider>
+      <Sidebar collapsible="icon" className="bg-background">
+        <ShadcnSidebarHeader>
+          <SidebarLogo />
+        </ShadcnSidebarHeader>
+        <SidebarContent>
+          <ScrollArea>
+            <SidebarWorkspaceNav
+              workspaceType={WorkspaceType.Default}
+              title="워크스페이스"
+              items={data.workspaces}
+            />
+          </ScrollArea>
+        </SidebarContent>
+        <SidebarFooter>
+          <SidebarEtcNav />
+        </SidebarFooter>
+        <SidebarRail />
+      </Sidebar>
+    </DashboardSidebarProvider>
   );
 }

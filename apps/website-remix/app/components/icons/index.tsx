@@ -20,6 +20,7 @@ import {
   Settings,
   Settings2,
   SquareTerminal,
+  Star,
   Sun,
   Trash,
 } from "@template/ui/components/icons";
@@ -46,6 +47,7 @@ export const Icons = {
   Trash,
   MoreHorizontal,
   ArrowDownUp,
+  Star,
   Hash,
   Logo: (props: LucideProps) => (
     <svg xmlns="http://www.w3.org/2000/svg" viewBox="0 0 256 256" {...props}>

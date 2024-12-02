@@ -115,10 +115,13 @@ model WorkSpace {
   updatedAt   DateTime   @updatedAt // 업데이트 시간
   deletedAt   DateTime? // 삭제 시간
   userId      String // 사용자 ID
+  order       Int        @default(0) // 순서
+  isFavorite  Boolean    @default(false) // 즐겨찾기
   User        User       @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
   Database    Database[]
 
   @@index([userId], name: "work_spaces_user_id_index")
+  @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
   @@map("work_spaces")
 }
 

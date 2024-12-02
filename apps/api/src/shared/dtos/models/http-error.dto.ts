@@ -10,14 +10,14 @@ import { HttpExceptionResponseDto } from "./http-exception-response.dto";
 export class HttpErrorDto {
   @ApiProperty({ enum: HttpStatus, description: "상태코드" })
   @Expose()
-  readonly statusCode: number;
+  readonly statusCode: HttpStatus;
 
   @ApiProperty({
     enum: HttpResultCode,
     description: "결과 코드",
   })
   @Expose()
-  readonly resultCode: number;
+  readonly resultCode: HttpResultCode;
 
   @ApiProperty({
     type: () => HttpExceptionResponseDto,

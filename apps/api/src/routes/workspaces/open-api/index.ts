@@ -62,6 +62,29 @@ export const OpenApiErrorDefine = {
       },
     },
   },
+  favoriteWorkspaceValidation: {
+    exampleDescription: "요청 데이터 검증 오류",
+    message: {
+      isFavorite: ["즐겨찾기 여부는 불리언이어야 합니다."],
+    },
+    resultCode: HttpResultCode.INVALID_REQUEST,
+    statusCode: HttpStatus.BAD_REQUEST,
+    example: {
+      ["검증 오류"]: {
+        value: {
+          statusCode: HttpStatus.BAD_REQUEST,
+          resultCode: HttpResultCode.INVALID_REQUEST,
+          error: {
+            error: "ValidationError",
+            message: "요청 데이터 검증 오류",
+            validationErrorInfo: {
+              isFavorite: ["즐겨찾기 여부는 불리언이어야 합니다."],
+            },
+          },
+        },
+      },
+    },
+  },
 };
 
 export const OpenApiBadRequestErrorDefine = {
@@ -79,6 +102,25 @@ export const OpenApiBadRequestErrorDefine = {
         },
         examples: {
           ...OpenApiErrorDefine.createWorkspaceValidation.example,
+          ...AuthOpenApiErrorDefine.invalidToken.example,
+        },
+      },
+    },
+  },
+  favorite: {
+    status: HttpStatus.BAD_REQUEST,
+    content: {
+      "application/json": {
+        schema: {
+          oneOf: [
+            {
+              $ref: getSchemaPath(HttpErrorDto),
+            },
+            { $ref: getSchemaPath(ValidationErrorDto) },
+          ],
+        },
+        examples: {
+          ...OpenApiErrorDefine.favoriteWorkspaceValidation.example,
           ...AuthOpenApiErrorDefine.invalidToken.example,
         },
       },
@@ -123,6 +165,8 @@ export const OpenApiSuccessDefine = {
                 id: "",
                 title: "",
                 description: "",
+                isFavorite: false,
+                order: 0,
                 createdAt: "2022-01-01T00:00:00.000Z",
                 updatedAt: "2022-01-01T00:00:00.000Z",
                 deletedAt: null,
@@ -153,6 +197,8 @@ export const OpenApiSuccessDefine = {
             id: "",
             title: "",
             description: "",
+            isFavorite: false,
+            order: 0,
             createdAt: "2022-01-01T00:00:00.000Z",
             updatedAt: "2022-01-01T00:00:00.000Z",
             deletedAt: null,
@@ -175,6 +221,32 @@ export const OpenApiSuccessDefine = {
             id: "",
             title: "",
             description: "",
+            isFavorite: false,
+            order: 0,
+            createdAt: "2022-01-01T00:00:00.000Z",
+            updatedAt: "2022-01-01T00:00:00.000Z",
+            deletedAt: null,
+          },
+        },
+      },
+    },
+  },
+  favorite: {
+    exampleDescription: "즐겨찾기 설정",
+    message: "즐겨찾기 설정을 성공적으로 변경했습니다.",
+    resultCode: HttpResultCode.OK,
+    statusCode: HttpStatus.OK,
+    example: {
+      ["응답 성공"]: {
+        value: {
+          statusCode: HttpStatus.OK,
+          resultCode: HttpResultCode.OK,
+          data: {
+            id: "",
+            title: "",
+            description: "",
+            isFavorite: false,
+            order: 0,
             createdAt: "2022-01-01T00:00:00.000Z",
             updatedAt: "2022-01-01T00:00:00.000Z",
             deletedAt: null,
@@ -216,6 +288,17 @@ export const OpenApiSuccessResponseDefine = {
           $ref: getSchemaPath(WorkspaceDetailResponseDto),
         },
         examples: OpenApiSuccessDefine.create.example,
+      },
+    },
+  } as ApiResponseOptions,
+  favorite: {
+    status: HttpStatus.OK,
+    content: {
+      "application/json": {
+        schema: {
+          $ref: getSchemaPath(WorkspaceDetailResponseDto),
+        },
+        examples: OpenApiSuccessDefine.favorite.example,
       },
     },
   } as ApiResponseOptions,

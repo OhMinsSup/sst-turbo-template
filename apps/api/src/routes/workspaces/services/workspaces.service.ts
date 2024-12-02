@@ -1,15 +1,13 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
 import { toFinite } from "lodash-es";
+import { SortOrder } from "src/types/sort-order";
 
 import type { UserExternalPayload } from "@template/db/selectors";
 import { HttpResultCode } from "@template/common";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
-import {
-  ListWorkspaceDto,
-  WorkspaceOrderByEnum,
-} from "../dto/list-workspace.dto";
+import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import { OpenApiErrorDefine } from "../open-api";
 
@@ -47,19 +45,23 @@ export class WorkspacesService {
         where: {
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
+          ...(typeof query.isFavorite === "boolean" && {
+            isFavorite: query.isFavorite,
+          }),
         },
       }),
       this.prismaService.workSpace.findMany({
         where: {
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
+          ...(typeof query.isFavorite === "boolean" && {
+            isFavorite: query.isFavorite,
+          }),
         },
         orderBy: {
-          ...(query.orderBy === WorkspaceOrderByEnum.UPDATED_AT
-            ? { updatedAt: "desc" }
-            : {
-                createdAt: "desc",
-              }),
+          ...(query.sortTag && {
+            [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
+          }),
         },
         take: limit ? limit : undefined,
         skip: limit ? (pageNo - 1) * limit : undefined,
@@ -109,5 +111,22 @@ export class WorkspacesService {
 
   remove(id: number) {
     return `This action removes a #${id} workspace`;
+  }
+
+  /**
+   * @description 워크스페이스 즐겨찾기 설정
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   * @param {boolean} isFavorite
+   */
+  async favorite(user: UserExternalPayload, id: number, isFavorite: boolean) {
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: { isFavorite },
+    });
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
   }
 }

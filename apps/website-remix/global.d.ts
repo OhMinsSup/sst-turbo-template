@@ -53,6 +53,7 @@
     readonly __CF_USER_TEXT_ENCODING: string;
     readonly npm_execpath: string;
     readonly TIPTAP_PRO_TOKEN: string;
+    readonly npm_package_dependencies_react_error_boundary: string;
     readonly npm_config_frozen_lockfile: string;
     readonly npm_package_devDependencies__types_react_dom: string;
     readonly npm_package_devDependencies__remix_run_dev: string;

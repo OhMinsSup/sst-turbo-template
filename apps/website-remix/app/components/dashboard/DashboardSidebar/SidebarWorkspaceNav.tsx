@@ -1,51 +1,41 @@
-import { Link } from "@remix-run/react";
-
+import type { components } from "@template/api-types";
 import {
   SidebarGroup,
   SidebarGroupLabel,
   SidebarMenu,
-  SidebarMenuButton,
-  SidebarMenuItem,
   useSidebar,
 } from "@template/ui/components/sidebar";
 
-import type { WorkspaceMenuItem } from "./DashboardWorkspaceSidebar";
+import type { WorkspaceType } from "./SidebarWorkspaceMneuItems";
 import { SidebarEmptyMessage } from "./SidebarEmptyMessage";
 import { SidebarTitle } from "./SidebarTitle";
+import { SidebarWorkspaceMneuItems } from "./SidebarWorkspaceMneuItems";
 
 interface SidebarWorkspaceNavProps {
-  type: "favorite" | "default";
+  workspaceType: WorkspaceType;
   title: string;
-  items: WorkspaceMenuItem[];
-  emptyMessage?: React.ReactNode;
+  items: components["schemas"]["WorkspaceEntity"][];
 }
 export function SidebarWorkspaceNav({
   title,
+  workspaceType,
   items,
-  type,
-  emptyMessage = "등록된 워크스페이스가 없습니다.",
 }: SidebarWorkspaceNavProps) {
   const { state } = useSidebar();
   return (
     <SidebarGroup>
       <SidebarGroupLabel className="flex justify-between">
-        <SidebarTitle title={title} type={type} />
+        <SidebarTitle title={title} workspaceType={workspaceType} />
       </SidebarGroupLabel>
       <SidebarMenu>
-        {items.map(({ to, title, icon: IconComponent, ...item }) => (
-          <SidebarMenuItem key={title}>
-            <SidebarMenuButton tooltip={title} asChild>
-              <Link to={to} {...item}>
-                {IconComponent && <IconComponent />}
-                <span>{title}</span>
-              </Link>
-            </SidebarMenuButton>
-          </SidebarMenuItem>
-        ))}
-        <SidebarEmptyMessage
-          emptyMessage={emptyMessage}
-          display={items.length === 0 && state === "expanded"}
-        />
+        {!items.length && state === "expanded" ? (
+          <SidebarEmptyMessage emptyMessage="워크스페이스가 없습니다." />
+        ) : (
+          <SidebarWorkspaceMneuItems
+            initialData={items}
+            workspaceType={workspaceType}
+          />
+        )}
       </SidebarMenu>
     </SidebarGroup>
   );

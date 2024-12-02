@@ -58,6 +58,7 @@
     export const __CF_USER_TEXT_ENCODING: string;
     export const npm_execpath: string;
     export const TIPTAP_PRO_TOKEN: string;
+    export const npm_package_dependencies_react_error_boundary: string;
     export const npm_config_frozen_lockfile: string;
     export const npm_package_devDependencies__types_react_dom: string;
     export const npm_package_devDependencies__remix_run_dev: string;

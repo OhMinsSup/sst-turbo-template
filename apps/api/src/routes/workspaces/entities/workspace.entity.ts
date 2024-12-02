@@ -55,4 +55,20 @@ export class WorkspaceEntity {
   })
   @Expose()
   readonly deletedAt?: Date;
+
+  @ApiProperty({
+    description: "즐겨찾기 여부",
+    type: Boolean,
+    required: true,
+  })
+  @Expose()
+  readonly isFavorite: boolean;
+
+  @ApiProperty({
+    description: "순서",
+    type: Number,
+    required: true,
+  })
+  @Expose()
+  readonly order: number;
 }

@@ -30,6 +30,7 @@ import {
   OpenApiUnauthorizedErrorDefine,
 } from "../../auth/open-api";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
+import { FavoriteWorkspaceDto } from "../dto/favorite-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import {
@@ -104,5 +105,21 @@ export class WorkspacesController {
   @Delete(":id")
   remove(@Param("id") id: string) {
     return this.service.remove(+id);
+  }
+
+  @Patch(":id/favorite")
+  @ApiOperation({ summary: "워크스페이스 즐겨찾기" })
+  @JwtAuth()
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(WorkspaceOpenApiBadRequestErrorDefine.favorite)
+  @ApiResponse(WorkspaceOpenApiNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiSuccessResponseDefine.favorite)
+  favorite(
+    @AuthUser() user: UserExternalPayload,
+    @Param("id", ParseIntPipe) id: number,
+    @Body() body: FavoriteWorkspaceDto,
+  ) {
+    return this.service.favorite(user, id, body.isFavorite);
   }
 }

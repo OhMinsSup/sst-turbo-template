@@ -13,8 +13,8 @@ catalogs:
       specifier: ^0.11.0
       version: 0.11.1
     '@tanstack/react-query':
-      specifier: ^5.53.3
-      version: 5.53.3
+      specifier: ^5.62.0
+      version: 5.62.0
     autoprefixer:
       specifier: ^10.4.20
       version: 10.4.20
@@ -296,7 +296,7 @@ importers:
         version: 0.11.1(typescript@5.5.4)(zod@3.23.8)
       '@tanstack/react-query':
         specifier: 'catalog:'
-        version: 5.53.3(react@18.3.1)
+        version: 5.62.0(react@18.3.1)
       '@template/api':
         specifier: workspace:*
         version: link:../../packages/api
@@ -330,6 +330,9 @@ importers:
       react-dom:
         specifier: catalog:react18
         version: 18.3.1(react@18.3.1)
+      react-error-boundary:
+        specifier: ^4.1.2
+        version: 4.1.2(react@18.3.1)
       react-hook-form:
         specifier: 'catalog:'
         version: 7.53.2(react@18.3.1)
@@ -3097,11 +3100,11 @@ packages:
     peerDependencies:
       tailwindcss: '>=3.0.0 || insiders || >=4.0.0-alpha.20'
 
-  '@tanstack/query-core@5.53.3':
-    resolution: {integrity: sha512-ZfjAgd7NpqDx0e4aYBt7EmS2enbulPrJwowTy+mayRE93WUUH+sIYHun1TdRjpGwDPMNNZ5D6goh7n3CwoO+HA==}
+  '@tanstack/query-core@5.62.0':
+    resolution: {integrity: sha512-sx38bGrqF9bop92AXOvzDr0L9fWDas5zXdPglxa9cuqeVSWS7lY6OnVyl/oodfXjgOGRk79IfCpgVmxrbHuFHg==}
 
-  '@tanstack/react-query@5.53.3':
-    resolution: {integrity: sha512-286mN/91CeM7vC6CZFLKYDHSw+WyMX6ekIvzoTbpM4xyPb99VSyCKPLyPgaOatKqYm6ooMBquSq9NGRdKgsJfg==}
+  '@tanstack/react-query@5.62.0':
+    resolution: {integrity: sha512-tj2ltjAn2a3fs+Dqonlvs6GyLQ/LKVJE2DVSYW+8pJ3P6/VCVGrfqv5UEchmlP7tLOvvtZcOuSyI2ooVlR5Yqw==}
     peerDependencies:
       react: ^18 || ^19
 
@@ -6855,6 +6858,11 @@ packages:
     peerDependencies:
       react: ^18.3.1
 
+  react-error-boundary@4.1.2:
+    resolution: {integrity: sha512-GQDxZ5Jd+Aq/qUxbCm1UtzmL/s++V7zKgE8yMktJiCQXCCFZnMZh9ng+6/Ne6PjNSXH0L9CjeOEREfRnq6Duag==}
+    peerDependencies:
+      react: '>=16.13.1'
+
   react-hook-form@7.53.2:
     resolution: {integrity: sha512-YVel6fW5sOeedd1524pltpHX+jgU2u3DSDtXEaBORNdqiNrsX/nUI/iGXONegttg0mJVnfrIkiV0cmTU6Oo2xw==}
     engines: {node: '>=18.0.0'}
@@ -10502,11 +10510,11 @@ snapshots:
       postcss-selector-parser: 6.0.10
       tailwindcss: 3.4.10(ts-node@10.9.2(@swc/core@1.7.23(@swc/helpers@0.5.13))(@types/node@22.5.2)(typescript@5.5.4))
 
-  '@tanstack/query-core@5.53.3': {}
+  '@tanstack/query-core@5.62.0': {}
 
-  '@tanstack/react-query@5.53.3(react@18.3.1)':
+  '@tanstack/react-query@5.62.0(react@18.3.1)':
     dependencies:
-      '@tanstack/query-core': 5.53.3
+      '@tanstack/query-core': 5.62.0
       react: 18.3.1
 
   '@tokenizer/token@0.3.0': {}
@@ -15136,6 +15144,11 @@ snapshots:
       loose-envify: 1.4.0
       react: 18.3.1
       scheduler: 0.23.2
+
+  react-error-boundary@4.1.2(react@18.3.1):
+    dependencies:
+      '@babel/runtime': 7.25.6
+      react: 18.3.1
 
   react-hook-form@7.53.2(react@18.3.1):
     dependencies:

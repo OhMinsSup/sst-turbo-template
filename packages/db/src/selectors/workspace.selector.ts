@@ -4,6 +4,8 @@ export const getBaseWorkspaceSelector = () => {
   return Prisma.validator<Prisma.WorkSpaceSelect>()({
     id: true,
     title: true,
+    isFavorite: true,
+    order: true,
     description: true,
     createdAt: true,
     updatedAt: true,

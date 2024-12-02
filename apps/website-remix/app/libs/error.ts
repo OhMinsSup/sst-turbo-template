@@ -57,7 +57,7 @@ export function toValidationErrorFormat(
     Object.entries(error).map(([key, value]) => [
       key,
       {
-        message: value,
+        message: `${value}`,
       },
     ]),
   );
@@ -80,4 +80,12 @@ export function getErrorMessage(error: unknown): string {
   }
   console.error("Unable to get error message for error", error);
   return "Unknown Error";
+}
+
+export function defaultToastErrorMessage(message: string) {
+  return {
+    type: "error" as const,
+    title: "서버 오류",
+    description: message,
+  };
 }
