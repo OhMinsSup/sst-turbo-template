@@ -15,6 +15,7 @@
     readonly SESSION_SECRET: string;
     readonly NVM_INC: string;
     readonly npm_package_devDependencies_prettier: string;
+    readonly npm_package_dependencies__tanstack_react_table: string;
     readonly TERM_PROGRAM: string;
     readonly NODE: string;
     readonly INIT_CWD: string;

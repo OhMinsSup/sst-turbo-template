@@ -1,12 +1,16 @@
 import type { LucideProps } from "@template/ui/components/icons";
 import {
+  ArrowDown,
   ArrowDownUp,
+  ArrowUp,
   AudioWaveform,
   Bell,
   BookOpen,
   Bot,
   ChevronDown,
+  ChevronsUpDown,
   Command,
+  EyeOff,
   Frame,
   GalleryVerticalEnd,
   Hash,
@@ -26,6 +30,10 @@ import {
 } from "@template/ui/components/icons";
 
 export const Icons = {
+  ArrowDown,
+  ArrowUp,
+  ChevronsUpDown,
+  EyeOff,
   Spinner: LoaderCircle,
   ChevronDown,
   AudioWaveform,

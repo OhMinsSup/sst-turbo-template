@@ -20,6 +20,7 @@
     export const SESSION_SECRET: string;
     export const NVM_INC: string;
     export const npm_package_devDependencies_prettier: string;
+    export const npm_package_dependencies__tanstack_react_table: string;
     export const TERM_PROGRAM: string;
     export const NODE: string;
     export const INIT_CWD: string;

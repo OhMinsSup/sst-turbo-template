@@ -43,6 +43,9 @@ export class WorkspacesService {
     const [totalCount, list] = await Promise.all([
       this.prismaService.workSpace.count({
         where: {
+          deletedAt: {
+            equals: null,
+          },
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
           ...(typeof query.isFavorite === "boolean" && {
@@ -52,6 +55,9 @@ export class WorkspacesService {
       }),
       this.prismaService.workSpace.findMany({
         where: {
+          deletedAt: {
+            equals: null,
+          },
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
           ...(typeof query.isFavorite === "boolean" && {

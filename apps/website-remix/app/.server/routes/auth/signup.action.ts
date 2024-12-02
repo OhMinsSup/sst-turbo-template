@@ -1,6 +1,5 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
-import { safeRedirect } from "remix-utils/safe-redirect";
 
 import type { FormFieldSignUpSchema } from "@template/validators/auth";
 import { HttpStatusCode } from "@template/common";
@@ -8,7 +7,11 @@ import { HttpStatusCode } from "@template/common";
 import { auth } from "~/.server/utils/auth";
 import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { toErrorFormat, toValidationErrorFormat } from "~/libs/error";
+import {
+  defaultToastErrorMessage,
+  toErrorFormat,
+  toValidationErrorFormat,
+} from "~/libs/error";
 
 export const action = async (args: ActionFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);
@@ -23,33 +26,34 @@ export const action = async (args: ActionFunctionArgs) => {
     provider: formData.get("provider"),
   } as FormFieldSignUpSchema;
 
-  const result = await authClient.signUp(input);
+  const response = await authClient.signUp(input);
 
-  if (result.error) {
-    switch (result.error.statusCode) {
+  if (response.error) {
+    switch (response.error.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
         return {
           success: false,
-          error: toErrorFormat("email", result.error),
+          error: toErrorFormat("email", response.error),
         };
       }
       case HttpStatusCode.BAD_REQUEST: {
         return {
           success: false,
-          error: toValidationErrorFormat(result.error),
+          error: toValidationErrorFormat(response.error),
         };
       }
       default: {
-        return redirectWithToast(args.request.url, {
-          type: "error",
-          title: "서버 오류",
-          description: "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
-        });
+        return redirectWithToast(
+          args.request.url,
+          defaultToastErrorMessage(
+            "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          ),
+        );
       }
     }
   }
 
-  return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
+  return redirect(PAGE_ENDPOINTS.ROOT, {
     headers,
   });
 };

@@ -65,11 +65,9 @@ export const action = async (args: ActionFunctionArgs) => {
         }
       }
     }
-
     if (queryHashKey) {
       await softPurgeWorkspaceList(queryHashKey);
     }
-
     return data(
       {
         success: true as const,

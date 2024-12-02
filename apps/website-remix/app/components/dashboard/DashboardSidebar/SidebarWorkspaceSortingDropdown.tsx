@@ -12,7 +12,6 @@ import {
   DropdownMenuSubTrigger,
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
-import { cn } from "@template/ui/lib";
 
 import type { WorkspaceType } from "./SidebarWorkspaceMneuItems";
 import type { RoutesLoaderData } from "~/.server/routes/dashboard/dashboard.loader";

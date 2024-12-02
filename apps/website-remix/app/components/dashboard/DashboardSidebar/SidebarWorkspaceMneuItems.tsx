@@ -58,14 +58,35 @@ export function SidebarWorkspaceMneuItems({
 
   const [items, setItems] = useState(generateWorkspaceItems(initialData ?? []));
 
-  const updateItems = (items: components["schemas"]["WorkspaceEntity"][]) => {
-    const newItems = generateWorkspaceItems(items);
-    setItems((prevItems) => {
+  const updateItems = (
+    workspaces: components["schemas"]["WorkspaceEntity"][],
+  ) => {
+    const newItems = generateWorkspaceItems(workspaces);
+    const oldItems = items;
+    const compare =
+      newItems.length > oldItems.length
+        ? {
+            length: newItems.length,
+            type: "new",
+          }
+        : {
+            length: oldItems.length,
+            type: "old",
+          };
+
+    if (compare.type === "new") {
       const uniqueItems = newItems.filter(
-        (newItem) => !prevItems.some((prevItem) => prevItem.id === newItem.id),
+        (newItem) =>
+          !oldItems.some((oldItem) => oldItem.meta.id === newItem.meta.id),
       );
-      return [...prevItems, ...uniqueItems];
-    });
+      setItems([...oldItems, ...uniqueItems]);
+    } else {
+      const uniqueItems = oldItems.filter(
+        (oldItem) =>
+          !newItems.some((newItem) => newItem.meta.id === oldItem.meta.id),
+      );
+      setItems([...newItems, ...uniqueItems]);
+    }
   };
 
   const replaceItems = (items: components["schemas"]["WorkspaceEntity"][]) => {
@@ -78,6 +99,7 @@ export function SidebarWorkspaceMneuItems({
     });
   };
 
+  // 정렬, 필터링, 페이징에 대한 업데이트
   useEffect(() => {
     if (
       fetcher.data &&
@@ -88,6 +110,7 @@ export function SidebarWorkspaceMneuItems({
     }
   }, [fetcher.data]);
 
+  // 즐겨찾기 상태에 대한 업데이트
   useEffect(() => {
     if (
       fetcher.data &&
@@ -144,8 +167,8 @@ function SidebarWorkspaceMenuItem({
       <SidebarMenuButton tooltip={title} asChild>
         <Link to={to} {...item}>
           {IconComponent && <IconComponent />}
-          <span>{title}</span>
-          <div className="flex w-full items-center justify-end">
+          <span className="w-full">{title}</span>
+          <div className="flex items-center justify-end">
             <Button
               type="button"
               className="float-right"

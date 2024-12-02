@@ -63,7 +63,7 @@ function InternalSidebarUpsertWorkspaceForm({
       formData.append("description", input.description);
     }
     formData.append("queryHashKey", data.queryHashKey);
-    submit(input, {
+    submit(formData, {
       method: "post",
       replace: true,
     });
@@ -76,6 +76,7 @@ function InternalSidebarUpsertWorkspaceForm({
       setOpen(false);
       form.reset();
     }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [isFormSubmitting]);
 
   return (

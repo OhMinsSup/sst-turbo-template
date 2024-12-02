@@ -1,4 +1,4 @@
-import { cachified, softPurge } from "@epic-web/cachified";
+import { cachified } from "@epic-web/cachified";
 
 import type { GetWorkspaceListParams } from "../data/workspace";
 import { getWorkspaceList } from "../data/workspace";
@@ -14,6 +14,7 @@ export function getCacheWorkspaceList({
 }: GetWorkspaceListParams & {
   queryHashKey: string;
 }) {
+  console.log("getCacheWorkspaceList", cache);
   return cachified({
     ttl: 120_000 /* Two minutes */,
     staleWhileRevalidate: 300_000 /* Five minutes */,
@@ -25,13 +26,13 @@ export function getCacheWorkspaceList({
   });
 }
 
-export async function softPurgeWorkspaceList(queryHashKey: string) {
+export function softPurgeWorkspaceList(queryHashKey: string) {
   try {
-    await softPurge({
-      cache,
-      key: `workspace:list:${queryHashKey}`,
-    });
+    console.log("[start]softPurgeWorkspaceList", cache);
+    cache.delete(`workspace:list:${queryHashKey}`);
   } catch (error) {
     console.error(error);
+  } finally {
+    console.log("[end]softPurgeWorkspaceList", cache);
   }
 }
