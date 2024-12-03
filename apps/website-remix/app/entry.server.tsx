@@ -89,6 +89,7 @@ function handleBotRequest(
             console.error(error);
           }
         },
+        nonce: "secretnoncevalue",
       },
     );
 

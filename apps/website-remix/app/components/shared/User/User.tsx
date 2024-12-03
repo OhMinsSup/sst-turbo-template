@@ -20,7 +20,6 @@ import {
 import type { RoutesActionData } from "~/.server/routes/auth/signout.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useUser } from "~/hooks/useUser";
-import { useLoadingStore } from "~/store/useLoadingStore";
 import { SelectTheme } from "./SelectTheme";
 
 export default function User() {
@@ -28,13 +27,6 @@ export default function User() {
 
   const requestInfo = useRequestInfo();
   const fetcher = useFetcher<RoutesActionData>();
-  const setLoadingState = useLoadingStore((state) => state.setLoadingState);
-
-  const isActionSubmission = fetcher.state === "submitting";
-
-  useEffect(() => {
-    setLoadingState(isActionSubmission ? "loading" : "idle");
-  }, [isActionSubmission]);
 
   return (
     <DropdownMenu>

@@ -4,8 +4,8 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useFetcher,
   useLoaderData,
-  useRevalidator,
 } from "@remix-run/react";
 
 import "@template/ui/globals.css";
@@ -102,20 +102,29 @@ interface AppWithProviderProps {
 }
 
 function AppWithProvider({ children, session }: AppWithProviderProps) {
-  const revalidator = useRevalidator();
+  const fetcher = useFetcher();
+
+  const serverAccessToken = session?.access_token;
 
   useEffect(() => {
     const {
       data: { subscription },
     } = remixAuthBrowser.onAuthStateChange((_, newSession) => {
-      if (newSession?.expires_at !== session?.expires_at) {
-        revalidator.revalidate();
+      if (
+        newSession?.access_token !== serverAccessToken &&
+        fetcher.state === "idle"
+      ) {
+        // server and client are out of sync.
+        // Remix recalls active loaders after actions complete
+        fetcher.submit(null, {
+          method: "post",
+          action: "/revalidate-auth",
+        });
       }
     });
 
     return () => subscription.unsubscribe();
-    // eslint-disable-next-line react-hooks/exhaustive-deps
-  }, [session]);
+  }, [serverAccessToken, fetcher]);
 
   return (
     <QueryClientProvider client={RQClient}>{children}</QueryClientProvider>

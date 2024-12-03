@@ -3,8 +3,8 @@ import type { ColumnDef } from "@tanstack/react-table";
 import type { components } from "@template/api-types";
 import { Checkbox } from "@template/ui/components/checkbox";
 
-import { DataTableColumnHeader } from "~/components/shared/DataTableColumnHeader";
-import { DataTableRowActions } from "~/components/shared/DataTableRowActions";
+import { DataTableColumnHeader } from "~/components/dashboard/DashboardList/DataTableColumnHeader";
+import { DataTableRowActions } from "~/components/dashboard/DashboardList/DataTableRowActions";
 
 export const columns: ColumnDef<components["schemas"]["WorkspaceEntity"]>[] = [
   {

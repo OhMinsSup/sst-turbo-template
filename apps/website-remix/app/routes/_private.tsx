@@ -1,16 +1,25 @@
-import { Outlet } from "@remix-run/react";
+import { Outlet, useNavigation } from "@remix-run/react";
 
 import { OverlayLoading } from "~/components/shared/OverlayLoading";
-import { useLoadingStore } from "~/store/useLoadingStore";
 
 export { loader } from "~/.server/routes/guard/protecting.loader";
 
 export default function Routes() {
-  const loadingState = useLoadingStore((state) => state.loadingState);
+  const navigation = useNavigation();
+
+  const isActionRedirect =
+    navigation.state === "loading" &&
+    navigation.formMethod != null &&
+    navigation.formMethod != "GET" &&
+    // We had a submission navigation and are now navigating to different location
+    navigation.formAction !== navigation.location.pathname;
+
+  const isNavigating = Boolean(navigation.location);
+
   return (
     <>
       <Outlet />
-      <OverlayLoading isLoading={loadingState === "loading"} />
+      <OverlayLoading isLoading={isActionRedirect || isNavigating} />
     </>
   );
 }

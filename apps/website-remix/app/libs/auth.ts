@@ -6,7 +6,6 @@ import { api } from "./api";
 
 export const remixAuthBrowser = remember("auth:browser", () =>
   createAuthBrowserClient({
-    isSingleton: true,
     logDebugMessages: false,
     api,
   }),

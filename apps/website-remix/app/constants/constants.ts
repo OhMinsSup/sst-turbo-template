@@ -11,6 +11,7 @@ export const PAGE_ENDPOINTS = {
       ROOT: "/dashboard",
     },
     WORKSPACE: {
+      ROOT: "/dashboard/workspaces",
       ID: (workspaceId: string | number) =>
         `/dashboard/workspaces/${workspaceId}`,
     },
