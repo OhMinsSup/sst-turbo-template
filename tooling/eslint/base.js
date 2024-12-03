@@ -1,7 +1,6 @@
 /// <reference types="./types.d.ts" />
 
 import * as path from "node:path";
-import { fileURLToPath } from "node:url";
 import { includeIgnoreFile } from "@eslint/compat";
 import eslint from "@eslint/js";
 import importPlugin from "eslint-plugin-import";
@@ -11,36 +10,36 @@ import tseslint from "typescript-eslint";
 /**
  * All packages that leverage t3-env should use this rule
  */
-export const restrictEnvAccess = tseslint.config({
-  files: ["**/*.js", "**/*.ts", "**/*.tsx"],
-  rules: {
-    "no-restricted-properties": [
-      "error",
-      {
-        object: "process",
-        property: "env",
-        message:
-          "Use `import { env } from '~/env'` instead to ensure validated types.",
-      },
-    ],
-    "no-restricted-imports": [
-      "error",
-      {
-        name: "process",
-        importNames: ["env"],
-        message:
-          "Use `import { env } from '~/env'` instead to ensure validated types.",
-      },
-    ],
+export const restrictEnvAccess = tseslint.config(
+  { ignores: ["**/env.ts"] },
+  {
+    files: ["**/*.js", "**/*.ts", "**/*.tsx"],
+    rules: {
+      "no-restricted-properties": [
+        "error",
+        {
+          object: "process",
+          property: "env",
+          message:
+            "Use `import { env } from '~/env'` instead to ensure validated types.",
+        },
+      ],
+      "no-restricted-imports": [
+        "error",
+        {
+          name: "process",
+          importNames: ["env"],
+          message:
+            "Use `import { env } from '~/env'` instead to ensure validated types.",
+        },
+      ],
+    },
   },
-});
-
-const __dirname = path.dirname(fileURLToPath(import.meta.url));
+);
 
 export default tseslint.config(
   // Ignore files not tracked by VCS and any config files
-  // includeIgnoreFile(path.join(import.meta.dirname, "../../.gitignore")),
-  includeIgnoreFile(path.join(__dirname, "../../.gitignore")),
+  includeIgnoreFile(path.join(import.meta.dirname, "../../.gitignore")),
   { ignores: ["**/*.config.*"] },
   {
     files: ["**/*.js", "**/*.ts", "**/*.tsx"],

@@ -7,6 +7,11 @@ import type { Config } from "tailwindcss";
 import baseConfig from "@template/tailwind-config/web";
 
 export default {
-  content: ["./src/**/*.tsx"],
+  darkMode: ["class"],
+  content: [
+    ...baseConfig.content,
+    "./src/components/**/*.*.{tsx,ts,js}",
+    "./src/layouts/**/*.*.{tsx,ts,js}",
+  ],
   presets: [baseConfig],
 } satisfies Config;

@@ -1,3 +1,4 @@
+import { URL } from "url";
 import { Injectable, LogLevel } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
 import { addMilliseconds } from "date-fns";
@@ -28,6 +29,16 @@ export class EnvironmentService {
 
   getDataBaseUrl(): string {
     return this.configService.get<string>("DATABASE_URL");
+  }
+
+  getDatabaseType(): "postgres" | "sqlite" {
+    const url = this.getDataBaseUrl();
+    // URL 파싱
+    const parsedUrl = new URL(url);
+    // 호스트 부분 확인
+    const protocol = parsedUrl.protocol;
+    const sqliteProtocol = ["file:", "sqlite:", "sqlite3:", "memory:"];
+    return sqliteProtocol.includes(protocol) ? "sqlite" : "postgres";
   }
 
   // -----------------------------------------------------------------------------
@@ -63,38 +74,17 @@ export class EnvironmentService {
   // -----------------------------------------------------------------------------
   // token
   // -----------------------------------------------------------------------------
-  getAccessTokenExpiresIn(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_EXPIRES_IN");
+  getJwtExpiresIn(): string {
+    return this.configService.get<string>("JWT_EXPIRES_IN");
   }
 
-  getAccessTokenExpiresAt() {
-    const expiresIn = this.getAccessTokenExpiresIn();
-    return addMilliseconds(new Date().getTime(), ms(expiresIn));
+  getJwtExpiresAt(issuedAt: Date) {
+    const expiresIn = this.getJwtExpiresIn();
+    return addMilliseconds(issuedAt, ms(expiresIn));
   }
 
-  getAccessTokenSecret(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_SECRET");
-  }
-
-  getAccessTokenName(): string {
-    return this.configService.get<string>("ACCESS_TOKEN_NAME");
-  }
-
-  getRefreshTokenExpiresIn(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_EXPIRES_IN");
-  }
-
-  getRefreshTokenExpiresAt() {
-    const expiresIn = this.getRefreshTokenExpiresIn();
-    return addMilliseconds(new Date().getTime(), ms(expiresIn));
-  }
-
-  getRefreshTokenSecret(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_SECRET");
-  }
-
-  getRefreshTokenName(): string {
-    return this.configService.get<string>("REFRESH_TOKEN_NAME");
+  getJwtSecret(): string {
+    return this.configService.get<string>("JWT_SECRET");
   }
 
   // -----------------------------------------------------------------------------

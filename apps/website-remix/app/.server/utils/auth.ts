@@ -1,63 +1,32 @@
 import { redirect } from "@remix-run/node";
 
-import { createHttpError, HttpStatus } from "@template/sdk";
-import {
-  createAuthServerClient,
-  parseCookieHeader,
-  serializeCookieHeader,
-} from "@template/sdk/auth/server";
+import type { AuthClient, Session, User } from "@template/auth";
+import { remixAuth } from "@template/auth/remix";
 
-interface CreateRemixServerClientOptions {
-  headers: Headers;
-  request: Request;
-}
+import { publicConfig } from "~/config/config.public";
+import { api } from "~/libs/api";
 
-export const createRemixServerClient = ({
-  request,
-  headers,
-}: CreateRemixServerClientOptions) => {
-  return createAuthServerClient({
-    url: import.meta.env.NEXT_PUBLIC_SERVER_URL,
-    logDebugMessages: false,
-    cookies: {
-      getAll() {
-        return parseCookieHeader(request.headers.get("Cookie") ?? "");
-      },
-      setAll(cookiesToSet) {
-        cookiesToSet.forEach(({ name, value, options }) =>
-          headers.append(
-            "Set-Cookie",
-            serializeCookieHeader(name, value, options),
-          ),
-        );
-      },
-    },
-  });
-};
+export const auth = remixAuth({
+  baseURL: publicConfig.serverUrl,
+  debug: false,
+  api,
+});
 
-export type AuthRemixServerClient = ReturnType<typeof createRemixServerClient>;
-
-export async function getUserId(client: AuthRemixServerClient) {
-  const { session } = await client.getSession();
-  if (!session) {
+export async function getUserId(client: AuthClient) {
+  const sessionData = await client.getSession();
+  if (!sessionData.session) {
     return null;
   }
 
-  const { user } = await client.getUser();
-  if (!user) {
-    await client.signOut();
-
-    throw createHttpError({
-      statusMessage: "Unauthorized",
-      statusCode: HttpStatus.UNAUTHORIZED,
-      data: "Unauthorized",
-    });
+  const userData = await client.getUser();
+  if (!userData.user) {
+    return null;
   }
 
-  return user.id;
+  return userData.user.id;
 }
 
-export async function requireAnonymous(client: AuthRemixServerClient) {
+export async function requireAnonymous(client: AuthClient) {
   const userId = await getUserId(client);
   if (userId) {
     throw redirect("/");
@@ -67,7 +36,7 @@ export async function requireAnonymous(client: AuthRemixServerClient) {
 export async function requireUserId(params: {
   redirectTo?: string | null;
   request: Request;
-  client: AuthRemixServerClient;
+  client: AuthClient;
 }) {
   const userId = await getUserId(params.client);
   if (!userId) {
@@ -85,4 +54,42 @@ export async function requireUserId(params: {
     throw redirect(loginRedirect);
   }
   return userId;
+}
+
+export interface UserAndSession {
+  session: Session | undefined;
+  user: User | undefined;
+}
+
+export async function getSession(client: AuthClient) {
+  return await client.getSession();
+}
+
+export async function getUser(client: AuthClient) {
+  return await client.getUser();
+}
+
+export async function getUserAndSession(
+  client: AuthClient,
+): Promise<UserAndSession> {
+  const { session, error: sessionError } = await getSession(client);
+  if (sessionError || !session) {
+    return {
+      session: undefined,
+      user: undefined,
+    };
+  }
+
+  const { user, error: userError } = await getUser(client);
+  if (userError || !user) {
+    return {
+      session,
+      user: undefined,
+    };
+  }
+
+  return {
+    session,
+    user,
+  };
 }

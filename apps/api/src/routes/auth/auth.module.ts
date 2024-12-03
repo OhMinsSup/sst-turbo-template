@@ -1,35 +1,33 @@
 import { Module } from "@nestjs/common";
-import { JwtModule } from "@nestjs/jwt";
-import { PassportModule } from "@nestjs/passport";
 
-import { EnvironmentService } from "../../integrations/environment/environment.service";
+import { JwtAuthGuard } from "../../guards/jwt-auth.guard";
 import { UsersService } from "../users/services/users.service";
 import { AuthController } from "./controllers/auth.controller";
 import { AuthService } from "./services/auth.service";
+import { IdentityService } from "./services/identity.service";
 import { PasswordService } from "./services/password.service";
+import { RoleService } from "./services/role.service";
+import { SessionService } from "./services/session.service";
 import { TokenService } from "./services/token.service";
-import { JwtAuthStrategy } from "./strategies/jwt.auth.strategy";
-
-const jwtModule = JwtModule.registerAsync({
-  useFactory: (env: EnvironmentService) => ({
-    secret: env.getAccessTokenSecret(),
-    signOptions: {
-      expiresIn: env.getAccessTokenExpiresIn(),
-    },
-  }),
-  inject: [EnvironmentService],
-});
 
 @Module({
-  imports: [PassportModule, jwtModule],
   controllers: [AuthController],
   providers: [
     AuthService,
     PasswordService,
     TokenService,
+    SessionService,
     UsersService,
-    JwtAuthStrategy,
+    RoleService,
+    IdentityService,
+    JwtAuthGuard,
   ],
-  exports: [jwtModule],
+  exports: [
+    AuthService,
+    JwtAuthGuard,
+    SessionService,
+    TokenService,
+    RoleService,
+  ],
 })
 export class AuthModule {}

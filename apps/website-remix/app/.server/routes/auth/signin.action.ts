@@ -1,56 +1,62 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
-import { safeRedirect } from "remix-utils/safe-redirect";
+import { redirect } from "@remix-run/node";
 
-import type { FormFieldSignInSchema } from "@template/sdk";
-import { isFetchError, isHttpError, RequestMethod } from "@template/sdk";
+import type { FormFieldSignInSchema } from "@template/validators/auth";
+import { HttpResultCode, HttpStatusCode } from "@template/common";
 
-import {
-  createRemixServerClient,
-  requireAnonymous,
-} from "~/.server/utils/auth";
-import {
-  errorJsonDataResponse,
-  validateRequestMethods,
-} from "~/.server/utils/response";
+import { auth } from "~/.server/utils/auth";
+import { redirectWithToast } from "~/.server/utils/toast";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
+import {
+  defaultToastErrorMessage,
+  toErrorFormat,
+  toValidationErrorFormat,
+} from "~/libs/error";
 
-export const action = async ({ request }: ActionFunctionArgs) => {
-  const headers = new Headers();
+export const action = async (args: ActionFunctionArgs) => {
+  const { authClient, headers } = auth.handler(args);
 
-  const client = createRemixServerClient({
-    request,
+  const formData = await args.request.formData();
+
+  const input = {
+    email: formData.get("email"),
+    password: formData.get("password"),
+    provider: formData.get("provider"),
+  } as FormFieldSignInSchema;
+
+  const response = await authClient.signIn(input);
+
+  if (response.error) {
+    switch (response.error.statusCode) {
+      case HttpStatusCode.NOT_FOUND: {
+        return {
+          success: false,
+          error: toErrorFormat("email", response.error),
+        };
+      }
+      case HttpStatusCode.BAD_REQUEST: {
+        return {
+          success: false,
+          error:
+            response.error.resultCode === HttpResultCode.INCORRECT_PASSWORD
+              ? toErrorFormat("password", response.error)
+              : toValidationErrorFormat(response.error),
+        };
+      }
+      default: {
+        return redirectWithToast(
+          args.request.url,
+          defaultToastErrorMessage(
+            "서버 오류가 발생했습니다. 잠시 후 다시 시도해주세요.",
+          ),
+        );
+      }
+    }
+  }
+
+  return redirect(PAGE_ENDPOINTS.ROOT, {
     headers,
   });
-
-  try {
-    validateRequestMethods(request, [RequestMethod.POST]);
-
-    await requireAnonymous(client);
-
-    const formData = await request.formData();
-
-    const input = {
-      email: formData.get("email"),
-      password: formData.get("password"),
-    } as FormFieldSignInSchema;
-
-    await client.signIn(input, true);
-
-    return redirect(safeRedirect(PAGE_ENDPOINTS.ROOT), {
-      headers,
-    });
-  } catch (error) {
-    if (isFetchError<RemixDataFlow.Response>(error)) {
-      return json(errorJsonDataResponse(error.data?.message));
-    }
-
-    if (isHttpError(error)) {
-      return json(errorJsonDataResponse(error.message));
-    }
-
-    throw error;
-  }
 };
 
 export type RoutesActionData = typeof action;

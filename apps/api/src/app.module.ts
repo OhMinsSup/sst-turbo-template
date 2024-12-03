@@ -1,4 +1,4 @@
-import { Logger, MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
+import { MiddlewareConsumer, Module, NestModule } from "@nestjs/common";
 import { APP_FILTER } from "@nestjs/core";
 
 import { AppController } from "./app.controller";
@@ -8,9 +8,10 @@ import { IntegrationsModule } from "./integrations/integrations.module";
 import { LoggerMiddleware } from "./middleware/logger.middleware";
 import { AuthModule } from "./routes/auth/auth.module";
 import { UsersModule } from "./routes/users/users.module";
+import { WorkspacesModule } from "./routes/workspaces/workspaces.module";
 
 @Module({
-  imports: [IntegrationsModule, AuthModule, UsersModule],
+  imports: [IntegrationsModule, AuthModule, UsersModule, WorkspacesModule],
   controllers: [AppController],
   providers: [
     AppService,

@@ -1,51 +1,46 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
-import { json } from "@remix-run/node";
+import { data } from "@remix-run/node";
 
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
-import { createRemixServerClient } from "~/.server/utils/auth";
+import type { Theme } from "~/.server/utils/theme";
+import { auth, getUserAndSession } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
-import { getHints } from "~/utils/client-hints";
+import { getHints } from "~/libs/client-hints";
 
-export const loader = async ({ request }: LoaderFunctionArgs) => {
-  const headers = new Headers();
+export interface RequestInfo {
+  hints: Record<string, string>;
+  origin: string;
+  path: string;
+  userPrefs: {
+    theme: Theme | null;
+  };
+}
 
-  const { toast, headers: toastHeaders } = await getToast(request);
-  const requestInfo = getRequestInfo(request.headers);
+export const loader = async (args: LoaderFunctionArgs) => {
+  const toastData = await getToast(args.request);
+  const { domainUrl } = getRequestInfo(args.request.headers);
 
-  const client = createRemixServerClient({
-    request,
-    headers,
-  });
+  const { authClient, headers } = auth.handler(args);
 
-  const { session } = await client.getSession();
+  const requestInfo: RequestInfo = {
+    hints: getHints(args.request),
+    origin: domainUrl,
+    path: new URL(args.request.url).pathname,
+    userPrefs: {
+      theme: getTheme(args.request),
+    },
+  };
 
-  const user = await (async function () {
-    try {
-      const { user } = await client.getUser();
-      return user;
-    } catch {
-      return null;
-    }
-  })();
-
-  return json(
+  return data(
     {
-      requestInfo: {
-        hints: getHints(request),
-        origin: requestInfo.domainUrl,
-        path: new URL(request.url).pathname,
-        userPrefs: {
-          theme: getTheme(request),
-        },
-      },
-      toast,
-      session,
-      user,
+      requestInfo,
+      toast: toastData.toast,
+      ...(await getUserAndSession(authClient)),
     },
     {
-      headers: combineHeaders(headers, toastHeaders),
+      headers: combineHeaders(headers, toastData.headers),
     },
   );
 };

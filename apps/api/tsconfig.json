@@ -3,7 +3,9 @@
   "compilerOptions": {
     "outDir": "./dist",
     "baseUrl": "./",
-    "module": "ES2022",
-    "moduleResolution": "Bundler"
+    "esModuleInterop": true,
+    "target": "ESNext", // ESNext를 타겟으로 설정
+    "module": "ESNext",
+    "moduleResolution": "bundler"
   }
 }

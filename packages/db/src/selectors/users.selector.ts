@@ -1,30 +1,15 @@
 import { Prisma } from "@prisma/client";
 
-export const getUserSettingSelector = () => {
-  return Prisma.validator<Prisma.UserSettingsSelect>()({
-    privacySettings: true,
-  });
-};
+import { getIdentitySelector } from "./identity.selector";
+import { getRefreshTokenSelector } from "./refreshToken.selector";
+import { getOnlySymbolRoleSelector } from "./role.selector";
+import { getSessionSelector } from "./session.selector";
 
 export const getUserProfileSelector = () => {
   return Prisma.validator<Prisma.UserProfileSelect>()({
-    bio: true,
-    website: true,
-  });
-};
-
-export const getPasswordSelector = () => {
-  return Prisma.validator<Prisma.PasswordSelect>()({
-    hash: true,
-    salt: true,
-  });
-};
-
-export const getBaseUserEtcSelector = () => {
-  return Prisma.validator<Prisma.UserSelect>()({
-    deletedAt: true,
-    lastActiveAt: true,
-    isSuspended: true,
+    id: true,
+    image: true,
+    userId: true,
   });
 };
 
@@ -32,21 +17,21 @@ export const getBaseUserSelector = () => {
   return Prisma.validator<Prisma.UserSelect>()({
     id: true,
     email: true,
-    emailVerified: true,
-    name: true,
-    image: true,
+    username: true,
+    emailConfirmedAt: true,
+    isSuspended: true,
+    deletedAt: true,
   });
 };
 
 export const getUserSelector = () => {
   return Prisma.validator<Prisma.UserSelect>()({
     ...getBaseUserSelector(),
-    ...getBaseUserEtcSelector(),
+    Role: {
+      select: getOnlySymbolRoleSelector(),
+    },
     UserProfile: {
       select: getUserProfileSelector(),
-    },
-    UserSettings: {
-      select: getUserSettingSelector(),
     },
   });
 };
@@ -56,8 +41,18 @@ export const getExternalUserSelector = () => getUserSelector();
 export const getInternalUserSelector = () => {
   return Prisma.validator<Prisma.UserSelect>()({
     ...getExternalUserSelector(),
-    Password: {
-      select: getPasswordSelector(),
+    encryptedPassword: true,
+    encryptedSalt: true,
+    lastActiveAt: true,
+    lastSignInAt: true,
+    Identity: {
+      select: getIdentitySelector(),
+    },
+    Session: {
+      select: getSessionSelector(),
+    },
+    RefreshToken: {
+      select: getRefreshTokenSelector(),
     },
   });
 };

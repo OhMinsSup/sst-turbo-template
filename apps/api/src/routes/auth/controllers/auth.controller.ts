@@ -1,76 +1,104 @@
-import { Body, Controller, Patch, Post } from "@nestjs/common";
-import { ApiBody, ApiOperation, ApiTags } from "@nestjs/swagger";
+import { Body, Controller, Post, Query } from "@nestjs/common";
+import {
+  ApiBody,
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 import { SkipThrottle, Throttle } from "@nestjs/throttler";
 
-import { RefreshTokenDTO } from "../dto/refresh-token.dto";
-import { SigninDTO } from "../dto/signin.dto";
-import { SignoutDTO } from "../dto/signout.dto";
-import { SignupDTO } from "../dto/signup.dto";
-import { VerifyTokenDTO } from "../dto/verify-token.dto";
+import type { UserExternalPayload } from "@template/db/selectors";
+
+import { AuthUser } from "../../../decorators/auth-user.decorator";
+import { JwtAuth } from "../../../guards/jwt-auth.guard";
+import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
+import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { AuthResponseDto } from "../../../shared/dtos/response/auth/auth-response.dto";
+import { LogoutResponseDto } from "../../../shared/dtos/response/auth/logout-response.dto";
+import { SignInDTO } from "../dto/signin.dto";
+import { SignUpDTO } from "../dto/signup.dto";
+import { TokenQueryDTO } from "../dto/token-query.dto";
+import { TokenDTO } from "../dto/token.dto";
+import {
+  OpenApiBadRequestErrorDefine,
+  OpenApiConflictErrorDefine,
+  OpenApiForbiddenErrorDefine,
+  OpenApiNotFoundErrorDefine,
+  OpenApiSuccessResponseDefine,
+  OpenApiUnauthorizedErrorDefine,
+} from "../open-api";
 import { AuthService } from "../services/auth.service";
 
 @ApiTags("인증")
 @Controller("auth")
+@ApiExtraModels(
+  HttpErrorDto,
+  ValidationErrorDto,
+  AuthResponseDto,
+  LogoutResponseDto,
+)
 export class AuthController {
   constructor(private readonly service: AuthService) {}
 
   @Throttle({ default: { limit: 10, ttl: 60 } })
-  @Post("signup")
-  @ApiOperation({ summary: "이메일 회원가입" })
+  @Post("signUp")
+  @ApiOperation({ summary: "이메일+비밀번호 회원가입" })
   @ApiBody({
     required: true,
     description: "회원가입 API",
-    type: SignupDTO,
+    type: SignUpDTO,
   })
-  async signup(@Body() body: SignupDTO) {
-    return await this.service.signup(body);
+  @ApiResponse(OpenApiSuccessResponseDefine.auth)
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedAuthMethod)
+  @ApiResponse(OpenApiNotFoundErrorDefine.roleNotFound)
+  @ApiResponse(OpenApiBadRequestErrorDefine.signUp)
+  async signUp(@Body() body: SignUpDTO) {
+    return await this.service.signUp(body);
   }
 
   @Throttle({ default: { limit: 10, ttl: 60 } })
-  @Post("signin")
-  @ApiOperation({ summary: "이메일 로그인" })
+  @Post("signIn")
+  @ApiOperation({ summary: "이메일+비밀번호 로그인" })
   @ApiBody({
     required: true,
     description: "로그인 API",
-    type: SigninDTO,
+    type: SignInDTO,
   })
-  async signin(@Body() body: SigninDTO) {
-    return await this.service.signin(body);
+  @ApiResponse(OpenApiBadRequestErrorDefine.signIn)
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedAuthMethod)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiSuccessResponseDefine.auth)
+  async signIn(@Body() body: SignInDTO) {
+    return await this.service.signIn(body);
+  }
+
+  @SkipThrottle()
+  @Post("token")
+  @ApiOperation({ summary: "토큰 재발급" })
+  @ApiBody({
+    required: true,
+    description: "토큰 재발급 API",
+    type: TokenDTO,
+  })
+  @ApiResponse(OpenApiBadRequestErrorDefine.token)
+  @ApiResponse(OpenApiForbiddenErrorDefine.suspensionUser)
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedGrantType)
+  @ApiResponse(OpenApiSuccessResponseDefine.auth)
+  @ApiResponse(OpenApiConflictErrorDefine.tooManyTokenRefreshRequests)
+  async token(@Body() body: TokenDTO, @Query() query: TokenQueryDTO) {
+    return await this.service.token(body, query);
   }
 
   @Throttle({ default: { limit: 10, ttl: 60 } })
-  @Post("signout")
+  @Post("logout")
   @ApiOperation({ summary: "로그아웃" })
-  @ApiBody({
-    required: true,
-    description: "로그아웃 API",
-    type: SignoutDTO,
-  })
-  async signout(@Body() body: SignoutDTO) {
-    return await this.service.signout(body);
-  }
-
-  @SkipThrottle()
-  @Post("verify")
-  @ApiOperation({ summary: "토큰 검증" })
-  @ApiBody({
-    required: true,
-    description: "토큰 검증 API",
-    type: VerifyTokenDTO,
-  })
-  async verifyToken(@Body() body: VerifyTokenDTO) {
-    return await this.service.verifyToken(body);
-  }
-
-  @SkipThrottle()
-  @Patch("refresh")
-  @ApiOperation({ summary: "토큰 갱신" })
-  @ApiBody({
-    required: true,
-    description: "토큰 갱신 API",
-    type: RefreshTokenDTO,
-  })
-  async refresh(@Body() body: RefreshTokenDTO) {
-    return await this.service.refresh(body);
+  @JwtAuth()
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiSuccessResponseDefine.logout)
+  async logout(@AuthUser() user: UserExternalPayload) {
+    return await this.service.logout(user);
   }
 }

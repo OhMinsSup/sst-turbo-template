@@ -1,17 +1,14 @@
+import type { ExecutionContext } from "@nestjs/common";
 import type { Request as ExpressRequest } from "express";
-import {
-  createParamDecorator,
-  ExecutionContext,
-  HttpStatus,
-} from "@nestjs/common";
+import { createParamDecorator, ForbiddenException } from "@nestjs/common";
+import { OpenApiErrorDefine } from "src/routes/auth/open-api";
 
-import { HttpResultStatus } from "@template/sdk";
-
-import type { PassportUser } from "../routes/auth/strategies/jwt.auth.strategy";
-import { assertHttpError } from "../libs/error";
+import type { Session } from "@template/db";
+import type { UserExternalPayload } from "@template/db/selectors";
 
 export interface Request extends ExpressRequest {
-  user?: PassportUser;
+  user?: UserExternalPayload;
+  session?: Session;
 }
 
 interface DecoratorOptions {
@@ -20,26 +17,19 @@ interface DecoratorOptions {
 
 export const AuthUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
-    const request = ctx.switchToHttp().getRequest();
+    const request = ctx.switchToHttp().getRequest<Request>();
 
-    assertHttpError(
-      !options?.allowUndefined && (!request.user || !request.user.user),
-      {
-        resultCode: HttpResultStatus.LOGIN_REQUIRED,
-        message: "이 작업을 수행할 권한이 없습니다.",
-        result: null,
-      },
-      "이 작업을 수행할 권한이 없습니다.",
-      HttpStatus.FORBIDDEN,
-    );
+    if (!request.user) {
+      throw new ForbiddenException(OpenApiErrorDefine.notLogin);
+    }
 
-    return request.user ? request.user.user : undefined;
+    return request.user;
   },
 );
 
 export const OptionalAuthUser = createParamDecorator(
   (options: DecoratorOptions | undefined, ctx: ExecutionContext) => {
     const request = ctx.switchToHttp().getRequest<Request>();
-    return request.user ? request.user.user : null;
+    return request.user ? request.user : null;
   },
 );

@@ -49,25 +49,13 @@ export class EnvironmentVariables {
   // -----------------------------------------------------------------------------
   // token
   // -----------------------------------------------------------------------------
-  @IsString()
-  ACCESS_TOKEN_NAME: string;
 
   @IsString()
-  ACCESS_TOKEN_SECRET: string;
-
-  @IsString()
-  @IsDuration()
-  ACCESS_TOKEN_EXPIRES_IN: string;
-
-  @IsString()
-  REFRESH_TOKEN_NAME: string;
-
-  @IsString()
-  REFRESH_TOKEN_SECRET: string;
+  JWT_SECRET: string;
 
   @IsString()
   @IsDuration()
-  REFRESH_TOKEN_EXPIRES_IN: string;
+  JWT_EXPIRES_IN: string;
 }
 
 export function validate(config: Record<string, unknown>) {

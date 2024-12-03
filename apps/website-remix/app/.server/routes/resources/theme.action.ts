@@ -1,11 +1,10 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { json, redirect } from "@remix-run/node";
+import { data, redirect } from "@remix-run/node";
 import { invariantResponse } from "@epic-web/invariant";
 
-import type { FomrFieldThemeSchema } from "~/utils/theme";
-import { successJsonDataResponse } from "~/.server/utils/response";
+import type { FomrFieldThemeSchema } from "~/libs/theme";
 import { setTheme } from "~/.server/utils/theme";
-import { themeSchema } from "~/utils/theme";
+import { themeSchema } from "~/libs/theme";
 
 export const action = async (ctx: ActionFunctionArgs) => {
   const formData = await ctx.request.formData();
@@ -26,9 +25,14 @@ export const action = async (ctx: ActionFunctionArgs) => {
     headers: { "set-cookie": setTheme(theme) },
   };
   if (redirectTo) {
-    return redirect(redirectTo, responseInit);
+    throw redirect(redirectTo, responseInit);
   } else {
-    return json(successJsonDataResponse(true), responseInit);
+    return data(
+      {
+        success: true,
+      },
+      responseInit,
+    );
   }
 };
 

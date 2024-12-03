@@ -13,10 +13,6 @@
       "dependsOn": ["^build:pkg"],
       "outputs": [".cache/tsbuildinfo.json", "dist/**"]
     },
-    "dev": {
-      "cache": false,
-      "persistent": false
-    },
     "format": {
       "outputs": [".cache/.prettiercache"],
       "outputLogs": "new-only"
@@ -33,6 +29,9 @@
       "cache": false
     },
     "//#clean": {
+      "cache": false
+    },
+    "codegen": {
       "cache": false
     },
     "push": {

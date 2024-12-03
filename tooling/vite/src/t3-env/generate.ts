@@ -58,9 +58,9 @@ export function create_import_meta_env(env: Record<string, string>) {
     );
 
   return dedent`
-		interface ImportMetaEnv {
-			${declarations.join("\n")}
-		}
+      interface ImportMetaEnv {
+        ${declarations.join("\n")}
+      }
 	`;
 }
 

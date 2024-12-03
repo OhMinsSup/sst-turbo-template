@@ -1,4 +1,5 @@
 import { Global, Module } from "@nestjs/common";
+import { JwtModule } from "@nestjs/jwt";
 import { ThrottlerModule } from "@nestjs/throttler";
 
 import { EnvironmentModule } from "./environment/environment.module";
@@ -18,6 +19,7 @@ import { PrismaModule } from "./prisma/prisma.module";
     ThrottlerModule.forRootAsync({
       inject: [EnvironmentService],
       // @ts-expect-error - ignoreUserAgents is not defined in ThrottlerModuleOptions
+      // eslint-disable-next-line @typescript-eslint/require-await
       useFactory: async (environmentService: EnvironmentService) => {
         const throttleConfig = environmentService.getThrottleConfig();
         return {
@@ -26,6 +28,13 @@ import { PrismaModule } from "./prisma/prisma.module";
           ignoreUserAgents: throttleConfig.ignoreUserAgents,
         };
       },
+    }),
+    JwtModule.registerAsync({
+      global: true,
+      useFactory: (env: EnvironmentService) => ({
+        secret: env.getJwtSecret(),
+      }),
+      inject: [EnvironmentService],
     }),
     PrismaModule,
   ],

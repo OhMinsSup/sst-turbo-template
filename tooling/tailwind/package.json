@@ -7,9 +7,9 @@
     "./web": "./web.ts"
   },
   "scripts": {
-    "clean": "rimraf .turbo node_modules",
+    "clean": "git clean -xdf .cache .turbo node_modules",
     "format": "prettier --check . --ignore-path ../../.gitignore",
-    "lint": "eslint .",
+    "lint": "eslint",
     "typecheck": "tsc --noEmit"
   },
   "prettier": "@template/prettier-config",
@@ -25,7 +25,6 @@
     "@template/tsconfig": "workspace:*",
     "eslint": "catalog:",
     "prettier": "catalog:",
-    "rimraf": "catalog:",
     "typescript": "catalog:"
   }
 }

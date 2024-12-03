@@ -1,9 +1,5 @@
-import {
-  Inject,
-  Injectable,
-  LoggerService as LoggerServiceInterface,
-  LogLevel,
-} from "@nestjs/common";
+import type { LoggerService as LoggerServiceInterface } from "@nestjs/common";
+import { Inject, Injectable, LogLevel } from "@nestjs/common";
 
 import { LOGGER_DRIVER } from "./logger.constants";
 

@@ -1,13 +1,13 @@
 import { useFetcher } from "@remix-run/react";
 import { ServerOnly } from "remix-utils/server-only";
 
-import { Button } from "@template/ui/button";
+import { Button } from "@template/ui/components/button";
 
 import type { RoutesActionData } from "~/.server/routes/resources/theme.action";
 import type { Theme } from "~/.server/utils/theme";
 import { Icons } from "~/components/icons";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
-import { useOptimisticThemeMode } from "~/utils/theme";
+import { useOptimisticThemeMode } from "~/libs/theme";
 
 interface ThemeSwitchProps {
   userPreference?: Theme | null;
@@ -25,19 +25,19 @@ export default function ThemeSwitch({ userPreference }: ThemeSwitchProps) {
   const modeLabel = {
     light: (
       <>
-        <Icons.sun />
+        <Icons.Sun />
         <span className="sr-only">Toggle theme</span>
       </>
     ),
     dark: (
       <>
-        <Icons.moon />
+        <Icons.Moon />
         <span className="sr-only">Toggle theme</span>
       </>
     ),
     system: (
       <>
-        <Icons.laptop />
+        <Icons.Laptop />
         <span className="sr-only">Toggle theme</span>
       </>
     ),

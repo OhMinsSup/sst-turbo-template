@@ -4,72 +4,92 @@ import {
   ExceptionFilter,
   HttpException,
   HttpStatus,
+  Logger,
 } from "@nestjs/common";
-import { HttpAdapterHost } from "@nestjs/core";
+import { ThrottlerException } from "@nestjs/throttler";
+import { Request, Response } from "express";
 
-import { HttpResultStatus } from "@template/sdk";
+import { HttpResultCode } from "@template/common";
 
-import { LoggerService } from "../integrations/logger/logger.service";
-import { HttpError, isHttpError } from "../libs/error";
+import { HttpExceptionResponseDto } from "../shared/dtos/models/http-exception-response.dto";
+import { CustomValidationError } from "../shared/dtos/models/validation-exception-response.dto";
 
-@Catch(HttpException)
+@Catch()
 export class HttpExceptionFilter implements ExceptionFilter {
-  constructor(
-    private readonly httpAdapterHost: HttpAdapterHost,
-    private readonly logger: LoggerService,
-  ) {}
-
-  // constructor(private readonly logger: LOgger) {}
-  catch(exception: HttpException | HttpError, host: ArgumentsHost) {
-    // In certain situations `httpAdapter` might not be available in the
-    // constructor method, thus we should resolve it here.
-    const { httpAdapter } = this.httpAdapterHost;
-
+  // eslint-disable-next-line @typescript-eslint/require-await
+  async catch(exception: Error, host: ArgumentsHost) {
     const ctx = host.switchToHttp();
+    const response = ctx.getResponse<Response>();
+    const request = ctx.getRequest<Request>();
 
-    const status =
-      exception instanceof HttpException
-        ? exception.getStatus()
-        : HttpStatus.INTERNAL_SERVER_ERROR;
+    let statusCode: number;
+    let resultCode: HttpResultCode;
+    let error: HttpExceptionResponseDto;
 
-    const responseBody = {
-      timestamp: new Date().toISOString(),
-      path: httpAdapter.getRequestUrl(ctx.getRequest()),
+    console.error(exception);
+
+    // 많은 요청이 들어왔을 때
+    if (exception instanceof ThrottlerException) {
+      statusCode = HttpStatus.TOO_MANY_REQUESTS;
+      const throttler = {
+        message: "ThrottlerException: Too Many Requests",
+      };
+      resultCode = HttpResultCode.TOO_MANY_REQUESTS;
+      error = {
+        message: throttler.message,
+        error: ThrottlerException.name,
+      };
+    } else if (exception instanceof CustomValidationError) {
+      statusCode = exception.getStatus();
+      const getError = exception.getResponse();
+      const objError = getError as HttpExceptionResponseDto;
+      resultCode = HttpResultCode.INVALID_REQUEST;
+      error = Object.assign({}, objError);
+    } else if (exception instanceof HttpException) {
+      statusCode = exception.getStatus();
+      const getError = exception.getResponse();
+      if (typeof getError === "string") {
+        resultCode = HttpResultCode.FAIL;
+        error = {
+          error: exception.name,
+          message: getError,
+        };
+      } else {
+        // 에러 코드화를 진행할 부분
+        const objError = getError as Record<string, string | number>;
+        resultCode = objError.resultCode as unknown as HttpResultCode;
+        error = {
+          error: exception.name,
+          message: objError.message as string,
+        };
+      }
+    } else {
+      statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
+      const errorResponse = {
+        statusCode,
+        resultCode: HttpResultCode.FAIL,
+        error: {
+          error: "Internal server error",
+          message: "서버에러 관리자한테 문의 주세요",
+        },
+      };
+      Logger.error(
+        "ExceptionsFilter",
+        exception.stack,
+        request.method + request.url,
+      );
+
+      return response.status(statusCode).json(errorResponse);
+    }
+
+    const errorResponse = {
+      statusCode,
+      resultCode,
+      error,
     };
 
-    if (isHttpError(exception)) {
-      const body = Object.assign({}, responseBody, exception.getData());
-      this.logger.error(body.message, exception.stack);
-      httpAdapter.reply(ctx.getResponse(), body, status);
-      return;
-    }
+    Logger.warn("errorResponse", JSON.stringify(errorResponse));
 
-    if (exception instanceof HttpException) {
-      const errorResponse = exception.getResponse() as any;
-      const error = errorResponse.error;
-      const message = errorResponse.message;
-      const result = errorResponse.result || null;
-      this.logger.error(error, exception.stack);
-      const body = Object.assign({}, responseBody, {
-        resultCode:
-          status === HttpStatus.BAD_REQUEST
-            ? HttpResultStatus.INVALID
-            : HttpResultStatus.FAIL,
-        message,
-        error,
-        result,
-      });
-      httpAdapter.reply(ctx.getResponse(), body, status);
-      return;
-    }
-
-    this.logger.error("알 수 없는 오류가 발생했습니다.", undefined);
-    const body = Object.assign({}, responseBody, {
-      resultCode: HttpResultStatus.FAIL,
-      message: "알 수 없는 오류가 발생했습니다.",
-      error: null,
-      result: null,
-    });
-    httpAdapter.reply(ctx.getResponse(), body, status);
+    return response.status(statusCode).json(errorResponse);
   }
 }

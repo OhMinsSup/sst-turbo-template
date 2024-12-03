@@ -4,41 +4,51 @@ import {
   Outlet,
   Scripts,
   ScrollRestoration,
+  useFetcher,
   useLoaderData,
-  useRevalidator,
 } from "@remix-run/react";
 
-import "./styles/tailwind.css";
+import "@template/ui/globals.css";
+import "./styles.css";
 
-import type { LinksFunction, SerializeFrom } from "@remix-run/node";
+import type { LinksFunction } from "@remix-run/node";
 import { useEffect } from "react";
 import { QueryClientProvider } from "@tanstack/react-query";
+import { Toaster } from "sonner";
 
-import { cn } from "@template/ui";
+import type { Session } from "@template/auth";
+import { cn } from "@template/ui/lib";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
-import { ShowToast, Toaster } from "./components/shared/Toast";
-import { createRemixBrowserClient } from "./utils/auth";
-import { ClientHintCheck } from "./utils/client-hints";
-import { getQueryClient } from "./utils/query-client";
+import { ShowToast } from "./components/shared/Toast";
+import { SITE_CONFIG } from "./constants/constants";
+import { remixAuthBrowser } from "./libs/auth";
+import { ClientHintCheck } from "./libs/client-hints";
+import { RQClient } from "./libs/query";
 
 export { loader } from "~/.server/routes/root/root.loader";
-export { action } from "~/.server/routes/root/root.action";
-export { meta } from "~/seo/root.meta";
+export { meta } from "~/libs/seo/root.meta";
 
 export const links: LinksFunction = () => {
   return [
+    { rel: "preconnect", href: "https://fonts.googleapis.com" },
+    {
+      rel: "preconnect",
+      href: "https://fonts.gstatic.com",
+      crossOrigin: "anonymous",
+    },
+    {
+      rel: "stylesheet",
+      href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
+    },
     {
       rel: "manifest",
-      href: "/site.webmanifest",
+      href: SITE_CONFIG.manifest,
       crossOrigin: "use-credentials",
     },
-    { rel: "icon", type: "image/svg+xml", href: "/favicon.ico" },
-    { rel: "icon", href: "/images/favicon-32.png", sizes: "32x32" },
-    { rel: "icon", href: "/images/favicon-128.png", sizes: "128x128" },
-    { rel: "icon", href: "/images/favicon-180.png", sizes: "180x180" },
-    { rel: "icon", href: "/images/favicon-192.png", sizes: "192x192" },
+    { rel: "icon", type: "image/svg+xml", href: SITE_CONFIG.favicon },
+    { rel: "icon", href: SITE_CONFIG.favicon32x32, sizes: "32x32" },
   ];
 };
 
@@ -47,13 +57,15 @@ interface Props {
 }
 
 function Document({ children }: Props) {
-  const data = useLoaderData<RoutesLoaderData>();
+  const {
+    requestInfo: { userPrefs },
+  } = useLoaderData<RoutesLoaderData>();
   return (
     <html
-      lang="en"
+      lang="kr"
       itemScope
       itemType="http://schema.org/WebSite"
-      className={cn(data.requestInfo.userPrefs.theme)}
+      className={cn(userPrefs.theme)}
     >
       <head>
         <ClientHintCheck />
@@ -61,9 +73,22 @@ function Document({ children }: Props) {
         <Meta />
         <Links />
       </head>
-      <body>
+      <body className="overscroll-none whitespace-pre-line bg-background antialiased">
         {children}
-        <Toaster closeButton position="top-center" />
+        <Toaster
+          theme={userPrefs.theme ?? undefined}
+          toastOptions={{
+            classNames: {
+              toast:
+                "group toast group-[.toaster]:bg-background group-[.toaster]:text-foreground group-[.toaster]:border-border group-[.toaster]:shadow-lg",
+              description: "group-[.toast]:text-muted-foreground",
+              actionButton:
+                "group-[.toast]:bg-primary group-[.toast]:text-primary-foreground",
+              cancelButton:
+                "group-[.toast]:bg-muted group-[.toast]:text-muted-foreground",
+            },
+          }}
+        />
         <ScrollRestoration />
         <Scripts />
       </body>
@@ -72,45 +97,49 @@ function Document({ children }: Props) {
 }
 
 interface AppWithProviderProps {
-  session?: SerializeFrom<RoutesLoaderData>["session"];
+  session?: Session | undefined;
   children: React.ReactNode;
 }
 
 function AppWithProvider({ children, session }: AppWithProviderProps) {
-  const queryClient = getQueryClient();
+  const fetcher = useFetcher();
 
-  const revalidator = useRevalidator();
-
-  const authClient = createRemixBrowserClient();
+  const serverAccessToken = session?.access_token;
 
   useEffect(() => {
     const {
       data: { subscription },
-    } = authClient.onAuthStateChange((_, newSession) => {
-      if (newSession?.expires_at !== session?.expires_at) {
-        revalidator.revalidate();
+    } = remixAuthBrowser.onAuthStateChange((_, newSession) => {
+      if (
+        newSession?.access_token !== serverAccessToken &&
+        fetcher.state === "idle"
+      ) {
+        // server and client are out of sync.
+        // Remix recalls active loaders after actions complete
+        fetcher.submit(null, {
+          method: "post",
+          action: "/revalidate-auth",
+        });
       }
     });
 
     return () => subscription.unsubscribe();
-  }, [session]);
+  }, [serverAccessToken, fetcher]);
 
   return (
-    <QueryClientProvider client={queryClient}>{children}</QueryClientProvider>
+    <QueryClientProvider client={RQClient}>{children}</QueryClientProvider>
   );
 }
 
 export default function App() {
-  const data = useLoaderData<RoutesLoaderData>();
-
-  console.log(data);
+  const { session, toast } = useLoaderData<RoutesLoaderData>();
 
   return (
     <Document>
-      <AppWithProvider session={data.session}>
+      <AppWithProvider session={session}>
         <Outlet />
       </AppWithProvider>
-      {data.toast ? <ShowToast toast={data.toast} /> : null}
+      {toast ? <ShowToast toast={toast} /> : null}
     </Document>
   );
 }

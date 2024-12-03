@@ -1,121 +1,285 @@
+import type { JwtSignOptions } from "@nestjs/jwt";
 import { Injectable } from "@nestjs/common";
 import { JwtService } from "@nestjs/jwt";
 
-import type { Prisma, Token } from "@template/db";
+import type { Prisma, RefreshToken } from "@template/db";
+import { getExternalUserSelector } from "@template/db/selectors";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
-import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
-import { AppTokenType } from "../../../libs/constants";
-import { JwtPayload } from "../strategies/jwt.auth.strategy";
+import { generateSecureToken } from "../../../libs/hash";
+import { SessionService } from "./session.service";
+
+interface CreateRefreshTokenParams {
+  userId: string;
+  ip?: string;
+  userAgent?: string;
+  oldToken?: Pick<
+    RefreshToken,
+    "id" | "revoked" | "sessionId" | "token" | "userId"
+  >;
+}
+
+interface GenerateAccessTokenParams {
+  userId: string;
+  sessionId: string;
+}
+
+interface RevokeTokenFamilyParams {
+  sessionId?: string;
+  token?: string;
+}
+
+interface GrantRefreshTokenSwapParms
+  extends Omit<CreateRefreshTokenParams, "oldToken"> {
+  token: RefreshToken;
+}
 
 @Injectable()
 export class TokenService {
-  private _contextName = "token - service";
-
   constructor(
-    private readonly prisma: PrismaService,
+    private readonly prismaService: PrismaService,
     private readonly env: EnvironmentService,
-    private readonly jwt: JwtService,
-    private readonly logger: LoggerService,
+    private readonly jwtService: JwtService,
+    private readonly sessionService: SessionService,
   ) {}
 
   /**
-   * @description Find token by tokenId
-   * @param {string} tokenId
-   */
-  async findByTokenId(tokenId: string) {
-    return await this.prisma.token.findUnique({ where: { id: tokenId } });
-  }
-
-  /**
-   * @description Delete token by tokenId
-   * @param {string} tokenId
-   */
-  async deleteByTokenId(tokenId: string) {
-    return await this.prisma.token.delete({ where: { id: tokenId } });
-  }
-
-  /**
-   * @description Delete tokens by userId and expiresAt
-   * @param {{ userId: string; expiresAt: Date; tokenType?: AppTokenType; }} args
+   * @description refresh token을 발급합니다.
+   * @param {CreateRefreshTokenParams} params
    * @param {Prisma.TransactionClient?} tx
    */
-  async deleteByExpiresAtTokens(
-    {
-      userId,
-      expiresAt,
-      tokenType,
-    }: {
-      userId: string;
-      expiresAt: Date;
-      tokenType?: AppTokenType;
-    },
+  async issueRefreshToken(
+    params: CreateRefreshTokenParams,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const token = tx ? tx.token : this.prisma.token;
-    return await token.deleteMany({
-      where: {
-        userId,
-        expires: {
-          lte: expiresAt,
+    const refreshToken = await this.grantAuthenticatedUser(params, tx);
+
+    const { token, expiresAt, session, expiresIn, user } =
+      await this.generateAccessToken(
+        {
+          sessionId: refreshToken.sessionId,
+          userId: refreshToken.userId,
         },
-        ...(tokenType && { type: tokenType }),
+        tx,
+      );
+
+    return {
+      token,
+      expiresAt,
+      expiresIn,
+      session,
+      user,
+      refreshToken: refreshToken.token,
+    };
+  }
+
+  /**
+   * @description refresh token을 재발급 합니다.
+   * @param {Prisma.TransactionClient?} tx
+   */
+  async createRefreshToken(
+    { userId, ip, userAgent, oldToken }: CreateRefreshTokenParams,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const token = {
+      userId,
+      token: generateSecureToken(),
+      parent: undefined,
+      sessionId: undefined,
+    };
+
+    if (oldToken) {
+      token.parent = oldToken.token;
+      token.sessionId = oldToken.sessionId;
+    }
+
+    if (!token.sessionId) {
+      const session = await this.sessionService.createNewSession(
+        { userId, ip, userAgent },
+        tx,
+      );
+      token.sessionId = session.id;
+    }
+
+    const ctx = tx ? tx.refreshToken : this.prismaService.refreshToken;
+    return await ctx.create({ data: token });
+  }
+
+  /**
+   * @description access token을 발급합니다.
+   * @param {GenerateAccessTokenParams} param
+   * @param {Prisma.TransactionClient?} tx
+   */
+  async generateAccessToken(
+    { userId, sessionId }: GenerateAccessTokenParams,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const session = await this.sessionService.findSessionByIDWithUser(
+      sessionId,
+      tx,
+    );
+    if (!session) {
+      throw new Error("Session not found");
+    }
+
+    const user = await this.findUserByIdExternal(userId, tx);
+    if (!user) {
+      throw new Error("User not found");
+    }
+
+    const issuedAt = new Date();
+    const expiresAt = this.env.getJwtExpiresAt(issuedAt);
+
+    const jwtOptions: JwtSignOptions = {
+      subject: userId,
+      expiresIn: expiresAt.getTime(),
+    };
+
+    const token = await this.jwtService.signAsync(
+      {
+        email: user.email,
+        role: user.Role.symbol,
+        sessionId,
+      },
+      jwtOptions,
+    );
+
+    return {
+      token,
+      expiresAt,
+      expiresIn: this.env.getJwtExpiresIn(),
+      session,
+      user,
+    };
+  }
+
+  /**
+   * @description refresh token을 조회합니다.
+   * @param {string} token
+   * @param {Prisma.TransactionClient} tx
+   */
+  findRefreshTokenByToken(
+    token: string,
+    tx: Prisma.TransactionClient = undefined,
+  ) {
+    const ctx = tx ? tx.refreshToken : this.prismaService.refreshToken;
+    return ctx.findFirst({ where: { token } });
+  }
+
+  /**
+   * @description 현재 활성화된 refresh token을 조회합니다.
+   * @param {string} sessionId
+   */
+  findCurrentlyActiveRefreshToken(
+    sessionId: string,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const ctx = tx ? tx.refreshToken : this.prismaService.refreshToken;
+    return ctx.findFirst({
+      where: {
+        sessionId,
+        revoked: false,
       },
     });
   }
 
   /**
-   * @description Generate access token
-   * @param {string} userId
+   * @description refresh token을 폐기합니다.
+   * @param {RevokeTokenFamilyParams} param
+   * @param {Prisma.TransactionClient?} tx
    */
-  generateAccessToken(userId: string) {
-    const expiresAt = this.env.getAccessTokenExpiresAt();
+  async revokeTokenFamily(
+    { sessionId, token }: RevokeTokenFamilyParams,
+    tx: Prisma.TransactionClient = undefined,
+  ) {
+    const tablename = "refresh_tokens";
+    const ctx = tx ? tx : this.prismaService;
 
-    const jwtPayload: JwtPayload = {
-      sub: userId,
-    };
-
-    return {
-      token: this.jwt.sign(jwtPayload),
-      expiresAt,
-    };
+    if (sessionId) {
+      await ctx.refreshToken.updateMany({
+        where: {
+          sessionId,
+          revoked: false,
+        },
+        data: {
+          revoked: true,
+        },
+      });
+    } else if (token) {
+      await ctx.$executeRawUnsafe(
+        `
+          WITH RECURSIVE token_family AS (
+            SELECT id, userId, token, revoked, parent FROM ${tablename} WHERE parent = $1
+            UNION
+            SELECT r.id, r.userId, r.token, r.revoked, r.parent
+            FROM ${tablename} r
+            INNER JOIN token_family t ON t.token = r.parent
+          )
+          UPDATE ${tablename} r
+          SET revoked = true
+          FROM token_family
+          WHERE token_family.id = r.id;
+          `,
+        token,
+      );
+    }
   }
 
   /**
-   * @description Generate refresh token
-   * @param {string} userId
-   * @param {Prisma.TransactionClient} tx
+   * @description refresh token을 교환합니다.
+   * @param {GrantRefreshTokenSwapParms} param
+   * @param {Prisma.TransactionClient?} tx
    */
-  async generateRefreshToken(
-    userId: string,
+  async grantRefreshTokenSwap(
+    { token, userId, userAgent, ip }: GrantRefreshTokenSwapParms,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
-    const secret = this.env.getRefreshTokenSecret();
-    const expiresAt = this.env.getRefreshTokenExpiresAt();
+    const ctx = tx ? tx.refreshToken : this.prismaService.refreshToken;
 
-    const refreshTokenPayload: Pick<Token, "type" | "expires" | "userId"> = {
-      userId,
-      expires: expiresAt,
-      type: AppTokenType.RefreshToken,
-    };
+    // 토큰을 폐기
+    await ctx.update({
+      where: { id: token.id },
+      data: { revoked: true },
+    });
 
-    const jwtPayload = {
-      sub: userId,
-    };
+    // 새로운 refresh token 생성
+    return await this.createRefreshToken(
+      {
+        userId,
+        ip,
+        userAgent,
+        oldToken: token,
+      },
+      tx,
+    );
+  }
 
-    const token = tx ? tx.token : this.prisma.token;
+  /**
+   * @description 인증된 사용자에게 refresh token을 부여합니다.
+   * @param {CreateRefreshTokenParams} params
+   * @param {Prisma.TransactionClient?} tx
+   */
+  async grantAuthenticatedUser(
+    params: CreateRefreshTokenParams,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    return await this.createRefreshToken(params, tx);
+  }
 
-    const refreshToken = await token.create({ data: refreshTokenPayload });
-
-    return {
-      token: this.jwt.sign(jwtPayload, {
-        secret,
-        expiresIn: this.env.getRefreshTokenExpiresIn(),
-        // Jwtid will be used to link RefreshToken entity to this token
-        jwtid: refreshToken.id,
-      }),
-      expiresAt,
-    };
+  /**
+   * @description Get a user by id (external)
+   * @param {string} id
+   * @param {Prisma.TransactionClient?} tx
+   */
+  async findUserByIdExternal(
+    id: string,
+    tx: Prisma.TransactionClient | undefined = undefined,
+  ) {
+    const ctx = tx ? tx.user : this.prismaService.user;
+    return await ctx.findUnique({
+      where: { id, deletedAt: null },
+      select: getExternalUserSelector(),
+    });
   }
 }

@@ -1,26 +1,40 @@
 import { Controller, Get } from "@nestjs/common";
-import { ApiTags } from "@nestjs/swagger";
-import { AuthUser } from "src/decorators/auth-user.decorator";
+import {
+  ApiExtraModels,
+  ApiOperation,
+  ApiResponse,
+  ApiTags,
+} from "@nestjs/swagger";
 
 import type { UserExternalPayload } from "@template/db/selectors";
-import { HttpResultStatus } from "@template/sdk";
 
-import { JwtAuth } from "../../../guards/jwt.auth.guard";
+import { AuthUser } from "../../../decorators/auth-user.decorator";
+import { JwtAuth } from "../../../guards/jwt-auth.guard";
+import {
+  OpenApiBadRequestErrorDefine,
+  OpenApiNotFoundErrorDefine,
+  OpenApiUnauthorizedErrorDefine,
+} from "../../../routes/auth/open-api";
+import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
+import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { UserResponseDto } from "../../../shared/dtos/response/users/user-response.dto";
+import { OpenApiSuccessResponseDefine } from "../open-api";
 import { UsersService } from "../services/users.service";
 
 @ApiTags("사용자")
 @Controller("users")
-@JwtAuth()
+@ApiExtraModels(HttpErrorDto, ValidationErrorDto, UserResponseDto)
 export class UsersController {
   constructor(private readonly service: UsersService) {}
 
-  @Get()
-  get(@AuthUser() user: UserExternalPayload) {
-    return {
-      resultCode: HttpResultStatus.OK,
-      message: null,
-      error: null,
-      result: user,
-    };
+  @Get("me")
+  @ApiOperation({ summary: "로그인 사용자 정보" })
+  @JwtAuth()
+  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiSuccessResponseDefine.me)
+  me(@AuthUser() user: UserExternalPayload) {
+    return this.service.getMe(user);
   }
 }

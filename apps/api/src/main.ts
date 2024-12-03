@@ -1,34 +1,41 @@
 import type { NestExpressApplication } from "@nestjs/platform-express";
+import type { ValidationError } from "class-validator";
 import {
-  BadRequestException,
+  ClassSerializerInterceptor,
   ValidationPipe,
   VersioningType,
 } from "@nestjs/common";
 import { ConfigService } from "@nestjs/config";
-import { NestFactory } from "@nestjs/core";
+import { NestFactory, Reflector } from "@nestjs/core";
 import { DocumentBuilder, SwaggerModule } from "@nestjs/swagger";
 import compression from "compression";
 import helmet from "helmet";
 
 import { AppModule } from "./app.module";
+import { SuccessInterceptor } from "./interceptors/sucess.interceptor";
+import { CustomValidationError } from "./shared/dtos/models/validation-exception-response.dto";
 
 async function bootstrap() {
   const app = await NestFactory.create<NestExpressApplication>(AppModule);
 
   const config = app.get(ConfigService);
-
+  // 글로벌로 class 직렬화 선택
+  app.useGlobalInterceptors(
+    new ClassSerializerInterceptor(app.get(Reflector), {
+      excludeExtraneousValues: true,
+    }),
+  );
+  app.useGlobalInterceptors(new SuccessInterceptor());
   app.useGlobalPipes(
     new ValidationPipe({
+      whitelist: true,
+      forbidNonWhitelisted: true,
+      // transform으로 형식변환가능한지 체크 dto에 transfrom 없어도 typescript type 보고 형변환 해줌
+      //  enableImplicitConversion 옵션은 타입스크립트의 타입으로 추론가능하게 설정함
       transform: true,
-      stopAtFirstError: true,
-      forbidUnknownValues: false,
-      exceptionFactory: (errors) => {
-        const result = errors.map((error) => ({
-          [error.property]: {
-            message: error.constraints[Object.keys(error.constraints)[0]],
-          },
-        }));
-        return new BadRequestException(result);
+      transformOptions: { enableImplicitConversion: true },
+      exceptionFactory: (validationErrors: ValidationError[] = []) => {
+        return new CustomValidationError(validationErrors);
       },
     }),
   );
@@ -50,6 +57,7 @@ async function bootstrap() {
         allowedHosts.push(/^http:\/\/localhost/);
       }
 
+      // eslint-disable-next-line @typescript-eslint/no-explicit-any
       let corsOptions: any;
       const valid = allowedHosts.some((regex) => regex.test(origin));
       if (valid) {
@@ -57,6 +65,7 @@ async function bootstrap() {
       } else {
         corsOptions = { origin: false }; // disable CORS for this request
       }
+      // eslint-disable-next-line @typescript-eslint/no-unsafe-argument
       callback(null, corsOptions);
     },
     credentials: true,
@@ -66,16 +75,27 @@ async function bootstrap() {
     .setTitle("API Document")
     .setDescription("API Document")
     .setVersion("1.0")
-    .addBearerAuth()
-    .addCookieAuth(config.get("COOKIE_TOKEN_NAME") ?? "access_token")
+    .addBearerAuth({
+      // I was also testing it without prefix 'Bearer ' before the JWT
+      description: "JWT token",
+      name: "authorization",
+      bearerFormat: "Bearer", // I`ve tested not to use this field, but the result was the same
+      scheme: "Bearer",
+      type: "http", // I`ve attempted type: 'apiKey' too
+      in: "Header",
+    })
     .build();
 
   const document = SwaggerModule.createDocument(app, swagger);
-  SwaggerModule.setup("api/docs", app, document);
+  SwaggerModule.setup("api/docs", app, document, {
+    jsonDocumentUrl: "/api/docs/api-json",
+  });
 
   app.use(helmet());
   app.use(compression());
 
   await app.listen(config.get("SERVER_PORT"));
 }
+
+// eslint-disable-next-line @typescript-eslint/no-floating-promises
 bootstrap();

@@ -3,19 +3,13 @@ import utils from "node:util";
 import { Injectable } from "@nestjs/common";
 
 import { EnvironmentService } from "../../../integrations/environment/environment.service";
-import { LoggerService } from "../../../integrations/logger/logger.service";
 
 const randomBytesPromise = utils.promisify(crypto.randomBytes);
 const pbkdf2Promise = utils.promisify(crypto.pbkdf2);
 
 @Injectable()
 export class PasswordService {
-  private _contextName = "password - service";
-
-  constructor(
-    private readonly env: EnvironmentService,
-    private readonly logger: LoggerService,
-  ) {}
+  constructor(private readonly env: EnvironmentService) {}
 
   /**
    * @description Generates a salt
