@@ -2,11 +2,35 @@ import type { ColumnDef } from "@tanstack/react-table";
 
 import type { components } from "@template/api-types";
 import { Checkbox } from "@template/ui/components/checkbox";
+import { format, toDate } from "@template/utils/date";
 
+import { Icons } from "~/components/icons";
 import { DataTableColumnHeader } from "~/components/workspaces/DataList/DataTableColumnHeader";
 import { DataTableRowActions } from "~/components/workspaces/DataList/DataTableRowActions";
 
-export const columns: ColumnDef<components["schemas"]["WorkspaceEntity"]>[] = [
+export type CustomWorkspaceEntity = components["schemas"]["WorkspaceEntity"] & {
+  isFavorite: "true" | "false";
+};
+
+export const getCustomWorkspaceEntity = (
+  entity: components["schemas"]["WorkspaceEntity"][],
+): CustomWorkspaceEntity => {
+  return entity.map((item) => ({
+    ...item,
+    isFavorite: item.isFavorite ? "true" : "false",
+  })) as CustomWorkspaceEntity;
+};
+
+export const getTitle: Record<string, string> = {
+  ["title"]: "이름",
+  ["description"]: "설명",
+  ["isFavorite"]: "즐겨찾기",
+  ["createdAt"]: "생성일",
+  ["updatedAt"]: "수정일",
+  ["actions"]: "작업",
+};
+
+export const columns: ColumnDef<CustomWorkspaceEntity>[] = [
   {
     id: "select",
     header: ({ table }) => (
@@ -78,14 +102,15 @@ export const columns: ColumnDef<components["schemas"]["WorkspaceEntity"]>[] = [
     cell: ({ row }) => {
       return (
         <div className="flex w-[100px] items-center">
-          {row.getValue("isFavorite") ? (
-            <span>즐겨찾기</span>
+          {row.getValue("isFavorite") === "true" ? (
+            <Icons.Star className="fill-current text-yellow-300" />
           ) : (
-            <span>즐겨찾기 안함</span>
+            <Icons.Star className="text-yellow-300" />
           )}
         </div>
       );
     },
+    enableSorting: false,
   },
   {
     accessorKey: "createdAt",
@@ -93,7 +118,9 @@ export const columns: ColumnDef<components["schemas"]["WorkspaceEntity"]>[] = [
       <DataTableColumnHeader column={column} title="생성일" />
     ),
     cell: ({ row }) => (
-      <div className="w-[120px]">{row.getValue("createdAt")}</div>
+      <div className="w-[150px]">
+        {format(toDate(row.getValue("createdAt")), "yyyy/MM/dd HH:mm:ss")}
+      </div>
     ),
   },
   {
@@ -102,7 +129,9 @@ export const columns: ColumnDef<components["schemas"]["WorkspaceEntity"]>[] = [
       <DataTableColumnHeader column={column} title="수정일" />
     ),
     cell: ({ row }) => (
-      <div className="w-[120px]">{row.getValue("updatedAt")}</div>
+      <div className="w-[150px]">
+        {format(toDate(row.getValue("updatedAt")), "yyyy/MM/dd HH:mm:ss")}
+      </div>
     ),
   },
   {

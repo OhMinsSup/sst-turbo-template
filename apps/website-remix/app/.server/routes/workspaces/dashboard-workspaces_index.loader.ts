@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { data, redirect } from "@remix-run/node";
-import hash from "stable-hash";
 
 import type { components } from "@template/api-types";
 
@@ -21,11 +20,9 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   const query = getWorkspaceListURLParmms(args.request);
-  const queryHashKey = hash(query);
   const [ok, result] = await getCacheWorkspaceList({
     query,
     session,
-    queryHashKey,
   });
 
   if (!ok) {
@@ -38,19 +35,12 @@ export const loader = async (args: LoaderFunctionArgs) => {
           hasNextPage: false,
           nextPage: null,
         } as components["schemas"]["PageInfoDto"],
-        queryHashKey,
       },
       { headers },
     );
   }
 
-  return data(
-    {
-      ...result,
-      queryHashKey,
-    },
-    { headers },
-  );
+  return data(result, { headers });
 };
 
 export type RoutesLoaderData = typeof loader;

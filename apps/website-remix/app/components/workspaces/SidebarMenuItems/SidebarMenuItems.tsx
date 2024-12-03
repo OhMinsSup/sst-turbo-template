@@ -5,12 +5,7 @@ import React, {
   useEffect,
   useState,
 } from "react";
-import {
-  Link,
-  useFetcher,
-  useLoaderData,
-  useNavigation,
-} from "@remix-run/react";
+import { Link, useFetcher, useNavigation } from "@remix-run/react";
 
 import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
@@ -160,7 +155,6 @@ function SidebarWorkspaceMenuItem({
   ...item
 }: SidebarWorkspaceMenuItemProps) {
   const navigation = useNavigation();
-  const data = useLoaderData<RoutesLoaderData>();
   const fetcher = useFetcher<RoutesLoaderData>({
     key: "dashboard:sidebar:workspaces",
   });
@@ -173,7 +167,6 @@ function SidebarWorkspaceMenuItem({
     const formData = new FormData();
     formData.append("workspaceId", meta.id.toString());
     formData.append("isFavorite", nextFavorite);
-    formData.append("queryHashKey", data.queryHashKey);
     fetcher.submit(formData, {
       method: "patch",
     });

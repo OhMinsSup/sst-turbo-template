@@ -9,7 +9,6 @@ import {
   DropdownMenuContent,
   DropdownMenuItem,
   DropdownMenuSeparator,
-  DropdownMenuShortcut,
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
 
@@ -20,6 +19,7 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const isFavorite = row.getValue("isFavorite") === "true";
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -32,14 +32,12 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>Edit</DropdownMenuItem>
-        <DropdownMenuItem>Make a copy</DropdownMenuItem>
-        <DropdownMenuItem>Favorite</DropdownMenuItem>
-        <DropdownMenuSeparator />
+        <DropdownMenuItem>수정</DropdownMenuItem>
         <DropdownMenuItem>
-          Delete
-          <DropdownMenuShortcut>⌘⌫</DropdownMenuShortcut>
+          {isFavorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
         </DropdownMenuItem>
+        <DropdownMenuSeparator />
+        <DropdownMenuItem>삭제</DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

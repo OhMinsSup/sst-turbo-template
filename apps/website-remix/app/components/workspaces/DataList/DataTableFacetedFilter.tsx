@@ -23,6 +23,7 @@ import { cn } from "@template/ui/lib";
 import { Icons } from "~/components/icons";
 
 interface DataTableFacetedFilterProps<TData, TValue> {
+  filterKey: string;
   column?: Column<TData, TValue>;
   title?: string;
   options: {
@@ -38,7 +39,8 @@ export function DataTableFacetedFilter<TData, TValue>({
   options,
 }: DataTableFacetedFilterProps<TData, TValue>) {
   const facets = column?.getFacetedUniqueValues();
-  const selectedValues = new Set(column?.getFilterValue() as string[]);
+  const filterValue = column?.getFilterValue() as string[] | undefined;
+  const selectedValues = new Set(filterValue);
 
   return (
     <Popover>
@@ -61,7 +63,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     variant="secondary"
                     className="rounded-sm px-1 font-normal"
                   >
-                    {selectedValues.size} selected
+                    {selectedValues.size} 선택
                   </Badge>
                 ) : (
                   options
@@ -85,7 +87,7 @@ export function DataTableFacetedFilter<TData, TValue>({
         <Command>
           <CommandInput placeholder={title} />
           <CommandList>
-            <CommandEmpty>No results found.</CommandEmpty>
+            <CommandEmpty>검색 결과가 없습니다.</CommandEmpty>
             <CommandGroup>
               {options.map((option) => {
                 const isSelected = selectedValues.has(option.value);
@@ -135,7 +137,7 @@ export function DataTableFacetedFilter<TData, TValue>({
                     onSelect={() => column?.setFilterValue(undefined)}
                     className="justify-center text-center"
                   >
-                    Clear filters
+                    초기화
                   </CommandItem>
                 </CommandGroup>
               </>

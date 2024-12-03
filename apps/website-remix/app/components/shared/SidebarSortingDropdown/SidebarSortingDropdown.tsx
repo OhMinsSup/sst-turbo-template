@@ -1,5 +1,3 @@
-import { useState } from "react";
-
 import { Button } from "@template/ui/components/button";
 import {
   DropdownMenu,

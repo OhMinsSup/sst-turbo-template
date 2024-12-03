@@ -1,6 +1,5 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { data, redirect } from "@remix-run/node";
-import hash from "stable-hash";
 
 import { getCacheWorkspaceList } from "~/.server/cache/workspace";
 import { getWorkspaceListURLParmms } from "~/.server/data/workspace";
@@ -19,17 +18,14 @@ export const loader = async (args: LoaderFunctionArgs) => {
   }
 
   const query = getWorkspaceListURLParmms(args.request);
-  const queryHashKey = hash(query);
   const [ok, result] = await getCacheWorkspaceList({
     query,
     session,
-    queryHashKey,
   });
 
   return data(
     {
       workspaces: ok ? result.list : [],
-      queryHashKey,
     },
     { headers },
   );

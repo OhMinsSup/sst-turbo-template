@@ -13,6 +13,8 @@ import {
   DropdownMenuSeparator,
 } from "@template/ui/components/dropdown-menu";
 
+import { getTitle } from "./columns";
+
 interface DataTableViewOptionsProps<TData> {
   table: Table<TData>;
 }
@@ -29,11 +31,11 @@ export function DataTableViewOptions<TData>({
           className="ml-auto hidden h-8 lg:flex"
         >
           <Settings2 />
-          View
+          보기
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[150px]">
-        <DropdownMenuLabel>Toggle columns</DropdownMenuLabel>
+        <DropdownMenuLabel>컬럼</DropdownMenuLabel>
         <DropdownMenuSeparator />
         {table
           .getAllColumns()
@@ -49,7 +51,7 @@ export function DataTableViewOptions<TData>({
                 checked={column.getIsVisible()}
                 onCheckedChange={(value) => column.toggleVisibility(!!value)}
               >
-                {column.id}
+                {getTitle[column.id]}
               </DropdownMenuCheckboxItem>
             );
           })}

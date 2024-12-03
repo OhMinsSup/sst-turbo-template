@@ -29,9 +29,7 @@ const createWorkspaceAction = async (
     headers: Request["headers"];
   },
 ) => {
-  const [requestBody, queryHashKey] = await postWorkspaceRequestBody(
-    args.request,
-  );
+  const [requestBody] = await postWorkspaceRequestBody(args.request);
 
   const [ok, result, response] = await postWorkspace({
     session,
@@ -63,9 +61,7 @@ const createWorkspaceAction = async (
     }
   }
 
-  if (queryHashKey) {
-    hardPurgeWorkspaceList(queryHashKey);
-  }
+  hardPurgeWorkspaceList();
 
   return data(
     {
@@ -80,8 +76,9 @@ const favoriteWorkspaceAction = async (
   args: ActionFunctionArgs,
   { session, headers }: { session: Session; headers: Request["headers"] },
 ) => {
-  const [workspaceId, requestBody, queryHashKey] =
-    await patchFavoriteWorkspaceRequestBody(args.request);
+  const [workspaceId, requestBody] = await patchFavoriteWorkspaceRequestBody(
+    args.request,
+  );
 
   const [ok, result] = await patchFavoriteWorkspace({
     workspaceId,
@@ -99,9 +96,7 @@ const favoriteWorkspaceAction = async (
     );
   }
 
-  if (queryHashKey) {
-    hardPurgeWorkspaceList(queryHashKey);
-  }
+  hardPurgeWorkspaceList();
 
   return data(
     {
