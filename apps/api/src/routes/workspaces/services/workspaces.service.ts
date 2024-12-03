@@ -92,6 +92,67 @@ export class WorkspacesService {
   }
 
   /**
+   * @description 삭제된 워크스페이스 목록 조회
+   * @param {UserExternalPayload} user
+   * @param {ListWorkspaceDto} query
+   */
+  async findAllByDeleted(user: UserExternalPayload, query: ListWorkspaceDto) {
+    const pageNo = toFinite(query.pageNo);
+
+    const limit = query.limit ? toFinite(query.limit) : 0;
+
+    const [totalCount, list] = await Promise.all([
+      this.prismaService.workSpace.count({
+        where: {
+          deletedAt: {
+            not: null,
+          },
+          userId: user.id,
+          ...(query.title && { title: { contains: query.title } }),
+          ...(typeof query.isFavorite === "boolean" && {
+            isFavorite: query.isFavorite,
+          }),
+        },
+      }),
+      this.prismaService.workSpace.findMany({
+        where: {
+          deletedAt: {
+            not: null,
+          },
+          userId: user.id,
+          ...(query.title && { title: { contains: query.title } }),
+          ...(typeof query.isFavorite === "boolean" && {
+            isFavorite: query.isFavorite,
+          }),
+        },
+        orderBy: {
+          ...(query.sortTag && {
+            [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
+          }),
+        },
+        take: limit ? limit : undefined,
+        skip: limit ? (pageNo - 1) * limit : undefined,
+      }),
+    ]);
+
+    const hasNextPage = limit ? totalCount > pageNo * limit : false;
+    const nextPage = limit ? (hasNextPage ? pageNo + 1 : null) : null;
+
+    return {
+      code: HttpResultCode.OK,
+      data: {
+        totalCount,
+        list,
+        pageInfo: {
+          currentPage: pageNo,
+          hasNextPage,
+          nextPage,
+        },
+      },
+    };
+  }
+
+  /**
    * @description 워크스페이스 단건 조회
    * @param {UserExternalPayload} user
    * @param {number} id
@@ -115,8 +176,21 @@ export class WorkspacesService {
     return `This action updates a #${id} workspace` + JSON.stringify(body);
   }
 
-  remove(id: number) {
-    return `This action removes a #${id} workspace`;
+  /**
+   * @description 워크스페이스 삭제
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   */
+  async remove(user: UserExternalPayload, id: number) {
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: { deletedAt: new Date() },
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
   }
 
   /**
