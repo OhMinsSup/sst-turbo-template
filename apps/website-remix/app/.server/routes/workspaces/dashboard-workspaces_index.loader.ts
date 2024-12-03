@@ -22,7 +22,6 @@ export const loader = async (args: LoaderFunctionArgs) => {
 
   const query = getWorkspaceListURLParmms(args.request);
   const queryHashKey = hash(query);
-
   const [ok, result] = await getCacheWorkspaceList({
     query,
     session,

@@ -7,6 +7,7 @@ import {
   Bell,
   BookOpen,
   Bot,
+  Check,
   ChevronDown,
   ChevronsUpDown,
   Command,
@@ -21,6 +22,7 @@ import {
   MoreHorizontal,
   PieChart,
   Plus,
+  PlusCircle,
   Settings,
   Settings2,
   SquareTerminal,
@@ -30,6 +32,8 @@ import {
 } from "@template/ui/components/icons";
 
 export const Icons = {
+  Check,
+  PlusCircle,
   ArrowDown,
   ArrowUp,
   ChevronsUpDown,

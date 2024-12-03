@@ -1,21 +1,21 @@
-import type { ClientLoaderFunctionArgs } from "@remix-run/react";
+// import type { ClientLoaderFunctionArgs } from "@remix-run/react";
 import React from "react";
 import {
-  Await,
+  // Await,
   isRouteErrorResponse,
   Outlet,
-  useLoaderData,
+  // useLoaderData,
   useRouteError,
 } from "@remix-run/react";
 import { ErrorBoundary as ReactErrorBoundary } from "react-error-boundary";
 
 import { SidebarInset } from "@template/ui/components/sidebar";
 
-import type { RoutesLoaderData } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
+// import type { RoutesLoaderData } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
 import { DashboardHeader } from "~/components/shared/DashboardHeader";
+// import { OverlayLoading } from "~/components/shared/OverlayLoading";
 import { Sidebar } from "~/components/shared/Sidebar";
 import { SidebarItemEmptyMessage } from "~/components/shared/SidebarItemEmptyMessage";
-import { SidebarSkeleton } from "~/components/shared/SidebarSkeleton";
 import { WorkspaceSidebarProvider } from "~/components/workspaces/context/sidebar";
 import { Layout } from "~/components/workspaces/Layout";
 import { SidebarMenu } from "~/components/workspaces/SidebarMenu";
@@ -25,17 +25,20 @@ import { PAGE_ENDPOINTS } from "~/constants/constants";
 export { loader } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
 export { action } from "~/.server/routes/workspaces/dashboard-workspaces.action";
 
-export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
-  const serverData = serverLoader<RoutesLoaderData>();
-  await new Promise((resolve) => setTimeout(resolve, 5000));
-  return serverData;
-}
+// export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
+//   const serverData = serverLoader<RoutesLoaderData>();
+//   return serverData;
+// }
 
-clientLoader.hydrate = true;
+// export type RoutesClientLoaderData = typeof clientLoader;
+
+// export function HydrateFallback() {
+//   return <OverlayLoading isLoading />;
+// }
+
+// clientLoader.hydrate = true;
 
 export default function Routes() {
-  const data = useLoaderData<typeof clientLoader>();
-  console.log(data);
   return (
     <WorkspaceSidebarProvider>
       <Sidebar to={PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ROOT}>
@@ -45,11 +48,7 @@ export default function Routes() {
               <SidebarItemEmptyMessage emptyMessage="에러가 발생했습니다." />
             }
           >
-            <React.Suspense fallback={<SidebarSkeleton />}>
-              <Await resolve={data}>
-                <SidebarWorkspaces />
-              </Await>
-            </React.Suspense>
+            <SidebarWorkspaces />
           </ReactErrorBoundary>
         </SidebarMenu>
       </Sidebar>

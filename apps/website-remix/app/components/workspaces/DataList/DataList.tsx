@@ -26,6 +26,8 @@ import {
   TableRow,
 } from "@template/ui/components/table";
 
+import { DataTableToolbar } from "./DataTableToolbar";
+
 interface DataTableProps<TData, TValue> {
   columns: ColumnDef<TData, TValue>[];
   data: TData[];
@@ -33,7 +35,7 @@ interface DataTableProps<TData, TValue> {
   pageInfo: components["schemas"]["PageInfoDto"];
 }
 
-export default function DashboardList<TData, TValue>({
+export default function DataList<TData, TValue>({
   data,
   columns,
 }: DataTableProps<TData, TValue>) {
@@ -69,7 +71,7 @@ export default function DashboardList<TData, TValue>({
 
   return (
     <div className="space-y-4">
-      {/* <DataTableToolbar table={table} /> */}
+      <DataTableToolbar table={table} />
       <div className="rounded-md border">
         <Table>
           <TableHeader>
