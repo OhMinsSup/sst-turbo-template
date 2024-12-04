@@ -1,13 +1,11 @@
 import { cachified } from "@epic-web/cachified";
 
-import type { GetWorkspaceListParams } from "../data/workspace";
-import { getWorkspaceList } from "../data/workspace";
+import type { GetWorkspaceListParams } from "~/.server/data/workspace/list";
+import { getWorkspaceList } from "~/.server/data/workspace/list";
 
 const cache = new Map();
 
 const WORKSPACE_LIST_CACHE_KEY = "workspace:list";
-
-// Path: apps/website-remix/app/.server/routes/dashboard/dashboard.[action|loader].ts - cache
 
 export function getCacheWorkspaceList({
   session,

@@ -8,7 +8,7 @@ import {
   invariantSession,
   invariantUnsupportedMethod,
 } from "~/.server/data/shared";
-import { createWorkspaceAction } from "~/.server/data/workspace/create";
+import { deleteWorkspaceAction } from "~/.server/data/workspace/delete";
 import { favoriteWorkspaceAction } from "~/.server/data/workspace/favorite";
 import { auth } from "~/.server/utils/auth";
 
@@ -23,11 +23,17 @@ export const action = async (args: ActionFunctionArgs) => {
 
   const method = getTypeSafeMethod(args.request);
   switch (method) {
-    case Method.POST: {
-      return await createWorkspaceAction(args, { session, headers });
+    case Method.DELETE: {
+      return await deleteWorkspaceAction(args, {
+        session,
+        headers,
+      });
     }
     case Method.PATCH: {
-      return await favoriteWorkspaceAction(args, { session, headers });
+      return await favoriteWorkspaceAction(args, {
+        session,
+        headers,
+      });
     }
     default: {
       throw invariantUnsupportedMethod({

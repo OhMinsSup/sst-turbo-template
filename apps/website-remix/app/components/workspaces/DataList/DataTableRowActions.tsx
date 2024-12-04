@@ -1,6 +1,7 @@
 "use client";
 
 import type { Row } from "@tanstack/react-table";
+import { useFetcher, useNavigation } from "@remix-run/react";
 import { MoreHorizontal } from "lucide-react";
 
 import { Button } from "@template/ui/components/button";
@@ -12,6 +13,8 @@ import {
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
 
+import type { RoutesActionData } from "~/.server/routes/workspaces/dashboard-workspaces_index.action";
+
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
 }
@@ -19,6 +22,26 @@ interface DataTableRowActionsProps<TData> {
 export function DataTableRowActions<TData>({
   row,
 }: DataTableRowActionsProps<TData>) {
+  const navigation = useNavigation();
+  const fetcher = useFetcher<RoutesActionData>({
+    key: "dashboard:sidebar:workspaces",
+  });
+
+  const onClickFavorite = () => {
+    const workspaceId = row.getValue<number>("id");
+    const nextFavorite = !(row.getValue<string>("isFavorite") === "true");
+    const formData = new FormData();
+    formData.append("workspaceId", workspaceId.toString());
+    formData.append("isFavorite", nextFavorite.toString());
+    fetcher.submit(formData, {
+      method: "PATCH",
+    });
+  };
+
+  const onClickDelete = () => {};
+
+  const isSubmittingForm = navigation.state === "submitting";
+
   const isFavorite = row.getValue("isFavorite") === "true";
   return (
     <DropdownMenu>
@@ -32,12 +55,27 @@ export function DataTableRowActions<TData>({
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent align="end" className="w-[160px]">
-        <DropdownMenuItem>수정</DropdownMenuItem>
-        <DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={isSubmittingForm}
+          aria-disabled={isSubmittingForm}
+        >
+          수정
+        </DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={isSubmittingForm}
+          aria-disabled={isSubmittingForm}
+          onClick={onClickFavorite}
+        >
           {isFavorite ? "즐겨찾기 해제" : "즐겨찾기 추가"}
         </DropdownMenuItem>
         <DropdownMenuSeparator />
-        <DropdownMenuItem>삭제</DropdownMenuItem>
+        <DropdownMenuItem
+          disabled={isSubmittingForm}
+          aria-disabled={isSubmittingForm}
+          onClick={onClickDelete}
+        >
+          삭제
+        </DropdownMenuItem>
       </DropdownMenuContent>
     </DropdownMenu>
   );

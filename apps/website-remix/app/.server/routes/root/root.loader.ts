@@ -4,7 +4,8 @@ import { data } from "@remix-run/node";
 import { combineHeaders, getRequestInfo } from "@template/utils/request";
 
 import type { Theme } from "~/.server/utils/theme";
-import { auth, getUserAndSession } from "~/.server/utils/auth";
+import { getAuth } from "~/.server/data/shared";
+import { auth } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/libs/client-hints";
@@ -21,7 +22,6 @@ export interface RequestInfo {
 export const loader = async (args: LoaderFunctionArgs) => {
   const toastData = await getToast(args.request);
   const { domainUrl } = getRequestInfo(args.request.headers);
-
   const { authClient, headers } = auth.handler(args);
 
   const requestInfo: RequestInfo = {
@@ -37,7 +37,7 @@ export const loader = async (args: LoaderFunctionArgs) => {
     {
       requestInfo,
       toast: toastData.toast,
-      ...(await getUserAndSession(authClient)),
+      ...(await getAuth(authClient)),
     },
     {
       headers: combineHeaders(headers, toastData.headers),

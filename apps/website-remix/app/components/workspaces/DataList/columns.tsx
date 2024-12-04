@@ -60,7 +60,7 @@ export const columns: ColumnDef<CustomWorkspaceEntity>[] = [
     header: ({ column }) => (
       <DataTableColumnHeader column={column} title="아이디" />
     ),
-    cell: ({ row }) => <div className="w-[80px]">{row.getValue("id")}</div>,
+    cell: ({ row }) => <div className="w-[50px]">{row.getValue("id")}</div>,
     enableSorting: false,
     enableHiding: false,
   },

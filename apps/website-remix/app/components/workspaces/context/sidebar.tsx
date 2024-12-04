@@ -28,7 +28,7 @@ interface ChangeSortTagAction {
 interface ChangeSortOrderAction {
   type: Action.CHANGE_SORT_ORDER;
   payload: {
-    value: "asc" | "desc" | undefined;
+    value: "asc" | "desc";
   };
 }
 
@@ -58,7 +58,7 @@ type ActionType =
 interface QueryState {
   limit: number;
   sortTag: "createdAt" | "updatedAt" | "order";
-  sortOrder: "asc" | "desc" | undefined;
+  sortOrder: "asc" | "desc";
 }
 
 interface DialogState {
@@ -85,7 +85,7 @@ const initialState: WorkspaceSidebarState = {
   query: {
     limit: 5,
     sortTag: "createdAt",
-    sortOrder: undefined,
+    sortOrder: "desc",
   },
   dialog: {
     isOpen: false,

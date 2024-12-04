@@ -1,5 +1,5 @@
 import React, { useEffect } from "react";
-import { useActionData, useLoaderData, useSubmit } from "@remix-run/react";
+import { useActionData, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -16,7 +16,6 @@ import { Textarea } from "@template/ui/components/textarea";
 import { createWorkspaceSchema } from "@template/validators/workspace";
 
 import type { RoutesActionData } from "~/.server/routes/workspaces/dashboard-workspaces.action";
-import type { RoutesLoaderData } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
 import type { SidebarFormComponentProps } from "~/components/shared/SidebarAddItemDialog";
 
 type SidebarFormProps = SidebarFormComponentProps & {};
@@ -24,7 +23,6 @@ type SidebarFormProps = SidebarFormComponentProps & {};
 export default function SidebarForm({ setOpen }: SidebarFormProps) {
   const submit = useSubmit();
   const actionData = useActionData<RoutesActionData>();
-  const data = useLoaderData<RoutesLoaderData>();
 
   const form = useForm<FormFieldCreateWorkspace>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -43,7 +41,6 @@ export default function SidebarForm({ setOpen }: SidebarFormProps) {
     if (input.description) {
       formData.append("description", input.description);
     }
-    formData.append("queryHashKey", data.queryHashKey);
     submit(formData, {
       method: "post",
       replace: true,

@@ -6,6 +6,7 @@ import { HttpErrorNameEnum, HttpResultCode } from "@template/common";
 
 import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
 import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { WorkspaceDeleteResponseDto } from "../../../shared/dtos/response/workspaces/workspace-delete-response.dto";
 import { WorkspaceDetailResponseDto } from "../../../shared/dtos/response/workspaces/workspace-detail-response.dto";
 import { WorkspaceListResponseDto } from "../../../shared/dtos/response/workspaces/workspace-list-response.dto";
 import { OpenApiErrorDefine as AuthOpenApiErrorDefine } from "../../auth/open-api";
@@ -255,6 +256,21 @@ export const OpenApiSuccessDefine = {
       },
     },
   },
+  delete: {
+    exampleDescription: "워크스페이스 삭제",
+    message: "워크스페이스를 성공적으로 삭제했습니다.",
+    resultCode: HttpResultCode.OK,
+    statusCode: HttpStatus.OK,
+    example: {
+      ["응답 성공"]: {
+        value: {
+          statusCode: HttpStatus.OK,
+          resultCode: HttpResultCode.OK,
+          data: true,
+        },
+      },
+    },
+  },
 };
 
 export const OpenApiSuccessResponseDefine = {
@@ -299,6 +315,17 @@ export const OpenApiSuccessResponseDefine = {
           $ref: getSchemaPath(WorkspaceDetailResponseDto),
         },
         examples: OpenApiSuccessDefine.favorite.example,
+      },
+    },
+  } as ApiResponseOptions,
+  delete: {
+    status: HttpStatus.OK,
+    content: {
+      "application/json": {
+        schema: {
+          $ref: getSchemaPath(WorkspaceDeleteResponseDto),
+        },
+        examples: OpenApiSuccessDefine.delete.example,
       },
     },
   } as ApiResponseOptions,

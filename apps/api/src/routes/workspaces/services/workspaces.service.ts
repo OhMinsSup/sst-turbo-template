@@ -172,7 +172,7 @@ export class WorkspacesService {
     };
   }
 
-  update(id: number, body: UpdateWorkspaceDto) {
+  update(user: UserExternalPayload, id: number, body: UpdateWorkspaceDto) {
     return `This action updates a #${id} workspace` + JSON.stringify(body);
   }
 

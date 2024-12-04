@@ -1,7 +1,8 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { data } from "@remix-run/node";
 
-import { auth, requireAnonymous } from "~/.server/utils/auth";
+import { requireAnonymous } from "~/.server/data/shared";
+import { auth } from "~/.server/utils/auth";
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const { authClient, headers } = auth.handler(args);

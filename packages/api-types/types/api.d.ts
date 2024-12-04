@@ -112,8 +112,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 워크스페이스 목록 */
-    get: operations["WorkspacesController_findAll"];
+    /** 삭제된 워크스페이스 목록 */
+    get: operations["WorkspacesController_findAllByDeleted"];
     put?: never;
     /** 워크스페이스 생성 */
     post: operations["WorkspacesController_create"];
@@ -134,6 +134,7 @@ export interface paths {
     get: operations["WorkspacesController_findOne"];
     put?: never;
     post?: never;
+    /** 워크스페이스 삭제 (soft delete) */
     delete: operations["WorkspacesController_remove"];
     options?: never;
     head?: never;
@@ -799,6 +800,84 @@ export interface components {
        */
       validationErrorInfo: Record<string, never>;
     };
+    WorkspaceDeleteResponseDto: {
+      /** @description 데이터 응답 */
+      data: boolean;
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
+    };
     WorkspaceDetailResponseDto: {
       /** @description 데이터 응답 */
       data: components["schemas"]["WorkspaceEntity"];
@@ -1266,7 +1345,7 @@ export interface operations {
       };
     };
   };
-  WorkspacesController_findAll: {
+  WorkspacesController_findAllByDeleted: {
     parameters: {
       query?: {
         /**
@@ -1424,7 +1503,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        id: number;
       };
       cookie?: never;
     };
@@ -1434,7 +1513,33 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WorkspaceDeleteResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };
@@ -1443,7 +1548,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: string;
+        id: number;
       };
       cookie?: never;
     };

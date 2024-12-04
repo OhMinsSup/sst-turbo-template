@@ -22,6 +22,7 @@ import { AuthUser } from "../../../decorators/auth-user.decorator";
 import { JwtAuth } from "../../../guards/jwt-auth.guard";
 import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
 import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { WorkspaceDeleteResponseDto } from "../../../shared/dtos/response/workspaces/workspace-delete-response.dto";
 import { WorkspaceDetailResponseDto } from "../../../shared/dtos/response/workspaces/workspace-detail-response.dto";
 import { WorkspaceListResponseDto } from "../../../shared/dtos/response/workspaces/workspace-list-response.dto";
 import {
@@ -47,6 +48,7 @@ import { WorkspacesService } from "../services/workspaces.service";
   ValidationErrorDto,
   WorkspaceListResponseDto,
   WorkspaceDetailResponseDto,
+  WorkspaceDeleteResponseDto,
 )
 export class WorkspacesController {
   constructor(private readonly service: WorkspacesService) {}
@@ -110,18 +112,20 @@ export class WorkspacesController {
 
   @Patch(":id")
   update(
+    @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
     @Body() updateWorkspaceDto: UpdateWorkspaceDto,
   ) {
-    return this.service.update(+id, updateWorkspaceDto);
+    return this.service.update(user, id, updateWorkspaceDto);
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "워크스페이스 삭제" })
+  @ApiOperation({ summary: "워크스페이스 삭제 (soft delete)" })
   @JwtAuth()
   @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
   @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
   @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.delete)
   remove(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
