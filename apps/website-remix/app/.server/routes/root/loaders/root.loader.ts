@@ -5,7 +5,6 @@ import { RootController } from "~/.server/routes/root/controllers/root.controlle
 
 export const loader = async (args: LoaderFunctionArgs) => {
   const instance = container.resolve(RootController);
-  console.log("Root Loader", instance);
   return await instance.root(args);
 };
 

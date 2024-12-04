@@ -3,7 +3,7 @@ import { container, inject, injectable, singleton } from "tsyringe";
 
 import { HttpStatusCode } from "@template/common";
 
-// import type { CacheService } from "~/.server/cache/cache.service";
+import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
 import { WorkspaceCreateDto } from "~/.server/routes/workspaces/dto/workspace-create.dto";
 import { WorkspaceFavoriteDto } from "~/.server/routes/workspaces/dto/workspace-favorite.dto";
@@ -24,7 +24,8 @@ export class WorkspaceService {
   constructor(
     @inject(AuthMiddleware.name)
     private readonly authMiddleware: AuthMiddleware,
-    // private readonly cacheService: CacheService,
+    @inject(CacheService.name)
+    private readonly cacheService: CacheService,
   ) {}
 
   /**

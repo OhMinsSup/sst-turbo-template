@@ -12,7 +12,7 @@ export class WorkspaceFavoriteDto implements Partial<Body> {
     const formData = await request.formData();
     const body = Object.fromEntries(formData.entries());
     this.isFavorite = body.isFavorite === "true";
-    this.workspaceId = +body.workspace;
+    this.workspaceId = +body.workspaceId;
     return this;
   }
 

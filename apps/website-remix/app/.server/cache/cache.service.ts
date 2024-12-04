@@ -1,5 +1,6 @@
+import type { GetFreshValueContext } from "@epic-web/cachified";
 import { cachified } from "@epic-web/cachified";
-import { injectable, singleton } from "tsyringe";
+import { container, injectable, singleton } from "tsyringe";
 
 @singleton()
 @injectable()
@@ -12,23 +13,26 @@ export class CacheService {
     },
   };
 
-  async getWorkspaceList<TFunction>(callback: () => Promise<TFunction>) {
+  async getWorkspaceList<TFunction>(
+    callback: (context: GetFreshValueContext) => Promise<TFunction>,
+    forceFresh?: boolean,
+  ) {
     return cachified({
-      ttl: 120_000,
-      staleWhileRevalidate: 300_000,
+      ttl: 60_000 /* Default cache of one minute... */,
+      forceFresh,
       cache: this.cache,
       key: this.keys.workspace.list,
-      async getFreshValue() {
-        return await callback();
+      async getFreshValue(context) {
+        return await callback(context);
       },
     });
   }
 
-  hardPurgeWorkspaceList() {
-    try {
-      this.cache.delete(this.keys.workspace.list);
-    } catch (error) {
-      console.error(error);
-    }
+  clearWorkspaceList() {
+    this.cache.delete(this.keys.workspace.list);
   }
 }
+
+const token = CacheService.name;
+
+container.register<CacheService>(token, { useClass: CacheService });
