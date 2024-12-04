@@ -2,7 +2,7 @@ import { useRouteLoaderData } from "@remix-run/react";
 
 import type { Session } from "@template/auth";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
 
 function isSession(session: Session | undefined): session is Session {
   if (typeof session === "undefined") {

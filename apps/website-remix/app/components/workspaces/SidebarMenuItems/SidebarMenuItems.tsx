@@ -15,8 +15,8 @@ import {
   useSidebar,
 } from "@template/ui/components/sidebar";
 
-import type { RoutesActionData } from "~/.server/routes/workspaces/dashboard-workspaces.action";
-import type { RoutesLoaderData } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
+import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard-workspaces.action";
+import type { RoutesLoaderData } from "~/.server/routes/workspaces/loaders/dashboard-workspaces.loader";
 import { Icons } from "~/components/icons";
 import { SidebarItemEmptyMessage } from "~/components/shared/SidebarItemEmptyMessage";
 import { PAGE_ENDPOINTS } from "~/constants/constants";

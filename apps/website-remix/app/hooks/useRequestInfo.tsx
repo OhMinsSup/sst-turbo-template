@@ -4,7 +4,7 @@ import { invariant } from "@epic-web/invariant";
 import type {
   RequestInfo,
   RoutesLoaderData,
-} from "~/.server/routes/root/root.loader";
+} from "~/.server/routes/root/loaders/root.loader";
 
 export function useRequestInfo(): RequestInfo {
   const data = useRouteLoaderData<RoutesLoaderData>("root");

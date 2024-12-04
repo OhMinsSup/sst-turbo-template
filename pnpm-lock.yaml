@@ -342,12 +342,18 @@ importers:
       react-hook-form:
         specifier: 'catalog:'
         version: 7.53.2(react@18.3.1)
+      reflect-metadata:
+        specifier: ^0.2.2
+        version: 0.2.2
       remix-utils:
         specifier: ^7.7.0
         version: 7.7.0(@remix-run/node@2.15.0(typescript@5.7.2))(@remix-run/react@2.15.0(react-dom@18.3.1(react@18.3.1))(react@18.3.1)(typescript@5.7.2))(@remix-run/router@1.21.0)(react@18.3.1)(zod@3.23.8)
       stable-hash:
         specifier: ^0.0.4
         version: 0.0.4
+      tsyringe:
+        specifier: ^4.8.0
+        version: 4.8.0
       zod:
         specifier: 'catalog:'
         version: 3.23.8
@@ -7760,6 +7766,10 @@ packages:
     resolution: {integrity: sha512-bV30kM7bsLZKZIOCHeMNVMJ32/LuJzLVajkQI/qf92J2Qr08ueLQvW00PUZGiuLPP760UINwupgUj8qrSCPUKg==}
     engines: {node: '>=18.0.0'}
     hasBin: true
+
+  tsyringe@4.8.0:
+    resolution: {integrity: sha512-YB1FG+axdxADa3ncEtRnQCFq/M0lALGLxSZeVNbTU8NqhOVc51nnv2CISTcvc1kyv6EGPtXVr0v6lWeDxiijOA==}
+    engines: {node: '>= 6.0.0'}
 
   turbo-darwin-64@2.2.3:
     resolution: {integrity: sha512-Rcm10CuMKQGcdIBS3R/9PMeuYnv6beYIHqfZFeKWVYEWH69sauj4INs83zKMTUiZJ3/hWGZ4jet9AOwhsssLyg==}
@@ -16195,6 +16205,10 @@ snapshots:
       get-tsconfig: 4.8.0
     optionalDependencies:
       fsevents: 2.3.3
+
+  tsyringe@4.8.0:
+    dependencies:
+      tslib: 1.14.1
 
   turbo-darwin-64@2.2.3:
     optional: true

@@ -1,6 +1,6 @@
 import type { MetaFunction } from "@remix-run/node";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
 import { SITE_CONFIG } from "~/constants/constants";
 import { getMeta } from "~/libs/meta";
 

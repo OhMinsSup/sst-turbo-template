@@ -13,7 +13,7 @@ import {
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
 
-import type { RoutesActionData } from "~/.server/routes/workspaces/dashboard-workspaces_index.action";
+import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard-workspaces_index.action";
 
 interface DataTableRowActionsProps<TData> {
   row: Row<TData>;
@@ -38,7 +38,14 @@ export function DataTableRowActions<TData>({
     });
   };
 
-  const onClickDelete = () => {};
+  const onClickDelete = () => {
+    const workspaceId = row.getValue<number>("id");
+    const formData = new FormData();
+    formData.append("workspaceId", workspaceId.toString());
+    fetcher.submit(formData, {
+      method: "DELETE",
+    });
+  };
 
   const isSubmittingForm = navigation.state === "submitting";
 

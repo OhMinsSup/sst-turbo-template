@@ -1,7 +1,7 @@
 import React, { useTransition } from "react";
 import { useFetcher } from "@remix-run/react";
 
-import type { RoutesLoaderData } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
+import type { RoutesLoaderData } from "~/.server/routes/workspaces/loaders/dashboard-workspaces.loader";
 import { SidebarAddItemDialog } from "~/components/shared/SidebarAddItemDialog";
 import { SidebarMenuNav } from "~/components/shared/SidebarMenuNav";
 import { useWorkspaceSidebarProvider } from "~/components/workspaces/context/sidebar";

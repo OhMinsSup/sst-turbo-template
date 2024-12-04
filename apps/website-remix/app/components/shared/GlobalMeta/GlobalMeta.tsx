@@ -1,7 +1,7 @@
 import React from "react";
 import { useLoaderData } from "@remix-run/react";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
 
 export default function GlobalMeta() {
   const data = useLoaderData<RoutesLoaderData>();

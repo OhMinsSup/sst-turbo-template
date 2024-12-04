@@ -22,8 +22,9 @@ import { SidebarMenu } from "~/components/workspaces/SidebarMenu";
 import { SidebarWorkspaces } from "~/components/workspaces/SidebarWorkspaces";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-export { loader } from "~/.server/routes/workspaces/dashboard-workspaces.loader";
-export { action } from "~/.server/routes/workspaces/dashboard-workspaces.action";
+export { loader } from "~/.server/routes/workspaces/loaders/dashboard-workspaces.loader";
+export { action } from "~/.server/routes/workspaces/actions/dashboard-workspaces.action";
+export { meta } from "~/libs/seo/dashboard-workspaces.meta";
 
 // export async function clientLoader({ serverLoader }: ClientLoaderFunctionArgs) {
 //   const serverData = serverLoader<RoutesLoaderData>();

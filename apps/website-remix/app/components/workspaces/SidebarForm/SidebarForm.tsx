@@ -15,7 +15,7 @@ import { Input } from "@template/ui/components/input";
 import { Textarea } from "@template/ui/components/textarea";
 import { createWorkspaceSchema } from "@template/validators/workspace";
 
-import type { RoutesActionData } from "~/.server/routes/workspaces/dashboard-workspaces.action";
+import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard-workspaces.action";
 import type { SidebarFormComponentProps } from "~/components/shared/SidebarAddItemDialog";
 
 type SidebarFormProps = SidebarFormComponentProps & {};

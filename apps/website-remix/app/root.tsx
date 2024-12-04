@@ -1,3 +1,5 @@
+import "reflect-metadata";
+
 import {
   Links,
   Meta,
@@ -19,7 +21,7 @@ import { Toaster } from "sonner";
 import type { Session } from "@template/auth";
 import { cn } from "@template/ui/lib";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast } from "./components/shared/Toast";
 import { SITE_CONFIG } from "./constants/constants";
@@ -27,7 +29,7 @@ import { remixAuthBrowser } from "./libs/auth";
 import { ClientHintCheck } from "./libs/client-hints";
 import { RQClient } from "./libs/query";
 
-export { loader } from "~/.server/routes/root/root.loader";
+export { loader } from "~/.server/routes/root/loaders/root.loader";
 export { meta } from "~/libs/seo/root.meta";
 
 export const links: LinksFunction = () => {
