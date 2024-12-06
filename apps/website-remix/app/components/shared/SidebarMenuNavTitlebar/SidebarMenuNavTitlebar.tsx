@@ -4,21 +4,25 @@ import type { SidebarSortingDropdownProps } from "~/components/shared/SidebarSor
 import { SidebarSortingDropdown } from "~/components/shared/SidebarSortingDropdown";
 
 export interface SidebarMenuNavTitlebarProps
-  extends SidebarSortingDropdownProps {
+  extends Partial<SidebarSortingDropdownProps> {
   title: React.ReactNode;
+  usedSortingComponent?: boolean;
   addFormComponent?: React.ReactNode;
 }
 
 export default function SidebarMenuNavTitlebar({
   title,
   addFormComponent,
+  usedSortingComponent = true,
   ...sidebarSortingDropdownProps
 }: SidebarMenuNavTitlebarProps) {
   return (
     <>
       <span>{title}</span>
       <div className="flex flex-row gap-2">
-        <SidebarSortingDropdown {...sidebarSortingDropdownProps} />
+        {usedSortingComponent && (
+          <SidebarSortingDropdown {...sidebarSortingDropdownProps} />
+        )}
         {addFormComponent}
       </div>
     </>

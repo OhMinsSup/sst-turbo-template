@@ -3,9 +3,11 @@ import React, {
   startTransition,
   useCallback,
   useEffect,
+  useMemo,
   useState,
 } from "react";
 import { Link, useFetcher, useNavigation } from "@remix-run/react";
+import { take } from "lodash-es";
 
 import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
@@ -20,6 +22,7 @@ import type { RoutesLoaderData } from "~/.server/routes/workspaces/loaders/dashb
 import { Icons } from "~/components/icons";
 import { SidebarItemEmptyMessage } from "~/components/shared/SidebarItemEmptyMessage";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { useWorkspaceSidebarProvider } from "../context/sidebar";
 
 export interface WorkspaceMenuItem extends LinkProps {
   discover?: "render" | "none";
@@ -53,7 +56,14 @@ export default function SidebarMenuItems({
     key: "dashboard:sidebar:workspaces",
   });
 
+  const { query } = useWorkspaceSidebarProvider();
+
   const [items, setItems] = useState(generateWorkspaceItems(initialData ?? []));
+
+  const limitedItems = useMemo(
+    () => take(items, query.limit),
+    [items, query.limit],
+  );
 
   const updateItems = useCallback(
     (workspaces: components["schemas"]["WorkspaceEntity"][]) => {
@@ -118,13 +128,15 @@ export default function SidebarMenuItems({
   // 즐겨찾기 상태에 대한 업데이트
   useEffect(() => {
     if (
+      fetcher.formMethod === "PATCH" &&
       fetcher.data &&
-      "workspace" in fetcher.data &&
-      fetcher.formMethod === "PATCH"
+      "workspace" in fetcher.data
     ) {
       const newItem = fetcher.data.workspace;
       startTransition(() => {
-        replaceItems(newItem);
+        if (newItem) {
+          replaceItems(newItem);
+        }
       });
     }
   }, [fetcher.data, fetcher.formMethod]);
@@ -135,7 +147,7 @@ export default function SidebarMenuItems({
 
   return (
     <>
-      {items.map((item) => (
+      {limitedItems.map((item) => (
         <SidebarWorkspaceMenuItem
           key={`@@workspace::${item.meta.id}`}
           {...item}

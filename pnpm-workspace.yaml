@@ -6,6 +6,7 @@ packages:
 catalog:
   "@tanstack/react-query": ^5.62.0
   "@tanstack/react-table": ^8.20.5
+  "@tanstack/react-virtual": ^3.10.9
   "@t3-oss/env-core": "^0.11.1"
   "react-hook-form": "^7.53.2"
   "@hookform/resolvers": "^3.9.1"
@@ -37,3 +38,6 @@ catalogs:
     "@remix-run/react": "^2.15.0"
     "@remix-run/serve": "^2.15.0"
     "@remix-run/dev": "^2.15.0"
+  lodash:
+    lodash-es: ^4.17.21
+    "@types/lodash-es": "^4.17.12"

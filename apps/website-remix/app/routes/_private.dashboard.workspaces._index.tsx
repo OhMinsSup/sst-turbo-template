@@ -12,7 +12,7 @@ export default function Routes() {
 
   return (
     <DataList
-      data={getCustomWorkspaceEntity(list)}
+      list={getCustomWorkspaceEntity(list)}
       totalCount={totalCount}
       pageInfo={pageInfo}
       columns={columns}

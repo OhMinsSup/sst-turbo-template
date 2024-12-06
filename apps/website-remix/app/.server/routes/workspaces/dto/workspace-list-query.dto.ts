@@ -1,23 +1,26 @@
 import type { paths } from "@template/api-types";
 
-type Query = paths["/api/v1/workspaces"]["get"]["parameters"]["query"];
+export type Query = paths["/api/v1/workspaces"]["get"]["parameters"]["query"];
 
 export class WorkspaceListQueryDto {
   query?: Query;
 
   transform(request: Request) {
     const url = new URL(request.url);
-    const isFavoriteString = url.searchParams.get("isFavorite");
-    const isFavorite =
-      typeof isFavoriteString === "string" &&
-      ["true", "false"].includes(isFavoriteString)
-        ? isFavoriteString === "true"
-        : undefined;
+    // const isFavoriteString = url.searchParams.get("isFavorite");
+    // const isFavorite =
+    //   typeof isFavoriteString === "string" &&
+    //   ["true", "false"].includes(isFavoriteString)
+    //     ? isFavoriteString === "true"
+    //     : undefined;
+
+    const favorites = url.searchParams.getAll("favorites");
 
     this.query = {
-      isFavorite,
+      // isFavorite,
+      title: url.searchParams.get("title"),
       pageNo: +(url.searchParams.get("pageNo") ?? "1"),
-      limit: +(url.searchParams.get("limit") ?? "5"),
+      limit: +(url.searchParams.get("limit") ?? "30"),
       sortTag: (url.searchParams.get("sortTag") ?? "createdAt") as
         | "createdAt"
         | "updatedAt"
@@ -25,6 +28,7 @@ export class WorkspaceListQueryDto {
       sortOrder: (url.searchParams.get("sortOrder") ?? "desc") as
         | "asc"
         | "desc",
+      favorites,
     };
 
     return this;

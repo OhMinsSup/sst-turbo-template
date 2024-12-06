@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { toFinite } from "lodash-es";
+import { isEqual, toFinite } from "lodash-es";
 import { SortOrder } from "src/types/sort-order";
 
 import type { UserExternalPayload } from "@template/db/selectors";
@@ -34,34 +34,52 @@ export class WorkspacesService {
    * @description 워크스페이스 목록 조회
    * @param {UserExternalPayload} user
    * @param {ListWorkspaceDto} query
+   * @param {boolean} isDeleted
    */
-  async findAll(user: UserExternalPayload, query: ListWorkspaceDto) {
+  async findMany(
+    user: UserExternalPayload,
+    query: ListWorkspaceDto,
+    isDeleted = false,
+  ) {
     const pageNo = toFinite(query.pageNo);
 
     const limit = query.limit ? toFinite(query.limit) : 0;
+    const favorites = query.favorites ? query.favorites : [];
 
     const [totalCount, list] = await Promise.all([
       this.prismaService.workSpace.count({
         where: {
-          deletedAt: {
-            equals: null,
-          },
+          ...(isDeleted
+            ? { deletedAt: { not: null } }
+            : {
+                deletedAt: {
+                  equals: null,
+                },
+              }),
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
+          ...(favorites.length > 0 && {
+            OR: favorites.map((i) => ({
+              isFavorite: i,
+            })),
           }),
         },
       }),
       this.prismaService.workSpace.findMany({
         where: {
-          deletedAt: {
-            equals: null,
-          },
+          ...(isDeleted
+            ? { deletedAt: { not: null } }
+            : {
+                deletedAt: {
+                  equals: null,
+                },
+              }),
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
+          ...(favorites.length > 0 && {
+            OR: favorites.map((i) => ({
+              isFavorite: i,
+            })),
           }),
         },
         orderBy: {
@@ -96,60 +114,8 @@ export class WorkspacesService {
    * @param {UserExternalPayload} user
    * @param {ListWorkspaceDto} query
    */
-  async findAllByDeleted(user: UserExternalPayload, query: ListWorkspaceDto) {
-    const pageNo = toFinite(query.pageNo);
-
-    const limit = query.limit ? toFinite(query.limit) : 0;
-
-    const [totalCount, list] = await Promise.all([
-      this.prismaService.workSpace.count({
-        where: {
-          deletedAt: {
-            not: null,
-          },
-          userId: user.id,
-          ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
-          }),
-        },
-      }),
-      this.prismaService.workSpace.findMany({
-        where: {
-          deletedAt: {
-            not: null,
-          },
-          userId: user.id,
-          ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
-          }),
-        },
-        orderBy: {
-          ...(query.sortTag && {
-            [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
-          }),
-        },
-        take: limit ? limit : undefined,
-        skip: limit ? (pageNo - 1) * limit : undefined,
-      }),
-    ]);
-
-    const hasNextPage = limit ? totalCount > pageNo * limit : false;
-    const nextPage = limit ? (hasNextPage ? pageNo + 1 : null) : null;
-
-    return {
-      code: HttpResultCode.OK,
-      data: {
-        totalCount,
-        list,
-        pageInfo: {
-          currentPage: pageNo,
-          hasNextPage,
-          nextPage,
-        },
-      },
-    };
+  async findManyByDeleted(user: UserExternalPayload, query: ListWorkspaceDto) {
+    return await this.findMany(user, query, true);
   }
 
   /**
@@ -172,8 +138,47 @@ export class WorkspacesService {
     };
   }
 
-  update(user: UserExternalPayload, id: number, body: UpdateWorkspaceDto) {
-    return `This action updates a #${id} workspace` + JSON.stringify(body);
+  /**
+   * @description 워크스페이스 수정
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   * @param {UpdateWorkspaceDto} body
+   */
+  async update(
+    user: UserExternalPayload,
+    id: number,
+    body: UpdateWorkspaceDto,
+  ) {
+    const workspace = await this.prismaService.workSpace.findFirst({
+      where: { id, userId: user.id },
+    });
+
+    if (!workspace) {
+      throw new NotFoundException(OpenApiErrorDefine.workspaceNotFound);
+    }
+
+    Object.assign(body, {
+      title: body.title
+        ? isEqual(body.title, workspace.title)
+          ? undefined
+          : body.title
+        : undefined,
+      description: body.description
+        ? isEqual(body.description, workspace.description)
+          ? undefined
+          : body.description
+        : undefined,
+    });
+
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: body,
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
   }
 
   /**

@@ -34,6 +34,16 @@ export const defaultListData = () => {
 };
 
 /**
+ * @description 위젯 워크스페이스 리스트 데이터의 기본값을 반환합니다.
+ */
+export const defaultWidgetWorkspaceListData = () => {
+  return {
+    favoriteWorkspaces: [],
+    workspaces: [],
+  };
+};
+
+/**
  * @description 에러 메시지를 토스트 형식으로 반환합니다.
  * @param message
  */

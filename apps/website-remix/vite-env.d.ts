@@ -50,6 +50,7 @@
     export const USER: string;
     export const NVM_DIR: string;
     export const npm_package_devDependencies__types_react: string;
+    export const npm_package_dependencies__tanstack_react_virtual: string;
     export const PNPM_SCRIPT_SRC_DIR: string;
     export const npm_package_devDependencies_vite_tsconfig_paths: string;
     export const npm_package_devDependencies__template_tailwind_config: string;
@@ -89,6 +90,7 @@
     export const npm_config_node_linker: string;
     export const npm_package_dependencies__template_api: string;
     export const XPC_FLAGS: string;
+    export const npm_package_devDependencies__types_lodash_es: string;
     export const npm_config_node_gyp: string;
     export const npm_package_dependencies__tanstack_react_query: string;
     export const npm_package_dependencies_stable_hash: string;
@@ -106,6 +108,7 @@
     export const npm_lifecycle_script: string;
     export const npm_package_dependencies_zod: string;
     export const npm_package_dependencies_reflect_metadata: string;
+    export const npm_package_dependencies_lodash_es: string;
     export const npm_package_dependencies_tsyringe: string;
     export const npm_package_dependencies_react: string;
     export const NVM_BIN: string;

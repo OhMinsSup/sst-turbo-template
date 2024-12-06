@@ -39,12 +39,23 @@ export class WorkspaceController {
   }
 
   /**
-   * @description 워크스페이스 리스트 조회
+   * @description 워크스페이스 리스트 조회 (single fetch)
    * @param {LoaderFunctionArgs} args
    */
   async findAll(args: LoaderFunctionArgs) {
     const response = await this.workspaceService.findAll(args);
     return data(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
+   * @description 워크스페이스 리스트 조회 (json fetch)
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllToJson(args: LoaderFunctionArgs) {
+    const response = await this.workspaceService.findAll(args);
+    return Response.json(response.data, {
       headers: response.requestInfo.headers,
     });
   }
@@ -84,6 +95,10 @@ export class WorkspaceController {
     });
   }
 
+  /**
+   * @description 지원하지 않는 메소드
+   * @param {ActionFunctionArgs} args
+   */
   noop(args: ActionFunctionArgs) {
     const authtication = auth.handler(args);
     return invariantUnsupportedMethod({

@@ -32,7 +32,7 @@ export default function SignUpForm() {
       password: "",
       confirmPassword: "",
     },
-    errors: actionData?.error,
+    errors: actionData?.error ?? undefined,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });

@@ -9,3 +9,4 @@ export * from "./useUnmount";
 export * from "./useUpdate";
 export * from "./use-mobile";
 export * from "./use-toast";
+export * from "./useDebounceFn";

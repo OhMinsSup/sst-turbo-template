@@ -105,6 +105,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/widgets/workspaces": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 워크스페이스 위젯 목록 조회 */
+    get: operations["WidgetsController_findAllByWidgetWorkspace"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
   "/api/v1/workspaces": {
     parameters: {
       query?: never;
@@ -113,7 +130,7 @@ export interface paths {
       cookie?: never;
     };
     /** 삭제된 워크스페이스 목록 */
-    get: operations["WorkspacesController_findAllByDeleted"];
+    get: operations["WorkspacesController_findManyByDeleted"];
     put?: never;
     /** 워크스페이스 생성 */
     post: operations["WorkspacesController_create"];
@@ -800,6 +817,90 @@ export interface components {
        */
       validationErrorInfo: Record<string, never>;
     };
+    WidgetWorkspaceListDto: {
+      /** @description 데이터 목록 */
+      favoriteWorkspaces: components["schemas"]["WorkspaceEntity"][];
+      /** @description 데이터 목록 */
+      workspaces: components["schemas"]["WorkspaceEntity"][];
+    };
+    WidgetWorkspaceListResponseDto: {
+      /** @description 데이터 응답 */
+      data: components["schemas"]["WidgetWorkspaceListDto"];
+      /**
+       * @description 결과 코드
+       * @enum {number}
+       */
+      resultCode:
+        | 1
+        | -1
+        | 1001
+        | 1002
+        | 1003
+        | 1004
+        | 1005
+        | 4001
+        | 4002
+        | 6001
+        | 6002
+        | 6003
+        | 6004
+        | 6005
+        | 7000
+        | 7001;
+      /**
+       * @description 상태코드
+       * @enum {number}
+       */
+      statusCode:
+        | 100
+        | 101
+        | 102
+        | 103
+        | 200
+        | 201
+        | 202
+        | 203
+        | 204
+        | 205
+        | 206
+        | 300
+        | 301
+        | 302
+        | 303
+        | 304
+        | 307
+        | 308
+        | 400
+        | 401
+        | 402
+        | 403
+        | 404
+        | 405
+        | 406
+        | 407
+        | 408
+        | 409
+        | 410
+        | 411
+        | 412
+        | 413
+        | 414
+        | 415
+        | 416
+        | 417
+        | 418
+        | 421
+        | 422
+        | 424
+        | 428
+        | 429
+        | 500
+        | 501
+        | 502
+        | 503
+        | 504
+        | 505;
+    };
     WorkspaceDeleteResponseDto: {
       /** @description 데이터 응답 */
       data: boolean;
@@ -1345,14 +1446,69 @@ export interface operations {
       };
     };
   };
-  WorkspacesController_findAllByDeleted: {
+  WidgetsController_findAllByWidgetWorkspace: {
+    parameters: {
+      query?: {
+        /** @description 페이지 크기 */
+        limit?: number;
+        /** @description 정렬 순서 */
+        sortOrder?: "asc" | "desc" | null;
+        /** @description 정렬 기준 */
+        sortTag?: "createdAt" | "updatedAt" | "order" | null;
+        /** @description 작업공간 제목 검색 */
+        title?: string | null;
+      };
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WidgetWorkspaceListResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+    };
+  };
+  WorkspacesController_findManyByDeleted: {
     parameters: {
       query?: {
         /**
-         * @description 즐겨찾기 여부
-         * @example true
+         * @description 즐겨찾기
+         * @example [
+         *       "true",
+         *       "false"
+         *     ]
          */
-        isFavorite?: boolean | null;
+        favorites?: string[] | null;
         /** @description 페이지 크기 */
         limit?: number;
         /** @description 페이지 번호 */
@@ -1562,7 +1718,35 @@ export interface operations {
         headers: {
           [name: string]: unknown;
         };
-        content?: never;
+        content: {
+          "application/json": components["schemas"]["WorkspaceDetailResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };

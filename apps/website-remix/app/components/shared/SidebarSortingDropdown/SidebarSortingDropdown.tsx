@@ -24,7 +24,7 @@ export default function SidebarSortingDropdown({
   onChangeLimitCount,
   limit,
   sortTag,
-}: SidebarSortingDropdownProps) {
+}: Partial<SidebarSortingDropdownProps>) {
   return (
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
@@ -54,7 +54,7 @@ export default function SidebarSortingDropdown({
                 <DropdownMenuItem
                   key={`sidebar:sort-${item.id}`}
                   className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
-                  onClick={() => onChangeSortTag(item.id)}
+                  onClick={() => onChangeSortTag?.(item.id)}
                   data-selected={sortTag === item.id}
                   aria-selected={sortTag === item.id}
                 >
@@ -76,7 +76,7 @@ export default function SidebarSortingDropdown({
               {[5, 10, 15, 20, 0].map((item) => (
                 <DropdownMenuItem
                   key={`sidebar:display-${item}`}
-                  onClick={() => onChangeLimitCount(item)}
+                  onClick={() => onChangeLimitCount?.(item)}
                   className="data-[selected=true]:bg-accent data-[selected=true]:text-accent-foreground"
                   aria-selected={limit === item}
                   data-selected={limit === item}

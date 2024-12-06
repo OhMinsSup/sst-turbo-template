@@ -11,6 +11,7 @@ import {
   ChevronDown,
   ChevronsUpDown,
   Command,
+  Database,
   EyeOff,
   Frame,
   GalleryVerticalEnd,
@@ -23,6 +24,7 @@ import {
   PieChart,
   Plus,
   PlusCircle,
+  Search,
   Settings,
   Settings2,
   SquareTerminal,
@@ -32,6 +34,8 @@ import {
 } from "@template/ui/components/icons";
 
 export const Icons = {
+  Database,
+  Search,
   Check,
   PlusCircle,
   ArrowDown,

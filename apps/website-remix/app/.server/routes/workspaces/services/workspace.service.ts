@@ -45,6 +45,9 @@ export class WorkspaceService {
 
     const dto = new WorkspaceCreateDto();
     const body = (await dto.transform(args.request)).json();
+    const submitId = dto.submitId();
+
+    console.log(body, submitId);
 
     const { data, error } = await api
       .method("post")
@@ -52,6 +55,8 @@ export class WorkspaceService {
       .setBody(body)
       .setAuthorization(session.access_token)
       .run();
+
+    console.log(data, error);
 
     if (error) {
       const { statusCode, error: innerError } = error;
@@ -61,6 +66,7 @@ export class WorkspaceService {
             data: {
               success: false,
               error: toValidationErrorFormat(error),
+              submitId: undefined,
             },
             requestInfo: {
               headers: authtication.headers,
@@ -75,6 +81,7 @@ export class WorkspaceService {
             data: {
               success: false,
               error: null,
+              submitId: undefined,
             },
             requestInfo: {
               headers: authtication.headers,
@@ -91,6 +98,7 @@ export class WorkspaceService {
       data: {
         success: true,
         workspace: data.data,
+        submitId,
       },
       requestInfo: {
         headers: authtication.headers,

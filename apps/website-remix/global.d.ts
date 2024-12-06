@@ -45,6 +45,7 @@
     readonly USER: string;
     readonly NVM_DIR: string;
     readonly npm_package_devDependencies__types_react: string;
+    readonly npm_package_dependencies__tanstack_react_virtual: string;
     readonly PNPM_SCRIPT_SRC_DIR: string;
     readonly npm_package_devDependencies_vite_tsconfig_paths: string;
     readonly npm_package_devDependencies__template_tailwind_config: string;
@@ -84,6 +85,7 @@
     readonly npm_config_node_linker: string;
     readonly npm_package_dependencies__template_api: string;
     readonly XPC_FLAGS: string;
+    readonly npm_package_devDependencies__types_lodash_es: string;
     readonly npm_config_node_gyp: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
     readonly npm_package_dependencies_stable_hash: string;
@@ -101,6 +103,7 @@
     readonly npm_lifecycle_script: string;
     readonly npm_package_dependencies_zod: string;
     readonly npm_package_dependencies_reflect_metadata: string;
+    readonly npm_package_dependencies_lodash_es: string;
     readonly npm_package_dependencies_tsyringe: string;
     readonly npm_package_dependencies_react: string;
     readonly NVM_BIN: string;

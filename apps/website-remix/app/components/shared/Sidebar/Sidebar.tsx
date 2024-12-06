@@ -1,6 +1,5 @@
 import React from "react";
 
-import { ScrollArea } from "@template/ui/components/scroll-area";
 import {
   Sidebar as ShadcnSidebar,
   SidebarHeader as ShadcnSidebarHeader,
@@ -23,9 +22,7 @@ export default function Sidebar({ children, to }: SidebarProps) {
       <ShadcnSidebarHeader>
         <SidebarLogo to={to} />
       </ShadcnSidebarHeader>
-      <SidebarContent>
-        <ScrollArea>{children}</ScrollArea>
-      </SidebarContent>
+      <SidebarContent>{children}</SidebarContent>
       <SidebarFooter>
         <SidebarSharedNav />
       </SidebarFooter>

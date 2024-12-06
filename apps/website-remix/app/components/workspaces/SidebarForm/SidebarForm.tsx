@@ -30,7 +30,10 @@ export default function SidebarForm({ setOpen }: SidebarFormProps) {
       title: "",
       description: "",
     },
-    errors: actionData && "error" in actionData ? actionData.error : undefined,
+    errors:
+      actionData && "error" in actionData
+        ? (actionData.error ?? undefined)
+        : undefined,
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });

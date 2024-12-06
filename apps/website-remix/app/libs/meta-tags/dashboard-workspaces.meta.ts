@@ -10,6 +10,6 @@ export const meta: MetaFunction<RoutesLoaderData> = ({ data }) => {
   }
 
   return getMeta({
-    title: `워크스페이스 | SITE_CONFIG.title`,
+    title: `워크스페이스 | ${SITE_CONFIG.title}`,
   });
 };

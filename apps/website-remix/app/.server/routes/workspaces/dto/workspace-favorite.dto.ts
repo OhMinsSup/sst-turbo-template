@@ -1,6 +1,6 @@
 import type { paths } from "@template/api-types";
 
-type Body =
+export type Body =
   paths["/api/v1/workspaces/{id}/favorite"]["patch"]["requestBody"]["content"]["application/json"];
 
 export class WorkspaceFavoriteDto implements Partial<Body> {

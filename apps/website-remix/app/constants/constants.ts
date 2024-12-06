@@ -19,11 +19,10 @@ export const PAGE_ENDPOINTS = {
 } as const;
 
 export const SITE_CONFIG = {
-  title: "Remix Admin Template",
-  shotTitle: "Remix",
+  title: "RemixBase",
+  shotTitle: "RemixBase",
   keywords: ["Remix", "React", "Framework", "Admin", "Template"],
-  description:
-    "Remix Admin Template is a modern and clean admin dashboard template with a clean and modern design. It is built using Remix, React, and Tailwind CSS.",
+  description: "RemixBase is a Remix Framework Admin Template",
   ogImage: "/images/og.jpg",
   favicon: "/favicon.ico",
   favicon32x32: "/images/favicon-32x32.png",
