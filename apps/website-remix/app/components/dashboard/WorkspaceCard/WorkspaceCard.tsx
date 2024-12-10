@@ -16,9 +16,10 @@ import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 interface WorkspaceCardProps {
   item: components["schemas"]["WorkspaceEntity"];
+  style?: React.CSSProperties;
 }
 
-export default function WorkspaceCard({ item }: WorkspaceCardProps) {
+export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
   const navigation = useNavigation();
   const submit = useSubmit();
 
@@ -38,7 +39,11 @@ export default function WorkspaceCard({ item }: WorkspaceCardProps) {
   const isSubmittingForm = navigation.state === "submitting";
 
   return (
-    <Link to={PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(item.id)} viewTransition>
+    <Link
+      to={PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(item.id)}
+      viewTransition
+      style={style}
+    >
       <Card>
         <CardHeader>
           <CardTitle className="flex items-center justify-between">

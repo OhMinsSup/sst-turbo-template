@@ -8,6 +8,7 @@ import { isBrowser } from "@template/utils/assertion";
 import type { BasicTarget } from "./dom";
 import { useUnmount } from "../hooks/useUnmount";
 import { depsAreSame } from "./depsAreSame";
+import { depsEqual } from "./depsEqual";
 import { getTargetElement } from "./dom";
 
 const createEffectWithTarget = (
@@ -70,3 +71,19 @@ export const useLayoutEffectWithTarget =
 export const useIsomorphicLayoutEffectWithTarget = isBrowser()
   ? useLayoutEffectWithTarget
   : useEffectWithTarget;
+
+export const useDeepCompareEffectWithTarget = (
+  effect: EffectCallback,
+  deps: DependencyList,
+  target: BasicTarget<any> | BasicTarget<any>[],
+) => {
+  const ref = useRef<DependencyList>();
+  const signalRef = useRef<number>(0);
+
+  if (!depsEqual(deps, ref.current)) {
+    signalRef.current += 1;
+  }
+  ref.current = deps;
+
+  useEffectWithTarget(effect, [signalRef.current], target);
+};

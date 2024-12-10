@@ -50,7 +50,6 @@ export function PopoverFacetedFilter() {
   const selectedValues = options.filter((option) =>
     favorites.includes(option.value),
   );
-  console.log(selectedValues);
 
   return (
     <Popover>
