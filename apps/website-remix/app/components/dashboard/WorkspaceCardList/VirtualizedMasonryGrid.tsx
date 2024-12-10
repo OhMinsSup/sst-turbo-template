@@ -80,17 +80,25 @@ function VirtualizedMasonryGrid<T extends GridItem>({
         }}
       >
         {visibleItems.map((index) => {
-          const pos = positions[index];
-          const item = items[index];
+          const pos = positions.at(index);
+          const item = items.at(index);
+
+          console.log("item", item);
+          console.log("pos", pos);
+
+          if (!item) {
+            return null;
+          }
+
           return (
             <div
               role="listitem"
               key={`${item.id}-${index}`}
               className="absolute left-0 top-0"
               style={{
-                transform: `translateX(${pos.translateX}px) translateY(${pos.translateY}px)`,
-                width: pos.width,
-                height: pos.height,
+                transform: `translateX(${pos?.translateX}px) translateY(${pos?.translateY}px)`,
+                width: pos?.width,
+                height: pos?.height,
               }}
             >
               {isFunction(children) ? children(item, index) : children}
