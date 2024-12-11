@@ -4,8 +4,8 @@ import { SidebarInset } from "@template/ui/components/sidebar";
 
 import { DashboardMenu } from "~/components/dashboard/DashboardMenu";
 import { DashboardHeader } from "~/components/shared/DashboardHeader";
+import { Layout } from "~/components/shared/Layout";
 import { Sidebar } from "~/components/shared/Sidebar";
-import { Layout } from "~/components/workspaces/Layout";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
 export default function Routes() {

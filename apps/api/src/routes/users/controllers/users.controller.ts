@@ -37,4 +37,8 @@ export class UsersController {
   me(@AuthUser() user: UserExternalPayload) {
     return this.service.getMe(user);
   }
+
+  updateUsername() {}
+
+  updateUserImage() {}
 }

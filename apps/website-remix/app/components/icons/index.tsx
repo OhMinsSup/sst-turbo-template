@@ -17,6 +17,7 @@ import {
   GalleryVerticalEnd,
   Hash,
   Laptop,
+  LayoutGrid,
   LoaderCircle,
   Map,
   Moon,
@@ -31,9 +32,14 @@ import {
   Star,
   Sun,
   Trash,
+  User,
+  X,
 } from "@template/ui/components/icons";
 
 export const Icons = {
+  X,
+  LayoutGrid,
+  User,
   Database,
   Search,
   Check,

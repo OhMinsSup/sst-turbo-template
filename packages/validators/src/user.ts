@@ -1,11 +1,18 @@
 import * as z from "zod";
 
-import { idSchema } from "./shared";
+export const updateUsernameSchema = z.object({
+  username: z.string().max(50, "이름은 50글자 이하여야 합니다.").optional(),
+});
 
-export const ByUserIdSchema = z.object({}).merge(idSchema);
+export const updateUserImageSchema = z.object({
+  image: z.string().url().optional(),
+});
 
 export const schema = {
-  byUserId: ByUserIdSchema,
+  updateUsername: updateUsernameSchema,
+  updateUserImage: updateUserImageSchema,
 };
 
-export type FormFieldByUserIdSchema = z.infer<typeof schema.byUserId>;
+export type FormFieldUpdateUsername = z.infer<typeof schema.updateUsername>;
+
+export type FormFieldUpdateUserImage = z.infer<typeof schema.updateUserImage>;

@@ -12,3 +12,4 @@ export * from "./use-toast";
 export * from "./useDebounceFn";
 export * from "./useThrottleFn";
 export * from "./useIntersectionObserver";
+export * from "./useHover";

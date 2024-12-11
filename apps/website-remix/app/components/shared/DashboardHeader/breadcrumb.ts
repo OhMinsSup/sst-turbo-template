@@ -9,6 +9,7 @@ export interface BaseBreadcrumbItem {
   pathname: string | ((params?: Readonly<Params<string>>) => string);
   pathnameRegex?: RegExp | ((params?: Readonly<Params<string>>) => RegExp);
   children?: BaseBreadcrumbItem[];
+  type: "DASHBOARD" | "WORKSPACE";
 }
 
 const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
@@ -20,6 +21,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
         isLast: true,
         pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
         pathnameRegex: /^\/dashboard\/?$/,
+        type: "DASHBOARD",
       },
     ],
   ],
@@ -31,6 +33,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
         isLast: false,
         pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
         pathnameRegex: /^\/dashboard\/?$/,
+        type: "DASHBOARD",
         children: [
           {
             title: "워크스페이스",
@@ -38,6 +41,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
             isLast: true,
             pathname: PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ROOT,
             pathnameRegex: /^\/dashboard\/workspaces\/?$/,
+            type: "WORKSPACE",
           },
         ],
       },

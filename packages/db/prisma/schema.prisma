@@ -30,7 +30,6 @@ model User {
   Role              Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
   UserProfile       UserProfile?
   Workspace         WorkSpace[]
-  Database          Database[]
 
   @@map(name: "users")
 }
@@ -107,35 +106,18 @@ model Session {
 }
 
 model WorkSpace {
-  id          Int        @id @default(autoincrement())
-  title       String     @unique // 제목
-  description String? // 설명
-  createdAt   DateTime   @default(now()) // 생성 시간
-  updatedAt   DateTime   @updatedAt // 업데이트 시간
-  deletedAt   DateTime? // 삭제 시간
-  userId      String // 사용자 ID
-  order       Int        @default(0) // 순서
-  isFavorite  Boolean    @default(false) // 즐겨찾기
-  User        User       @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
-  Database    Database[]
-
-  @@index([userId], name: "work_spaces_user_id_index")
-  @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
-  @@map("work_spaces")
-}
-
-model Database {
   id          Int       @id @default(autoincrement())
   title       String    @unique // 제목
   description String? // 설명
   createdAt   DateTime  @default(now()) // 생성 시간
   updatedAt   DateTime  @updatedAt // 업데이트 시간
   deletedAt   DateTime? // 삭제 시간
-  workSpaceId Int // 작업 공간 ID
   userId      String // 사용자 ID
-  WorkSpace   WorkSpace @relation(fields: [workSpaceId], references: [id], onDelete: Cascade) // 작업 공간
+  order       Int       @default(0) // 순서
+  isFavorite  Boolean   @default(false) // 즐겨찾기
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
 
-  @@index([workSpaceId], name: "databases_work_space_id_index")
-  @@map("databases")
+  @@index([userId], name: "work_spaces_user_id_index")
+  @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
+  @@map("work_spaces")
 }
