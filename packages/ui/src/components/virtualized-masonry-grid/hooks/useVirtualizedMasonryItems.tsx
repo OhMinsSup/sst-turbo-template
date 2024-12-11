@@ -1,13 +1,14 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useRef } from "react";
 
-import type { BasicTarget } from "@template/ui/lib";
-import { useEventListener, useThrottleFn } from "@template/ui/hooks";
 import { isFunction } from "@template/utils/assertion";
 
+import type { BasicTarget } from "../../../lib";
 import type {
   GridItemPosition,
   TargetType,
 } from "./useVirtualizedMasonryLayout";
+import { useEventListener, useThrottleFn } from "../../../hooks";
+import { useVirtualGridMasonryProvider } from "../context/masonry";
 
 interface UseVirtualizedMasonryItemsParams<T extends TargetType> {
   positions: GridItemPosition[];
@@ -24,7 +25,8 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
   gap,
   itemsLength,
 }: UseVirtualizedMasonryItemsParams<T>) {
-  const [visibleItems, setVisibleItems] = useState<number[]>([]);
+  const { visibleItems, changeVisibleItems } = useVirtualGridMasonryProvider();
+
   const isMounted = useRef(false);
 
   // positions를 translateY 기준으로 정렬된 배열로 메모이제이션
@@ -41,7 +43,7 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
   const updateVisibleItems = useCallback(() => {
     if (sortedPositionsWithIndex.length === 0) {
       if (visibleItems.length > 0) {
-        setVisibleItems([]);
+        changeVisibleItems([]);
       }
       return;
     }
@@ -67,7 +69,7 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
       const item = sortedPositionsWithIndex[mid];
-      const itemBottom = item.translateY + item.height;
+      const itemBottom = (item?.translateY ?? 0) + (item?.height ?? 0);
 
       if (itemBottom + gap >= start) {
         firstVisible = mid;
@@ -84,7 +86,7 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
 
     while (left <= right) {
       const mid = Math.floor((left + right) / 2);
-      const itemTop = sortedPositionsWithIndex[mid].translateY;
+      const itemTop = sortedPositionsWithIndex[mid]?.translateY ?? 0;
 
       if (itemTop - gap <= end) {
         lastVisible = mid;
@@ -104,7 +106,7 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
 
     if (viewportIndices.length === 0) {
       if (visibleItems.length > 0) {
-        setVisibleItems([]);
+        changeVisibleItems([]);
       }
       return;
     }
@@ -120,23 +122,15 @@ export function useVirtualizedMasonryItems<T extends TargetType>({
       (_, i) => startIndex + i,
     );
 
-    // 상태 업데이트 전에 이전 상태와 비교
-    setVisibleItems((prevVisibleItems) => {
-      if (
-        prevVisibleItems.length !== newVisibleItems.length ||
-        !prevVisibleItems.every((v, i) => v === newVisibleItems[i])
-      ) {
-        return newVisibleItems;
-      }
-      return prevVisibleItems;
-    });
+    changeVisibleItems(newVisibleItems);
   }, [
     sortedPositionsWithIndex,
-    gap,
-    overscan,
     getElement,
+    overscan,
     itemsLength,
+    changeVisibleItems,
     visibleItems.length,
+    gap,
   ]);
 
   const throttle = useThrottleFn(updateVisibleItems, {

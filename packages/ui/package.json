@@ -28,6 +28,10 @@
     "./common-components/*": {
       "types": "./dist/src/components/common/*.d.ts",
       "default": "./src/components/common/*.tsx"
+    },
+    "./virtualized-masonry-grid": {
+      "types": "./dist/src/components/virtualized-masonry-grid/index.d.ts",
+      "default": "./src/components/virtualized-masonry-grid/index.ts"
     }
   },
   "files": [

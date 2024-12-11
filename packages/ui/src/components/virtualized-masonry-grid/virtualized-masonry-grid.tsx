@@ -1,12 +1,16 @@
-import React, { useEffect, useRef } from "react";
+import React, { useRef } from "react";
 
-import { useIntersectionObserver } from "@template/ui/hooks";
-import { getTargetElement } from "@template/ui/lib";
 import { isFunction } from "@template/utils/assertion";
 
 import type { GridColumnsConfig } from "./context/masonry";
 import type { GridItem } from "./hooks/useVirtualizedMasonryLayout";
-import { useVirtualGridMasonryProvider } from "./context/masonry";
+import { useIntersectionObserver } from "../../hooks";
+import { getTargetElement } from "../../lib";
+import { LoaderCircle } from "../shadcn/icons";
+import {
+  useVirtualGridMasonryProvider,
+  VirtualGridMasonryProvider,
+} from "./context/masonry";
 import { useVirtualizedMasonryItems } from "./hooks/useVirtualizedMasonryItems";
 import { useVirtualizedMasonryLayout } from "./hooks/useVirtualizedMasonryLayout";
 
@@ -18,9 +22,10 @@ interface VirtualizedMasonryGridProps<T extends GridItem> {
   hasNextPage?: boolean;
   endReached?: (index: number) => void;
   children: ((item: T, index: number) => React.ReactNode) | React.ReactNode;
+  loadingComponent?: React.ReactNode;
 }
 
-function VirtualizedMasonryGrid<T extends GridItem>({
+function InternalVirtualizedMasonryGrid<T extends GridItem>({
   items,
   columns = {
     tablet: 1,
@@ -33,6 +38,7 @@ function VirtualizedMasonryGrid<T extends GridItem>({
   overscan = 8,
   children,
   hasNextPage,
+  loadingComponent,
 }: VirtualizedMasonryGridProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
@@ -83,9 +89,6 @@ function VirtualizedMasonryGrid<T extends GridItem>({
           const pos = positions.at(index);
           const item = items.at(index);
 
-          console.log("item", item);
-          console.log("pos", pos);
-
           if (!item) {
             return null;
           }
@@ -107,12 +110,45 @@ function VirtualizedMasonryGrid<T extends GridItem>({
         })}
       </div>
       {hasNextPage && containerHeight > 0 ? (
-        <div ref={loaderRef} className="h-16 w-full">
-          Loading...
-        </div>
+        <div ref={loaderRef}>{loadingComponent}</div>
       ) : null}
     </>
   );
 }
 
-export default React.memo(VirtualizedMasonryGrid);
+function VirtualizedMasonryGrid<T extends GridItem>({
+  items,
+  columns = {
+    tablet: 1,
+    laptop: 2,
+    desktop: 2,
+    largeScreen: 3,
+  },
+  gap = 32,
+  endReached,
+  overscan = 8,
+  children,
+  hasNextPage,
+  loadingComponent = (
+    <div className="h-20 w-full">
+      <LoaderCircle className="mx-auto h-8 w-8 animate-spin" />
+    </div>
+  ),
+}: VirtualizedMasonryGridProps<T>) {
+  return (
+    <VirtualGridMasonryProvider>
+      <InternalVirtualizedMasonryGrid<T>
+        items={items}
+        columns={columns}
+        gap={gap}
+        overscan={overscan}
+        endReached={endReached}
+        children={children}
+        hasNextPage={hasNextPage}
+        loadingComponent={loadingComponent}
+      />
+    </VirtualGridMasonryProvider>
+  );
+}
+
+export default VirtualizedMasonryGrid;

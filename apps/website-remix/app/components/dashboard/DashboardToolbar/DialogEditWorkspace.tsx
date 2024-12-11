@@ -93,6 +93,7 @@ export function DialogEditWorkspace() {
       form.reset();
       stateRef.current = defaultStateRef;
     };
+    // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);
 
   useEffect(() => {

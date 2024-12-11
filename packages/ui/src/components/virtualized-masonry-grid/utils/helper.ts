@@ -9,10 +9,10 @@ export const arePositionsEqual = (
     const prev = prevPositions[i];
     const newPos = newPositions[i];
     if (
-      prev.translateX !== newPos.translateX ||
-      prev.translateY !== newPos.translateY ||
-      prev.width !== newPos.width ||
-      prev.height !== newPos.height
+      prev?.translateX !== newPos?.translateX ||
+      prev?.translateY !== newPos?.translateY ||
+      prev?.width !== newPos?.width ||
+      prev?.height !== newPos?.height
     ) {
       return false;
     }

@@ -40,10 +40,16 @@ const getInheritedColumns = (
 
   for (let i = breakpointsOrder.length - 1; i >= 0; i--) {
     const breakpoint = breakpointsOrder[i];
-    if (columns[breakpoint] !== undefined) {
+    if (
+      typeof breakpoint !== "undefined" &&
+      columns[breakpoint] !== undefined
+    ) {
       nextDefined = columns[breakpoint];
     }
-    rightClosest[breakpoint] = nextDefined;
+
+    if (typeof breakpoint !== "undefined") {
+      rightClosest[breakpoint] = nextDefined;
+    }
   }
 
   // 상속된 컬럼 설정

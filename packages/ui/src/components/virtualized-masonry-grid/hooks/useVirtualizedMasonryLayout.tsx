@@ -1,13 +1,12 @@
-// useVirtualizedMasonryLayout.tsx
-import { useCallback, useEffect, useRef, useState } from "react";
+import { useCallback, useEffect, useRef } from "react";
 
-import type { BasicTarget } from "@template/ui/lib";
-import { useDebounceFn, useEventListener } from "@template/ui/hooks";
 import { isFunction, isNumber } from "@template/utils/assertion";
 
+import type { BasicTarget } from "../../../lib";
 import type { GridColumnsConfig, Viewport } from "../context/masonry";
+import { useDebounceFn, useEventListener } from "../../../hooks";
+import { useVirtualGridMasonryProvider } from "../context/masonry";
 import { getColumns } from "../utils/colums";
-import { arePositionsEqual } from "../utils/helper";
 
 export type TargetType = HTMLElement | Element;
 
@@ -44,8 +43,9 @@ export function useVirtualizedMasonryLayout<T extends TargetType>({
   getElement,
   breakpoints,
 }: UseVirtualizedMasonryLayoutParams<T>) {
-  const [positions, setPositions] = useState<GridItemPosition[]>([]);
-  const [containerHeight, setContainerHeight] = useState(0);
+  const { changePositions, changeContainerHeight, positions, containerHeight } =
+    useVirtualGridMasonryProvider();
+
   const isMounted = useRef(false);
 
   const updateLayout = useCallback(() => {
@@ -62,18 +62,20 @@ export function useVirtualizedMasonryLayout<T extends TargetType>({
     const containerWidth = isElement(target) ? target.offsetWidth : 0;
     const columnWidth =
       (containerWidth - gap * (columnsCount - 1)) / columnsCount;
-    const columnHeights = Array(columnsCount).fill(0);
+    const columnHeights = Array(columnsCount).fill(0) as number[];
 
-    const calculatedPositions = items.map((item) => {
+    const calculatedPositions: GridItemPosition[] = items.map((item) => {
       const shortestColumn = columnHeights.indexOf(Math.min(...columnHeights));
       const translateX = shortestColumn * (columnWidth + gap);
-      const translateY = columnHeights[shortestColumn];
+      const translateY = columnHeights[shortestColumn] ?? 0;
 
       const aspectRatio = item.height / item.width;
       const itemHeight = columnWidth * aspectRatio;
       const itemWidth = columnWidth;
 
-      columnHeights[shortestColumn] += itemHeight + gap;
+      if (typeof columnHeights[shortestColumn] !== "undefined") {
+        columnHeights[shortestColumn] += itemHeight + gap;
+      }
 
       return {
         translateX,
@@ -85,21 +87,17 @@ export function useVirtualizedMasonryLayout<T extends TargetType>({
 
     const newContainerHeight = Math.max(...columnHeights);
 
-    // 상태 업데이트 전에 이전 상태와 비교
-    setPositions((prevPositions) => {
-      if (!arePositionsEqual(prevPositions, calculatedPositions)) {
-        return calculatedPositions;
-      }
-      return prevPositions;
-    });
-
-    setContainerHeight((prevHeight) => {
-      if (prevHeight !== newContainerHeight) {
-        return newContainerHeight;
-      }
-      return prevHeight;
-    });
-  }, [breakpoints, columns, gap, items, getElement]);
+    changeContainerHeight(newContainerHeight);
+    changePositions(calculatedPositions);
+  }, [
+    getElement,
+    columns,
+    breakpoints,
+    gap,
+    items,
+    changeContainerHeight,
+    changePositions,
+  ]);
 
   // useDebounceFn의 결과를 useMemo로 메모이제이션
   const debounce = useDebounceFn(updateLayout, {

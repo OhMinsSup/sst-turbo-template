@@ -11,13 +11,14 @@ import {
 
 type FnData = RoutesLoaderData;
 
-type Keys = ReturnType<typeof workspaceKeys.list>;
+type Keys = ReturnType<typeof queryWorkspaceKeys.list>;
 
 type Data = InfiniteData<FnData>;
 
-const workspaceKeys = {
+export const queryWorkspaceKeys = {
   all: ["workspaces"] as const,
-  list: (query?: QueryParams) => [...workspaceKeys.all, "list", query] as const,
+  list: (query?: QueryParams) =>
+    [...queryWorkspaceKeys.all, "list", query] as const,
 };
 
 interface UseWorkspaceQueryParams {
@@ -30,7 +31,7 @@ export function useInfinitWorkspaceQuery(params?: UseWorkspaceQueryParams) {
     return getInfinityQueryPath("/api/workspaces", searchParams, pageNo);
   };
   return useInfiniteQuery<FnData, DefaultError, Data, Keys, number>({
-    queryKey: workspaceKeys.list(params?.query),
+    queryKey: queryWorkspaceKeys.list(params?.query),
     queryFn: getInfinityQueryFn(getPath),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {
