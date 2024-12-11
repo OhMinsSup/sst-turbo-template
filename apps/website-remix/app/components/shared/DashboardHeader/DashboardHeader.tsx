@@ -95,7 +95,6 @@ export default function DashboardHeader() {
         </Breadcrumb>
       </div>
       <div className="ml-auto flex items-center space-x-3">
-        <Button variant="outline">Feedback</Button>
         <Button variant="outline" size="icon">
           <Icons.Bell className="h-6 w-6" />
         </Button>

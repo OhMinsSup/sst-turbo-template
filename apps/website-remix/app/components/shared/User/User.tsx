@@ -40,11 +40,6 @@ export default function User() {
           </div>
         </DropdownMenuLabel>
         <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>프로필</DropdownMenuItem>
-          <DropdownMenuItem>설정</DropdownMenuItem>
-        </DropdownMenuGroup>
-        <DropdownMenuSeparator />
         <DropdownMenuItem className="justify-between">
           테마
           <SelectTheme />

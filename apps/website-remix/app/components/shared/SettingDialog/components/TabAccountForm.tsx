@@ -19,13 +19,15 @@ import { updateUsernameSchema } from "@template/validators/user";
 
 import { Icons } from "~/components/icons";
 import { UserImage } from "~/components/shared/User";
+import { useUser } from "~/hooks/useUser";
 import { Title } from "./Title";
 
 function UpdateUsernameForm() {
+  const user = useUser();
   const form = useForm<FormFieldUpdateUsername>({
     resolver: zodResolver(updateUsernameSchema),
     defaultValues: {
-      username: "",
+      username: user.username,
     },
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",

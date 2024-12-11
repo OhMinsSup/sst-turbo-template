@@ -15,6 +15,9 @@ import {
 
 import { Icons } from "~/components/icons";
 import TabAccountForm from "./components/TabAccountForm";
+import { TabIntegrations } from "./components/TabIntegrations";
+import { TabNotifications } from "./components/TabNotifications";
+import { TabSettingForm } from "./components/TabSettingForm";
 
 export default function SettingDialog() {
   return (
@@ -75,27 +78,21 @@ export default function SettingDialog() {
                 value="system"
                 className="m-0 flex-grow overflow-auto px-16 py-9"
               >
-                {Array.from({ length: 100 }).map((_, index) => (
-                  <div className="size-[200px]">프로필</div>
-                ))}
+                <TabSettingForm />
               </TabsContent>
               <TabsContent
                 tabIndex={-1}
                 value="notifications"
                 className="m-0 flex-grow overflow-auto px-16 py-9"
               >
-                {Array.from({ length: 100 }).map((_, index) => (
-                  <div className="size-[200px]">프로필</div>
-                ))}
+                <TabNotifications />
               </TabsContent>
               <TabsContent
                 tabIndex={-1}
                 value="integration"
                 className="m-0 flex-grow overflow-auto px-16 py-9"
               >
-                {Array.from({ length: 100 }).map((_, index) => (
-                  <div className="size-[200px]">프로필</div>
-                ))}
+                <TabIntegrations />
               </TabsContent>
             </div>
           </div>
