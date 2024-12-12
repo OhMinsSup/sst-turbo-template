@@ -1,6 +1,7 @@
-import { useCallback, useEffect, useRef, useState } from "react";
-import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
+import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useFetcher, useSearchParams } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
+import { useQueryClient } from "@tanstack/react-query";
 import { useForm } from "react-hook-form";
 
 import type { FormFieldCreateWorkspace } from "@template/validators/workspace";
@@ -28,6 +29,7 @@ import { createWorkspaceSchema } from "@template/validators/workspace";
 import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard._dashboard._index.action";
 import { Icons } from "~/components/icons";
 import { uuid } from "~/libs/id";
+import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";
 
 interface StateRef {
   currentSubmitId: string | undefined;
@@ -39,12 +41,20 @@ const defaultStateRef: StateRef = {
 
 export function DialogEditWorkspace() {
   const [open, setOpen] = useState(false);
-  const navigation = useNavigation();
-  const submit = useSubmit();
-  const actionData = useActionData<RoutesActionData>();
   const stateRef = useRef<StateRef>(defaultStateRef);
+  const fetcher = useFetcher<RoutesActionData>();
+  const queryClient = useQueryClient();
 
-  const isSubmittingForm = navigation.state === "submitting";
+  const [searchParams] = useSearchParams();
+
+  const searchParamsObj = useMemo(() => {
+    const _searchParams = new URLSearchParams(searchParams);
+    return Object.fromEntries(_searchParams.entries());
+  }, [searchParams]);
+
+  const actionData = fetcher.data;
+
+  const isSubmittingForm = fetcher.state === "submitting";
 
   const form = useForm<FormFieldCreateWorkspace>({
     resolver: zodResolver(createWorkspaceSchema),
@@ -68,13 +78,12 @@ export function DialogEditWorkspace() {
     if (input.description) {
       formData.append("description", input.description);
     }
-    submit(formData, {
+    fetcher.submit(formData, {
       method: "POST",
-      replace: true,
     });
   });
 
-  const onSussessSubmit = useCallback(() => {
+  const onSussessSubmit = useCallback(async () => {
     if (actionData?.success) {
       if ("submitId" in actionData && "workspace" in actionData) {
         if (
@@ -82,11 +91,13 @@ export function DialogEditWorkspace() {
           stateRef.current.currentSubmitId === actionData.submitId
         ) {
           setOpen(false);
-          form.reset();
+          await queryClient.invalidateQueries({
+            queryKey: queryWorkspaceKeys.list(searchParamsObj),
+          });
         }
       }
     }
-  }, [actionData, form]);
+  }, [actionData, queryClient, searchParamsObj]);
 
   useEffect(() => {
     return () => {
@@ -97,6 +108,7 @@ export function DialogEditWorkspace() {
   }, [open]);
 
   useEffect(() => {
+    // eslint-disable-next-line @typescript-eslint/no-floating-promises
     onSussessSubmit();
   }, [onSussessSubmit]);
 

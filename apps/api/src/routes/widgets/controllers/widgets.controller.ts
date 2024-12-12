@@ -14,12 +14,12 @@ import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
 import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
 import { WidgetWorkspaceListResponseDto } from "../../../shared/dtos/response/widgets/widget-workspace-list-response.dto";
 import {
-  OpenApiBadRequestErrorDefine,
-  OpenApiNotFoundErrorDefine,
-  OpenApiUnauthorizedErrorDefine,
+  OpenApiAuthBadRequestErrorDefine,
+  OpenApiAuthNotFoundErrorDefine,
+  OpenApiAuthUnauthorizedErrorDefine,
 } from "../../auth/open-api";
 import { ListWorkspaceWidgetDto } from "../dto/list-workspace-widget.dto";
-import { OpenApiSuccessResponseDefine as WidgetOpenApiSuccessResponseDefine } from "../open-api";
+import { OpenApiWidgetSuccessResponseDefine } from "../open-api";
 import { WidgetsService } from "../services/widgets.service";
 
 @ApiTags("위젯")
@@ -35,10 +35,10 @@ export class WidgetsController {
   @Get("workspaces")
   @ApiOperation({ summary: "워크스페이스 위젯 목록 조회" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
-  @ApiResponse(WidgetOpenApiSuccessResponseDefine.findAll)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWidgetSuccessResponseDefine.findAll)
   findAllByWidgetWorkspace(
     @AuthUser() user: UserExternalPayload,
     @Query() query: ListWorkspaceWidgetDto,

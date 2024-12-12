@@ -1,10 +1,11 @@
 import type { ExecutionContext } from "@nestjs/common";
 import type { Request as ExpressRequest } from "express";
 import { createParamDecorator, ForbiddenException } from "@nestjs/common";
-import { OpenApiErrorDefine } from "src/routes/auth/open-api";
 
 import type { Session } from "@template/db";
 import type { UserExternalPayload } from "@template/db/selectors";
+
+import { OpenApiAuthErrorDefine } from "../routes/auth/open-api";
 
 export interface Request extends ExpressRequest {
   user?: UserExternalPayload;
@@ -20,7 +21,7 @@ export const SessionUser = createParamDecorator(
     const request = ctx.switchToHttp().getRequest<Request>();
 
     if (!request.session) {
-      throw new ForbiddenException(OpenApiErrorDefine.notLogin);
+      throw new ForbiddenException(OpenApiAuthErrorDefine.notLogin);
     }
 
     return request.session;

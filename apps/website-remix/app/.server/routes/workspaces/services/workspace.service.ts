@@ -47,16 +47,12 @@ export class WorkspaceService {
     const body = (await dto.transform(args.request)).json();
     const submitId = dto.submitId();
 
-    console.log(body, submitId);
-
     const { data, error } = await api
       .method("post")
       .path("/api/v1/workspaces")
       .setBody(body)
       .setAuthorization(session.access_token)
       .run();
-
-    console.log(data, error);
 
     if (error) {
       const { statusCode, error: innerError } = error;

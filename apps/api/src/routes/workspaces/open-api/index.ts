@@ -9,9 +9,9 @@ import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error
 import { WorkspaceDeleteResponseDto } from "../../../shared/dtos/response/workspaces/workspace-delete-response.dto";
 import { WorkspaceDetailResponseDto } from "../../../shared/dtos/response/workspaces/workspace-detail-response.dto";
 import { WorkspaceListResponseDto } from "../../../shared/dtos/response/workspaces/workspace-list-response.dto";
-import { OpenApiErrorDefine as AuthOpenApiErrorDefine } from "../../auth/open-api";
+import { OpenApiAuthErrorDefine } from "../../auth/open-api";
 
-export const OpenApiErrorDefine = {
+export const OpenApiWorkspaceErrorDefine = {
   workspaceNotFound: {
     exampleDescription: "워크스페이스를 찾을 수 없습니다.",
     message: "워크스페이스를 찾을 수 없습니다.",
@@ -121,7 +121,7 @@ export const OpenApiErrorDefine = {
   },
 };
 
-export const OpenApiBadRequestErrorDefine = {
+export const OpenApiWorkspaceBadRequestErrorDefine = {
   create: {
     status: HttpStatus.BAD_REQUEST,
     content: {
@@ -135,8 +135,8 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.createWorkspaceValidation.example,
-          ...AuthOpenApiErrorDefine.invalidToken.example,
+          ...OpenApiWorkspaceErrorDefine.createWorkspaceValidation.example,
+          ...OpenApiAuthErrorDefine.invalidToken.example,
         },
       },
     },
@@ -154,8 +154,8 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.updateWorkspaceValidation.example,
-          ...AuthOpenApiErrorDefine.invalidToken.example,
+          ...OpenApiWorkspaceErrorDefine.updateWorkspaceValidation.example,
+          ...OpenApiAuthErrorDefine.invalidToken.example,
         },
       },
     },
@@ -173,17 +173,17 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.favoriteWorkspaceValidation.example,
-          ...AuthOpenApiErrorDefine.invalidToken.example,
+          ...OpenApiWorkspaceErrorDefine.favoriteWorkspaceValidation.example,
+          ...OpenApiAuthErrorDefine.invalidToken.example,
         },
       },
     },
   },
 };
 
-export const OpenApiUnauthorizedErrorDefine = {};
+export const OpenApiWorkspaceUnauthorizedErrorDefine = {};
 
-export const OpenApiNotFoundErrorDefine = {
+export const OpenApiWorkspaceNotFoundErrorDefine = {
   findOne: {
     status: HttpStatus.NOT_FOUND,
     content: {
@@ -192,15 +192,15 @@ export const OpenApiNotFoundErrorDefine = {
           $ref: getSchemaPath(HttpErrorDto),
         },
         examples: {
-          ...OpenApiErrorDefine.workspaceNotFound.example,
-          ...AuthOpenApiErrorDefine.notFoundUser.example,
+          ...OpenApiWorkspaceErrorDefine.workspaceNotFound.example,
+          ...OpenApiAuthErrorDefine.notFoundUser.example,
         },
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiSuccessDefine = {
+export const OpenApiWorkspaceSuccessDefine = {
   findAll: {
     exampleDescription: "워크스페이스 목록",
     message: "워크스페이스 목록을 성공적으로 가져왔습니다.",
@@ -325,7 +325,7 @@ export const OpenApiSuccessDefine = {
   },
 };
 
-export const OpenApiSuccessResponseDefine = {
+export const OpenApiWorkspaceSuccessResponseDefine = {
   findAll: {
     status: HttpStatus.OK,
     content: {
@@ -333,7 +333,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WorkspaceListResponseDto),
         },
-        examples: OpenApiSuccessDefine.findAll.example,
+        examples: OpenApiWorkspaceSuccessDefine.findAll.example,
       },
     },
   } as ApiResponseOptions,
@@ -344,7 +344,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WorkspaceDetailResponseDto),
         },
-        examples: OpenApiSuccessDefine.findOne.example,
+        examples: OpenApiWorkspaceSuccessDefine.findOne.example,
       },
     },
   } as ApiResponseOptions,
@@ -355,7 +355,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WorkspaceDetailResponseDto),
         },
-        examples: OpenApiSuccessDefine.create.example,
+        examples: OpenApiWorkspaceSuccessDefine.create.example,
       },
     },
   } as ApiResponseOptions,
@@ -366,7 +366,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WorkspaceDetailResponseDto),
         },
-        examples: OpenApiSuccessDefine.favorite.example,
+        examples: OpenApiWorkspaceSuccessDefine.favorite.example,
       },
     },
   } as ApiResponseOptions,
@@ -377,7 +377,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WorkspaceDeleteResponseDto),
         },
-        examples: OpenApiSuccessDefine.delete.example,
+        examples: OpenApiWorkspaceSuccessDefine.delete.example,
       },
     },
   } as ApiResponseOptions,

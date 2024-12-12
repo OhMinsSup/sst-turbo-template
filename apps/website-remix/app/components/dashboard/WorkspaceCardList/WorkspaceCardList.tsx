@@ -28,6 +28,7 @@ function SkeletonWorkspaceCardList() {
 
 export default function WorkspaceCardList() {
   const initialData = useLoaderData<RoutesLoaderData>();
+  console.log("initialData ::", initialData);
   const [searchParams] = useSearchParams();
 
   const searchParamsObj = useMemo(() => {

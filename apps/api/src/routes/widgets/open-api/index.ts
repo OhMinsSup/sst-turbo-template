@@ -5,7 +5,7 @@ import { HttpResultCode } from "@template/common";
 
 import { WidgetWorkspaceListResponseDto } from "../../../shared/dtos/response/widgets/widget-workspace-list-response.dto";
 
-export const OpenApiSuccessDefine = {
+export const OpenApiWidgetSuccessDefine = {
   findAll: {
     exampleDescription: "위젯 워크스페이스 목록 조회",
     message: "위젯 워크스페이스 목록 조회 성공",
@@ -48,7 +48,7 @@ export const OpenApiSuccessDefine = {
   },
 };
 
-export const OpenApiSuccessResponseDefine = {
+export const OpenApiWidgetSuccessResponseDefine = {
   findAll: {
     status: HttpStatus.OK,
     content: {
@@ -56,7 +56,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(WidgetWorkspaceListResponseDto),
         },
-        examples: OpenApiSuccessDefine.findAll.example,
+        examples: OpenApiWidgetSuccessDefine.findAll.example,
       },
     },
   },

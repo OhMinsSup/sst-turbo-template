@@ -9,7 +9,7 @@ import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
-import { OpenApiErrorDefine } from "../open-api";
+import { OpenApiWorkspaceErrorDefine } from "../open-api";
 
 @Injectable()
 export class WorkspacesService {
@@ -129,7 +129,9 @@ export class WorkspacesService {
     });
 
     if (!data) {
-      throw new NotFoundException(OpenApiErrorDefine.workspaceNotFound);
+      throw new NotFoundException(
+        OpenApiWorkspaceErrorDefine.workspaceNotFound,
+      );
     }
 
     return {
@@ -154,7 +156,9 @@ export class WorkspacesService {
     });
 
     if (!workspace) {
-      throw new NotFoundException(OpenApiErrorDefine.workspaceNotFound);
+      throw new NotFoundException(
+        OpenApiWorkspaceErrorDefine.workspaceNotFound,
+      );
     }
 
     Object.assign(body, {

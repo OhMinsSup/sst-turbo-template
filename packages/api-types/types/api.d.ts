@@ -88,6 +88,23 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/users": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 키와 매칭되는 사용자 정보 변경 API */
+    patch: operations["UsersController_update"];
+    trace?: never;
+  };
   "/api/v1/users/me": {
     parameters: {
       query?: never;
@@ -550,7 +567,7 @@ export interface components {
        * @description 유저의 이름
        * @example John Doe
        */
-      username?: string;
+      username?: string | null;
     };
     TokenDTO: {
       /**
@@ -558,6 +575,20 @@ export interface components {
        * @description 재발급 토큰
        */
       refreshToken: string;
+    };
+    UpdateUserDto: {
+      /**
+       * 이미지
+       * @description 프로필 이미지
+       * @example https://example.com/image.jpg
+       */
+      image?: string | null;
+      /**
+       * Usernaem
+       * @description 유저의 이름
+       * @example John Doe
+       */
+      username?: string | null;
     };
     UpdateWorkspaceDto: {
       /**
@@ -1400,6 +1431,56 @@ export interface operations {
           [name: string]: unknown;
         };
         content?: never;
+      };
+    };
+  };
+  UsersController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** @description 사용자 정보 변경 */
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateUserDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["UserResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json":
+            | components["schemas"]["HttpErrorDto"]
+            | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
       };
     };
   };
