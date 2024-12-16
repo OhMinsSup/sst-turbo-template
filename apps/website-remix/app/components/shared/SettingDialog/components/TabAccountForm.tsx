@@ -1,4 +1,5 @@
 import React, { useRef } from "react";
+import { useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
 
@@ -32,9 +33,16 @@ function UpdateUsernameForm() {
     criteriaMode: "firstError",
     reValidateMode: "onSubmit",
   });
+  const submit = useSubmit();
 
   const onSubmit = form.handleSubmit((input) => {
     console.log(input);
+    const formData = new FormData();
+    formData.append("username", input.username ?? "test");
+    submit(formData, {
+      method: "PATCH",
+      relative: "route",
+    });
   });
 
   return (
@@ -98,6 +106,7 @@ function UpdateUserImageForm() {
             <Icons.X />
           </Button>
         )}
+        {/* eslint-disable-next-line jsx-a11y/label-has-associated-control */}
         <label htmlFor="update-user-image">
           <UserImage className="size-14" />
         </label>

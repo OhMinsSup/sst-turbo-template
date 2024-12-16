@@ -19,6 +19,15 @@ export class RootController {
     const response = await this.rootService.root(args);
     return data(response.data, response.requestInfo);
   }
+
+  /**
+   * @description empty 컨트롤러
+   * @param _
+   * @returns
+   */
+  empty(_: LoaderFunctionArgs) {
+    return {};
+  }
 }
 
 export const token = RootController.name;

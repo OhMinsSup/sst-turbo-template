@@ -24,6 +24,10 @@ export class UserService {
     private readonly cacheService: CacheService,
   ) {}
 
+  /**
+   * @description 사용자 정보를 수정합니다.
+   * @param {ActionFunctionArgs} args
+   */
   async update(args: ActionFunctionArgs) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
@@ -81,6 +85,9 @@ export class UserService {
         }
       }
     }
+
+    // 세션 정보를 업데이트합니다.
+    await this.authMiddleware.updateSession(authtication.authClient, data.data);
 
     return {
       data: {

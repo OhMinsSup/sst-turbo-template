@@ -28,7 +28,6 @@ function SkeletonWorkspaceCardList() {
 
 export default function WorkspaceCardList() {
   const initialData = useLoaderData<RoutesLoaderData>();
-  console.log("initialData ::", initialData);
   const [searchParams] = useSearchParams();
 
   const searchParamsObj = useMemo(() => {
@@ -55,8 +54,8 @@ export default function WorkspaceCardList() {
     [totalFetched, totalDBRowCount, hasNextPage, isFetchingNextPage],
   );
 
-  const endReached = useCallback(() => {
-    fetchNextPage();
+  const endReached = useCallback(async () => {
+    await fetchNextPage();
   }, [fetchNextPage]);
 
   if (isError) {

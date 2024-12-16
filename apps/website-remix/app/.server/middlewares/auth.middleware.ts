@@ -66,6 +66,15 @@ export class AuthMiddleware {
   }
 
   /**
+   * @description 세션 정보를 업데이트합니다.
+   * @param {AuthClient} client
+   * @param {User} user
+   */
+  async updateSession(client: AuthClient, user: User) {
+    return await client.updateSession(user);
+  }
+
+  /**
    * @description 세션 정보를 가져옵니다.
    * @param {AuthClient} client
    */

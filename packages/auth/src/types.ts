@@ -101,7 +101,8 @@ export type AuthChangeEvent =
   | "SIGNED_IN"
   | "SIGNED_OUT"
   | "TOKEN_REFRESHED"
-  | "USER_UPDATED";
+  | "USER_UPDATED"
+  | "SESSION_UPDATED";
 
 export interface Subscription {
   /**
