@@ -1,5 +1,7 @@
 import "reflect-metadata";
 
+import type { LinksFunction } from "@remix-run/node";
+import { useEffect } from "react";
 import {
   Links,
   Meta,
@@ -9,15 +11,10 @@ import {
   useFetcher,
   useLoaderData,
 } from "@remix-run/react";
-
-import "@template/ui/globals.css";
-import "./styles.css";
-
-import type { LinksFunction } from "@remix-run/node";
-import { useEffect } from "react";
 import { Toaster } from "sonner";
 
 import type { Session } from "@template/auth";
+import globalStyleCssUrl from "@template/ui/globals.css?url";
 import { cn } from "@template/ui/lib";
 
 import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
@@ -27,6 +24,7 @@ import { ShowToast } from "./components/shared/Toast";
 import { SITE_CONFIG } from "./constants/constants";
 import { remixAuthBrowser } from "./libs/auth";
 import { ClientHintCheck } from "./libs/client-hints";
+import styleCssUrl from "./styles.css?url";
 
 export { loader } from "~/.server/routes/root/loaders/root.loader";
 export { meta } from "~/libs/meta-tags/root.meta";
@@ -50,6 +48,8 @@ export const links: LinksFunction = () => {
     },
     { rel: "icon", type: "image/svg+xml", href: SITE_CONFIG.favicon },
     { rel: "icon", href: SITE_CONFIG.favicon32x32, sizes: "32x32" },
+    { rel: "stylesheet", href: globalStyleCssUrl },
+    { rel: "stylesheet", href: styleCssUrl },
   ];
 };
 
