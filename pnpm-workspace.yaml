@@ -17,7 +17,7 @@ catalog:
   eslint: ^9.9.1
   prettier: ^3.3.3
   typescript: ^5.7.2
-  vite: ^5.4.2
+  vite: ^6.0.3
   tsup: ^8.2.4
   tailwindcss: ^3.4.10
   postcss: ^8.4.44
