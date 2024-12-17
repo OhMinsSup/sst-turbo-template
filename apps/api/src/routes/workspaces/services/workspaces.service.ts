@@ -119,7 +119,7 @@ export class WorkspacesService {
     user: UserExternalPayload,
     query: ListDeletedWorkspaceDto,
   ) {
-    return await this.findMany(user, query, false);
+    return await this.findMany(user, query, true);
   }
 
   /**
