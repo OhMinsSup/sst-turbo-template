@@ -52,10 +52,17 @@ export function useInfinitWorkspaceQuery(params?: UseWorkspaceQueryParams) {
   });
 }
 
-export function useInfinitWorkspaceTrashQuery() {
+interface UseWorkspaceTrashQueryParams {
+  initialData?: RoutesLoaderData;
+}
+
+export function useInfinitWorkspaceTrashQuery(
+  params?: UseWorkspaceTrashQueryParams,
+) {
   const getPath = (searchParams?: SearchParams, pageNo?: number) => {
     return getInfinityQueryPath("/api/workspaces/trash", searchParams, pageNo);
   };
+
   return useInfiniteQuery<FnData, DefaultError, Data, TrashListKeys, number>({
     queryKey: queryWorkspaceKeys.trash(),
     queryFn: getInfinityQueryFn(getPath),
@@ -67,6 +74,10 @@ export function useInfinitWorkspaceTrashQuery() {
       }
       return undefined;
     },
+    // @ts-expect-error - This is a bug in react-query types
+    initialData: params?.initialData
+      ? () => ({ pageParams: [undefined], pages: [params.initialData] })
+      : undefined,
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
   });

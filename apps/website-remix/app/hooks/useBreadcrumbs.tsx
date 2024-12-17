@@ -3,7 +3,10 @@ import { useLocation, useParams } from "@remix-run/react";
 
 import { isEmpty } from "@template/utils/assertion";
 
-import { getBreadcrumbs } from "~/components/shared/DashboardHeader/breadcrumb";
+import {
+  getBreadcrumbs,
+  getFlatBreadcrumb,
+} from "~/components/shared/DashboardHeader/breadcrumb";
 
 export function useBreadcrumbs() {
   const params = useParams();
@@ -16,9 +19,8 @@ export function useBreadcrumbs() {
   const items = useMemo(() => {
     return getBreadcrumbs({
       pathname: location.pathname,
-      params: safyParams,
     });
-  }, [location.pathname, safyParams]);
+  }, [location.pathname]);
 
   return {
     items,
@@ -28,5 +30,14 @@ export function useBreadcrumbs() {
 
 export function useBreadcrumb() {
   const data = useBreadcrumbs();
-  return useMemo(() => data.items.at(-1), [data.items]);
+  const location = useLocation();
+
+  const flatItems = useMemo(() => {
+    return getFlatBreadcrumb({
+      pathname: location.pathname,
+      params: data.searchParams,
+    });
+  }, [data.searchParams, location.pathname]);
+
+  return useMemo(() => flatItems.at(-1), [flatItems]);
 }
