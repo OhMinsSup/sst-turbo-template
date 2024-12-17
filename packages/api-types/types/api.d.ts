@@ -1901,7 +1901,14 @@ export interface operations {
   };
   WorkspacesController_findManyByDeleted: {
     parameters: {
-      query?: never;
+      query?: {
+        /** @description 페이지 크기 */
+        limit?: number;
+        /** @description 페이지 번호 */
+        pageNo?: number | null;
+        /** @description 작업공간 제목 검색 */
+        title?: string | null;
+      };
       header?: never;
       path?: never;
       cookie?: never;

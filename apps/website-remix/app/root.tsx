@@ -37,6 +37,8 @@ export const links: LinksFunction = () => {
       href: "https://fonts.gstatic.com",
       crossOrigin: "anonymous",
     },
+    { rel: "stylesheet", href: globalStyleCssUrl },
+    { rel: "stylesheet", href: styleCssUrl },
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
@@ -48,8 +50,6 @@ export const links: LinksFunction = () => {
     },
     { rel: "icon", type: "image/svg+xml", href: SITE_CONFIG.favicon },
     { rel: "icon", href: SITE_CONFIG.favicon32x32, sizes: "32x32" },
-    { rel: "stylesheet", href: globalStyleCssUrl },
-    { rel: "stylesheet", href: styleCssUrl },
   ];
 };
 

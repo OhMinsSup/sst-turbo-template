@@ -77,6 +77,7 @@ export class WorkspaceController {
    */
   async findAllByDeletedToJson(args: LoaderFunctionArgs) {
     const response = await this.workspaceService.findAllByDeleted(args);
+    console.log(response.data);
     return Response.json(response.data, {
       headers: response.requestInfo.headers,
     });

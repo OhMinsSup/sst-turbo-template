@@ -171,7 +171,7 @@ export class WorkspaceService {
    * @param {LoaderFunctionArgs} args
    * @param {boolean} isDeleted
    */
-  async findAll(args: LoaderFunctionArgs) {
+  async findAll(args: LoaderFunctionArgs, isDeleted = false) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -182,12 +182,12 @@ export class WorkspaceService {
       headers: authtication.headers,
     });
 
-    const dto = new WorkspaceListQueryDto();
+    const dto = new WorkspaceListQueryDto(isDeleted);
     const query = dto.transform(args.request).json();
 
     const { data, error } = await api
       .method("get")
-      .path("/api/v1/workspaces")
+      .path(isDeleted ? "/api/v1/workspaces/deleted" : "/api/v1/workspaces")
       .setAuthorization(session.access_token)
       .setParams({
         query,
@@ -230,51 +230,7 @@ export class WorkspaceService {
    * @param {LoaderFunctionArgs} args
    */
   async findAllByDeleted(args: LoaderFunctionArgs) {
-    const authtication = auth.handler(args);
-    const { session } = await this.authMiddleware.getSession(
-      authtication.authClient,
-    );
-
-    invariantSession(session, {
-      request: args.request,
-      headers: authtication.headers,
-    });
-
-    const { data, error } = await api
-      .method("get")
-      .path("/api/v1/workspaces/deleted")
-      .setAuthorization(session.access_token)
-      .run();
-
-    if (error) {
-      return {
-        data: {
-          success: false,
-          ...defaultListData(),
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: null,
-        requestQuery: null,
-        toastMessage: null,
-      };
-    }
-
-    return {
-      data: {
-        success: true,
-        ...data.data,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: null,
-      requestQuery: null,
-      toastMessage: null,
-    };
+    return this.findAll(args, true);
   }
 
   /**

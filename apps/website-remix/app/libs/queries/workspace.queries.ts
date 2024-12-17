@@ -2,7 +2,10 @@ import type { DefaultError, InfiniteData } from "@tanstack/react-query";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
 import type { RoutesLoaderData } from "~/.server/routes/api/loaders/workspaces";
-import type { Query as QueryParams } from "~/.server/routes/workspaces/dto/workspace-list-query.dto";
+import type {
+  DeletedQuery as DeletedQueryParams,
+  Query as QueryParams,
+} from "~/.server/routes/workspaces/dto/workspace-list-query.dto";
 import type { SearchParams } from "~/types/app";
 import {
   getInfinityQueryFn,
@@ -20,7 +23,8 @@ type Data = InfiniteData<FnData>;
 export const queryWorkspaceKeys = {
   all: ["workspaces"] as const,
   list: (query?: QueryParams) => ["workspaces", "list", query] as const,
-  trash: () => ["workspaces", "trash"] as const,
+  trash: (query?: DeletedQueryParams) =>
+    ["workspaces", "trash", query] as const,
 };
 
 interface UseWorkspaceQueryParams {
@@ -54,6 +58,7 @@ export function useInfinitWorkspaceQuery(params?: UseWorkspaceQueryParams) {
 
 interface UseWorkspaceTrashQueryParams {
   initialData?: RoutesLoaderData;
+  query?: DeletedQueryParams;
 }
 
 export function useInfinitWorkspaceTrashQuery(
@@ -64,7 +69,7 @@ export function useInfinitWorkspaceTrashQuery(
   };
 
   return useInfiniteQuery<FnData, DefaultError, Data, TrashListKeys, number>({
-    queryKey: queryWorkspaceKeys.trash(),
+    queryKey: queryWorkspaceKeys.trash(params?.query),
     queryFn: getInfinityQueryFn(getPath),
     initialPageParam: 1,
     getNextPageParam: (lastPage) => {

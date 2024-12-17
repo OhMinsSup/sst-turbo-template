@@ -7,6 +7,7 @@ import { HttpResultCode } from "@template/common";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
+import { ListDeletedWorkspaceDto } from "../dto/list-deleted-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import { OpenApiWorkspaceErrorDefine } from "../open-api";
@@ -82,11 +83,11 @@ export class WorkspacesService {
             })),
           }),
         },
-        orderBy: {
-          ...(query.sortTag && {
+        ...(query.sortTag && {
+          orderBy: {
             [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
-          }),
-        },
+          },
+        }),
         take: limit ? limit : undefined,
         skip: limit ? (pageNo - 1) * limit : undefined,
       }),
@@ -112,9 +113,13 @@ export class WorkspacesService {
   /**
    * @description 삭제된 워크스페이스 목록 조회
    * @param {UserExternalPayload} user
+   * @param {ListDeletedWorkspaceDto} query
    */
-  async findManyByDeleted(user: UserExternalPayload) {
-    return await this.findMany(user, undefined, true);
+  async findManyByDeleted(
+    user: UserExternalPayload,
+    query: ListDeletedWorkspaceDto,
+  ) {
+    return await this.findMany(user, query, false);
   }
 
   /**

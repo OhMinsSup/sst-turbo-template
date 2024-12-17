@@ -1,10 +1,15 @@
 import React from "react";
 
+import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
 
 import { Icons } from "~/components/icons";
 
-export function TrashItem() {
+interface TrashItemProps {
+  item: components["schemas"]["WorkspaceEntity"];
+}
+
+export function TrashItem({ item }: TrashItemProps) {
   return (
     <div
       className="mx-1 cursor-pointer rounded-sm transition hover:bg-primary-foreground"
@@ -17,10 +22,7 @@ export function TrashItem() {
           <Icons.Database size={20} />
         </div>
         <div className="mx-[6px] min-w-0 flex-auto">
-          <div className="truncate">
-            100가지 시나리오로 학습하는 프론트엔드 : 5년 이상 경험을 초압축한
-            실전 문제 해결 패키지
-          </div>
+          <div className="truncate">{item.title}</div>
         </div>
         <div className="ml-0 mr-3 min-w-0 flex-shrink-0 flex-grow-0 basis-auto">
           <div className="flex gap-1">

@@ -3,7 +3,7 @@ import { Type } from "class-transformer";
 import { IsArray, IsEnum, IsOptional } from "class-validator";
 
 import { IsOptionalString } from "../../../decorators/Is-optional-string.decorator";
-import { ToBoolean, ToStringBooleanArray } from "../../../libs/transform";
+import { ToStringBooleanArray } from "../../../libs/transform";
 import { PaginationDto } from "../../../shared/dtos/models/pagination.dto";
 import { SortOrder } from "../../../types/sort-order";
 

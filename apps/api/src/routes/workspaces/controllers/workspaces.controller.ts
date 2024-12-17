@@ -32,6 +32,7 @@ import {
 } from "../../auth/open-api";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { FavoriteWorkspaceDto } from "../dto/favorite-workspace.dto";
+import { ListDeletedWorkspaceDto } from "../dto/list-deleted-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import {
@@ -88,8 +89,11 @@ export class WorkspacesController {
   @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findAll)
-  findManyByDeleted(@AuthUser() user: UserExternalPayload) {
-    return this.service.findManyByDeleted(user);
+  findManyByDeleted(
+    @AuthUser() user: UserExternalPayload,
+    @Query() query: ListDeletedWorkspaceDto,
+  ) {
+    return this.service.findManyByDeleted(user, query);
   }
 
   @Get(":id")
