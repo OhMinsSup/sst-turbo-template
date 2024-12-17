@@ -1,5 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
-import { data, replace } from "@remix-run/node";
+import { data } from "@remix-run/node";
 import { container, inject, injectable, singleton } from "tsyringe";
 
 import { WorkspaceService } from "~/.server/routes/workspaces/services/workspace.service";
@@ -50,11 +50,33 @@ export class WorkspaceController {
   }
 
   /**
+   * @description 삭제된 워크스페이스 리스트 조회 (single fetch)
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllByDeleted(args: LoaderFunctionArgs) {
+    const response = await this.workspaceService.findAllByDeleted(args);
+    return data(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
    * @description 워크스페이스 리스트 조회 (json fetch)
    * @param {LoaderFunctionArgs} args
    */
   async findAllToJson(args: LoaderFunctionArgs) {
     const response = await this.workspaceService.findAll(args);
+    return Response.json(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
+   * @description 삭제된 워크스페이스 리스트 조회 (json fetch)
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllByDeletedToJson(args: LoaderFunctionArgs) {
+    const response = await this.workspaceService.findAllByDeleted(args);
     return Response.json(response.data, {
       headers: response.requestInfo.headers,
     });
@@ -69,13 +91,13 @@ export class WorkspaceController {
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
-    return replace(args.request.url, {
+    return data(response.data, {
       headers: response.requestInfo.headers,
     });
   }
 
   /**
-   * @description 워크스페이스 생성
+   * @description 워크스페이스 즐겨찾기, 즐겨찾기 해제
    * @param {ActionFunctionArgs} args
    */
   async favorite(args: ActionFunctionArgs) {

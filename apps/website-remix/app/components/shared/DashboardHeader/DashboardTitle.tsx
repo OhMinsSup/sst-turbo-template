@@ -1,9 +1,6 @@
-import React, { useMemo } from "react";
-import { useLocation, useParams } from "@remix-run/react";
+import React from "react";
 
-import { isEmpty } from "@template/utils/assertion";
-
-import { getBreadcrumb } from "./breadcrumb";
+import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
 
 export interface DashboardTitleProps {
   children: React.ReactNode;
@@ -14,19 +11,7 @@ export default function DashboardTitle({
   children,
   noDisplayTitle,
 }: DashboardTitleProps) {
-  const params = useParams();
-  const location = useLocation();
-
-  const safyParams = useMemo(() => {
-    return isEmpty(params) ? undefined : params;
-  }, [params]);
-
-  const item = useMemo(() => {
-    return getBreadcrumb({
-      pathname: location.pathname,
-      params: safyParams,
-    });
-  }, [location.pathname, safyParams]);
+  const item = useBreadcrumb();
 
   return (
     <div className="h-full flex-1 flex-col space-y-8 p-6 md:flex">
@@ -48,7 +33,6 @@ export default function DashboardTitle({
           </>
         )}
       </>
-
       {children}
     </div>
   );

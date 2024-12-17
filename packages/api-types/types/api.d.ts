@@ -146,8 +146,8 @@ export interface paths {
       path?: never;
       cookie?: never;
     };
-    /** 삭제된 워크스페이스 목록 */
-    get: operations["WorkspacesController_findManyByDeleted"];
+    /** 워크스페이스 목록 */
+    get: operations["WorkspacesController_findMany"];
     put?: never;
     /** 워크스페이스 생성 */
     post: operations["WorkspacesController_create"];
@@ -190,6 +190,23 @@ export interface paths {
     head?: never;
     /** 워크스페이스 즐겨찾기 */
     patch: operations["WorkspacesController_favorite"];
+    trace?: never;
+  };
+  "/api/v1/workspaces/deleted": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    /** 삭제된 워크스페이스 목록 */
+    get: operations["WorkspacesController_findManyByDeleted"];
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
     trace?: never;
   };
 }
@@ -1579,7 +1596,7 @@ export interface operations {
       };
     };
   };
-  WorkspacesController_findManyByDeleted: {
+  WorkspacesController_findMany: {
     parameters: {
       query?: {
         /**
@@ -1862,6 +1879,49 @@ export interface operations {
           "application/json":
             | components["schemas"]["HttpErrorDto"]
             | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+    };
+  };
+  WorkspacesController_findManyByDeleted: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WorkspaceListResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       401: {

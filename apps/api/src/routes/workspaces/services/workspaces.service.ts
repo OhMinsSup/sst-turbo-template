@@ -112,10 +112,9 @@ export class WorkspacesService {
   /**
    * @description 삭제된 워크스페이스 목록 조회
    * @param {UserExternalPayload} user
-   * @param {ListWorkspaceDto} query
    */
-  async findManyByDeleted(user: UserExternalPayload, query: ListWorkspaceDto) {
-    return await this.findMany(user, query, true);
+  async findManyByDeleted(user: UserExternalPayload) {
+    return await this.findMany(user, undefined, true);
   }
 
   /**
@@ -199,6 +198,38 @@ export class WorkspacesService {
     return {
       code: HttpResultCode.OK,
       data,
+    };
+  }
+
+  /**
+   * @description 워크스페이스 복구
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   */
+  async restore(user: UserExternalPayload, id: number) {
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: { deletedAt: null },
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
+  }
+
+  /**
+   * @description 워크스페이스 삭제 (hard delete)
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   */
+  async delete(user: UserExternalPayload, id: number) {
+    await this.prismaService.workSpace.delete({
+      where: { id, userId: user.id },
+    });
+
+    return {
+      code: HttpResultCode.OK,
     };
   }
 

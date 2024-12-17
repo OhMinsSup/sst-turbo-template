@@ -169,6 +169,7 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 목록 조회
    * @param {LoaderFunctionArgs} args
+   * @param {boolean} isDeleted
    */
   async findAll(args: LoaderFunctionArgs) {
     const authtication = auth.handler(args);
@@ -220,6 +221,58 @@ export class WorkspaceService {
       },
       requestBody: null,
       requestQuery: query,
+      toastMessage: null,
+    };
+  }
+
+  /**
+   * @description 삭제된 워크스페이스 목록 조회
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllByDeleted(args: LoaderFunctionArgs) {
+    const authtication = auth.handler(args);
+    const { session } = await this.authMiddleware.getSession(
+      authtication.authClient,
+    );
+
+    invariantSession(session, {
+      request: args.request,
+      headers: authtication.headers,
+    });
+
+    const { data, error } = await api
+      .method("get")
+      .path("/api/v1/workspaces/deleted")
+      .setAuthorization(session.access_token)
+      .run();
+
+    if (error) {
+      return {
+        data: {
+          success: false,
+          ...defaultListData(),
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        requestQuery: null,
+        toastMessage: null,
+      };
+    }
+
+    return {
+      data: {
+        success: true,
+        ...data.data,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      requestBody: null,
+      requestQuery: null,
       toastMessage: null,
     };
   }

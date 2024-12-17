@@ -32,11 +32,13 @@ import {
   Star,
   Sun,
   Trash,
+  Undo2,
   User,
   X,
 } from "@template/ui/components/icons";
 
 export const Icons = {
+  Undo2,
   X,
   LayoutGrid,
   User,

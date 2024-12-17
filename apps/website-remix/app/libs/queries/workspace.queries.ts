@@ -11,14 +11,16 @@ import {
 
 type FnData = RoutesLoaderData;
 
-type Keys = ReturnType<typeof queryWorkspaceKeys.list>;
+type ListKeys = ReturnType<typeof queryWorkspaceKeys.list>;
+
+type TrashListKeys = ReturnType<typeof queryWorkspaceKeys.trash>;
 
 type Data = InfiniteData<FnData>;
 
 export const queryWorkspaceKeys = {
   all: ["workspaces"] as const,
-  list: (query?: QueryParams) =>
-    [...queryWorkspaceKeys.all, "list", query] as const,
+  list: (query?: QueryParams) => ["workspaces", "list", query] as const,
+  trash: () => ["workspaces", "trash"] as const,
 };
 
 interface UseWorkspaceQueryParams {
@@ -30,7 +32,7 @@ export function useInfinitWorkspaceQuery(params?: UseWorkspaceQueryParams) {
   const getPath = (searchParams?: SearchParams, pageNo?: number) => {
     return getInfinityQueryPath("/api/workspaces", searchParams, pageNo);
   };
-  return useInfiniteQuery<FnData, DefaultError, Data, Keys, number>({
+  return useInfiniteQuery<FnData, DefaultError, Data, ListKeys, number>({
     queryKey: queryWorkspaceKeys.list(params?.query),
     queryFn: getInfinityQueryFn(getPath),
     initialPageParam: 1,
@@ -45,6 +47,26 @@ export function useInfinitWorkspaceQuery(params?: UseWorkspaceQueryParams) {
     initialData: params?.initialData
       ? () => ({ pageParams: [undefined], pages: [params.initialData] })
       : undefined,
+    refetchOnWindowFocus: false,
+    placeholderData: keepPreviousData,
+  });
+}
+
+export function useInfinitWorkspaceTrashQuery() {
+  const getPath = (searchParams?: SearchParams, pageNo?: number) => {
+    return getInfinityQueryPath("/api/workspaces/trash", searchParams, pageNo);
+  };
+  return useInfiniteQuery<FnData, DefaultError, Data, TrashListKeys, number>({
+    queryKey: queryWorkspaceKeys.trash(),
+    queryFn: getInfinityQueryFn(getPath),
+    initialPageParam: 1,
+    getNextPageParam: (lastPage) => {
+      const pageInfo = lastPage.pageInfo;
+      if (pageInfo.hasNextPage) {
+        return pageInfo.nextPage ?? undefined;
+      }
+      return undefined;
+    },
     refetchOnWindowFocus: false,
     placeholderData: keepPreviousData,
   });

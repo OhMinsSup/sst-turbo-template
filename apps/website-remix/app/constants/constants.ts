@@ -9,6 +9,8 @@ export const PAGE_ENDPOINTS = {
   PROTECTED: {
     DASHBOARD: {
       ROOT: "/dashboard",
+      TRASH: "/dashboard/trash",
+      SETTING: "/dashboard/setting",
     },
     WORKSPACE: {
       ROOT: "/dashboard/workspaces",

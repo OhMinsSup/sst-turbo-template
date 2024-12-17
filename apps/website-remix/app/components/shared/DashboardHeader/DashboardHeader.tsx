@@ -1,6 +1,3 @@
-import { useMemo } from "react";
-import { useLocation, useParams } from "@remix-run/react";
-
 import {
   Breadcrumb,
   BreadcrumbItem,
@@ -12,11 +9,10 @@ import {
 import { Button } from "@template/ui/components/button";
 import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
-import { isEmpty } from "@template/utils/assertion";
 
 import { Icons } from "~/components/icons";
 import { User } from "~/components/shared/User";
-import { getBreadcrumbs } from "./breadcrumb";
+import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
 
 export interface BaseBreadcrumbItem {
   title: string;
@@ -28,19 +24,7 @@ export interface BaseBreadcrumbItem {
 export type BreadcrumbItem = BaseBreadcrumbItem;
 
 export default function DashboardHeader() {
-  const params = useParams();
-  const location = useLocation();
-
-  const safyParams = useMemo(() => {
-    return isEmpty(params) ? undefined : params;
-  }, [params]);
-
-  const items = useMemo(() => {
-    return getBreadcrumbs({
-      pathname: location.pathname,
-      params: safyParams,
-    });
-  }, [location.pathname, safyParams]);
+  const { items, searchParams } = useBreadcrumbs();
 
   return (
     <header className="mr-4 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:border-b-[1px]">
@@ -65,7 +49,7 @@ export default function DashboardHeader() {
                 return item.children.map((child, childIndex) => {
                   const childPathname =
                     typeof child.pathname === "function"
-                      ? child.pathname(safyParams)
+                      ? child.pathname(searchParams)
                       : child.pathname;
 
                   return (
@@ -81,7 +65,7 @@ export default function DashboardHeader() {
 
               const pathname =
                 typeof item.pathname === "function"
-                  ? item.pathname(safyParams)
+                  ? item.pathname(searchParams)
                   : item.pathname;
 
               return (

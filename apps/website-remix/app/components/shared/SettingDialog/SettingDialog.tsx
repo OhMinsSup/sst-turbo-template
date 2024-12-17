@@ -1,11 +1,12 @@
 import React from "react";
+import { Link } from "@remix-run/react";
 
 import {
   Dialog,
   DialogContent,
   DialogTrigger,
 } from "@template/ui/components/dialog";
-import { SidebarMenuButton } from "@template/ui/components/sidebar";
+import { SidebarMenuButton, useSidebar } from "@template/ui/components/sidebar";
 import {
   Tabs,
   TabsContent,
@@ -14,12 +15,26 @@ import {
 } from "@template/ui/components/tabs";
 
 import { Icons } from "~/components/icons";
+import { PAGE_ENDPOINTS } from "~/constants/constants";
 import TabAccountForm from "./components/TabAccountForm";
 import { TabIntegrations } from "./components/TabIntegrations";
 import { TabNotifications } from "./components/TabNotifications";
 import { TabSettingForm } from "./components/TabSettingForm";
 
 export default function SettingDialog() {
+  const { isMobile } = useSidebar();
+
+  if (isMobile) {
+    return (
+      <SidebarMenuButton tooltip="설정" asChild>
+        <Link to={PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING} viewTransition>
+          <Icons.Settings />
+          <span>설정</span>
+        </Link>
+      </SidebarMenuButton>
+    );
+  }
+
   return (
     <Dialog>
       <DialogTrigger asChild>

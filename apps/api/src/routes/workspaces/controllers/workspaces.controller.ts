@@ -81,18 +81,15 @@ export class WorkspacesController {
     return this.service.findMany(user, query);
   }
 
-  @Get()
+  @Get("deleted")
   @ApiOperation({ summary: "삭제된 워크스페이스 목록" })
   @JwtAuth()
   @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
   @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findAll)
-  findManyByDeleted(
-    @AuthUser() user: UserExternalPayload,
-    @Query() query: ListWorkspaceDto,
-  ) {
-    return this.service.findManyByDeleted(user, query);
+  findManyByDeleted(@AuthUser() user: UserExternalPayload) {
+    return this.service.findManyByDeleted(user);
   }
 
   @Get(":id")
