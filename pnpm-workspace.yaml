@@ -6,6 +6,7 @@ packages:
 catalog:
   "@tanstack/react-query": ^5.62.0
   "@tanstack/react-table": ^8.20.5
+  "@tanstack/react-virtual": ^3.10.9
   "@t3-oss/env-core": "^0.11.1"
   "react-hook-form": "^7.53.2"
   "@hookform/resolvers": "^3.9.1"
@@ -15,8 +16,8 @@ catalog:
 
   eslint: ^9.9.1
   prettier: ^3.3.3
-  typescript: ^5.5.4
-  vite: ^5.4.2
+  typescript: ^5.7.2
+  vite: ^6.0.3
   tsup: ^8.2.4
   tailwindcss: ^3.4.10
   postcss: ^8.4.44
@@ -33,7 +34,10 @@ catalogs:
     prisma: 6.0.0
     "@prisma/client": 6.0.0
   remix2:
-    "@remix-run/node": "^2.15.0"
-    "@remix-run/react": "^2.15.0"
-    "@remix-run/serve": "^2.15.0"
-    "@remix-run/dev": "^2.15.0"
+    "@remix-run/node": "^2.15.1"
+    "@remix-run/react": "^2.15.1"
+    "@remix-run/serve": "^2.15.1"
+    "@remix-run/dev": "^2.15.1"
+  lodash:
+    lodash-es: ^4.17.21
+    "@types/lodash-es": "^4.17.12"

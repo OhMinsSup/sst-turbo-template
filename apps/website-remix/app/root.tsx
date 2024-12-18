@@ -1,3 +1,7 @@
+import "reflect-metadata";
+
+import type { LinksFunction } from "@remix-run/node";
+import { useEffect } from "react";
 import {
   Links,
   Meta,
@@ -7,28 +11,23 @@ import {
   useFetcher,
   useLoaderData,
 } from "@remix-run/react";
-
-import "@template/ui/globals.css";
-import "./styles.css";
-
-import type { LinksFunction } from "@remix-run/node";
-import { useEffect } from "react";
-import { QueryClientProvider } from "@tanstack/react-query";
 import { Toaster } from "sonner";
 
 import type { Session } from "@template/auth";
+import globalStyleCssUrl from "@template/ui/globals.css?url";
 import { cn } from "@template/ui/lib";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
+import { QueryProviders } from "~/providers/query.provider";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast } from "./components/shared/Toast";
 import { SITE_CONFIG } from "./constants/constants";
 import { remixAuthBrowser } from "./libs/auth";
 import { ClientHintCheck } from "./libs/client-hints";
-import { RQClient } from "./libs/query";
+import styleCssUrl from "./styles.css?url";
 
-export { loader } from "~/.server/routes/root/root.loader";
-export { meta } from "~/libs/seo/root.meta";
+export { loader } from "~/.server/routes/root/loaders/root.loader";
+export { meta } from "~/libs/meta-tags/root.meta";
 
 export const links: LinksFunction = () => {
   return [
@@ -38,6 +37,8 @@ export const links: LinksFunction = () => {
       href: "https://fonts.gstatic.com",
       crossOrigin: "anonymous",
     },
+    { rel: "stylesheet", href: globalStyleCssUrl },
+    { rel: "stylesheet", href: styleCssUrl },
     {
       rel: "stylesheet",
       href: "https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,100..900;1,14..32,100..900&display=swap",
@@ -126,9 +127,7 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
     return () => subscription.unsubscribe();
   }, [serverAccessToken, fetcher]);
 
-  return (
-    <QueryClientProvider client={RQClient}>{children}</QueryClientProvider>
-  );
+  return <QueryProviders>{children}</QueryProviders>;
 }
 
 export default function App() {

@@ -27,6 +27,7 @@ import type {
   Subscription,
   SupportedStorage,
   TokenResponse,
+  User,
 } from "./types";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
@@ -292,6 +293,51 @@ export class AuthClient {
   }
 
   /**
+   * @description 세션 정보를 새로운 유저 정보로 업데이트합니다.
+   * @param {User} updateUser - 업데이트할 유저 정보
+   */
+  async updateSession(updateUser: User): Promise<LoadSession> {
+    if (this.initializePromise) {
+      await this.initializePromise;
+    }
+
+    return await this._acquireLock(-1, () => {
+      return this._useSession(async (result) => {
+        const { session, error } = result;
+        if (error && isAuthError(error)) {
+          throw error;
+        }
+
+        // 세션이 없다면, 에러를 발생시킵니다.
+        if (!session?.access_token) {
+          return {
+            session: undefined,
+            error: createAuthError({
+              message: "AuthSessionMissingError",
+              statusCode: HttpStatusCode.BAD_REQUEST,
+              code: "invalid_token",
+            }),
+          };
+        }
+
+        // 세션 객체를 업데이트합니다.
+        const updatedSession: Session = {
+          ...session,
+          user: updateUser,
+        };
+
+        await this._saveSession(updatedSession);
+        await this._notifyAllSubscribers("SESSION_UPDATED", updatedSession);
+
+        return {
+          session: updatedSession,
+          error: undefined,
+        };
+      });
+    });
+  }
+
+  /**
    * @memberof AuthClient
    * @description 클라이언트 저장소에 저장된 세션 정보
    * @returns {Promise<LoadSession>}
@@ -301,11 +347,9 @@ export class AuthClient {
       await this.initializePromise;
     }
 
-    const result = await this._acquireLock(-1, () => {
+    return await this._acquireLock(-1, () => {
       return this._useSession(async (result) => result);
     });
-
-    return result;
   }
 
   /**

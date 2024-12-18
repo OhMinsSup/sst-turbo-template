@@ -15,7 +15,7 @@ import { Input } from "@template/ui/components/input";
 import { InputPassword } from "@template/ui/components/input-password";
 import { signInSchema } from "@template/validators/auth";
 
-import type { RoutesActionData } from "~/.server/routes/auth/signin.action";
+import type { RoutesActionData } from "~/.server/routes/auth/actions/signin.action";
 import { Icons } from "~/components/icons";
 
 export default function SignInForm() {

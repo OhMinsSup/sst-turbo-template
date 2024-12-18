@@ -16,18 +16,19 @@ export class EmailUserCreateDTO extends UserPasswordDTO {
   })
   readonly email: string;
 
-  @IsOptionalString({
-    message: "이름은 문자열이어야 합니다.",
-  })
-  @MaxLength(50, {
-    message: "이름은 50자 이하여야 합니다.",
-  })
   @ApiProperty({
     title: "Usernaem",
     description: "유저의 이름",
     example: "John Doe",
     type: "string",
+    nullable: true,
     required: false,
+  })
+  @IsOptionalString({
+    message: "이름은 문자열이어야 합니다.",
+  })
+  @MaxLength(50, {
+    message: "이름은 50자 이하여야 합니다.",
   })
   readonly username?: string;
 }

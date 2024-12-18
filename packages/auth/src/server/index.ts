@@ -98,6 +98,7 @@ export function createAuthServerClient(options: Options) {
         event === "TOKEN_REFRESHED" ||
         event === "USER_UPDATED" ||
         event === "PASSWORD_RECOVERY" ||
+        event === "SESSION_UPDATED" ||
         event === "SIGNED_OUT")
     ) {
       await applyServerStorage(

@@ -1,18 +1,11 @@
-import { SidebarMenuButton } from "@template/ui/components/sidebar";
-
-import { Icons } from "~/components/icons";
+import { SettingDialog } from "~/components/shared/SettingDialog";
+import { TrashPopover } from "~/components/shared/TrashPopover";
 
 export default function SidebarSharedNav() {
   return (
     <>
-      <SidebarMenuButton tooltip="설정">
-        <Icons.Settings />
-        <span>설정</span>
-      </SidebarMenuButton>
-      <SidebarMenuButton tooltip="휴지통">
-        <Icons.Trash />
-        <span>휴지통</span>
-      </SidebarMenuButton>
+      <SettingDialog />
+      <TrashPopover />
     </>
   );
 }

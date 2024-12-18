@@ -2,7 +2,7 @@ import { useRouteLoaderData } from "@remix-run/react";
 
 import type { User } from "@template/auth";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/root.loader";
+import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
 
 function isUser(user: User | undefined): user is User {
   if (typeof user === "undefined") {

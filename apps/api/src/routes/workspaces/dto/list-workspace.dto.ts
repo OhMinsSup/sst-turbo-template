@@ -1,8 +1,9 @@
 import { ApiProperty } from "@nestjs/swagger";
-import { IsEnum, IsOptional } from "class-validator";
+import { Type } from "class-transformer";
+import { IsArray, IsEnum, IsOptional } from "class-validator";
 
 import { IsOptionalString } from "../../../decorators/Is-optional-string.decorator";
-import { ToBoolean } from "../../../libs/transform";
+import { ToStringBooleanArray } from "../../../libs/transform";
 import { PaginationDto } from "../../../shared/dtos/models/pagination.dto";
 import { SortOrder } from "../../../types/sort-order";
 
@@ -45,12 +46,14 @@ export class ListWorkspaceDto extends PaginationDto {
 
   @ApiProperty({
     required: false,
-    type: Boolean,
-    description: "즐겨찾기 여부",
+    type: ["string"],
+    description: "즐겨찾기",
     nullable: true,
-    example: true,
+    example: ["true", "false"],
   })
   @IsOptional()
-  @ToBoolean()
-  readonly isFavorite?: boolean;
+  @IsArray()
+  @Type(() => String)
+  @ToStringBooleanArray()
+  readonly favorites?: boolean[];
 }

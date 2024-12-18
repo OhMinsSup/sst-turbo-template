@@ -22,21 +22,23 @@ import { AuthUser } from "../../../decorators/auth-user.decorator";
 import { JwtAuth } from "../../../guards/jwt-auth.guard";
 import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
 import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { WorkspaceDeleteResponseDto } from "../../../shared/dtos/response/workspaces/workspace-delete-response.dto";
 import { WorkspaceDetailResponseDto } from "../../../shared/dtos/response/workspaces/workspace-detail-response.dto";
 import { WorkspaceListResponseDto } from "../../../shared/dtos/response/workspaces/workspace-list-response.dto";
 import {
-  OpenApiBadRequestErrorDefine,
-  OpenApiNotFoundErrorDefine,
-  OpenApiUnauthorizedErrorDefine,
+  OpenApiAuthBadRequestErrorDefine,
+  OpenApiAuthNotFoundErrorDefine,
+  OpenApiAuthUnauthorizedErrorDefine,
 } from "../../auth/open-api";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { FavoriteWorkspaceDto } from "../dto/favorite-workspace.dto";
+import { ListDeletedWorkspaceDto } from "../dto/list-deleted-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
 import {
-  OpenApiBadRequestErrorDefine as WorkspaceOpenApiBadRequestErrorDefine,
-  OpenApiNotFoundErrorDefine as WorkspaceOpenApiNotFoundErrorDefine,
-  OpenApiSuccessResponseDefine as WorkspaceOpenApiSuccessResponseDefine,
+  OpenApiWorkspaceBadRequestErrorDefine,
+  OpenApiWorkspaceNotFoundErrorDefine,
+  OpenApiWorkspaceSuccessResponseDefine,
 } from "../open-api";
 import { WorkspacesService } from "../services/workspaces.service";
 
@@ -47,6 +49,7 @@ import { WorkspacesService } from "../services/workspaces.service";
   ValidationErrorDto,
   WorkspaceListResponseDto,
   WorkspaceDetailResponseDto,
+  WorkspaceDeleteResponseDto,
 )
 export class WorkspacesController {
   constructor(private readonly service: WorkspacesService) {}
@@ -54,10 +57,10 @@ export class WorkspacesController {
   @Post()
   @ApiOperation({ summary: "워크스페이스 생성" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(WorkspaceOpenApiBadRequestErrorDefine.create)
-  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.create)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiWorkspaceBadRequestErrorDefine.create)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.create)
   create(
     @AuthUser() user: UserExternalPayload,
     @Body() body: CreateWorkspaceDto,
@@ -68,39 +71,38 @@ export class WorkspacesController {
   @Get()
   @ApiOperation({ summary: "워크스페이스 목록" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
-  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.findAll)
-  async findAll(
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findAll)
+  async findMany(
     @AuthUser() user: UserExternalPayload,
     @Query() query: ListWorkspaceDto,
   ) {
-    return this.service.findAll(user, query);
+    return this.service.findMany(user, query);
   }
 
-  @Get()
+  @Get("deleted")
   @ApiOperation({ summary: "삭제된 워크스페이스 목록" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
-  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.findAll)
-  async findAllByDeleted(
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findAll)
+  findManyByDeleted(
     @AuthUser() user: UserExternalPayload,
-    @Query() query: ListWorkspaceDto,
+    @Query() query: ListDeletedWorkspaceDto,
   ) {
-    return this.service.findAllByDeleted(user, query);
+    return this.service.findManyByDeleted(user, query);
   }
 
   @Get(":id")
   @ApiOperation({ summary: "워크스페이스 단건 조회" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
-  @ApiResponse(WorkspaceOpenApiNotFoundErrorDefine.findOne)
-  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.findOne)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findOne)
   findOne(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
@@ -109,19 +111,27 @@ export class WorkspacesController {
   }
 
   @Patch(":id")
+  @ApiOperation({ summary: "워크스페이스 수정" })
+  @JwtAuth()
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiWorkspaceBadRequestErrorDefine.update)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findOne)
   update(
+    @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
     @Body() updateWorkspaceDto: UpdateWorkspaceDto,
   ) {
-    return this.service.update(+id, updateWorkspaceDto);
+    return this.service.update(user, id, updateWorkspaceDto);
   }
 
   @Delete(":id")
-  @ApiOperation({ summary: "워크스페이스 삭제" })
+  @ApiOperation({ summary: "워크스페이스 삭제 (soft delete)" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.delete)
   remove(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
@@ -129,14 +139,27 @@ export class WorkspacesController {
     return this.service.remove(user, id);
   }
 
+  @Patch(":id/restore")
+  @ApiOperation({ summary: "워크스페이스 복구" })
+  @JwtAuth()
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.restore)
+  restore(
+    @AuthUser() user: UserExternalPayload,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.service.restore(user, id);
+  }
+
   @Patch(":id/favorite")
   @ApiOperation({ summary: "워크스페이스 즐겨찾기" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(WorkspaceOpenApiBadRequestErrorDefine.favorite)
-  @ApiResponse(WorkspaceOpenApiNotFoundErrorDefine.findOne)
-  @ApiResponse(WorkspaceOpenApiSuccessResponseDefine.favorite)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiWorkspaceBadRequestErrorDefine.favorite)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.favorite)
   favorite(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,

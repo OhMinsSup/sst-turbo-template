@@ -21,12 +21,12 @@ import { SignUpDTO } from "../dto/signup.dto";
 import { TokenQueryDTO } from "../dto/token-query.dto";
 import { TokenDTO } from "../dto/token.dto";
 import {
-  OpenApiBadRequestErrorDefine,
-  OpenApiConflictErrorDefine,
-  OpenApiForbiddenErrorDefine,
-  OpenApiNotFoundErrorDefine,
-  OpenApiSuccessResponseDefine,
-  OpenApiUnauthorizedErrorDefine,
+  OpenApiAuthBadRequestErrorDefine,
+  OpenApiAuthConflictErrorDefine,
+  OpenApiAuthForbiddenErrorDefine,
+  OpenApiAuthNotFoundErrorDefine,
+  OpenApiAuthSuccessResponseDefine,
+  OpenApiAuthUnauthorizedErrorDefine,
 } from "../open-api";
 import { AuthService } from "../services/auth.service";
 
@@ -49,10 +49,10 @@ export class AuthController {
     description: "회원가입 API",
     type: SignUpDTO,
   })
-  @ApiResponse(OpenApiSuccessResponseDefine.auth)
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedAuthMethod)
-  @ApiResponse(OpenApiNotFoundErrorDefine.roleNotFound)
-  @ApiResponse(OpenApiBadRequestErrorDefine.signUp)
+  @ApiResponse(OpenApiAuthSuccessResponseDefine.auth)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.unsupportedAuthMethod)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.roleNotFound)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.signUp)
   async signUp(@Body() body: SignUpDTO) {
     return await this.service.signUp(body);
   }
@@ -65,10 +65,10 @@ export class AuthController {
     description: "로그인 API",
     type: SignInDTO,
   })
-  @ApiResponse(OpenApiBadRequestErrorDefine.signIn)
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedAuthMethod)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiSuccessResponseDefine.auth)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.signIn)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.unsupportedAuthMethod)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiAuthSuccessResponseDefine.auth)
   async signIn(@Body() body: SignInDTO) {
     return await this.service.signIn(body);
   }
@@ -81,11 +81,11 @@ export class AuthController {
     description: "토큰 재발급 API",
     type: TokenDTO,
   })
-  @ApiResponse(OpenApiBadRequestErrorDefine.token)
-  @ApiResponse(OpenApiForbiddenErrorDefine.suspensionUser)
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.unsupportedGrantType)
-  @ApiResponse(OpenApiSuccessResponseDefine.auth)
-  @ApiResponse(OpenApiConflictErrorDefine.tooManyTokenRefreshRequests)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.token)
+  @ApiResponse(OpenApiAuthForbiddenErrorDefine.suspensionUser)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.unsupportedGrantType)
+  @ApiResponse(OpenApiAuthSuccessResponseDefine.auth)
+  @ApiResponse(OpenApiAuthConflictErrorDefine.tooManyTokenRefreshRequests)
   async token(@Body() body: TokenDTO, @Query() query: TokenQueryDTO) {
     return await this.service.token(body, query);
   }
@@ -94,10 +94,10 @@ export class AuthController {
   @Post("logout")
   @ApiOperation({ summary: "로그아웃" })
   @JwtAuth()
-  @ApiResponse(OpenApiUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiBadRequestErrorDefine.invalidToken)
-  @ApiResponse(OpenApiNotFoundErrorDefine.notFoundUser)
-  @ApiResponse(OpenApiSuccessResponseDefine.logout)
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
+  @ApiResponse(OpenApiAuthSuccessResponseDefine.logout)
   async logout(@AuthUser() user: UserExternalPayload) {
     return await this.service.logout(user);
   }

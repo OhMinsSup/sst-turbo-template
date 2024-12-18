@@ -47,6 +47,7 @@
     readonly NVM_DIR: string;
     readonly USER: string;
     readonly npm_package_devDependencies__types_react: string;
+    readonly npm_package_dependencies__tanstack_react_virtual: string;
     readonly COMMAND_MODE: string;
     readonly PNPM_SCRIPT_SRC_DIR: string;
     readonly npm_package_devDependencies_vite_tsconfig_paths: string;
@@ -89,6 +90,7 @@
     readonly npm_package_dependencies__template_api: string;
     readonly VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     readonly XPC_FLAGS: string;
+    readonly npm_package_devDependencies__types_lodash_es: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
     readonly npm_package_dependencies_stable_hash: string;
     readonly XPC_SERVICE_NAME: string;
@@ -106,7 +108,10 @@
     readonly LOGNAME: string;
     readonly npm_lifecycle_script: string;
     readonly npm_package_dependencies_zod: string;
+    readonly npm_package_dependencies_reflect_metadata: string;
+    readonly npm_package_dependencies_lodash_es: string;
     readonly VSCODE_GIT_IPC_HANDLE: string;
+    readonly npm_package_dependencies_tsyringe: string;
     readonly npm_package_dependencies_react: string;
     readonly PGDATA: string;
     readonly NVM_BIN: string;

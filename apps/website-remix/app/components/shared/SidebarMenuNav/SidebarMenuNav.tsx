@@ -4,7 +4,7 @@ import {
   SidebarMenu,
 } from "@template/ui/components/sidebar";
 
-import type { SidebarMenuNavTitlebarProps } from "../SidebarMenuNavTitlebar";
+import type { SidebarMenuNavTitlebarProps } from "~/components/shared/SidebarMenuNavTitlebar";
 import { SidebarMenuNavTitlebar } from "~/components/shared/SidebarMenuNavTitlebar";
 
 export type SidebarMenuNavProps = SidebarMenuNavTitlebarProps & {

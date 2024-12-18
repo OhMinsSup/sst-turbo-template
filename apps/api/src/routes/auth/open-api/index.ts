@@ -9,7 +9,7 @@ import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error
 import { AuthResponseDto } from "../../../shared/dtos/response/auth/auth-response.dto";
 import { LogoutResponseDto } from "../../../shared/dtos/response/auth/logout-response.dto";
 
-export const OpenApiErrorDefine = {
+export const OpenApiAuthErrorDefine = {
   emailAlreadyExists: {
     exampleDescription: "이미 가입된 이메일인 경우 발생하는 에러",
     message: "이미 가입된 이메일입니다. 다시 시도해 주세요.",
@@ -331,7 +331,7 @@ export const OpenApiErrorDefine = {
   },
 };
 
-export const OpenApiSuccessDefine = {
+export const OpenApiAuthSuccessDefine = {
   auth: {
     exampleDescription: "인증에 성공한 경우 발생하는 응답",
     message: "인증에 성공했습니다.",
@@ -384,7 +384,7 @@ export const OpenApiSuccessDefine = {
   },
 };
 
-export const OpenApiBadRequestErrorDefine = {
+export const OpenApiAuthBadRequestErrorDefine = {
   signUp: {
     status: HttpStatus.BAD_REQUEST,
     content: {
@@ -398,8 +398,8 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.emailAlreadyExists.example,
-          ...OpenApiErrorDefine.signupValidation.example,
+          ...OpenApiAuthErrorDefine.emailAlreadyExists.example,
+          ...OpenApiAuthErrorDefine.signupValidation.example,
         },
       },
     },
@@ -417,8 +417,8 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.signinValidation.example,
-          ...OpenApiErrorDefine.incorrectPassword.example,
+          ...OpenApiAuthErrorDefine.signinValidation.example,
+          ...OpenApiAuthErrorDefine.incorrectPassword.example,
         },
       },
     },
@@ -436,10 +436,10 @@ export const OpenApiBadRequestErrorDefine = {
           ],
         },
         examples: {
-          ...OpenApiErrorDefine.tokenValidation.example,
-          ...OpenApiErrorDefine.expiredToken.example,
-          ...OpenApiErrorDefine.invalidToken.example,
-          ...OpenApiErrorDefine.refreshTokenAlreadyUsed.example,
+          ...OpenApiAuthErrorDefine.tokenValidation.example,
+          ...OpenApiAuthErrorDefine.expiredToken.example,
+          ...OpenApiAuthErrorDefine.invalidToken.example,
+          ...OpenApiAuthErrorDefine.refreshTokenAlreadyUsed.example,
         },
       },
     },
@@ -451,13 +451,13 @@ export const OpenApiBadRequestErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.invalidToken.example,
+        examples: OpenApiAuthErrorDefine.invalidToken.example,
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiNotFoundErrorDefine = {
+export const OpenApiAuthNotFoundErrorDefine = {
   roleNotFound: {
     status: HttpStatus.NOT_FOUND,
     content: {
@@ -465,7 +465,7 @@ export const OpenApiNotFoundErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.roleNotFound.example,
+        examples: OpenApiAuthErrorDefine.roleNotFound.example,
       },
     },
   } as ApiResponseOptions,
@@ -476,13 +476,13 @@ export const OpenApiNotFoundErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.notFoundUser.example,
+        examples: OpenApiAuthErrorDefine.notFoundUser.example,
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiUnauthorizedErrorDefine = {
+export const OpenApiAuthUnauthorizedErrorDefine = {
   unsupportedAuthMethod: {
     status: HttpStatus.UNAUTHORIZED,
     content: {
@@ -490,7 +490,7 @@ export const OpenApiUnauthorizedErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.unsupportedAuthMethod.example,
+        examples: OpenApiAuthErrorDefine.unsupportedAuthMethod.example,
       },
     },
   } as ApiResponseOptions,
@@ -501,7 +501,7 @@ export const OpenApiUnauthorizedErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.unsupportedGrantType.example,
+        examples: OpenApiAuthErrorDefine.unsupportedGrantType.example,
       },
     },
   } as ApiResponseOptions,
@@ -513,15 +513,15 @@ export const OpenApiUnauthorizedErrorDefine = {
           $ref: getSchemaPath(HttpErrorDto),
         },
         examples: {
-          ...OpenApiErrorDefine.invalidAuthorizationHeader.example,
-          ...OpenApiErrorDefine.notLogin.example,
+          ...OpenApiAuthErrorDefine.invalidAuthorizationHeader.example,
+          ...OpenApiAuthErrorDefine.notLogin.example,
         },
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiForbiddenErrorDefine = {
+export const OpenApiAuthForbiddenErrorDefine = {
   suspensionUser: {
     status: HttpStatus.FORBIDDEN,
     content: {
@@ -529,13 +529,13 @@ export const OpenApiForbiddenErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.suspensionUser.example,
+        examples: OpenApiAuthErrorDefine.suspensionUser.example,
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiConflictErrorDefine = {
+export const OpenApiAuthConflictErrorDefine = {
   tooManyTokenRefreshRequests: {
     status: HttpStatus.TOO_MANY_REQUESTS,
     content: {
@@ -543,13 +543,13 @@ export const OpenApiConflictErrorDefine = {
         schema: {
           $ref: getSchemaPath(HttpErrorDto),
         },
-        examples: OpenApiErrorDefine.tooManyTokenRefreshRequests.example,
+        examples: OpenApiAuthErrorDefine.tooManyTokenRefreshRequests.example,
       },
     },
   } as ApiResponseOptions,
 };
 
-export const OpenApiSuccessResponseDefine = {
+export const OpenApiAuthSuccessResponseDefine = {
   auth: {
     status: HttpStatus.OK,
     content: {
@@ -557,7 +557,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(AuthResponseDto),
         },
-        examples: OpenApiSuccessDefine.auth.example,
+        examples: OpenApiAuthSuccessDefine.auth.example,
       },
     },
   } as ApiResponseOptions,
@@ -568,7 +568,7 @@ export const OpenApiSuccessResponseDefine = {
         schema: {
           $ref: getSchemaPath(LogoutResponseDto),
         },
-        examples: OpenApiSuccessDefine.logout.example,
+        examples: OpenApiAuthSuccessDefine.logout.example,
       },
     },
   },

@@ -1,4 +1,5 @@
 import { Injectable } from "@nestjs/common";
+import { isEqual } from "lodash-es";
 
 import { HttpResultCode } from "@template/common";
 import { Prisma } from "@template/db";
@@ -12,6 +13,7 @@ import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { SessionService } from "../../../routes/auth/services/session.service";
 import { TokenService } from "../../../routes/auth/services/token.service";
 import { EmailUserCreateDTO } from "../dto/email-user-create.dto";
+import { UpdateUserDto } from "../dto/update-user.dto";
 
 interface CreateNewUserParams extends EmailUserCreateDTO {
   salt: string;
@@ -31,10 +33,57 @@ export class UsersService {
     private readonly tokenService: TokenService,
   ) {}
 
+  /**
+   * @description 로그인한 유저 정보를 가져옵니다.
+   * @param {UserExternalPayload} user
+   */
   getMe(user: UserExternalPayload) {
     return {
       code: HttpResultCode.OK,
       data: user,
+    };
+  }
+
+  /**
+   * @description 유저 정보를 업데이트합니다.
+   * @param {UserExternalPayload} user
+   * @param {UpdateUserDto} body
+   */
+  async update(user: UserExternalPayload, body: UpdateUserDto) {
+    const updateUserData = {} as Parameters<
+      typeof this.prismaService.user.update
+    >["0"]["data"];
+
+    if (body.username && !isEqual(user.username, body.username)) {
+      updateUserData.username = body.username;
+    }
+
+    const updateUserProfileData = {} as Parameters<
+      typeof this.prismaService.user.update
+    >["0"]["data"]["UserProfile"]["update"];
+
+    if (body.image && !isEqual(user.UserProfile?.image, body.image)) {
+      updateUserProfileData.image = body.image;
+    }
+
+    const updateUser = await this.prismaService.user.update({
+      where: {
+        id: user.id,
+      },
+      data: {
+        ...(Object.keys(updateUserData).length && updateUserData),
+        ...(Object.keys(updateUserProfileData).length && {
+          UserProfile: {
+            update: updateUserProfileData,
+          },
+        }),
+      },
+      select: getExternalUserSelector(),
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data: updateUser,
     };
   }
 

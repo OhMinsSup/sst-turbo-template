@@ -28,6 +28,10 @@
     "./common-components/*": {
       "types": "./dist/src/components/common/*.d.ts",
       "default": "./src/components/common/*.tsx"
+    },
+    "./virtualized-masonry-grid": {
+      "types": "./dist/src/components/virtualized-masonry-grid/index.d.ts",
+      "default": "./src/components/virtualized-masonry-grid/index.ts"
     }
   },
   "files": [
@@ -80,9 +84,11 @@
     "date-fns": "catalog:",
     "embla-carousel-react": "^8.3.1",
     "input-otp": "^1.4.1",
+    "lodash-es": "catalog:lodash",
     "lucide-react": "^0.454.0",
     "next-themes": "^0.4.3",
     "react-day-picker": "8.10.1",
+    "react-fast-compare": "^3.2.2",
     "react-hook-form": "catalog:",
     "react-resizable-panels": "^2.1.6",
     "recharts": "^2.13.3",
@@ -96,6 +102,7 @@
     "@template/prettier-config": "workspace:*",
     "@template/tailwind-config": "workspace:*",
     "@template/tsconfig": "workspace:*",
+    "@types/lodash-es": "catalog:lodash",
     "@types/react": "catalog:react18",
     "autoprefixer": "catalog:",
     "eslint": "catalog:",

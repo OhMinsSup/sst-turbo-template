@@ -1,5 +1,5 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
-import { toFinite } from "lodash-es";
+import { isEqual, toFinite } from "lodash-es";
 import { SortOrder } from "src/types/sort-order";
 
 import type { UserExternalPayload } from "@template/db/selectors";
@@ -7,9 +7,10 @@ import { HttpResultCode } from "@template/common";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
+import { ListDeletedWorkspaceDto } from "../dto/list-deleted-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
 import { UpdateWorkspaceDto } from "../dto/update-workspace.dto";
-import { OpenApiErrorDefine } from "../open-api";
+import { OpenApiWorkspaceErrorDefine } from "../open-api";
 
 @Injectable()
 export class WorkspacesService {
@@ -34,41 +35,59 @@ export class WorkspacesService {
    * @description 워크스페이스 목록 조회
    * @param {UserExternalPayload} user
    * @param {ListWorkspaceDto} query
+   * @param {boolean} isDeleted
    */
-  async findAll(user: UserExternalPayload, query: ListWorkspaceDto) {
+  async findMany(
+    user: UserExternalPayload,
+    query: ListWorkspaceDto,
+    isDeleted = false,
+  ) {
     const pageNo = toFinite(query.pageNo);
 
     const limit = query.limit ? toFinite(query.limit) : 0;
+    const favorites = query.favorites ? query.favorites : [];
 
     const [totalCount, list] = await Promise.all([
       this.prismaService.workSpace.count({
         where: {
-          deletedAt: {
-            equals: null,
-          },
+          ...(isDeleted
+            ? { deletedAt: { not: null } }
+            : {
+                deletedAt: {
+                  equals: null,
+                },
+              }),
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
+          ...(favorites.length > 0 && {
+            OR: favorites.map((i) => ({
+              isFavorite: i,
+            })),
           }),
         },
       }),
       this.prismaService.workSpace.findMany({
         where: {
-          deletedAt: {
-            equals: null,
-          },
+          ...(isDeleted
+            ? { deletedAt: { not: null } }
+            : {
+                deletedAt: {
+                  equals: null,
+                },
+              }),
           userId: user.id,
           ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
+          ...(favorites.length > 0 && {
+            OR: favorites.map((i) => ({
+              isFavorite: i,
+            })),
           }),
         },
-        orderBy: {
-          ...(query.sortTag && {
+        ...(query.sortTag && {
+          orderBy: {
             [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
-          }),
-        },
+          },
+        }),
         take: limit ? limit : undefined,
         skip: limit ? (pageNo - 1) * limit : undefined,
       }),
@@ -94,62 +113,13 @@ export class WorkspacesService {
   /**
    * @description 삭제된 워크스페이스 목록 조회
    * @param {UserExternalPayload} user
-   * @param {ListWorkspaceDto} query
+   * @param {ListDeletedWorkspaceDto} query
    */
-  async findAllByDeleted(user: UserExternalPayload, query: ListWorkspaceDto) {
-    const pageNo = toFinite(query.pageNo);
-
-    const limit = query.limit ? toFinite(query.limit) : 0;
-
-    const [totalCount, list] = await Promise.all([
-      this.prismaService.workSpace.count({
-        where: {
-          deletedAt: {
-            not: null,
-          },
-          userId: user.id,
-          ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
-          }),
-        },
-      }),
-      this.prismaService.workSpace.findMany({
-        where: {
-          deletedAt: {
-            not: null,
-          },
-          userId: user.id,
-          ...(query.title && { title: { contains: query.title } }),
-          ...(typeof query.isFavorite === "boolean" && {
-            isFavorite: query.isFavorite,
-          }),
-        },
-        orderBy: {
-          ...(query.sortTag && {
-            [query.sortTag]: query.sortOrder ?? SortOrder.ASC,
-          }),
-        },
-        take: limit ? limit : undefined,
-        skip: limit ? (pageNo - 1) * limit : undefined,
-      }),
-    ]);
-
-    const hasNextPage = limit ? totalCount > pageNo * limit : false;
-    const nextPage = limit ? (hasNextPage ? pageNo + 1 : null) : null;
-
-    return {
-      code: HttpResultCode.OK,
-      data: {
-        totalCount,
-        list,
-        pageInfo: {
-          currentPage: pageNo,
-          hasNextPage,
-          nextPage,
-        },
-      },
-    };
+  async findManyByDeleted(
+    user: UserExternalPayload,
+    query: ListDeletedWorkspaceDto,
+  ) {
+    return await this.findMany(user, query, true);
   }
 
   /**
@@ -163,7 +133,9 @@ export class WorkspacesService {
     });
 
     if (!data) {
-      throw new NotFoundException(OpenApiErrorDefine.workspaceNotFound);
+      throw new NotFoundException(
+        OpenApiWorkspaceErrorDefine.workspaceNotFound,
+      );
     }
 
     return {
@@ -172,8 +144,49 @@ export class WorkspacesService {
     };
   }
 
-  update(id: number, body: UpdateWorkspaceDto) {
-    return `This action updates a #${id} workspace` + JSON.stringify(body);
+  /**
+   * @description 워크스페이스 수정
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   * @param {UpdateWorkspaceDto} body
+   */
+  async update(
+    user: UserExternalPayload,
+    id: number,
+    body: UpdateWorkspaceDto,
+  ) {
+    const workspace = await this.prismaService.workSpace.findFirst({
+      where: { id, userId: user.id },
+    });
+
+    if (!workspace) {
+      throw new NotFoundException(
+        OpenApiWorkspaceErrorDefine.workspaceNotFound,
+      );
+    }
+
+    Object.assign(body, {
+      title: body.title
+        ? isEqual(body.title, workspace.title)
+          ? undefined
+          : body.title
+        : undefined,
+      description: body.description
+        ? isEqual(body.description, workspace.description)
+          ? undefined
+          : body.description
+        : undefined,
+    });
+
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: body,
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
   }
 
   /**
@@ -185,6 +198,23 @@ export class WorkspacesService {
     const data = await this.prismaService.workSpace.update({
       where: { id, userId: user.id },
       data: { deletedAt: new Date() },
+    });
+
+    return {
+      code: HttpResultCode.OK,
+      data,
+    };
+  }
+
+  /**
+   * @description 워크스페이스 복구
+   * @param {UserExternalPayload} user
+   * @param {number} id
+   */
+  async restore(user: UserExternalPayload, id: number) {
+    const data = await this.prismaService.workSpace.update({
+      where: { id, userId: user.id },
+      data: { deletedAt: null },
     });
 
     return {

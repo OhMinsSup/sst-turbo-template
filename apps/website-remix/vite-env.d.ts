@@ -52,6 +52,7 @@
     export const NVM_DIR: string;
     export const USER: string;
     export const npm_package_devDependencies__types_react: string;
+    export const npm_package_dependencies__tanstack_react_virtual: string;
     export const COMMAND_MODE: string;
     export const PNPM_SCRIPT_SRC_DIR: string;
     export const npm_package_devDependencies_vite_tsconfig_paths: string;
@@ -94,6 +95,7 @@
     export const npm_package_dependencies__template_api: string;
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;
+    export const npm_package_devDependencies__types_lodash_es: string;
     export const npm_package_dependencies__tanstack_react_query: string;
     export const npm_package_dependencies_stable_hash: string;
     export const XPC_SERVICE_NAME: string;
@@ -111,7 +113,10 @@
     export const LOGNAME: string;
     export const npm_lifecycle_script: string;
     export const npm_package_dependencies_zod: string;
+    export const npm_package_dependencies_reflect_metadata: string;
+    export const npm_package_dependencies_lodash_es: string;
     export const VSCODE_GIT_IPC_HANDLE: string;
+    export const npm_package_dependencies_tsyringe: string;
     export const npm_package_dependencies_react: string;
     export const PGDATA: string;
     export const NVM_BIN: string;

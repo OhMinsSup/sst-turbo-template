@@ -1,11 +1,5 @@
-import { useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
 
-import {
-  Avatar,
-  AvatarFallback,
-  AvatarImage,
-} from "@template/ui/components/avatar";
 import { Button } from "@template/ui/components/button";
 import {
   DropdownMenu,
@@ -17,10 +11,11 @@ import {
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
 
-import type { RoutesActionData } from "~/.server/routes/auth/signout.action";
+import type { RoutesActionData } from "~/.server/routes/auth/actions/signout.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useUser } from "~/hooks/useUser";
 import { SelectTheme } from "./SelectTheme";
+import { UserImage } from "./UserImage";
 
 export default function User() {
   const user = useUser();
@@ -32,15 +27,7 @@ export default function User() {
     <DropdownMenu>
       <DropdownMenuTrigger asChild>
         <Button variant="ghost" className="relative h-8 w-8 rounded-full">
-          <Avatar className="h-8 w-8">
-            <AvatarImage
-              src={user.UserProfile.image}
-              alt={`@${user.username}`}
-            />
-            <AvatarFallback>
-              {user.username.slice(0, 2).toUpperCase()}
-            </AvatarFallback>
-          </Avatar>
+          <UserImage className="size-8" />
         </Button>
       </DropdownMenuTrigger>
       <DropdownMenuContent className="w-56" align="end" forceMount>
@@ -52,11 +39,6 @@ export default function User() {
             </p>
           </div>
         </DropdownMenuLabel>
-        <DropdownMenuSeparator />
-        <DropdownMenuGroup>
-          <DropdownMenuItem>프로필</DropdownMenuItem>
-          <DropdownMenuItem>설정</DropdownMenuItem>
-        </DropdownMenuGroup>
         <DropdownMenuSeparator />
         <DropdownMenuItem className="justify-between">
           테마

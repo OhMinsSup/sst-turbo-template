@@ -42,3 +42,35 @@ export const ToBoolean = (options?: TransformOptions) => {
     toClass(target, key);
   };
 };
+
+export const ToStringBooleanArray = (options?: TransformOptions) => {
+  const toPlain = Transform(
+    ({ value }) => {
+      return value as unknown;
+    },
+    {
+      ...options,
+      toPlainOnly: true,
+    },
+  );
+  const toClass = (target: unknown, key: string) => {
+    return Transform(
+      ({ obj }) => {
+        const value = obj[key];
+        if (Array.isArray(value)) {
+          return value.map((v) => valueToBoolean(v));
+        } else if (typeof value === "string") {
+          return [valueToBoolean(value)];
+        }
+        return [];
+      },
+      {
+        toClassOnly: true,
+      },
+    )(target, key);
+  };
+  return function (target: unknown, key: string) {
+    toPlain(target, key);
+    toClass(target, key);
+  };
+};
