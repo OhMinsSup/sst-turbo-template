@@ -172,6 +172,7 @@ export interface paths {
     delete: operations["WorkspacesController_remove"];
     options?: never;
     head?: never;
+    /** 워크스페이스 수정 */
     patch: operations["WorkspacesController_update"];
     trace?: never;
   };
@@ -1729,7 +1730,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: number;
+        id: string;
       };
       cookie?: never;
     };
@@ -1774,7 +1775,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: number;
+        id: string;
       };
       cookie?: never;
     };
@@ -1819,7 +1820,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: number;
+        id: string;
       };
       cookie?: never;
     };
@@ -1870,7 +1871,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: number;
+        id: string;
       };
       cookie?: never;
     };
@@ -1921,7 +1922,7 @@ export interface operations {
       query?: never;
       header?: never;
       path: {
-        id: number;
+        id: string;
       };
       cookie?: never;
     };

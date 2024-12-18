@@ -125,9 +125,9 @@ export class WorkspacesService {
   /**
    * @description 워크스페이스 단건 조회
    * @param {UserExternalPayload} user
-   * @param {number} id
+   * @param {string} id
    */
-  async findOne(user: UserExternalPayload, id: number) {
+  async findOne(user: UserExternalPayload, id: string) {
     const data = await this.prismaService.workSpace.findFirst({
       where: { id, userId: user.id },
     });
@@ -147,12 +147,12 @@ export class WorkspacesService {
   /**
    * @description 워크스페이스 수정
    * @param {UserExternalPayload} user
-   * @param {number} id
+   * @param {string} id
    * @param {UpdateWorkspaceDto} body
    */
   async update(
     user: UserExternalPayload,
-    id: number,
+    id: string,
     body: UpdateWorkspaceDto,
   ) {
     const workspace = await this.prismaService.workSpace.findFirst({
@@ -192,9 +192,9 @@ export class WorkspacesService {
   /**
    * @description 워크스페이스 삭제
    * @param {UserExternalPayload} user
-   * @param {number} id
+   * @param {string} id
    */
-  async remove(user: UserExternalPayload, id: number) {
+  async remove(user: UserExternalPayload, id: string) {
     const data = await this.prismaService.workSpace.update({
       where: { id, userId: user.id },
       data: { deletedAt: new Date() },
@@ -209,9 +209,9 @@ export class WorkspacesService {
   /**
    * @description 워크스페이스 복구
    * @param {UserExternalPayload} user
-   * @param {number} id
+   * @param {string} id
    */
-  async restore(user: UserExternalPayload, id: number) {
+  async restore(user: UserExternalPayload, id: string) {
     const data = await this.prismaService.workSpace.update({
       where: { id, userId: user.id },
       data: { deletedAt: null },
@@ -226,10 +226,10 @@ export class WorkspacesService {
   /**
    * @description 워크스페이스 즐겨찾기 설정
    * @param {UserExternalPayload} user
-   * @param {number} id
+   * @param {string} id
    * @param {boolean} isFavorite
    */
-  async favorite(user: UserExternalPayload, id: number, isFavorite: boolean) {
+  async favorite(user: UserExternalPayload, id: string, isFavorite: boolean) {
     const data = await this.prismaService.workSpace.update({
       where: { id, userId: user.id },
       data: { isFavorite },
