@@ -3,7 +3,7 @@ import { ServerOnly } from "remix-utils/server-only";
 
 import { Button } from "@template/ui/components/button";
 
-import type { RoutesActionData } from "~/.server/routes/resources/actions/theme.action";
+import type { RoutesActionData } from "~/.server/actions/theme.action";
 import type { Theme } from "~/.server/utils/theme";
 import { Icons } from "~/components/icons";
 import { useRequestInfo } from "~/hooks/useRequestInfo";

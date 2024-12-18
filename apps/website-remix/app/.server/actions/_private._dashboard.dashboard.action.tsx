@@ -1,15 +1,17 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { container } from "tsyringe";
 
+import { Method } from "@template/common";
+
+import { UserController } from "~/.server/routes/users/controllers/user.controller";
 import { getTypeSafeMethod } from "~/.server/utils/shared";
-import { WorkspaceController } from "../../workspaces/controllers/workspace.controller";
 
 export const action = async (args: ActionFunctionArgs) => {
-  const instance = container.resolve(WorkspaceController);
+  const instance = container.resolve(UserController);
   const method = getTypeSafeMethod(args.request);
   switch (method) {
-    case "PATCH": {
-      return await instance.restore(args);
+    case Method.PATCH: {
+      return await instance.update(args);
     }
     default: {
       throw instance.noop(args);

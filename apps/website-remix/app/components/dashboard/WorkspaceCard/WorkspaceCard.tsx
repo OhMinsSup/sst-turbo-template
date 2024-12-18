@@ -6,7 +6,7 @@ import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
 import { Skeleton } from "@template/ui/components/skeleton";
 
-import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard._dashboard.dashboard._index.action";
+import type { RoutesActionData } from "~/.server/actions/_private._dashboard.dashboard._index.action";
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";

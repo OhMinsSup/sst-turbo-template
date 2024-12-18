@@ -11,7 +11,7 @@ import {
   DropdownMenuTrigger,
 } from "@template/ui/components/dropdown-menu";
 
-import type { RoutesActionData } from "~/.server/routes/auth/actions/signout.action";
+import type { RoutesActionData } from "~/.server/actions/signout.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useUser } from "~/hooks/useUser";
 import { SelectTheme } from "./SelectTheme";

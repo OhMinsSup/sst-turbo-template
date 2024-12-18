@@ -36,12 +36,10 @@ function UpdateUsernameForm() {
   const submit = useSubmit();
 
   const onSubmit = form.handleSubmit((input) => {
-    console.log(input);
     const formData = new FormData();
     formData.append("username", input.username ?? "test");
     submit(formData, {
       method: "PATCH",
-      relative: "route",
     });
   });
 
@@ -129,7 +127,7 @@ function UpdateUserImageForm() {
   );
 }
 
-export default function TabAccountForm() {
+export function TabAccountForm() {
   return (
     <>
       <Title>내 프로필</Title>

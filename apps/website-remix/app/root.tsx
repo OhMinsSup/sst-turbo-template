@@ -17,7 +17,7 @@ import type { Session } from "@template/auth";
 import globalStyleCssUrl from "@template/ui/globals.css?url";
 import { cn } from "@template/ui/lib";
 
-import type { RoutesLoaderData } from "~/.server/routes/root/loaders/root.loader";
+import type { RoutesLoaderData } from "~/.server/loaders/root.loader";
 import { QueryProviders } from "~/providers/query.provider";
 import { GlobalMeta } from "./components/shared/GlobalMeta";
 import { ShowToast } from "./components/shared/Toast";
@@ -26,7 +26,7 @@ import { remixAuthBrowser } from "./libs/auth";
 import { ClientHintCheck } from "./libs/client-hints";
 import styleCssUrl from "./styles.css?url";
 
-export { loader } from "~/.server/routes/root/loaders/root.loader";
+export { loader } from "~/.server/loaders/root.loader";
 export { meta } from "~/libs/meta-tags/root.meta";
 
 export const links: LinksFunction = () => {

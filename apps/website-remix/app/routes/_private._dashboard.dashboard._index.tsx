@@ -1,8 +1,8 @@
 import { DashboardToolbar } from "~/components/dashboard/DashboardToolbar";
 import { WorkspaceCardList } from "~/components/dashboard/WorkspaceCardList";
 
-export { loader } from "~/.server/routes/workspaces/loaders/dashboard._dashboard.dashboard._index.loader";
-export { action } from "~/.server/routes/workspaces/actions/dashboard._dashboard.dashboard._index.action";
+export { loader } from "~/.server/loaders/_private._dashboard.dashboard._index.loader";
+export { action } from "~/.server/actions/_private._dashboard.dashboard._index.action";
 
 export default function Routes() {
   return (

@@ -2,7 +2,7 @@ import { Outlet, useNavigation } from "@remix-run/react";
 
 import { OverlayLoading } from "~/components/shared/OverlayLoading";
 
-export { loader } from "~/.server/routes/auth/guards/loaders/protecting.loader";
+export { loader } from "~/.server/loaders/protecting.loader";
 
 export default function Routes() {
   const navigation = useNavigation();
