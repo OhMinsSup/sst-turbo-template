@@ -1,0 +1,137 @@
+// This is your Prisma schema file,
+// learn more about it in the docs: https://pris.ly/d/prisma-schema
+
+generator client {
+    provider = "prisma-client-js"
+}
+
+datasource db {
+    provider = "postgresql"
+    url      = env("DATABASE_URL")
+}
+
+model User {
+    id                String         @id @default(cuid())
+    email             String         @unique // 이메일
+    username          String // 사용자 이름
+    roleId            String? // 역할 ID
+    encryptedPassword String? // 비밀번호
+    encryptedSalt     String? // 솔트
+    emailConfirmedAt  DateTime? // 이메일 인증 확인 시간
+    lastSignInAt      DateTime? // 마지막 로그인 시간
+    lastActiveAt      DateTime? // 마지막 활동 시간
+    isSuspended       Boolean        @default(false) // true: 정지, false: 활성 계정 정지
+    createdAt         DateTime       @default(now()) // 생성 시간
+    updatedAt         DateTime       @updatedAt // 업데이트 시간
+    deletedAt         DateTime? // 삭제 시간
+    Identity          Identity[]
+    Session           Session[]
+    RefreshToken      RefreshToken[]
+    Role              Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
+    UserProfile       UserProfile?
+    WorkSpace         WorkSpace[]
+
+    @@map(name: "users")
+}
+
+model UserProfile {
+    id     String  @id @default(cuid())
+    image  String? // 이미지
+    userId String  @unique
+    User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+    @@index([userId], name: "user_profiles_user_id_index")
+    @@map("user_profiles")
+}
+
+model Role {
+    id          String   @id @default(cuid())
+    name        RoleName
+    symbol      String   @unique // 역할 심볼
+    description String? // 역할 설명
+    createdAt   DateTime @default(now()) // 생성 시간
+    updatedAt   DateTime @updatedAt // 업데이트 시간
+    User        User[] // 사용자
+
+    @@map("roles")
+}
+
+model Identity {
+    id           String   @id @default(cuid())
+    userId       String // 사용자 ID
+    providerId   String // 제공자 ID
+    provider     String // 제공자 타입
+    email        String? // 이메일
+    identityData Json // 식별자 데이터
+    lastSignInAt DateTime // 마지막 로그인 시간
+    createdAt    DateTime @default(now()) // 생성 시간
+    updatedAt    DateTime @updatedAt // 업데이트 시간
+    User         User     @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+
+    @@map(name: "identities")
+}
+
+model RefreshToken {
+    id        String   @id @default(cuid())
+    token     String // 토큰
+    parent    String? // 이전에 먼저 발급된 토큰
+    revoked   Boolean  @default(false) // true: 폐기, false: 활성
+    userId    String // 사용자 ID
+    sessionId String // 세션 ID
+    createdAt DateTime @default(now()) // 생성 시간
+    updatedAt DateTime @updatedAt // 업데이트 시간
+    User      User     @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+    Session   Session  @relation(fields: [sessionId], references: [id], onDelete: Cascade) // 세션
+
+    @@map("refresh_tokens")
+}
+
+model Session {
+    id           String         @id @default(cuid())
+    userId       String // 사용자 ID
+    userAgent    String? // 사용자 에이전트
+    ip           String? // 사용자 IP
+    refreshedAt  DateTime? // 갱신 시간
+    notAfter     DateTime? // 만료 시간
+    createdAt    DateTime       @default(now()) // 생성 시간
+    updatedAt    DateTime       @updatedAt // 업데이트 시간
+    User         User           @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+    RefreshToken RefreshToken[]
+
+    @@map("sessions")
+}
+
+enum RoleName {
+    ADMIN
+    USER
+    GUEST
+}
+
+model WorkSpace {
+    id          Int       @id @default(autoincrement())
+    title       String    @unique // 제목
+    description String? // 설명
+    createdAt   DateTime  @default(now()) // 생성 시간
+    updatedAt   DateTime  @updatedAt // 업데이트 시간
+    deletedAt   DateTime? // 삭제 시간
+    userId      String // 사용자 ID
+    order       Int       @default(0) // 순서
+    isFavorite  Boolean   @default(false) // 즐겨찾기
+    User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+
+    @@index([userId], name: "work_spaces_user_id_index")
+    @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
+    @@map("work_spaces")
+}
+
+model TableMeta {
+    id String @id @default(cuid())
+
+    @@map("table_meta")
+}
+
+model Field {
+    id String @id @default(cuid())
+
+    @@map("fields")
+}
