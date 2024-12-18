@@ -4,11 +4,16 @@ import { useFetcher } from "@remix-run/react";
 import { ScrollArea } from "@template/ui/components/scroll-area";
 import { useEventListener, useThrottleFn } from "@template/ui/hooks";
 
-import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces";
-import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
+import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces.loader";
 import { TrashItem } from "./TrashItem";
 
-const TrashItemListTypeDashboard = () => {
+interface TrashItemListTypeDashboardProps {
+  deferredQuery: string;
+}
+
+export function TrashItemListTypeDashboard({
+  deferredQuery,
+}: TrashItemListTypeDashboardProps) {
   const ref = useRef<HTMLDivElement>(null);
   const isMounted = useRef(false);
   const currentPage = useRef(1);
@@ -31,13 +36,15 @@ const TrashItemListTypeDashboard = () => {
 
       if (isBottom && hasMore) {
         currentPage.current += 1;
-        fetcher.load(
-          `/api/workspaces/trash?pageNo=${currentPage.current}&limit=10`,
-        );
+        let apiPath = `/api/workspaces/trash?pageNo=${currentPage.current}&limit=10`;
+        if (deferredQuery) {
+          apiPath += `&title=${deferredQuery}`;
+        }
+        fetcher.load(apiPath);
       }
     },
     {
-      wait: 200,
+      wait: 300,
     },
   );
 
@@ -49,7 +56,11 @@ const TrashItemListTypeDashboard = () => {
   useEffect(() => {
     if (!isMounted.current) {
       currentPage.current = 1;
-      fetcher.load("/api/workspaces/trash?pageNo=1&limit=10");
+      let apiPath = "/api/workspaces/trash?pageNo=1&limit=10";
+      if (deferredQuery) {
+        apiPath += `&title=${deferredQuery}`;
+      }
+      fetcher.load(apiPath);
       isMounted.current = true;
     }
 
@@ -88,13 +99,5 @@ const TrashItemListTypeDashboard = () => {
         <TrashItem key={`trash:${item.id}`} item={item} />
       ))}
     </ScrollArea>
-  );
-};
-
-export function TrashPopoverScrollArea() {
-  const item = useBreadcrumb();
-
-  return (
-    <>{item?.type === "DASHBOARD" ? <TrashItemListTypeDashboard /> : null}</>
   );
 }

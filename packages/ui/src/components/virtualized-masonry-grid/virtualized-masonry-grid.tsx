@@ -1,4 +1,4 @@
-import React, { useRef } from "react";
+import React, { useEffect, useRef } from "react";
 
 import { isFunction } from "@template/utils/assertion";
 
@@ -42,7 +42,9 @@ function InternalVirtualizedMasonryGrid<T extends GridItem>({
 }: VirtualizedMasonryGridProps<T>) {
   const containerRef = useRef<HTMLDivElement>(null);
   const loaderRef = useRef<HTMLDivElement>(null);
-  const { viewport } = useVirtualGridMasonryProvider();
+  const { viewport, setFristRender, fristRender } =
+    useVirtualGridMasonryProvider();
+  const isFristRenderRef = useRef(false);
 
   const { positions, containerHeight } = useVirtualizedMasonryLayout({
     items,
@@ -74,6 +76,14 @@ function InternalVirtualizedMasonryGrid<T extends GridItem>({
   useIntersectionObserver(intersectionObserverCallback, loaderRef, {
     threshold: 0,
   });
+
+  useEffect(() => {
+    if (!isFristRenderRef.current && containerHeight > 0 && !fristRender) {
+      isFristRenderRef.current = true;
+      setFristRender(true);
+    }
+    // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [containerHeight, fristRender]);
 
   return (
     <>
@@ -112,6 +122,7 @@ function InternalVirtualizedMasonryGrid<T extends GridItem>({
       {hasNextPage && containerHeight > 0 ? (
         <div ref={loaderRef}>{loadingComponent}</div>
       ) : null}
+      {fristRender ? null : <>{loadingComponent}</>}
     </>
   );
 }

@@ -1,5 +1,3 @@
-import React from "react";
-
 import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
 
@@ -28,9 +26,6 @@ export function TrashItem({ item }: TrashItemProps) {
           <div className="flex gap-1">
             <Button size="icon" variant="ghost">
               <Icons.Undo2 />
-            </Button>
-            <Button size="icon" variant="ghost">
-              <Icons.Trash />
             </Button>
           </div>
         </div>

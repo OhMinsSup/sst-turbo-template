@@ -192,6 +192,23 @@ export interface paths {
     patch: operations["WorkspacesController_favorite"];
     trace?: never;
   };
+  "/api/v1/workspaces/{id}/restore": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get?: never;
+    put?: never;
+    post?: never;
+    delete?: never;
+    options?: never;
+    head?: never;
+    /** 워크스페이스 복구 */
+    patch: operations["WorkspacesController_restore"];
+    trace?: never;
+  };
   "/api/v1/workspaces/deleted": {
     parameters: {
       query?: never;
@@ -1879,6 +1896,51 @@ export interface operations {
           "application/json":
             | components["schemas"]["HttpErrorDto"]
             | components["schemas"]["ValidationErrorDto"];
+        };
+      };
+      401: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+      404: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
+        };
+      };
+    };
+  };
+  WorkspacesController_restore: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: number;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["WorkspaceDetailResponseDto"];
+        };
+      };
+      400: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content: {
+          "application/json": components["schemas"]["HttpErrorDto"];
         };
       };
       401: {

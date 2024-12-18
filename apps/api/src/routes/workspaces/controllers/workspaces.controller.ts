@@ -100,7 +100,6 @@ export class WorkspacesController {
   @ApiOperation({ summary: "워크스페이스 단건 조회" })
   @JwtAuth()
   @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findOne)
@@ -112,6 +111,8 @@ export class WorkspacesController {
   }
 
   @Patch(":id")
+  @ApiOperation({ summary: "워크스페이스 수정" })
+  @JwtAuth()
   @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
   @ApiResponse(OpenApiWorkspaceBadRequestErrorDefine.update)
   @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
@@ -128,14 +129,28 @@ export class WorkspacesController {
   @ApiOperation({ summary: "워크스페이스 삭제 (soft delete)" })
   @JwtAuth()
   @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
-  @ApiResponse(OpenApiAuthNotFoundErrorDefine.notFoundUser)
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.delete)
   remove(
     @AuthUser() user: UserExternalPayload,
     @Param("id", ParseIntPipe) id: number,
   ) {
     return this.service.remove(user, id);
+  }
+
+  @Patch(":id/restore")
+  @ApiOperation({ summary: "워크스페이스 복구" })
+  @JwtAuth()
+  @ApiResponse(OpenApiAuthUnauthorizedErrorDefine.logout)
+  @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
+  @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
+  @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.restore)
+  restore(
+    @AuthUser() user: UserExternalPayload,
+    @Param("id", ParseIntPipe) id: number,
+  ) {
+    return this.service.restore(user, id);
   }
 
   @Patch(":id/favorite")

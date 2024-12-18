@@ -1,69 +1,12 @@
-import type { Params } from "@remix-run/react";
-
-import {
-  Breadcrumb,
-  BreadcrumbItem,
-  BreadcrumbLink,
-  BreadcrumbList,
-  BreadcrumbPage,
-  BreadcrumbSeparator,
-} from "@template/ui/components/breadcrumb";
+import { Breadcrumb, BreadcrumbList } from "@template/ui/components/breadcrumb";
 import { Button } from "@template/ui/components/button";
 import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
-import { isFunction } from "@template/utils/assertion";
 
-import type { BaseBreadcrumbItem } from "./breadcrumb";
 import { Icons } from "~/components/icons";
 import { User } from "~/components/shared/User";
 import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
-
-export type BreadcrumbItem = BaseBreadcrumbItem;
-
-interface RecursiveBreadcrumbItemProps {
-  item: BreadcrumbItem;
-  parentIndex?: number;
-  searchParams?: Readonly<Params<string>>;
-}
-
-function RecursiveBreadcrumbItem({
-  item,
-  searchParams,
-  parentIndex = 0,
-}: RecursiveBreadcrumbItemProps) {
-  const pathname = isFunction(item.pathname)
-    ? item.pathname(searchParams)
-    : item.pathname;
-
-  return (
-    <>
-      {item.isLast ? (
-        <BreadcrumbItem>
-          <BreadcrumbPage>{item.title}</BreadcrumbPage>
-        </BreadcrumbItem>
-      ) : (
-        <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href={pathname}>{item.title}</BreadcrumbLink>
-        </BreadcrumbItem>
-      )}
-      {typeof item.children !== "undefined" && item.children.length > 0 ? (
-        <>
-          <BreadcrumbSeparator className="hidden md:block" />
-          {item.children.map((child, index) => {
-            return (
-              <RecursiveBreadcrumbItem
-                key={`recursive:breadcumb${parentIndex}:${index}`}
-                item={child}
-                parentIndex={index}
-                searchParams={searchParams}
-              />
-            );
-          })}
-        </>
-      ) : null}
-    </>
-  );
-}
+import { RecursiveBreadcrumbItem } from "./components/RecursiveBreadcrumbItem";
 
 export default function DashboardHeader() {
   const { items, searchParams } = useBreadcrumbs();

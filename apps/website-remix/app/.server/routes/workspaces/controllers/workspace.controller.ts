@@ -77,7 +77,6 @@ export class WorkspaceController {
    */
   async findAllByDeletedToJson(args: LoaderFunctionArgs) {
     const response = await this.workspaceService.findAllByDeleted(args);
-    console.log(response.data);
     return Response.json(response.data, {
       headers: response.requestInfo.headers,
     });
@@ -89,6 +88,20 @@ export class WorkspaceController {
    */
   async remove(args: ActionFunctionArgs) {
     const response = await this.workspaceService.remove(args);
+    if (!response.data.success && response.toastMessage) {
+      throw invariantToastError(response.toastMessage, response.requestInfo);
+    }
+    return data(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
+   * @description 워크스페이스 복원
+   * @param {ActionFunctionArgs} args
+   */
+  async restore(args: ActionFunctionArgs) {
+    const response = await this.workspaceService.restore(args);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }

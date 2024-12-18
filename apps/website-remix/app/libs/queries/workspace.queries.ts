@@ -1,7 +1,7 @@
 import type { DefaultError, InfiniteData } from "@tanstack/react-query";
 import { keepPreviousData, useInfiniteQuery } from "@tanstack/react-query";
 
-import type { RoutesLoaderData } from "~/.server/routes/api/loaders/workspaces";
+import type { RoutesLoaderData } from "~/.server/routes/api/loaders/workspaces.loader";
 import type {
   DeletedQuery as DeletedQueryParams,
   Query as QueryParams,

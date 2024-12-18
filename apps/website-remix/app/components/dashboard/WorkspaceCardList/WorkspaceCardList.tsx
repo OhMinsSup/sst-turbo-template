@@ -3,9 +3,10 @@ import { useLoaderData, useSearchParams } from "@remix-run/react";
 
 import { VirtualizedMasonryGrid } from "@template/ui/virtualized-masonry-grid";
 
-import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces";
+import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces.loader";
 import type { RoutesLoaderData } from "~/.server/routes/workspaces/loaders/dashboard._dashboard.dashboard._index.loader";
 import { WorkspaceCard } from "~/components/dashboard/WorkspaceCard";
+import { Icons } from "~/components/icons";
 import { useInfinitWorkspaceQuery } from "~/libs/queries/workspace.queries";
 
 function transformData(page: RoutesLoaderDataValue) {
@@ -14,16 +15,6 @@ function transformData(page: RoutesLoaderDataValue) {
     height: 158,
     width: 490,
   }));
-}
-
-function SkeletonWorkspaceCardList() {
-  return (
-    <>
-      {Array.from({ length: 6 }).map((_, index) => (
-        <WorkspaceCard.Skeleton key={`skeleton:${index}`} />
-      ))}
-    </>
-  );
 }
 
 export default function WorkspaceCardList() {
@@ -68,7 +59,7 @@ export default function WorkspaceCardList() {
         items={flatData}
         hasNextPage={hasMore}
         endReached={endReached}
-        loadingComponent={<SkeletonWorkspaceCardList />}
+        loadingComponent={<WorkspaceCardList.Loading />}
       >
         {(item) => (
           <WorkspaceCard
@@ -80,3 +71,11 @@ export default function WorkspaceCardList() {
     </>
   );
 }
+
+WorkspaceCardList.Loading = function () {
+  return (
+    <div className="flex size-full items-center justify-center">
+      <Icons.Spinner className="mx-auto h-8 w-8 animate-spin" />
+    </div>
+  );
+};

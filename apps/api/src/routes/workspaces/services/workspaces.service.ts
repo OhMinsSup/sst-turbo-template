@@ -224,21 +224,6 @@ export class WorkspacesService {
   }
 
   /**
-   * @description 워크스페이스 삭제 (hard delete)
-   * @param {UserExternalPayload} user
-   * @param {number} id
-   */
-  async delete(user: UserExternalPayload, id: number) {
-    await this.prismaService.workSpace.delete({
-      where: { id, userId: user.id },
-    });
-
-    return {
-      code: HttpResultCode.OK,
-    };
-  }
-
-  /**
    * @description 워크스페이스 즐겨찾기 설정
    * @param {UserExternalPayload} user
    * @param {number} id

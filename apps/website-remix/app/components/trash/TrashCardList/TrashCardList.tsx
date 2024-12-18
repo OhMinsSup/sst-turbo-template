@@ -1,10 +1,11 @@
-import React, { useCallback, useMemo } from "react";
+import { useCallback, useMemo } from "react";
 import { useLoaderData } from "@remix-run/react";
 
 import { VirtualizedMasonryGrid } from "@template/ui/virtualized-masonry-grid";
 
-import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces";
-import type { RoutesLoaderData } from "~/.server/routes/api/loaders/workspaces.trash";
+import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces.loader";
+import type { RoutesLoaderData } from "~/.server/routes/api/loaders/workspaces.trash.loader";
+import { Icons } from "~/components/icons";
 import { TrashCard } from "~/components/trash/TrashCard";
 import { useInfinitWorkspaceTrashQuery } from "~/libs/queries/workspace.queries";
 
@@ -14,16 +15,6 @@ function transformData(page: RoutesLoaderDataValue) {
     height: 158,
     width: 490,
   }));
-}
-
-function SkeletonTrashCardList() {
-  return (
-    <>
-      {Array.from({ length: 6 }).map((_, index) => (
-        <TrashCard.Skeleton key={`skeleton:${index}`} />
-      ))}
-    </>
-  );
 }
 
 export default function TrashCardList() {
@@ -61,7 +52,7 @@ export default function TrashCardList() {
         items={flatData}
         hasNextPage={hasMore}
         endReached={endReached}
-        loadingComponent={<SkeletonTrashCardList />}
+        loadingComponent={<TrashCardList.Loading />}
       >
         {(item) => (
           <TrashCard
@@ -73,3 +64,11 @@ export default function TrashCardList() {
     </>
   );
 }
+
+TrashCardList.Loading = function () {
+  return (
+    <div className="flex size-full items-center justify-center">
+      <Icons.Spinner className="mx-auto h-8 w-8 animate-spin" />
+    </div>
+  );
+};

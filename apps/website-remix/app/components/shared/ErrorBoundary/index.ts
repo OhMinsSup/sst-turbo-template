@@ -1,5 +1,5 @@
 export { default as ErrorBoundary } from "./ErrorBoundary";
-export { ForbiddenError } from "./ForbiddenError";
-export { GeneralError } from "./GeneralError";
-export { MaintenanceError } from "./MaintenanceError";
-export { NotFoundError } from "./NotFoundError";
+export { ForbiddenError } from "./components/ForbiddenError";
+export { GeneralError } from "./components/GeneralError";
+export { MaintenanceError } from "./components/MaintenanceError";
+export { NotFoundError } from "./components/NotFoundError";

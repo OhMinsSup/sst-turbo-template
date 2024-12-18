@@ -38,6 +38,7 @@ enum Action {
   CHANGE_CONTAINER_HEIGHT = "CHANGE_CONTAINER_HEIGHT",
   CHANGE_POSITIONS = "CHANGE_POSITIONS",
   CHANGE_VISIBLE_ITEMS = "CHANGE_VISIBLE_ITEMS",
+  SET_FRIST_RENDER = "SET_FRIST_RENDER",
 }
 
 interface InitializeAction {
@@ -59,13 +60,20 @@ interface ChangeVisibleItemsAction {
   payload: number[];
 }
 
+interface SetFristRenderAction {
+  type: Action.SET_FRIST_RENDER;
+  payload: boolean;
+}
+
 type ActionType =
   | InitializeAction
   | ChangeContainerHeightAction
   | ChangePositionsAction
-  | ChangeVisibleItemsAction;
+  | ChangeVisibleItemsAction
+  | SetFristRenderAction;
 
 interface VirtualGridMasonryState {
+  fristRender: boolean;
   viewport: Viewport;
   containerHeight: number;
   positions: GridItemPosition[];
@@ -75,6 +83,7 @@ interface VirtualGridMasonryState {
 export const DEFAULT_COLUMNS = 3;
 
 const initialState: VirtualGridMasonryState = {
+  fristRender: false,
   viewport: {
     mediaQueries: {
       mobile: "(max-width: 640px)",
@@ -103,6 +112,7 @@ interface VirtualGridMasonryContext extends VirtualGridMasonryState {
   ) => void;
   changePositions: (payload: ChangePositionsAction["payload"]) => void;
   changeVisibleItems: (payload: ChangeVisibleItemsAction["payload"]) => void;
+  setFristRender: (payload: SetFristRenderAction["payload"]) => void;
   dispatch: React.Dispatch<ActionType>;
 }
 
@@ -154,6 +164,12 @@ function reducer(
       }
       return state;
     }
+    case Action.SET_FRIST_RENDER: {
+      return {
+        ...state,
+        fristRender: action.payload,
+      };
+    }
     default:
       return state;
   }
@@ -177,6 +193,9 @@ function VirtualGridMasonryProvider({ children }: Props) {
   const changeVisibleItems = (payload: number[]) =>
     dispatch({ type: Action.CHANGE_VISIBLE_ITEMS, payload });
 
+  const setFristRender = (payload: boolean) =>
+    dispatch({ type: Action.SET_FRIST_RENDER, payload });
+
   const actions = useMemo(
     () => ({
       ...state,
@@ -184,6 +203,7 @@ function VirtualGridMasonryProvider({ children }: Props) {
       changeContainerHeight,
       changePositions,
       changeVisibleItems,
+      setFristRender,
       initialize,
     }),
     [state],

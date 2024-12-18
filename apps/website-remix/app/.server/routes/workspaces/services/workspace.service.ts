@@ -291,6 +291,65 @@ export class WorkspaceService {
       toastMessage: null,
     };
   }
+
+  /**
+   * @description 워크스페이스 복구
+   * @param {ActionFunctionArgs} args
+   */
+  async restore(args: ActionFunctionArgs) {
+    const authtication = auth.handler(args);
+    const { session } = await this.authMiddleware.getSession(
+      authtication.authClient,
+    );
+
+    invariantSession(session, {
+      request: args.request,
+      headers: authtication.headers,
+    });
+
+    const dto = new WorkspaceDeleteDto();
+    const dtoInstance = await dto.transform(args.request);
+
+    const { data, error } = await api
+      .method("patch")
+      .path("/api/v1/workspaces/{id}/restore")
+      .setParams({
+        path: {
+          id: dtoInstance.id,
+        },
+      })
+      .setAuthorization(session.access_token)
+      .run();
+
+    if (error) {
+      const { error: innerError } = error;
+      return {
+        data: {
+          success: false,
+          error,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        toastMessage: defaultToastErrorMessage(innerError.message),
+      } as const;
+    }
+
+    return {
+      data: {
+        success: true,
+        data,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      requestBody: null,
+      toastMessage: null,
+    };
+  }
 }
 
 export const token = WorkspaceService.name;

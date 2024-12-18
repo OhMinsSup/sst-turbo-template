@@ -6,7 +6,7 @@ import { isEmpty } from "@template/utils/assertion";
 import {
   getBreadcrumbs,
   getFlatBreadcrumb,
-} from "~/components/shared/DashboardHeader/breadcrumb";
+} from "~/components/shared/DashboardHeader/data/breadcrumb";
 
 export function useBreadcrumbs() {
   const params = useParams();

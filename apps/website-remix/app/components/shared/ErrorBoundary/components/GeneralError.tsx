@@ -20,7 +20,10 @@ export function GeneralError({
         {!minimal && (
           <h1 className="text-[7rem] font-bold leading-tight">500</h1>
         )}
-        <span className="font-medium">Oops! Something went wrong {`:')`}</span>
+        <span className="font-medium">
+          서버에서 오류가 발생했습니다.
+          {`:')`}
+        </span>
         <p className="text-center text-muted-foreground">
           불편을 끼쳐드려 죄송합니다. <br /> 나중에 다시 시도해 주세요.
         </p>

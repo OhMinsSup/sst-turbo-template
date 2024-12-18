@@ -323,6 +323,30 @@ export const OpenApiWorkspaceSuccessDefine = {
       },
     },
   },
+  restore: {
+    exampleDescription: "워크스페이스 복구",
+    message: "워크스페이스를 성공적으로 복구했습니다.",
+    resultCode: HttpResultCode.OK,
+    statusCode: HttpStatus.OK,
+    example: {
+      ["응답 성공"]: {
+        value: {
+          statusCode: HttpStatus.OK,
+          resultCode: HttpResultCode.OK,
+          data: {
+            id: "",
+            title: "",
+            description: "",
+            isFavorite: false,
+            order: 0,
+            createdAt: "2022-01-01T00:00:00.000Z",
+            updatedAt: "2022-01-01T00:00:00.000Z",
+            deletedAt: null,
+          },
+        },
+      },
+    },
+  },
 };
 
 export const OpenApiWorkspaceSuccessResponseDefine = {
@@ -378,6 +402,17 @@ export const OpenApiWorkspaceSuccessResponseDefine = {
           $ref: getSchemaPath(WorkspaceDeleteResponseDto),
         },
         examples: OpenApiWorkspaceSuccessDefine.delete.example,
+      },
+    },
+  } as ApiResponseOptions,
+  restore: {
+    status: HttpStatus.OK,
+    content: {
+      "application/json": {
+        schema: {
+          $ref: getSchemaPath(WorkspaceDetailResponseDto),
+        },
+        examples: OpenApiWorkspaceSuccessDefine.restore.example,
       },
     },
   } as ApiResponseOptions,

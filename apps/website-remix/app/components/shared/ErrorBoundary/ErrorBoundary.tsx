@@ -5,9 +5,9 @@ import {
   useRouteError,
 } from "@remix-run/react";
 
-import { ForbiddenError } from "./ForbiddenError";
-import { GeneralError } from "./GeneralError";
-import { NotFoundError } from "./NotFoundError";
+import { ForbiddenError } from "./components/ForbiddenError";
+import { GeneralError } from "./components/GeneralError";
+import { NotFoundError } from "./components/NotFoundError";
 
 type StatusHandler = (info: {
   error: ErrorResponse;
