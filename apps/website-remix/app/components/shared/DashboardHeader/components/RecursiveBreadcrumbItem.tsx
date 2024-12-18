@@ -1,4 +1,6 @@
 import type { Params } from "@remix-run/react";
+import { useMemo } from "react";
+import { useLocation } from "@remix-run/react";
 
 import {
   BreadcrumbItem,
@@ -21,20 +23,35 @@ export function RecursiveBreadcrumbItem({
   searchParams,
   parentIndex = 0,
 }: RecursiveBreadcrumbItemProps) {
+  const location = useLocation();
   const pathname = isFunction(item.pathname)
     ? item.pathname(searchParams)
     : item.pathname;
 
+  const isLastMatch = useMemo(
+    () => item.isLast && pathname === location.pathname,
+    [item.isLast, location.pathname, pathname],
+  );
+
+  const isLastNotMatch = useMemo(
+    () => item.isLast && pathname !== location.pathname,
+    [item.isLast, location.pathname, pathname],
+  );
+
   return (
     <>
-      {item.isLast ? (
+      {isLastMatch ? (
         <BreadcrumbItem>
           <BreadcrumbPage>{item.title}</BreadcrumbPage>
         </BreadcrumbItem>
       ) : (
-        <BreadcrumbItem className="hidden md:block">
-          <BreadcrumbLink href={pathname}>{item.title}</BreadcrumbLink>
-        </BreadcrumbItem>
+        <>
+          {isLastNotMatch ? null : (
+            <BreadcrumbItem className="hidden md:block">
+              <BreadcrumbLink href={pathname}>{item.title}</BreadcrumbLink>
+            </BreadcrumbItem>
+          )}
+        </>
       )}
       {typeof item.children !== "undefined" && item.children.length > 0 ? (
         <>

@@ -59,14 +59,14 @@ export default function SettingDialog() {
         }}
       >
         <Tabs
-          defaultValue="profile"
+          defaultValue="account"
           className="flex h-full flex-row overflow-auto"
         >
           <TabsList className="h-full w-[240px] flex-shrink-0 flex-grow-0 overflow-y-auto rounded-r-none">
             <div className="flex size-full flex-col justify-between px-1 pt-3">
               <div className="flex flex-col gap-1 overflow-auto pb-3">
                 <h4 className="text-sm text-muted-foreground">계정</h4>
-                <TabsTrigger value="profile" className="justify-start">
+                <TabsTrigger value="account" className="justify-start">
                   <Icons.User className="mr-2 size-4" />
                   <span>내 계정</span>
                 </TabsTrigger>
@@ -89,7 +89,7 @@ export default function SettingDialog() {
             <div className="flex size-full flex-col">
               <TabsContent
                 tabIndex={-1}
-                value="profile"
+                value="account"
                 className="m-0 flex-grow overflow-auto px-16 py-9"
               >
                 <TabAccountForm />

@@ -10,7 +10,10 @@ export const PAGE_ENDPOINTS = {
     DASHBOARD: {
       ROOT: "/dashboard",
       TRASH: "/dashboard/trash",
-      SETTING: "/dashboard/setting",
+      SETTING: "/dashboard/setting/account",
+      NOTIFICATIONS: "/dashboard/setting/notifications",
+      INTEGRATION: "/dashboard/setting/integration",
+      SYSTEM: "/dashboard/setting/system",
     },
     WORKSPACE: {
       ROOT: "/dashboard/workspaces",

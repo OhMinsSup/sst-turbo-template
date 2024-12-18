@@ -13,6 +13,10 @@ export default function DashboardToolbar() {
   const onChagneSearchParams = (title: string) => {
     startTransition(() => {
       setSearchParams((old) => {
+        if (title === "") {
+          old.delete("title");
+          return old;
+        }
         old.set("title", title);
         return old;
       });

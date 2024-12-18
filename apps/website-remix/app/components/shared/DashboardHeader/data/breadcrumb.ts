@@ -49,7 +49,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
     ],
   ],
   [
-    /^\/dashboard\/setting\/?$/,
+    /^\/dashboard\/setting\/(account|system|notifications|integration)\/?$/,
     [
       {
         title: "대시보드",
@@ -60,10 +60,40 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
         children: [
           {
             title: "설정",
-            isLast: true,
+            isLast: false,
             pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING,
             pathnameRegex: /^\/dashboard\/setting\/?$/,
             type: "SETTING",
+            children: [
+              {
+                title: "내 계정",
+                isLast: true,
+                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING,
+                pathnameRegex: /^\/dashboard\/setting\/account\/?$/,
+                type: "SETTING",
+              },
+              {
+                title: "내 설정",
+                isLast: true,
+                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SYSTEM,
+                pathnameRegex: /^\/dashboard\/setting\/system\/?$/,
+                type: "SETTING",
+              },
+              {
+                title: "내 알림",
+                isLast: true,
+                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.NOTIFICATIONS,
+                pathnameRegex: /^\/dashboard\/setting\/notifications\/?$/,
+                type: "SETTING",
+              },
+              {
+                title: "내 연결",
+                isLast: true,
+                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.INTEGRATION,
+                pathnameRegex: /^\/dashboard\/setting\/integration\/?$/,
+                type: "SETTING",
+              },
+            ],
           },
         ],
       },

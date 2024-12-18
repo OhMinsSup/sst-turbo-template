@@ -1,9 +1,7 @@
 import { Breadcrumb, BreadcrumbList } from "@template/ui/components/breadcrumb";
-import { Button } from "@template/ui/components/button";
 import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
 
-import { Icons } from "~/components/icons";
 import { User } from "~/components/shared/User";
 import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
 import { RecursiveBreadcrumbItem } from "./components/RecursiveBreadcrumbItem";
@@ -31,9 +29,6 @@ export default function DashboardHeader() {
         </Breadcrumb>
       </div>
       <div className="ml-auto flex items-center space-x-3">
-        <Button variant="outline" size="icon">
-          <Icons.Bell className="h-6 w-6" />
-        </Button>
         <User />
       </div>
     </header>

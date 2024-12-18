@@ -37,7 +37,7 @@ export function TabSettingForm() {
       <Title>내 설정</Title>
       <div className="flex flex-col">
         <RadioGroup
-          className="grid max-w-screen-md grid-cols-3 gap-8 pt-2"
+          className="grid max-w-screen-md grid-cols-1 gap-8 pt-2 md:grid-cols-3"
           value={mode}
           onValueChange={onThemeValueChange}
         >

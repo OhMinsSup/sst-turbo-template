@@ -1,5 +1,5 @@
 import { useCallback, useMemo } from "react";
-import { useLoaderData } from "@remix-run/react";
+import { useLoaderData, useSearchParams } from "@remix-run/react";
 
 import { VirtualizedMasonryGrid } from "@template/ui/virtualized-masonry-grid";
 
@@ -19,10 +19,17 @@ function transformData(page: RoutesLoaderDataValue) {
 
 export default function TrashCardList() {
   const initialData = useLoaderData<RoutesLoaderData>();
+  const [searchParams] = useSearchParams();
+
+  const searchParamsObj = useMemo(() => {
+    const _searchParams = new URLSearchParams(searchParams);
+    return Object.fromEntries(_searchParams.entries());
+  }, [searchParams]);
 
   const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isError } =
     useInfinitWorkspaceTrashQuery({
       initialData,
+      query: searchParamsObj,
     });
 
   const flatData = useMemo(
