@@ -128,9 +128,9 @@ model WorkSpace {
 
 model Table {
   id          String    @id @default(cuid())
-  name        String // 테이블 이름
+  name        String    @unique // 테이블 이름
   description String? // 설명
-  dbTableName String // 데이터베이스 테이블 이름
+  dbTableName String    @unique // 데이터베이스 테이블 이름
   version     Int? // 버전
   order       Float? // 순서
   createdAt   DateTime  @default(now()) // 생성 시간

@@ -6,6 +6,7 @@ export class RoleEntity {
   @ApiProperty({
     title: "기호",
     description: "역할 기호",
+    type: "string",
     example: "USER",
     required: true,
   })

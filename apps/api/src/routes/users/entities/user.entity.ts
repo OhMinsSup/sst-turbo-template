@@ -8,6 +8,7 @@ import { UserProfileEntity } from "./user-profile.entity";
 export class UserEntity {
   @ApiProperty({
     title: "ID",
+    type: "string",
     description: "사용자 ID",
     example: "123e4567-e89b-12d3-a456-426614174000",
     required: true,
@@ -17,6 +18,7 @@ export class UserEntity {
 
   @ApiProperty({
     title: "이메일",
+    type: "string",
     description: "사용자 이메일",
     example: "test@naver.com",
     required: true,
@@ -26,6 +28,7 @@ export class UserEntity {
 
   @ApiProperty({
     title: "이름",
+    type: "string",
     description: "사용자 이름",
     example: "홍길동",
     required: true,
@@ -45,6 +48,7 @@ export class UserEntity {
 
   @ApiProperty({
     title: "정지 여부",
+    type: Boolean,
     description: "정지 여부",
     example: false,
     required: true,

@@ -8,6 +8,8 @@ import { AuthModule } from "./routes/auth/auth.module";
 import { TablesModule } from "./routes/tables/tables.module";
 import { UsersModule } from "./routes/users/users.module";
 import { WorkspacesModule } from "./routes/workspaces/workspaces.module";
+import { FieldsModule } from './routes/fields/fields.module';
+import { RecordsModule } from './routes/records/records.module';
 
 @Module({
   imports: [
@@ -16,6 +18,8 @@ import { WorkspacesModule } from "./routes/workspaces/workspaces.module";
     UsersModule,
     WorkspacesModule,
     TablesModule,
+    FieldsModule,
+    RecordsModule,
   ],
   providers: [
     {
