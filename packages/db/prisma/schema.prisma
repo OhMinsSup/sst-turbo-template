@@ -30,7 +30,7 @@ model User {
   Role              Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
   UserProfile       UserProfile?
   Workspace         WorkSpace[]
-  TableMeta         TableMeta[]
+  Table             Table[]
   Field             Field[]
 
   @@map(name: "users")
@@ -108,25 +108,25 @@ model Session {
 }
 
 model WorkSpace {
-  id          String      @id @default(cuid())
-  title       String      @unique // 제목
+  id          String    @id @default(cuid())
+  title       String    @unique // 제목
   description String? // 설명
-  createdAt   DateTime    @default(now()) // 생성 시간
-  updatedAt   DateTime    @updatedAt // 업데이트 시간
+  createdAt   DateTime  @default(now()) // 생성 시간
+  updatedAt   DateTime  @updatedAt // 업데이트 시간
   deletedAt   DateTime? // 삭제 시간
   userId      String // 사용자 ID
   version     Int? // 버전
   order       Float? // 순서
-  isFavorite  Boolean     @default(false) // 즐겨찾기
-  User        User        @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
-  TableMeta   TableMeta[]
+  isFavorite  Boolean   @default(false) // 즐겨찾기
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+  Table       Table[]
 
   @@index([userId], name: "work_spaces_user_id_index")
   @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
   @@map("work_spaces")
 }
 
-model TableMeta {
+model Table {
   id          String    @id @default(cuid())
   name        String // 테이블 이름
   description String? // 설명
@@ -142,7 +142,7 @@ model TableMeta {
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
   Field       Field[]
 
-  @@map("table_meta")
+  @@map("tables")
 }
 
 model Field {
@@ -170,8 +170,8 @@ model Field {
   lookupOptions       String? // 조회 옵션
   userId              String // 사용자 ID
   User                User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
-  tableMetaId         String // 테이블 ID
-  TableMeta           TableMeta @relation(fields: [tableMetaId], references: [id], onDelete: Cascade) // 테이블
+  tableId             String // 테이블 ID
+  Table               Table     @relation(fields: [tableId], references: [id], onDelete: Cascade) // 테이블
 
   @@map("fields")
 }
