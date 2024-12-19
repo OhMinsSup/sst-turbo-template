@@ -72,22 +72,6 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
-  "/api/v1/hello": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    get: operations["AppController_getHello"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
   "/api/v1/users": {
     parameters: {
       query?: never;
@@ -114,23 +98,6 @@ export interface paths {
     };
     /** 로그인 사용자 정보 */
     get: operations["UsersController_me"];
-    put?: never;
-    post?: never;
-    delete?: never;
-    options?: never;
-    head?: never;
-    patch?: never;
-    trace?: never;
-  };
-  "/api/v1/widgets/workspaces": {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    /** 워크스페이스 위젯 목록 조회 */
-    get: operations["WidgetsController_findAllByWidgetWorkspace"];
     put?: never;
     post?: never;
     delete?: never;
@@ -208,6 +175,38 @@ export interface paths {
     head?: never;
     /** 워크스페이스 복구 */
     patch: operations["WorkspacesController_restore"];
+    trace?: never;
+  };
+  "/api/v1/workspaces/{workspaceId}/tables": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TablesController_findAll"];
+    put?: never;
+    post: operations["TablesController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/workspaces/{workspaceId}/tables/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["TablesController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["TablesController_remove"];
+    options?: never;
+    head?: never;
+    patch: operations["TablesController_update"];
     trace?: never;
   };
   "/api/v1/workspaces/deleted": {
@@ -335,6 +334,7 @@ export interface components {
         | 504
         | 505;
     };
+    CreateTableDto: Record<string, never>;
     CreateWorkspaceDto: {
       /**
        * 워크스페이스 설명
@@ -611,6 +611,7 @@ export interface components {
        */
       refreshToken: string;
     };
+    UpdateTableDto: Record<string, never>;
     UpdateUserDto: {
       /**
        * 이미지
@@ -882,90 +883,6 @@ export interface components {
        *     }
        */
       validationErrorInfo: Record<string, never>;
-    };
-    WidgetWorkspaceListDto: {
-      /** @description 데이터 목록 */
-      favoriteWorkspaces: components["schemas"]["WorkspaceEntity"][];
-      /** @description 데이터 목록 */
-      workspaces: components["schemas"]["WorkspaceEntity"][];
-    };
-    WidgetWorkspaceListResponseDto: {
-      /** @description 데이터 응답 */
-      data: components["schemas"]["WidgetWorkspaceListDto"];
-      /**
-       * @description 결과 코드
-       * @enum {number}
-       */
-      resultCode:
-        | 1
-        | -1
-        | 1001
-        | 1002
-        | 1003
-        | 1004
-        | 1005
-        | 4001
-        | 4002
-        | 6001
-        | 6002
-        | 6003
-        | 6004
-        | 6005
-        | 7000
-        | 7001;
-      /**
-       * @description 상태코드
-       * @enum {number}
-       */
-      statusCode:
-        | 100
-        | 101
-        | 102
-        | 103
-        | 200
-        | 201
-        | 202
-        | 203
-        | 204
-        | 205
-        | 206
-        | 300
-        | 301
-        | 302
-        | 303
-        | 304
-        | 307
-        | 308
-        | 400
-        | 401
-        | 402
-        | 403
-        | 404
-        | 405
-        | 406
-        | 407
-        | 408
-        | 409
-        | 410
-        | 411
-        | 412
-        | 413
-        | 414
-        | 415
-        | 416
-        | 417
-        | 418
-        | 421
-        | 422
-        | 424
-        | 428
-        | 429
-        | 500
-        | 501
-        | 502
-        | 503
-        | 504
-        | 505;
     };
     WorkspaceDeleteResponseDto: {
       /** @description 데이터 응답 */
@@ -1452,23 +1369,6 @@ export interface operations {
       };
     };
   };
-  AppController_getHello: {
-    parameters: {
-      query?: never;
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content?: never;
-      };
-    };
-  };
   UsersController_update: {
     parameters: {
       query?: never;
@@ -1534,58 +1434,6 @@ export interface operations {
         };
         content: {
           "application/json": components["schemas"]["UserResponseDto"];
-        };
-      };
-      400: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HttpErrorDto"];
-        };
-      };
-      401: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HttpErrorDto"];
-        };
-      };
-      404: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["HttpErrorDto"];
-        };
-      };
-    };
-  };
-  WidgetsController_findAllByWidgetWorkspace: {
-    parameters: {
-      query?: {
-        /** @description 페이지 크기 */
-        limit?: number;
-        /** @description 정렬 순서 */
-        sortOrder?: "asc" | "desc" | null;
-        /** @description 정렬 기준 */
-        sortTag?: "createdAt" | "updatedAt" | "order" | null;
-        /** @description 작업공간 제목 검색 */
-        title?: string | null;
-      };
-      header?: never;
-      path?: never;
-      cookie?: never;
-    };
-    requestBody?: never;
-    responses: {
-      200: {
-        headers: {
-          [name: string]: unknown;
-        };
-        content: {
-          "application/json": components["schemas"]["WidgetWorkspaceListResponseDto"];
         };
       };
       400: {
@@ -1959,6 +1807,105 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["HttpErrorDto"];
         };
+      };
+    };
+  };
+  TablesController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  TablesController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateTableDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  TablesController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  TablesController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  TablesController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateTableDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };
