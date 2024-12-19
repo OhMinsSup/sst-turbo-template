@@ -1,3 +1,5 @@
+import { invariant } from "@epic-web/invariant";
+
 import type { paths } from "@template/api-types";
 
 export type Body =
@@ -23,6 +25,7 @@ export class WorkspaceFavoriteDto implements Partial<Body> {
   }
 
   get id() {
+    invariant(this.workspaceId, "Workspace ID is required");
     return this.workspaceId as unknown as string;
   }
 }

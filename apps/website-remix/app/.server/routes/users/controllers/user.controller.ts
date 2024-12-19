@@ -24,12 +24,6 @@ export class UserController {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
 
-    if (!response.data.success) {
-      return data(response.data, {
-        headers: response.requestInfo.headers,
-      });
-    }
-
     return data(response.data, {
       headers: response.requestInfo.headers,
     });

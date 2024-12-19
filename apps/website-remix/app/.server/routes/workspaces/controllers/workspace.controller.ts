@@ -27,12 +27,6 @@ export class WorkspaceController {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
 
-    if (!response.data.success) {
-      return data(response.data, {
-        headers: response.requestInfo.headers,
-      });
-    }
-
     return data(response.data, {
       headers: response.requestInfo.headers,
     });
@@ -118,12 +112,6 @@ export class WorkspaceController {
     const response = await this.workspaceService.favorite(args);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
-    }
-
-    if (!response.data.success) {
-      return data(response.data, {
-        headers: response.requestInfo.headers,
-      });
     }
 
     return data(response.data, {
