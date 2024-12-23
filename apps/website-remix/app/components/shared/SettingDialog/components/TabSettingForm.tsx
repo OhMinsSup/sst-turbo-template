@@ -7,7 +7,7 @@ import {
   RadioGroupItem,
 } from "@template/ui/components/radio-group";
 
-import type { RoutesActionData } from "~/.server/routes/resources/actions/theme.action";
+import type { RoutesActionData } from "~/.server/actions/theme.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useOptimisticThemeMode } from "~/libs/theme";
 import { Title } from "./Title";

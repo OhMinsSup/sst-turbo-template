@@ -6,6 +6,7 @@ export class UserProfileEntity {
   @ApiProperty({
     title: "이미지",
     description: "프로필 이미지",
+    type: "string",
   })
   @Expose()
   readonly image: string;

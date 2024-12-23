@@ -1,1 +1,1 @@
-export { action } from "~/.server/routes/resources/actions/theme.action";
+export { action } from "~/.server/actions/theme.action";

@@ -1,4 +1,3 @@
-import type { ActionFunctionArgs } from "@remix-run/node";
 import { Outlet } from "@remix-run/react";
 
 import { SidebarInset } from "@template/ui/components/sidebar";
@@ -9,13 +8,7 @@ import { Layout } from "~/components/shared/Layout";
 import { Sidebar } from "~/components/shared/Sidebar";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-export const action = async (args: ActionFunctionArgs) => {
-  console.log("Dashboard action", args.request.url);
-  const formData = await args.request.formData();
-  const body = Object.fromEntries(formData);
-  console.log("Dashboard action body", body);
-  return {};
-};
+export { action } from "~/.server/actions/_private._dashboard.dashboard.action";
 
 export default function Routes() {
   return (

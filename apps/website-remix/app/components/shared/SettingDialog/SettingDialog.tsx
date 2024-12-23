@@ -17,7 +17,7 @@ import {
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
-import TabAccountForm from "./components/TabAccountForm";
+import { TabAccountForm } from "./components/TabAccountForm";
 import { TabIntegrations } from "./components/TabIntegrations";
 import { TabNotifications } from "./components/TabNotifications";
 import { TabSettingForm } from "./components/TabSettingForm";

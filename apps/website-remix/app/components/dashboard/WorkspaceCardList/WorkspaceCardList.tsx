@@ -3,8 +3,8 @@ import { useLoaderData, useSearchParams } from "@remix-run/react";
 
 import { VirtualizedMasonryGrid } from "@template/ui/virtualized-masonry-grid";
 
-import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces.loader";
-import type { RoutesLoaderData } from "~/.server/routes/workspaces/loaders/dashboard._dashboard.dashboard._index.loader";
+import type { RoutesLoaderDataValue } from "~/.server/api/loaders/workspaces.loader";
+import type { RoutesLoaderData } from "~/.server/loaders/_private._dashboard.dashboard._index.loader";
 import { WorkspaceCard } from "~/components/dashboard/WorkspaceCard";
 import { Icons } from "~/components/icons";
 import { useInfinitWorkspaceQuery } from "~/libs/queries/workspace.queries";

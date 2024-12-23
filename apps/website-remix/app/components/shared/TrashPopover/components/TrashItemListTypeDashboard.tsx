@@ -4,7 +4,7 @@ import { useFetcher } from "@remix-run/react";
 import { ScrollArea } from "@template/ui/components/scroll-area";
 import { useEventListener, useThrottleFn } from "@template/ui/hooks";
 
-import type { RoutesLoaderDataValue } from "~/.server/routes/api/loaders/workspaces.loader";
+import type { RoutesLoaderDataValue } from "~/.server/api/loaders/workspaces.loader";
 import { TrashItem } from "./TrashItem";
 
 interface TrashItemListTypeDashboardProps {

@@ -4,7 +4,6 @@ import {
   Delete,
   Get,
   Param,
-  ParseIntPipe,
   Patch,
   Post,
   Query,
@@ -103,10 +102,7 @@ export class WorkspacesController {
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findOne)
-  findOne(
-    @AuthUser() user: UserExternalPayload,
-    @Param("id", ParseIntPipe) id: number,
-  ) {
+  findOne(@AuthUser() user: UserExternalPayload, @Param("id") id: string) {
     return this.service.findOne(user, id);
   }
 
@@ -119,7 +115,7 @@ export class WorkspacesController {
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.findOne)
   update(
     @AuthUser() user: UserExternalPayload,
-    @Param("id", ParseIntPipe) id: number,
+    @Param("id") id: string,
     @Body() updateWorkspaceDto: UpdateWorkspaceDto,
   ) {
     return this.service.update(user, id, updateWorkspaceDto);
@@ -132,10 +128,7 @@ export class WorkspacesController {
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.delete)
-  remove(
-    @AuthUser() user: UserExternalPayload,
-    @Param("id", ParseIntPipe) id: number,
-  ) {
+  remove(@AuthUser() user: UserExternalPayload, @Param("id") id: string) {
     return this.service.remove(user, id);
   }
 
@@ -146,10 +139,7 @@ export class WorkspacesController {
   @ApiResponse(OpenApiAuthBadRequestErrorDefine.invalidToken)
   @ApiResponse(OpenApiWorkspaceNotFoundErrorDefine.findOne)
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.restore)
-  restore(
-    @AuthUser() user: UserExternalPayload,
-    @Param("id", ParseIntPipe) id: number,
-  ) {
+  restore(@AuthUser() user: UserExternalPayload, @Param("id") id: string) {
     return this.service.restore(user, id);
   }
 
@@ -162,7 +152,7 @@ export class WorkspacesController {
   @ApiResponse(OpenApiWorkspaceSuccessResponseDefine.favorite)
   favorite(
     @AuthUser() user: UserExternalPayload,
-    @Param("id", ParseIntPipe) id: number,
+    @Param("id") id: string,
     @Body() body: FavoriteWorkspaceDto,
   ) {
     return this.service.favorite(user, id, body.isFavorite);

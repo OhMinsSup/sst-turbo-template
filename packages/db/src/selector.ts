@@ -57,3 +57,17 @@ export {
 } from "./selectors/workspace.selector";
 
 export type { WorkspacePayload } from "./selectors/workspace.selector";
+
+export {
+  getBaseTableSelector,
+  getTableSelector,
+} from "./selectors/table.selector";
+
+export type { TablePayload } from "./selectors/table.selector";
+
+export {
+  getBaseFieldSelector,
+  getFieldSelector,
+} from "./selectors/field.selector";
+
+export type { FieldPayload } from "./selectors/field.selector";

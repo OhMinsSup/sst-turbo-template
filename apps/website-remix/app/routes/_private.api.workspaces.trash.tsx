@@ -1,3 +1,3 @@
-export { loader } from "~/.server/routes/api/loaders/workspaces.trash.loader";
+export { loader } from "~/.server/api/loaders/workspaces.trash.loader";
 
-export { action } from "~/.server/routes/api/actions/workspaces.trash.action";
+export { action } from "~/.server/api/actions/workspaces.trash.action";

@@ -26,7 +26,7 @@ import { Input } from "@template/ui/components/input";
 import { Textarea } from "@template/ui/components/textarea";
 import { createWorkspaceSchema } from "@template/validators/workspace";
 
-import type { RoutesActionData } from "~/.server/routes/workspaces/actions/dashboard._dashboard.dashboard._index.action";
+import type { RoutesActionData } from "~/.server/actions/_private._dashboard.dashboard._index.action";
 import { Icons } from "~/components/icons";
 import { uuid } from "~/libs/id";
 import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";

@@ -1,3 +1,5 @@
+import { invariant } from "@epic-web/invariant";
+
 import type { paths } from "@template/api-types";
 
 export type Body =
@@ -6,13 +8,13 @@ export type Body =
 export class WorkspaceFavoriteDto implements Partial<Body> {
   isFavorite?: Body["isFavorite"];
 
-  workspaceId?: number;
+  workspaceId?: string;
 
   async transform(request: Request) {
     const formData = await request.formData();
     const body = Object.fromEntries(formData.entries());
     this.isFavorite = body.isFavorite === "true";
-    this.workspaceId = +body.workspaceId;
+    this.workspaceId = body.workspaceId as string;
     return this;
   }
 
@@ -23,6 +25,7 @@ export class WorkspaceFavoriteDto implements Partial<Body> {
   }
 
   get id() {
-    return this.workspaceId as unknown as number;
+    invariant(this.workspaceId, "Workspace ID is required");
+    return this.workspaceId as unknown as string;
   }
 }

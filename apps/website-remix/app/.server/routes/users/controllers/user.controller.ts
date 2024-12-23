@@ -1,7 +1,11 @@
 import { ActionFunctionArgs, data } from "@remix-run/node";
 import { container, inject } from "tsyringe";
 
-import { invariantToastError } from "~/.server/utils/shared";
+import { auth } from "~/.server/utils/auth";
+import {
+  invariantToastError,
+  invariantUnsupportedMethod,
+} from "~/.server/utils/shared";
 import { UserService } from "../services/user.service";
 
 export class UserController {
@@ -20,14 +24,20 @@ export class UserController {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
 
-    if (!response.data.success) {
-      return data(response.data, {
-        headers: response.requestInfo.headers,
-      });
-    }
-
     return data(response.data, {
       headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
+   * @description 지원하지 않는 메소드
+   * @param {ActionFunctionArgs} args
+   */
+  noop(args: ActionFunctionArgs) {
+    const authtication = auth.handler(args);
+    return invariantUnsupportedMethod({
+      request: args.request,
+      headers: authtication.headers,
     });
   }
 }

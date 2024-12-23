@@ -1,1 +1,1 @@
-export { loader } from "~/.server/routes/api/loaders/workspaces.loader";
+export { loader } from "~/.server/api/loaders/workspaces.loader";

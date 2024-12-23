@@ -30,6 +30,8 @@ model User {
   Role              Role?          @relation(fields: [roleId], references: [id], onDelete: SetNull) // 역할
   UserProfile       UserProfile?
   Workspace         WorkSpace[]
+  Table             Table[]
+  Field             Field[]
 
   @@map(name: "users")
 }
@@ -106,18 +108,70 @@ model Session {
 }
 
 model WorkSpace {
-  id          Int       @id @default(autoincrement())
+  id          String    @id @default(cuid())
   title       String    @unique // 제목
   description String? // 설명
   createdAt   DateTime  @default(now()) // 생성 시간
   updatedAt   DateTime  @updatedAt // 업데이트 시간
   deletedAt   DateTime? // 삭제 시간
   userId      String // 사용자 ID
-  order       Int       @default(0) // 순서
+  version     Int? // 버전
+  order       Float? // 순서
   isFavorite  Boolean   @default(false) // 즐겨찾기
   User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+  Table       Table[]
 
   @@index([userId], name: "work_spaces_user_id_index")
   @@index([userId, isFavorite], name: "work_spaces_user_id_is_favorite_index")
   @@map("work_spaces")
+}
+
+model Table {
+  id          String    @id @default(cuid())
+  name        String    @unique // 테이블 이름
+  description String? // 설명
+  dbTableName String    @unique // 데이터베이스 테이블 이름
+  version     Int? // 버전
+  order       Float? // 순서
+  createdAt   DateTime  @default(now()) // 생성 시간
+  updatedAt   DateTime  @updatedAt // 업데이트 시간
+  deletedAt   DateTime? // 삭제 시간
+  userId      String // 사용자 ID
+  workSpaceId String // 워크스페이스 ID
+  WorkSpace   WorkSpace @relation(fields: [workSpaceId], references: [id], onDelete: Cascade) // 워크스페이스
+  User        User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+  Field       Field[]
+
+  @@map("tables")
+}
+
+model Field {
+  id                  String    @id @default(cuid())
+  fieldName           String // 필드 이름
+  fieldType           String // 타입
+  fieldDesciption     String? // 설명
+  primitiveType       String // 기본 타입
+  dbFieldName         String // 데이터베이스 필드 이름
+  dbFieldType         String // 데이터베이스 필드 타입
+  options             String? // 옵션
+  version             Int? // 버전
+  order               Float? // 순서
+  isMultiple          Boolean   @default(false) // true: 다중, false: 단일
+  isNotNull           Boolean   @default(false) // true: 필수, false: 선택
+  isUnique            Boolean   @default(false) // true: 고유, false: 일반
+  isPrimary           Boolean   @default(false) // true: 기본 키, false: 일반 키
+  isComputed          Boolean   @default(false) // true: 계산, false: 일반
+  isLookup            Boolean   @default(false) // true: 조회, false: 일반
+  isPending           Boolean   @default(false) // true: 보류, false: 일반
+  createdAt           DateTime  @default(now()) // 생성 시간
+  updatedAt           DateTime  @updatedAt // 업데이트 시간
+  deletedAt           DateTime? // 삭제 시간
+  lookupLinkedFieldId String? // 조회 연결 필드 ID
+  lookupOptions       String? // 조회 옵션
+  userId              String // 사용자 ID
+  User                User      @relation(fields: [userId], references: [id], onDelete: Cascade) // 사용자
+  tableId             String // 테이블 ID
+  Table               Table     @relation(fields: [tableId], references: [id], onDelete: Cascade) // 테이블
+
+  @@map("fields")
 }

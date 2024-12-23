@@ -5,15 +5,15 @@ import { Exclude, Expose } from "class-transformer";
 export class WorkspaceEntity {
   @ApiProperty({
     description: "워크스페이스 ID",
-    type: Number,
+    type: "string",
     required: true,
   })
   @Expose()
-  readonly id: number;
+  readonly id: string;
 
   @ApiProperty({
     description: "워크스페이스 이름",
-    type: String,
+    type: "string",
     required: true,
   })
   @Expose()
@@ -21,7 +21,7 @@ export class WorkspaceEntity {
 
   @ApiProperty({
     description: "워크스페이스 설명",
-    type: String,
+    type: "string",
     required: false,
     nullable: true,
   })
@@ -66,7 +66,7 @@ export class WorkspaceEntity {
 
   @ApiProperty({
     description: "순서",
-    type: Number,
+    type: "number",
     required: true,
   })
   @Expose()

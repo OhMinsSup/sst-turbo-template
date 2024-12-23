@@ -1,1 +1,1 @@
-export { loader } from "~/.server/routes/resources/loaders/health.loader";
+export { loader } from "~/.server/loaders/health.loader";

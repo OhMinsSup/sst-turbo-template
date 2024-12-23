@@ -1,1 +1,1 @@
-export { action } from "~/.server/routes/auth/actions/revalidate-auth.action";
+export { action } from "~/.server/actions/revalidate-auth.action";

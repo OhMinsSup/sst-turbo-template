@@ -8,7 +8,7 @@ import {
   SelectValue,
 } from "@template/ui/components/select";
 
-import type { RoutesActionData } from "~/.server/routes/resources/actions/theme.action";
+import type { RoutesActionData } from "~/.server/actions/theme.action";
 import { useRequestInfo } from "~/hooks/useRequestInfo";
 import { useOptimisticThemeMode } from "~/libs/theme";
 
