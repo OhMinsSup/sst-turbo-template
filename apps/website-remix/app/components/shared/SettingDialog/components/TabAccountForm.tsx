@@ -21,10 +21,20 @@ import { updateUsernameSchema } from "@template/validators/user";
 import { Icons } from "~/components/icons";
 import { UserImage } from "~/components/shared/User";
 import { useUser } from "~/hooks/useUser";
+import { uuid } from "~/libs/id";
 import { Title } from "./Title";
+
+interface StateRef {
+  currentSubmitId: string | undefined;
+}
+
+const defaultStateRef: StateRef = {
+  currentSubmitId: undefined,
+};
 
 function UpdateUsernameForm() {
   const user = useUser();
+  const stateRef = useRef<StateRef>(defaultStateRef);
   const form = useForm<FormFieldUpdateUsername>({
     resolver: zodResolver(updateUsernameSchema),
     defaultValues: {
@@ -37,9 +47,14 @@ function UpdateUsernameForm() {
 
   const onSubmit = form.handleSubmit((input) => {
     const formData = new FormData();
-    formData.append("username", input.username ?? "test");
+    if (input.username) {
+      formData.append("username", input.username);
+    }
+    stateRef.current.currentSubmitId = uuid();
+    formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("intent", "userUpdate");
     submit(formData, {
-      method: "PATCH",
+      method: "patch",
     });
   });
 

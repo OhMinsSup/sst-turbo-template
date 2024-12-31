@@ -5,14 +5,9 @@
  */
 
 import { PassThrough } from "node:stream";
-import type {
-  AppLoadContext,
-  EntryContext,
-  HandleDataRequestFunction,
-} from "@remix-run/node";
+import type { AppLoadContext, EntryContext } from "@remix-run/node";
 import { createReadableStreamFromReadable } from "@remix-run/node";
 import { RemixServer } from "@remix-run/react";
-import { cors } from "remix-utils/cors";
 import { isbot } from "isbot";
 import { renderToPipeableStream } from "react-dom/server";
 
@@ -148,10 +143,3 @@ function handleBrowserRequest(
     setTimeout(abort, ABORT_DELAY);
   });
 }
-
-export const handleDataRequest: HandleDataRequestFunction = async (
-  response,
-  { request },
-) => {
-  return await cors(request, response);
-};

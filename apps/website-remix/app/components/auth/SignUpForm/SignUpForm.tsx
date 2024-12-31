@@ -1,3 +1,4 @@
+import { useRef } from "react";
 import { useActionData, useNavigation, useSubmit } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useForm } from "react-hook-form";
@@ -17,8 +18,18 @@ import { signUpSchema } from "@template/validators/auth";
 
 import type { RoutesActionData } from "~/.server/actions/signup.action";
 import { Icons } from "~/components/icons";
+import { uuid } from "~/libs/id";
+
+interface StateRef {
+  currentSubmitId: string | undefined;
+}
+
+const defaultStateRef: StateRef = {
+  currentSubmitId: undefined,
+};
 
 export default function SignUpForm() {
+  const stateRef = useRef<StateRef>(defaultStateRef);
   const navigation = useNavigation();
   const submit = useSubmit();
   const actionData = useActionData<RoutesActionData>();
@@ -46,6 +57,9 @@ export default function SignUpForm() {
       formData.append("username", input.username);
     }
     formData.append("provider", input.provider);
+    stateRef.current.currentSubmitId = uuid();
+    formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("intent", "signUp");
     submit(input, {
       method: "post",
       replace: true,

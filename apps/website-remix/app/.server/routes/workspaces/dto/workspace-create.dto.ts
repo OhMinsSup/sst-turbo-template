@@ -9,15 +9,18 @@ export class WorkspaceCreateDto implements Partial<Body> {
   title?: Body["title"];
   description?: Body["description"];
   __submitId?: string;
+  __intent?: string;
 
-  async transform(request: Request) {
-    const formData = await request.formData();
-    const body = Object.fromEntries(formData.entries()) as Body & {
-      submitId: string;
+  async transform(request: Request, formData?: FormData) {
+    const newFormData = formData ?? (await request.formData());
+    const body = Object.fromEntries(newFormData.entries()) as Body & {
+      submitId?: string;
+      intent?: string;
     };
     this.title = body.title;
     this.description = body.description;
     this.__submitId = body.submitId;
+    this.__intent = body.intent;
     return this;
   }
 
@@ -30,9 +33,13 @@ export class WorkspaceCreateDto implements Partial<Body> {
       description: this.description,
     };
   }
-
   submitId(): string {
     invariant(this.__submitId, "Submit ID is required");
     return this.__submitId;
+  }
+
+  intent(): string {
+    invariant(this.__intent, "Intent is required");
+    return this.__intent;
   }
 }

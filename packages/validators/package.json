@@ -60,6 +60,7 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
+    "@template/common": "workspace:*",
     "zod": "catalog:"
   },
   "devDependencies": {

@@ -74,12 +74,13 @@ export function DialogEditWorkspace() {
     const formData = new FormData();
     stateRef.current.currentSubmitId = uuid();
     formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("intent", "editWorkspace");
     formData.append("title", input.title);
     if (input.description) {
       formData.append("description", input.description);
     }
     fetcher.submit(formData, {
-      method: "POST",
+      method: "post",
     });
   });
 

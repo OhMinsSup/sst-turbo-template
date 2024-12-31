@@ -1,12 +1,12 @@
 import { ActionFunctionArgs, data } from "@remix-run/node";
 import { container, inject } from "tsyringe";
 
+import { UserService } from "~/.server/routes/users/services/user.service";
 import { auth } from "~/.server/utils/auth";
 import {
   invariantToastError,
   invariantUnsupportedMethod,
 } from "~/.server/utils/shared";
-import { UserService } from "../services/user.service";
 
 export class UserController {
   constructor(
@@ -17,9 +17,10 @@ export class UserController {
   /**
    * @description 사용자 정보 변경
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async update(args: ActionFunctionArgs) {
-    const response = await this.userService.update(args);
+  async update(args: ActionFunctionArgs, formData?: FormData) {
+    const response = await this.userService.update(args, formData);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }

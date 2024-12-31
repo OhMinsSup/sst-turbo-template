@@ -9,13 +9,21 @@ export class SignInDto implements Partial<Body> {
   email?: Body["email"];
   password?: Body["password"];
   provider?: Body["provider"];
+  __submitId?: string;
+  __intent?: string;
 
   async transform(request: Request) {
     const formData = await request.formData();
-    const body = Object.fromEntries(formData.entries()) as Body;
+    const body = Object.fromEntries(formData.entries()) as Body & {
+      workspace: string;
+      submitId?: string;
+      intent?: string;
+    };
     this.email = body.email;
     this.password = body.password;
     this.provider = body.provider;
+    this.__submitId = body.submitId;
+    this.__intent = body.intent;
     return this;
   }
 
@@ -29,5 +37,15 @@ export class SignInDto implements Partial<Body> {
       password: this.password,
       provider: this.provider,
     };
+  }
+
+  submitId(): string {
+    invariant(this.__submitId, "Submit ID is required");
+    return this.__submitId;
+  }
+
+  intent(): string {
+    invariant(this.__intent, "Intent is required");
+    return this.__intent;
   }
 }

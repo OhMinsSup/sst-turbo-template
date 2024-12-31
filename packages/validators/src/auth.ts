@@ -1,5 +1,7 @@
 import * as z from "zod";
 
+import { Provider } from "@template/common";
+
 export const signInSchema = z.object({
   email: z.string().email("올바른 이메일 형식이 아닙니다."),
   password: z
@@ -7,10 +9,10 @@ export const signInSchema = z.object({
     .min(6, "비밀번호는 6글자 이상이어야 합니다.")
     .max(100, "비밀번호는 100글자 이하여야 합니다."),
   provider: z
-    .enum(["email"], {
+    .enum([Provider.EMAIL, Provider.PASSWORD], {
       message: "잘못된 인증 방식입니다.",
     })
-    .default("email"),
+    .default(Provider.PASSWORD),
 });
 
 export const signUpSchema = z

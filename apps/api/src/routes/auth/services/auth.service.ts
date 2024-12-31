@@ -60,8 +60,8 @@ export class AuthService {
    */
   async signIn(input: SignInDTO) {
     switch (input.provider) {
-      case Provider.EMAIL: {
-        return await this._signInWithEmail(input);
+      case Provider.PASSWORD: {
+        return await this._signInWithPassword(input);
       }
       default: {
         throw new UnauthorizedException(
@@ -75,7 +75,7 @@ export class AuthService {
    * @description 이메일로 로그인
    * @param {SignInDTO} input
    */
-  private async _signInWithEmail(input: SignInDTO) {
+  private async _signInWithPassword(input: SignInDTO) {
     const user = await this.usersService.isDuplicatedEmail(input.email);
 
     if (!user) {
@@ -142,8 +142,8 @@ export class AuthService {
    */
   async signUp(input: SignUpDTO) {
     switch (input.provider) {
-      case Provider.EMAIL: {
-        return await this._signUpWithEmail(input);
+      case Provider.PASSWORD: {
+        return await this._signUpWithPassword(input);
       }
       default: {
         throw new UnauthorizedException(
@@ -157,7 +157,7 @@ export class AuthService {
    * @description 이메일로 회원가입
    * @param {SignupDTO} input
    */
-  private async _signUpWithEmail(input: SignUpDTO) {
+  private async _signUpWithPassword(input: SignUpDTO) {
     // 이메일 중복 체크
     const user = await this.usersService.isDuplicatedEmail(input.email);
 

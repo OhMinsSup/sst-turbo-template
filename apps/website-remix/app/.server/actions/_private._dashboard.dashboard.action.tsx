@@ -1,22 +1,32 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
+import { namedAction } from "remix-utils/named-action";
 import { container } from "tsyringe";
 
-import { Method } from "@template/common";
-
 import { UserController } from "~/.server/routes/users/controllers/user.controller";
-import { getTypeSafeMethod } from "~/.server/utils/shared";
+import { WorkspaceController } from "~/.server/routes/workspaces/controllers/workspace.controller";
 
-export const action = async (args: ActionFunctionArgs) => {
-  const instance = container.resolve(UserController);
-  const method = getTypeSafeMethod(args.request);
-  switch (method) {
-    case Method.PATCH: {
-      return await instance.update(args);
-    }
-    default: {
-      throw instance.noop(args);
-    }
-  }
+type NamedActionKey = "userUpdate" | "restoreWorkspace";
+
+type ActionReturn<Name extends NamedActionKey> = Name extends "userUpdate"
+  ? ReturnType<UserController["update"]>
+  : Name extends "restoreWorkspace"
+    ? ReturnType<WorkspaceController["restore"]>
+    : never;
+
+export const action = async <Name extends NamedActionKey>(
+  args: ActionFunctionArgs,
+) => {
+  const formData = await args.request.formData();
+  return namedAction(formData, {
+    userUpdate: () => {
+      return container.resolve(UserController).update(args, formData);
+    },
+    restoreWorkspace: () => {
+      return container.resolve(WorkspaceController).restore(args, formData);
+    },
+  }) as ActionReturn<Name>;
 };
 
-export type RoutesActionData = typeof action;
+type Action<Name extends NamedActionKey> = typeof action<Name>;
+
+export type RoutesActionData<Name extends NamedActionKey> = Action<Name>;

@@ -20,9 +20,10 @@ export class WorkspaceController {
   /**
    * @description 워크스페이스 생성
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async create(args: ActionFunctionArgs) {
-    const response = await this.workspaceService.create(args);
+  async create(args: ActionFunctionArgs, formData?: FormData) {
+    const response = await this.workspaceService.create(args, formData);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
@@ -79,9 +80,10 @@ export class WorkspaceController {
   /**
    * @description 워크스페이스 삭제
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async remove(args: ActionFunctionArgs) {
-    const response = await this.workspaceService.remove(args);
+  async remove(args: ActionFunctionArgs, formData?: FormData) {
+    const response = await this.workspaceService.remove(args, formData);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
@@ -93,9 +95,10 @@ export class WorkspaceController {
   /**
    * @description 워크스페이스 복원
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async restore(args: ActionFunctionArgs) {
-    const response = await this.workspaceService.restore(args);
+  async restore(args: ActionFunctionArgs, formData?: FormData) {
+    const response = await this.workspaceService.restore(args, formData);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }
@@ -107,9 +110,10 @@ export class WorkspaceController {
   /**
    * @description 워크스페이스 즐겨찾기, 즐겨찾기 해제
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async favorite(args: ActionFunctionArgs) {
-    const response = await this.workspaceService.favorite(args);
+  async favorite(args: ActionFunctionArgs, formData?: FormData) {
+    const response = await this.workspaceService.favorite(args, formData);
     if (!response.data.success && response.toastMessage) {
       throw invariantToastError(response.toastMessage, response.requestInfo);
     }

@@ -24,7 +24,7 @@ export function TrashItem({ item }: TrashItemProps) {
         </div>
         <div className="ml-0 mr-3 min-w-0 flex-shrink-0 flex-grow-0 basis-auto">
           <div className="flex gap-1">
-            <Button size="icon" variant="ghost">
+            <Button size="icon" variant="ghost" type="button">
               <Icons.Undo2 />
             </Button>
           </div>

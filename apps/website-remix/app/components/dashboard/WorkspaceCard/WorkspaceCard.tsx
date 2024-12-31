@@ -1,4 +1,4 @@
-import React, { useCallback, useEffect, useMemo } from "react";
+import React, { useCallback, useEffect, useMemo, useRef } from "react";
 import { Link, useFetcher, useSearchParams } from "@remix-run/react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -9,6 +9,7 @@ import { Skeleton } from "@template/ui/components/skeleton";
 import type { RoutesActionData } from "~/.server/actions/_private._dashboard.dashboard._index.action";
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { uuid } from "~/libs/id";
 import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";
 
 interface WorkspaceCardProps {
@@ -16,7 +17,16 @@ interface WorkspaceCardProps {
   style?: React.CSSProperties;
 }
 
+interface StateRef {
+  currentSubmitId: string | undefined;
+}
+
+const defaultStateRef: StateRef = {
+  currentSubmitId: undefined,
+};
+
 export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
+  const stateRef = useRef<StateRef>(defaultStateRef);
   const fetcher = useFetcher<RoutesActionData>();
   const [searchParams] = useSearchParams();
 
@@ -34,8 +44,11 @@ export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
     const formData = new FormData();
     formData.append("workspaceId", item.id.toString());
     formData.append("isFavorite", nextFavorite);
+    stateRef.current.currentSubmitId = uuid();
+    formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("intent", "updateFavorite");
     fetcher.submit(formData, {
-      method: "PATCH",
+      method: "patch",
     });
   };
 

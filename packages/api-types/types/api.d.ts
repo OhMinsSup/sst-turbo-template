@@ -72,6 +72,70 @@ export interface paths {
     patch?: never;
     trace?: never;
   };
+  "/api/v1/fields": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FieldsController_findAll"];
+    put?: never;
+    post: operations["FieldsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/fields/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["FieldsController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["FieldsController_remove"];
+    options?: never;
+    head?: never;
+    patch: operations["FieldsController_update"];
+    trace?: never;
+  };
+  "/api/v1/records": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["RecordsController_findAll"];
+    put?: never;
+    post: operations["RecordsController_create"];
+    delete?: never;
+    options?: never;
+    head?: never;
+    patch?: never;
+    trace?: never;
+  };
+  "/api/v1/records/{id}": {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    get: operations["RecordsController_findOne"];
+    put?: never;
+    post?: never;
+    delete: operations["RecordsController_remove"];
+    options?: never;
+    head?: never;
+    patch: operations["RecordsController_update"];
+    trace?: never;
+  };
   "/api/v1/users": {
     parameters: {
       query?: never;
@@ -334,6 +398,8 @@ export interface components {
         | 504
         | 505;
     };
+    CreateFieldDto: Record<string, never>;
+    CreateRecordDto: Record<string, never>;
     CreateTableDto: Record<string, never>;
     CreateWorkspaceDto: {
       /**
@@ -576,7 +642,7 @@ export interface components {
        * @example email
        * @enum {string}
        */
-      provider: "email";
+      provider: "email" | "password";
     };
     SignUpDTO: {
       /**
@@ -596,7 +662,7 @@ export interface components {
        * @example email
        * @enum {string}
        */
-      provider: "email";
+      provider: "email" | "password";
       /**
        * Usernaem
        * @description 유저의 이름
@@ -611,6 +677,8 @@ export interface components {
        */
       refreshToken: string;
     };
+    UpdateFieldDto: Record<string, never>;
+    UpdateRecordDto: Record<string, never>;
     UpdateTableDto: Record<string, never>;
     UpdateUserDto: {
       /**
@@ -1054,7 +1122,7 @@ export interface components {
       /** @description 워크스페이스 설명 */
       description?: string | null;
       /** @description 워크스페이스 ID */
-      id: number;
+      id: string;
       /** @description 즐겨찾기 여부 */
       isFavorite: boolean;
       /** @description 순서 */
@@ -1366,6 +1434,204 @@ export interface operations {
         content: {
           "application/json": components["schemas"]["HttpErrorDto"];
         };
+      };
+    };
+  };
+  FieldsController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FieldsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateFieldDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FieldsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FieldsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  FieldsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateFieldDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecordsController_findAll: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecordsController_create: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path?: never;
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["CreateRecordDto"];
+      };
+    };
+    responses: {
+      201: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecordsController_findOne: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecordsController_remove: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody?: never;
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
+      };
+    };
+  };
+  RecordsController_update: {
+    parameters: {
+      query?: never;
+      header?: never;
+      path: {
+        id: string;
+      };
+      cookie?: never;
+    };
+    requestBody: {
+      content: {
+        "application/json": components["schemas"]["UpdateRecordDto"];
+      };
+    };
+    responses: {
+      200: {
+        headers: {
+          [name: string]: unknown;
+        };
+        content?: never;
       };
     };
   };

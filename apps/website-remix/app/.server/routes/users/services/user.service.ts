@@ -5,6 +5,7 @@ import { HttpStatusCode } from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
+import { UserUpdateDto } from "~/.server/routes/users/dto/user-update.dto";
 import { auth } from "~/.server/utils/auth";
 import {
   defaultToastErrorMessage,
@@ -12,7 +13,6 @@ import {
 } from "~/.server/utils/shared";
 import { api } from "~/libs/api";
 import { toValidationErrorFormat } from "~/libs/error";
-import { UserUpdateDto } from "../dto/user-update.dto";
 
 @singleton()
 @injectable()
@@ -27,8 +27,9 @@ export class UserService {
   /**
    * @description 사용자 정보를 수정합니다.
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async update(args: ActionFunctionArgs) {
+  async update(args: ActionFunctionArgs, formData?: FormData) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -40,7 +41,7 @@ export class UserService {
     });
 
     const dto = new UserUpdateDto();
-    const body = (await dto.transform(args.request)).json();
+    const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
     const { data, error } = await api

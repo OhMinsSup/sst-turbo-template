@@ -6,6 +6,7 @@ import { HttpStatusCode } from "@template/common";
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
 import { WorkspaceCreateDto } from "~/.server/routes/workspaces/dto/workspace-create.dto";
+import { WorkspaceDeleteDto } from "~/.server/routes/workspaces/dto/workspace-delete.dto";
 import { WorkspaceFavoriteDto } from "~/.server/routes/workspaces/dto/workspace-favorite.dto";
 import { WorkspaceListQueryDto } from "~/.server/routes/workspaces/dto/workspace-list-query.dto";
 import { auth } from "~/.server/utils/auth";
@@ -16,7 +17,6 @@ import {
 } from "~/.server/utils/shared";
 import { api } from "~/libs/api";
 import { toValidationErrorFormat } from "~/libs/error";
-import { WorkspaceDeleteDto } from "../dto/workspace-delete.dto";
 
 @singleton()
 @injectable()
@@ -31,8 +31,9 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 생성
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async create(args: ActionFunctionArgs) {
+  async create(args: ActionFunctionArgs, formData?: FormData) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -44,7 +45,7 @@ export class WorkspaceService {
     });
 
     const dto = new WorkspaceCreateDto();
-    const body = (await dto.transform(args.request)).json();
+    const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
     const { data, error } = await api
@@ -108,8 +109,9 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 즐겨찾기
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async favorite(args: ActionFunctionArgs) {
+  async favorite(args: ActionFunctionArgs, formData?: FormData) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -121,7 +123,7 @@ export class WorkspaceService {
     });
 
     const dto = new WorkspaceFavoriteDto();
-    const dtoInstance = await dto.transform(args.request);
+    const dtoInstance = await dto.transform(args.request, formData);
     const body = dtoInstance.json();
 
     const { data, error } = await api
@@ -236,8 +238,9 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 삭제
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async remove(args: ActionFunctionArgs) {
+  async remove(args: ActionFunctionArgs, formData?: FormData) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -249,7 +252,7 @@ export class WorkspaceService {
     });
 
     const dto = new WorkspaceDeleteDto();
-    const dtoInstance = await dto.transform(args.request);
+    const dtoInstance = await dto.transform(args.request, formData);
 
     const { data, error } = await api
       .method("delete")
@@ -295,8 +298,9 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 복구
    * @param {ActionFunctionArgs} args
+   * @param {FormData?} formData
    */
-  async restore(args: ActionFunctionArgs) {
+  async restore(args: ActionFunctionArgs, formData?: FormData) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -308,7 +312,7 @@ export class WorkspaceService {
     });
 
     const dto = new WorkspaceDeleteDto();
-    const dtoInstance = await dto.transform(args.request);
+    const dtoInstance = await dto.transform(args.request, formData);
 
     const { data, error } = await api
       .method("patch")
