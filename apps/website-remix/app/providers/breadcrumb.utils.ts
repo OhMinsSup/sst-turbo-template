@@ -11,7 +11,7 @@ export interface BaseBreadcrumbItem {
   pathname: string | ((params?: Readonly<Params<string>>) => string);
   pathnameRegex?: RegExp | ((params?: Readonly<Params<string>>) => RegExp);
   children?: BaseBreadcrumbItem[];
-  type: "DASHBOARD" | "WORKSPACE" | "TRASH" | "SETTING";
+  type: "DASHBOARD" | "WORKSPACE" | "TRASH" | "SETTING" | "TABLE";
 }
 
 const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
@@ -100,7 +100,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
     ],
   ],
   [
-    /^\/dashboard\/workspaces\/?$/,
+    /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
     [
       {
         title: "대시보드",
@@ -111,11 +111,26 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
         children: [
           {
             title: "워크스페이스",
-            description: "워크스페이스의 모든 것을 관리하세요.",
-            isLast: true,
-            pathname: PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ROOT,
-            pathnameRegex: /^\/dashboard\/workspaces\/?$/,
+            isLast: false,
+            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
+            pathnameRegex: /^\/dashboard\/?$/,
             type: "WORKSPACE",
+            children: [
+              {
+                title: "테이블",
+                isLast: true,
+                pathname: (params) => {
+                  if (params?.workspaceId) {
+                    return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(
+                      params.workspaceId,
+                    );
+                  }
+                  throw new Error("workspaceId is required");
+                },
+                pathnameRegex: /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
+                type: "TABLE",
+              },
+            ],
           },
         ],
       },
@@ -123,7 +138,7 @@ const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
   ],
 ]);
 
-interface GetBreadcrumbParams {
+export interface GetBreadcrumbParams {
   pathname: string;
   params?: Readonly<Params<string>>;
 }
@@ -204,15 +219,22 @@ export function getBreadcrumb({ pathname, params }: GetBreadcrumbParams) {
   return items.at(-1);
 }
 
-export function getFlatBreadcrumb({ pathname, params }: GetBreadcrumbParams) {
+export function getFlatBreadcrumbs({ pathname, params }: GetBreadcrumbParams) {
   const items = getDeepBreadcrumbs({ pathname, params });
 
   const flatItems: BaseBreadcrumbItem[] = [];
   for (const item of items) {
     flatItems.push(item);
     if (item.children) {
-      flatItems.push(...getFlatBreadcrumb({ pathname, params }));
+      flatItems.push(...getFlatBreadcrumbs({ pathname, params }));
     }
   }
   return flatItems;
+}
+
+export function initializeBreadcrumb(value: Map<RegExp, BaseBreadcrumbItem[]>) {
+  for (const [regex, items] of value) {
+    breadcrumb.set(regex, items);
+  }
+  return breadcrumb;
 }

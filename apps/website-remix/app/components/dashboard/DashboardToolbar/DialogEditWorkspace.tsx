@@ -42,7 +42,7 @@ const defaultStateRef: StateRef = {
 export function DialogEditWorkspace() {
   const [open, setOpen] = useState(false);
   const stateRef = useRef<StateRef>(defaultStateRef);
-  const fetcher = useFetcher<RoutesActionData>();
+  const fetcher = useFetcher<RoutesActionData<"createWorkspace">>();
   const queryClient = useQueryClient();
 
   const [searchParams] = useSearchParams();
@@ -74,14 +74,12 @@ export function DialogEditWorkspace() {
     const formData = new FormData();
     stateRef.current.currentSubmitId = uuid();
     formData.append("submitId", stateRef.current.currentSubmitId);
-    formData.append("intent", "editWorkspace");
+    formData.append("intent", "createWorkspace");
     formData.append("title", input.title);
     if (input.description) {
       formData.append("description", input.description);
     }
-    fetcher.submit(formData, {
-      method: "post",
-    });
+    fetcher.submit(formData);
   });
 
   const onSussessSubmit = useCallback(async () => {

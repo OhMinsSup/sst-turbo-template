@@ -8,8 +8,6 @@ import { Layout } from "~/components/shared/Layout";
 import { Sidebar } from "~/components/shared/Sidebar";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-export { action } from "~/.server/actions/_private._dashboard.dashboard.action";
-
 export default function Routes() {
   return (
     <>

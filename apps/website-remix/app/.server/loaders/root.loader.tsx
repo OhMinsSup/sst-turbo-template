@@ -3,9 +3,7 @@ import { container } from "tsyringe";
 
 import { RootController } from "~/.server/routes/root/controllers/root.controller";
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  const instance = container.resolve(RootController);
-  return await instance.root(args);
-};
+export const loader = async (args: LoaderFunctionArgs) =>
+  await container.resolve(RootController).root(args);
 
 export type RoutesLoaderData = typeof loader;

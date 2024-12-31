@@ -19,6 +19,7 @@
     "@epic-web/remember": "^1.1.0",
     "@hookform/resolvers": "catalog:",
     "@paralleldrive/cuid2": "^2.2.2",
+    "@radix-ui/react-visually-hidden": "^1.1.1",
     "@remix-run/node": "catalog:remix2",
     "@remix-run/react": "catalog:remix2",
     "@remix-run/serve": "catalog:remix2",

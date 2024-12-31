@@ -1,5 +1,5 @@
 import { Icons } from "~/components/icons";
-import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
+import { useBreadcrumb } from "~/providers/breadcrumb.provider";
 import { TrashItemListTypeDashboard } from "./TrashItemListTypeDashboard";
 
 interface TrashPopoverScrollAreaProps {

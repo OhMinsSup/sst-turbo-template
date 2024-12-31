@@ -1,6 +1,7 @@
 import { Outlet, useNavigation } from "@remix-run/react";
 
 import { OverlayLoading } from "~/components/shared/OverlayLoading";
+import { BreadcrumbProvider } from "~/providers/breadcrumb.provider";
 
 export { loader } from "~/.server/loaders/protecting.loader";
 
@@ -17,9 +18,9 @@ export default function Routes() {
   const isNavigating = Boolean(navigation.location);
 
   return (
-    <>
+    <BreadcrumbProvider>
       <Outlet />
       <OverlayLoading isLoading={isActionRedirect || isNavigating} />
-    </>
+    </BreadcrumbProvider>
   );
 }

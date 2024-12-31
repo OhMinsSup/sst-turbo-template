@@ -4,9 +4,7 @@ import { container } from "tsyringe";
 import type { RoutesLoaderDataValue } from "~/.server/api/loaders/workspaces.loader";
 import { WorkspaceController } from "~/.server/routes/workspaces/controllers/workspace.controller";
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  const instance = container.resolve(WorkspaceController);
-  return await instance.findAllByDeletedToJson(args);
-};
+export const loader = async (args: LoaderFunctionArgs) =>
+  await container.resolve(WorkspaceController).findAllByDeletedToJson(args);
 
 export type RoutesLoaderData = RoutesLoaderDataValue;

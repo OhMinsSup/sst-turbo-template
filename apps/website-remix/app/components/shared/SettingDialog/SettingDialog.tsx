@@ -1,9 +1,13 @@
 import React from "react";
 import { Link } from "@remix-run/react";
+import * as VisuallyHidden from "@radix-ui/react-visually-hidden";
 
 import {
   Dialog,
   DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
   DialogTrigger,
 } from "@template/ui/components/dialog";
 import { SidebarMenuButton, useSidebar } from "@template/ui/components/sidebar";
@@ -16,7 +20,7 @@ import {
 
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
+import { useBreadcrumb } from "~/providers/breadcrumb.provider";
 import { TabAccountForm } from "./components/TabAccountForm";
 import { TabIntegrations } from "./components/TabIntegrations";
 import { TabNotifications } from "./components/TabNotifications";
@@ -58,6 +62,12 @@ export default function SettingDialog() {
           width: "1150px",
         }}
       >
+        <VisuallyHidden.Root>
+          <DialogHeader>
+            <DialogTitle>설정</DialogTitle>
+            <DialogDescription>사용자 설정 및 계정 관리</DialogDescription>
+          </DialogHeader>
+        </VisuallyHidden.Root>
         <Tabs
           defaultValue="account"
           className="flex h-full flex-row overflow-auto"

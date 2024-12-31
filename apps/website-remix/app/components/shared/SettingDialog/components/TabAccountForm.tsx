@@ -54,7 +54,7 @@ function UpdateUsernameForm() {
     formData.append("submitId", stateRef.current.currentSubmitId);
     formData.append("intent", "userUpdate");
     submit(formData, {
-      method: "patch",
+      action: "/api/users",
     });
   });
 

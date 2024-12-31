@@ -1,6 +1,6 @@
 import React from "react";
 
-import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
+import { useBreadcrumb } from "~/providers/breadcrumb.provider";
 
 export interface DashboardTitleProps {
   children: React.ReactNode;

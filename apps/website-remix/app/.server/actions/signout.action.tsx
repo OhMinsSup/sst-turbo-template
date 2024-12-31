@@ -7,9 +7,7 @@ export const loader = () => {
   throw new Response("Not found", { status: 404 });
 };
 
-export const action = async (args: ActionFunctionArgs) => {
-  const instance = container.resolve(AuthController);
-  return await instance.signOut(args);
-};
+export const action = async (args: ActionFunctionArgs) =>
+  await container.resolve(AuthController).signOut(args);
 
 export type RoutesActionData = typeof action;

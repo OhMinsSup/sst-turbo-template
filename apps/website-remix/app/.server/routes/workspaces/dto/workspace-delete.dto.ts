@@ -8,11 +8,11 @@ export class WorkspaceDeleteDto {
   async transform(request: Request, formData?: FormData) {
     const newFormData = formData ?? (await request.formData());
     const body = Object.fromEntries(newFormData.entries()) as {
-      workspace: string;
+      workspaceId: string;
       submitId?: string;
       intent?: string;
     };
-    this.workspaceId = body.workspace;
+    this.workspaceId = body.workspaceId;
     this.__submitId = body.submitId;
     this.__intent = body.intent;
     return this;

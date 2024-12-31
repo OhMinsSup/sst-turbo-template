@@ -3,11 +3,9 @@ import { container } from "tsyringe";
 
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
 
-export const loader = async (args: LoaderFunctionArgs) => {
-  const instance = container.resolve(AuthMiddleware);
-  return await instance.unauthenticate(args, () => {
-    return new Response(null, { status: 200 });
-  });
-};
+export const loader = async (args: LoaderFunctionArgs) =>
+  await container
+    .resolve(AuthMiddleware)
+    .unauthenticate(args, () => new Response(null, { status: 200 }));
 
 export type RoutesLoaderData = typeof loader;

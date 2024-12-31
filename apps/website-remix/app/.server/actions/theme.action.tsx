@@ -1,39 +1,9 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
-import { data, redirect } from "@remix-run/node";
-import { invariantResponse } from "@epic-web/invariant";
+import { container } from "tsyringe";
 
-import type { FomrFieldThemeSchema } from "~/libs/theme";
-import { setTheme } from "~/.server/utils/theme";
-import { themeSchema } from "~/libs/theme";
+import { RootController } from "~/.server/routes/root/controllers/root.controller";
 
-export const action = async (ctx: ActionFunctionArgs) => {
-  const formData = await ctx.request.formData();
-
-  const input = {
-    theme: formData.get("theme") as FomrFieldThemeSchema["theme"],
-    redirectTo: formData.get(
-      "redirectTo",
-    ) as FomrFieldThemeSchema["redirectTo"],
-  };
-
-  const parsed = themeSchema.safeParse(input);
-  invariantResponse(parsed.success, "Invalid theme received");
-
-  const { theme, redirectTo } = parsed.data;
-
-  const responseInit = {
-    headers: { "set-cookie": setTheme(theme) },
-  };
-  if (redirectTo) {
-    throw redirect(redirectTo, responseInit);
-  } else {
-    return data(
-      {
-        success: true,
-      },
-      responseInit,
-    );
-  }
-};
+export const action = async (args: ActionFunctionArgs) =>
+  await container.resolve(RootController).theme(args);
 
 export type RoutesActionData = typeof action;

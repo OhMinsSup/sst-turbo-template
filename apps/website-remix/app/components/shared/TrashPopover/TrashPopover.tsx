@@ -9,7 +9,7 @@ import { SidebarMenuButton, useSidebar } from "@template/ui/components/sidebar";
 
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
-import { useBreadcrumb } from "~/hooks/useBreadcrumbs";
+import { useBreadcrumb } from "~/providers/breadcrumb.provider";
 import { TrashPopoverContent } from "./components/TrashPopoverContent";
 import { TrashPopoverFooter } from "./components/TrashPopoverFooter";
 import { TrashProvider } from "./context/trash";
@@ -18,7 +18,7 @@ export default function TrashPopover() {
   const { isMobile } = useSidebar();
   const item = useBreadcrumb();
 
-  if (item?.type === "TRASH") {
+  if (item?.type === "TRASH" || item?.type === "TABLE") {
     return null;
   }
 

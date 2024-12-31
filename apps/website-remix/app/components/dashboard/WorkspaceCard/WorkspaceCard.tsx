@@ -6,7 +6,7 @@ import type { components } from "@template/api-types";
 import { Button } from "@template/ui/components/button";
 import { Skeleton } from "@template/ui/components/skeleton";
 
-import type { RoutesActionData } from "~/.server/actions/_private._dashboard.dashboard._index.action";
+import type { RoutesActionData } from "~/.server/api/actions/workspaces.action";
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 import { uuid } from "~/libs/id";
@@ -27,7 +27,7 @@ const defaultStateRef: StateRef = {
 
 export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
   const stateRef = useRef<StateRef>(defaultStateRef);
-  const fetcher = useFetcher<RoutesActionData>();
+  const fetcher = useFetcher<RoutesActionData<"favoriteWorkspace">>();
   const [searchParams] = useSearchParams();
 
   const searchParamsObj = useMemo(() => {
@@ -46,9 +46,9 @@ export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
     formData.append("isFavorite", nextFavorite);
     stateRef.current.currentSubmitId = uuid();
     formData.append("submitId", stateRef.current.currentSubmitId);
-    formData.append("intent", "updateFavorite");
+    formData.append("intent", "favoriteWorkspace");
     fetcher.submit(formData, {
-      method: "patch",
+      action: "/api/workspaces",
     });
   };
 

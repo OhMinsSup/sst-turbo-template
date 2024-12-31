@@ -3,7 +3,7 @@ import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
 
 import { User } from "~/components/shared/User";
-import { useBreadcrumbs } from "~/hooks/useBreadcrumbs";
+import { useBreadcrumbs } from "~/providers/breadcrumb.provider";
 import { RecursiveBreadcrumbItem } from "./components/RecursiveBreadcrumbItem";
 
 export default function DashboardHeader() {

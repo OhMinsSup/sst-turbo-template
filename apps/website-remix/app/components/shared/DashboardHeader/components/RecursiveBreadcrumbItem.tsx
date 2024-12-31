@@ -10,7 +10,7 @@ import {
 } from "@template/ui/components/breadcrumb";
 import { isFunction } from "@template/utils/assertion";
 
-import type { BaseBreadcrumbItem } from "../data/breadcrumb";
+import type { BaseBreadcrumbItem } from "~/providers/breadcrumb.utils";
 
 interface RecursiveBreadcrumbItemProps {
   item: BaseBreadcrumbItem;

@@ -284,7 +284,7 @@ export class WorkspaceService {
     return {
       data: {
         success: true,
-        data,
+        workspace: data.data,
       },
       requestInfo: {
         headers: authtication.headers,
@@ -344,7 +344,7 @@ export class WorkspaceService {
     return {
       data: {
         success: true,
-        data,
+        workspace: data.data,
       },
       requestInfo: {
         headers: authtication.headers,

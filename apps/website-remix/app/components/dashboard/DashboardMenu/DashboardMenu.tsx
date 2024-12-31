@@ -1,25 +1,20 @@
-import { Link } from "@remix-run/react";
-
-import {
-  SidebarMenuButton,
-  SidebarMenuItem,
-} from "@template/ui/components/sidebar";
-
-import { Icons } from "~/components/icons";
-import { SidebarMenuNav } from "~/components/shared/SidebarMenuNav";
-import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { useBreadcrumb } from "~/providers/breadcrumb.provider";
+import { TypeDashboardMenu } from "./TypeDashboardMenu";
+import { TypeTableMenu } from "./TypeTableMenu";
 
 export default function DashboardMenu() {
-  return (
-    <SidebarMenuNav title="워크스페이스 메뉴" usedSortingComponent={false}>
-      <SidebarMenuItem>
-        <SidebarMenuButton tooltip={"워크스페이스"} asChild>
-          <Link to={PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT} viewTransition>
-            <Icons.Database />
-            <span className="w-full">워크스페이스</span>
-          </Link>
-        </SidebarMenuButton>
-      </SidebarMenuItem>
-    </SidebarMenuNav>
-  );
+  const data = useBreadcrumb();
+  if (
+    data?.type === "DASHBOARD" ||
+    data?.type === "TRASH" ||
+    data?.type === "SETTING"
+  ) {
+    return <TypeDashboardMenu />;
+  }
+
+  if (data?.type === "TABLE") {
+    return <TypeTableMenu />;
+  }
+
+  return null;
 }

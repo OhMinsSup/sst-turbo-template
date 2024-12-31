@@ -88,10 +88,10 @@ export function TrashItemListTypeDashboard({
     };
   }, [fetcher.data]);
 
-  const flatList = useMemo(() => {
-    const values = Object.values(data);
-    return values.flatMap((item) => item.list);
-  }, [data]);
+  const flatList = useMemo(
+    () => Object.values(data).flatMap((item) => item.list),
+    [data],
+  );
 
   return (
     <ScrollArea type="auto" ref={ref}>

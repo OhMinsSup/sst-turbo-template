@@ -2,12 +2,15 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { namedAction } from "remix-utils/named-action";
 import { container } from "tsyringe";
 
-import { WorkspaceController } from "~/.server/routes/workspaces/controllers/workspace.controller";
+import { UserController } from "~/.server/routes/users/controllers/user.controller";
 
-type NamedActionKey = "favoriteWorkspace" | "createWorkspace";
+type NamedActionKey =
+  | "restoreWorkspace"
+  | "trashWorkspace"
+  | "favoriteWorkspace";
 
-type ActionReturn<Name extends NamedActionKey> = Name extends "createWorkspace"
-  ? ReturnType<WorkspaceController["create"]>
+type ActionReturn<Name extends NamedActionKey> = Name extends "updateUser"
+  ? ReturnType<UserController["update"]>
   : never;
 
 export const action = async <Name extends NamedActionKey>(
@@ -15,8 +18,8 @@ export const action = async <Name extends NamedActionKey>(
 ) => {
   const formData = await args.request.formData();
   return namedAction(formData, {
-    createWorkspace: () => {
-      return container.resolve(WorkspaceController).create(args, formData);
+    updateUser: () => {
+      return container.resolve(UserController).update(args, formData);
     },
   }) as ActionReturn<Name>;
 };

@@ -133,6 +133,8 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
 export default function App() {
   const { session, toast } = useLoaderData<RoutesLoaderData>();
 
+  console.log("session", session);
+
   return (
     <Document>
       <AppWithProvider session={session}>
