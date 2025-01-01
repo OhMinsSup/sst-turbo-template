@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useRef } from "react";
+import { useCallback, useEffect } from "react";
 import { useFetcher } from "@remix-run/react";
 import { useQueryClient } from "@tanstack/react-query";
 
@@ -7,23 +7,14 @@ import { Button } from "@template/ui/components/button";
 
 import type { RoutesActionData } from "~/.server/api/actions/workspaces.action";
 import { Icons } from "~/components/icons";
-import { uuid } from "~/libs/id";
 import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";
+import { useDataStore } from "~/providers/data.store";
 
 interface TrashItemProps {
   item: components["schemas"]["WorkspaceEntity"];
 }
 
-interface StateRef {
-  currentSubmitId: string | undefined;
-}
-
-const defaultStateRef: StateRef = {
-  currentSubmitId: undefined,
-};
-
 export function TrashItem({ item }: TrashItemProps) {
-  const stateRef = useRef<StateRef>(defaultStateRef);
   const fetcher = useFetcher<RoutesActionData<"restoreWorkspace">>();
 
   const queryClient = useQueryClient();
@@ -31,8 +22,7 @@ export function TrashItem({ item }: TrashItemProps) {
   const onClickRestore = (e: React.MouseEvent<HTMLButtonElement>) => {
     e.preventDefault();
     const formData = new FormData();
-    stateRef.current.currentSubmitId = uuid();
-    formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("submitId", useDataStore.getState().generateSubmitId());
     formData.append("workspaceId", item.id.toString());
     formData.append("intent", "restoreWorkspace");
     fetcher.submit(formData, {

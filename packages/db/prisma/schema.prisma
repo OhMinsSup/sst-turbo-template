@@ -37,10 +37,12 @@ model User {
 }
 
 model UserProfile {
-  id     String  @id @default(cuid())
-  image  String? // 이미지
-  userId String  @unique
-  User   User    @relation(fields: [userId], references: [id], onDelete: Cascade)
+  id        String  @id @default(cuid())
+  firstName String? // 이름
+  lastName  String? // 성
+  image     String? // 이미지
+  userId    String  @unique
+  User      User    @relation(fields: [userId], references: [id], onDelete: Cascade)
 
   @@map("user_profiles")
 }

@@ -2,7 +2,7 @@ import type { ActionFunctionArgs } from "@remix-run/node";
 import { redirect } from "@remix-run/node";
 import { container, inject, injectable, singleton } from "tsyringe";
 
-import type { AuthService } from "~/.server/routes/auth/services/auth.service";
+import { AuthService } from "~/.server/routes/auth/services/auth.service";
 import { invariantToastError } from "~/.server/utils/shared";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
@@ -10,7 +10,7 @@ import { PAGE_ENDPOINTS } from "~/constants/constants";
 @injectable()
 export class AuthController {
   constructor(
-    @inject(AuthController.name)
+    @inject(AuthService.name)
     private readonly authService: AuthService,
   ) {}
 

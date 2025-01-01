@@ -2,7 +2,6 @@ import { Breadcrumb, BreadcrumbList } from "@template/ui/components/breadcrumb";
 import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
 
-import { User } from "~/components/shared/User";
 import { useBreadcrumbs } from "~/providers/breadcrumb.provider";
 import { RecursiveBreadcrumbItem } from "./components/RecursiveBreadcrumbItem";
 
@@ -27,9 +26,6 @@ export default function DashboardHeader() {
             })}
           </BreadcrumbList>
         </Breadcrumb>
-      </div>
-      <div className="ml-auto flex items-center space-x-3">
-        <User />
       </div>
     </header>
   );

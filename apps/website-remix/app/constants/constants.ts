@@ -9,16 +9,31 @@ export const PAGE_ENDPOINTS = {
   PROTECTED: {
     DASHBOARD: {
       ROOT: "/dashboard",
+      RESET_PASSWORD: "/dashboard/reset-password",
+      // DEPRECATED
       TRASH: "/dashboard/trash",
       SETTING: "/dashboard/setting/account",
       NOTIFICATIONS: "/dashboard/setting/notifications",
       INTEGRATION: "/dashboard/setting/integration",
       SYSTEM: "/dashboard/setting/system",
     },
+    PREFERENCES: {
+      ME: "/dashboard/account/me",
+    },
     WORKSPACE: {
       ROOT: "/dashboard/workspaces",
       ID: (workspaceId: string | number) =>
         `/dashboard/workspaces/${workspaceId}`,
+      EDITOR: {
+        ROOT: (workspaceId: string | number) =>
+          `/dashboard/workspaces/${workspaceId}/editor`,
+        TABLE_ID: (workspaceId: string | number, tableId: string | number) =>
+          `/dashboard/workspaces/${workspaceId}/editor/${tableId}`,
+      },
+      SETTINGS: {
+        GENERAL: (workspaceId: string | number) =>
+          `/dashboard/workspaces/${workspaceId}/settings/general`,
+      },
     },
   },
 } as const;

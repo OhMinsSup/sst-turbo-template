@@ -8,6 +8,8 @@ import { getSessionSelector } from "./session.selector";
 export const getUserProfileSelector = () => {
   return Prisma.validator<Prisma.UserProfileSelect>()({
     id: true,
+    firstName: true,
+    lastName: true,
     image: true,
     userId: true,
   });

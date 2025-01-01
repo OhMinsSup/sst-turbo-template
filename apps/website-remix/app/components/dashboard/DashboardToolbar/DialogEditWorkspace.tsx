@@ -1,4 +1,4 @@
-import { useCallback, useEffect, useMemo, useRef, useState } from "react";
+import { useCallback, useEffect, useMemo, useState } from "react";
 import { useFetcher, useSearchParams } from "@remix-run/react";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { useQueryClient } from "@tanstack/react-query";
@@ -28,20 +28,11 @@ import { createWorkspaceSchema } from "@template/validators/workspace";
 
 import type { RoutesActionData } from "~/.server/actions/_private._dashboard.dashboard._index.action";
 import { Icons } from "~/components/icons";
-import { uuid } from "~/libs/id";
 import { queryWorkspaceKeys } from "~/libs/queries/workspace.queries";
-
-interface StateRef {
-  currentSubmitId: string | undefined;
-}
-
-const defaultStateRef: StateRef = {
-  currentSubmitId: undefined,
-};
+import { useDataStore } from "~/providers/data.store";
 
 export function DialogEditWorkspace() {
   const [open, setOpen] = useState(false);
-  const stateRef = useRef<StateRef>(defaultStateRef);
   const fetcher = useFetcher<RoutesActionData<"createWorkspace">>();
   const queryClient = useQueryClient();
 
@@ -72,8 +63,7 @@ export function DialogEditWorkspace() {
 
   const onSubmit = form.handleSubmit((input) => {
     const formData = new FormData();
-    stateRef.current.currentSubmitId = uuid();
-    formData.append("submitId", stateRef.current.currentSubmitId);
+    formData.append("submitId", useDataStore.getState().generateSubmitId());
     formData.append("intent", "createWorkspace");
     formData.append("title", input.title);
     if (input.description) {
@@ -87,7 +77,7 @@ export function DialogEditWorkspace() {
       if ("submitId" in actionData && "workspace" in actionData) {
         if (
           actionData.submitId &&
-          stateRef.current.currentSubmitId === actionData.submitId
+          useDataStore.getState().submitId() === actionData.submitId
         ) {
           setOpen(false);
           await queryClient.invalidateQueries({
@@ -101,7 +91,7 @@ export function DialogEditWorkspace() {
   useEffect(() => {
     return () => {
       form.reset();
-      stateRef.current = defaultStateRef;
+      useDataStore.getState().resetSubmitId();
     };
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [open]);

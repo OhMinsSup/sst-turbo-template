@@ -28,7 +28,7 @@ export default function SidebarLogo({ to }: SidebarLogoProps) {
     >
       <Icons.Logo
         data-open={open}
-        className="data-[open=true]:mr-2 data-[open=true]:size-8 data-[open=false]:!w-full"
+        className="data-[open=true]:mr-2 data-[open=true]:size-6 data-[open=false]:!w-full"
       />
     </Link>
   );

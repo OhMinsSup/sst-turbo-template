@@ -1,5 +1,5 @@
 import { ActionFunctionArgs, data } from "@remix-run/node";
-import { container, inject } from "tsyringe";
+import { container, inject, injectable, singleton } from "tsyringe";
 
 import { UserService } from "~/.server/routes/users/services/user.service";
 import { auth } from "~/.server/utils/auth";
@@ -8,6 +8,8 @@ import {
   invariantUnsupportedMethod,
 } from "~/.server/utils/shared";
 
+@singleton()
+@injectable()
 export class UserController {
   constructor(
     @inject(UserService.name)

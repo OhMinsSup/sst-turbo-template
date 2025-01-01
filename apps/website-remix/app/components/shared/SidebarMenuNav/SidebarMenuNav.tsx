@@ -7,18 +7,25 @@ import {
 import type { SidebarMenuNavTitlebarProps } from "~/components/shared/SidebarMenuNavTitlebar";
 import { SidebarMenuNavTitlebar } from "~/components/shared/SidebarMenuNavTitlebar";
 
-export type SidebarMenuNavProps = SidebarMenuNavTitlebarProps & {
-  children: React.ReactNode;
-};
+export type SidebarMenuNavProps = Omit<SidebarMenuNavTitlebarProps, "title"> &
+  Partial<Pick<SidebarMenuNavTitlebarProps, "title">> & {
+    children: React.ReactNode;
+  };
 export default function SidebarMenuNav({
   children,
+  title,
   ...sidebarMenuNavTitlebarProps
 }: SidebarMenuNavProps) {
   return (
     <SidebarGroup>
-      <SidebarGroupLabel className="flex justify-between">
-        <SidebarMenuNavTitlebar {...sidebarMenuNavTitlebarProps} />
-      </SidebarGroupLabel>
+      {title ? (
+        <SidebarGroupLabel className="flex justify-between">
+          <SidebarMenuNavTitlebar
+            title={title}
+            {...sidebarMenuNavTitlebarProps}
+          />
+        </SidebarGroupLabel>
+      ) : null}
       <SidebarMenu>{children}</SidebarMenu>
     </SidebarGroup>
   );

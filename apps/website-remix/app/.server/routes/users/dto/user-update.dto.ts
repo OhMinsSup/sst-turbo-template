@@ -8,6 +8,8 @@ export type Body =
 export class UserUpdateDto implements Partial<Body> {
   image?: Body["image"];
   username?: Body["username"];
+  firstName?: Body["firstName"];
+  lastName?: Body["lastName"];
   __submitId?: string;
   __intent?: string;
 
@@ -19,6 +21,8 @@ export class UserUpdateDto implements Partial<Body> {
     };
     this.username = body.username;
     this.image = body.image;
+    this.firstName = body.firstName;
+    this.lastName = body.lastName;
     this.__submitId = body.submitId;
     this.__intent = body.intent;
     return this;
@@ -28,6 +32,8 @@ export class UserUpdateDto implements Partial<Body> {
     return {
       username: this.username,
       image: this.image,
+      firstName: this.firstName,
+      lastName: this.lastName,
     };
   }
 

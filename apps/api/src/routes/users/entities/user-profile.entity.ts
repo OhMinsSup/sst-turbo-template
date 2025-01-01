@@ -10,4 +10,20 @@ export class UserProfileEntity {
   })
   @Expose()
   readonly image: string;
+
+  @ApiProperty({
+    title: "이름",
+    description: "이름",
+    type: "string",
+  })
+  @Expose()
+  readonly firstName: string;
+
+  @ApiProperty({
+    title: "성",
+    description: "성",
+    type: "string",
+  })
+  @Expose()
+  readonly lastName: string;
 }

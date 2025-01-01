@@ -2,7 +2,7 @@ import type { Params } from "@remix-run/react";
 
 import { isFunction } from "@template/utils/assertion";
 
-import { PAGE_ENDPOINTS } from "~/constants/constants";
+import { breadcrumb } from "./breadcrumb.data";
 
 export interface BaseBreadcrumbItem {
   title: string;
@@ -11,132 +11,14 @@ export interface BaseBreadcrumbItem {
   pathname: string | ((params?: Readonly<Params<string>>) => string);
   pathnameRegex?: RegExp | ((params?: Readonly<Params<string>>) => RegExp);
   children?: BaseBreadcrumbItem[];
-  type: "DASHBOARD" | "WORKSPACE" | "TRASH" | "SETTING" | "TABLE";
+  type:
+    | "DASHBOARD"
+    | "WORKSPACE"
+    | "PREFERENCES"
+    | "ACCOUNT"
+    | "TABLE"
+    | "HOME";
 }
-
-const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
-  [
-    /^\/dashboard\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: true,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-      },
-    ],
-  ],
-  [
-    /^\/dashboard\/trash\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: false,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-        children: [
-          {
-            title: "휴지통",
-            isLast: true,
-            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.TRASH,
-            pathnameRegex: /^\/dashboard\/trash\/?$/,
-            type: "TRASH",
-          },
-        ],
-      },
-    ],
-  ],
-  [
-    /^\/dashboard\/setting\/(account|system|notifications|integration)\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: false,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-        children: [
-          {
-            title: "설정",
-            isLast: false,
-            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING,
-            pathnameRegex: /^\/dashboard\/setting\/?$/,
-            type: "SETTING",
-            children: [
-              {
-                title: "내 계정",
-                isLast: true,
-                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING,
-                pathnameRegex: /^\/dashboard\/setting\/account\/?$/,
-                type: "SETTING",
-              },
-              {
-                title: "내 설정",
-                isLast: true,
-                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SYSTEM,
-                pathnameRegex: /^\/dashboard\/setting\/system\/?$/,
-                type: "SETTING",
-              },
-              {
-                title: "내 알림",
-                isLast: true,
-                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.NOTIFICATIONS,
-                pathnameRegex: /^\/dashboard\/setting\/notifications\/?$/,
-                type: "SETTING",
-              },
-              {
-                title: "내 연결",
-                isLast: true,
-                pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.INTEGRATION,
-                pathnameRegex: /^\/dashboard\/setting\/integration\/?$/,
-                type: "SETTING",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  ],
-  [
-    /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: false,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-        children: [
-          {
-            title: "워크스페이스",
-            isLast: false,
-            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-            pathnameRegex: /^\/dashboard\/?$/,
-            type: "WORKSPACE",
-            children: [
-              {
-                title: "테이블",
-                isLast: true,
-                pathname: (params) => {
-                  if (params?.workspaceId) {
-                    return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(
-                      params.workspaceId,
-                    );
-                  }
-                  throw new Error("workspaceId is required");
-                },
-                pathnameRegex: /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
-                type: "TABLE",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  ],
-]);
 
 export interface GetBreadcrumbParams {
   pathname: string;
@@ -149,6 +31,8 @@ function recursiveMatch(
   params?: Readonly<Params<string>>,
 ): BaseBreadcrumbItem[] {
   for (const item of items) {
+    console.log(item);
+
     if (isFunction(item.pathnameRegex)) {
       if (item.pathnameRegex(params).test(pathname)) {
         if (item.children) {
@@ -182,7 +66,6 @@ function recursiveMatch(
       }
       return [item];
     }
-
     return [item];
   }
 
@@ -221,6 +104,8 @@ export function getBreadcrumb({ pathname, params }: GetBreadcrumbParams) {
 
 export function getFlatBreadcrumbs({ pathname, params }: GetBreadcrumbParams) {
   const items = getDeepBreadcrumbs({ pathname, params });
+
+  console.log(items);
 
   const flatItems: BaseBreadcrumbItem[] = [];
   for (const item of items) {

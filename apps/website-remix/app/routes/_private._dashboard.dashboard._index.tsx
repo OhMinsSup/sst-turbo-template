@@ -1,7 +1,7 @@
 import type { MetaFunction } from "@remix-run/node";
 
+import { DashboardCardList } from "~/components/dashboard/DashboardCardList";
 import { DashboardToolbar } from "~/components/dashboard/DashboardToolbar";
-import { WorkspaceCardList } from "~/components/dashboard/WorkspaceCardList";
 import { SITE_CONFIG } from "~/constants/constants";
 import { getMeta } from "~/libs/meta";
 
@@ -18,7 +18,7 @@ export default function Routes() {
   return (
     <>
       <DashboardToolbar />
-      <WorkspaceCardList />
+      <DashboardCardList />
     </>
   );
 }

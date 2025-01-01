@@ -682,11 +682,23 @@ export interface components {
     UpdateTableDto: Record<string, never>;
     UpdateUserDto: {
       /**
+       * firstName
+       * @description 유저의 이름
+       * @example John
+       */
+      firstName?: string | null;
+      /**
        * 이미지
        * @description 프로필 이미지
        * @example https://example.com/image.jpg
        */
       image?: string | null;
+      /**
+       * lastName
+       * @description 유저의 성
+       * @example John Doe
+       */
+      lastName?: string | null;
       /**
        * Usernaem
        * @description 유저의 이름
@@ -752,10 +764,20 @@ export interface components {
     };
     UserProfileEntity: {
       /**
+       * 이름
+       * @description 이름
+       */
+      firstName: string;
+      /**
        * 이미지
        * @description 프로필 이미지
        */
       image: string;
+      /**
+       * 성
+       * @description 성
+       */
+      lastName: string;
     };
     UserResponseDto: {
       /** @description 데이터 응답 */

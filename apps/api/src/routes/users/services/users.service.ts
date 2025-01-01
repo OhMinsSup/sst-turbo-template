@@ -66,6 +66,17 @@ export class UsersService {
       updateUserProfileData.image = body.image;
     }
 
+    if (
+      body.firstName &&
+      !isEqual(user.UserProfile?.firstName, body.firstName)
+    ) {
+      updateUserProfileData.firstName = body.firstName;
+    }
+
+    if (body.lastName && !isEqual(user.UserProfile?.lastName, body.lastName)) {
+      updateUserProfileData.lastName = body.lastName;
+    }
+
     const updateUser = await this.prismaService.user.update({
       where: {
         id: user.id,
