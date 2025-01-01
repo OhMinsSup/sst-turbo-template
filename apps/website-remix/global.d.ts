@@ -120,6 +120,7 @@
     readonly npm_package_dependencies__epic_web_client_hints: string;
     readonly VSCODE_GIT_ASKPASS_NODE: string;
     readonly GIT_ASKPASS: string;
+    readonly npm_package_dependencies__radix_ui_react_visually_hidden: string;
     readonly npm_config_link_workspace_packages: string;
     readonly npm_package_dependencies__remix_run_node: string;
     readonly npm_package_scripts_clean: string;

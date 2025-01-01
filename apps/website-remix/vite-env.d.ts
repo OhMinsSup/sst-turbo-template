@@ -125,6 +125,7 @@
     export const npm_package_dependencies__epic_web_client_hints: string;
     export const VSCODE_GIT_ASKPASS_NODE: string;
     export const GIT_ASKPASS: string;
+    export const npm_package_dependencies__radix_ui_react_visually_hidden: string;
     export const npm_config_link_workspace_packages: string;
     export const npm_package_dependencies__remix_run_node: string;
     export const npm_package_scripts_clean: string;

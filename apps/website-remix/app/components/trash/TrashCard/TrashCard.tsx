@@ -43,7 +43,9 @@ export default function TrashCard({ item, style }: TrashCardProps) {
     formData.append("submitId", stateRef.current.currentSubmitId);
     formData.append("workspaceId", item.id.toString());
     formData.append("intent", "restoreWorkspace");
-    fetcher.submit(formData);
+    fetcher.submit(formData, {
+      method: "post",
+    });
   };
 
   const isSubmittingForm = fetcher.state === "submitting";

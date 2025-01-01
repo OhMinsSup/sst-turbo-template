@@ -55,6 +55,7 @@ function UpdateUsernameForm() {
     formData.append("intent", "userUpdate");
     submit(formData, {
       action: "/api/users",
+      method: "post",
     });
   });
 

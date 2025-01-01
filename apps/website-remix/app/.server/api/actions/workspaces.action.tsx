@@ -15,7 +15,9 @@ type ActionReturn<Name extends NamedActionKey> = Name extends "restoreWorkspace"
     ? ReturnType<WorkspaceController["remove"]>
     : Name extends "favoriteWorkspace"
       ? ReturnType<WorkspaceController["favorite"]>
-      : never;
+      : Name extends "createWorkspace"
+        ? ReturnType<WorkspaceController["create"]>
+        : never;
 
 export const action = async <Name extends NamedActionKey>(
   args: ActionFunctionArgs,

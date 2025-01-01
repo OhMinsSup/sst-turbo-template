@@ -37,6 +37,7 @@ export function TrashItem({ item }: TrashItemProps) {
     formData.append("intent", "restoreWorkspace");
     fetcher.submit(formData, {
       action: "/api/workspaces",
+      method: "post",
     });
   };
 

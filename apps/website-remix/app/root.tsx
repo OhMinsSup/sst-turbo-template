@@ -1,6 +1,6 @@
 import "reflect-metadata";
 
-import type { LinksFunction } from "@remix-run/node";
+import type { LinksFunction, MetaFunction } from "@remix-run/node";
 import { useEffect } from "react";
 import {
   Links,
@@ -24,10 +24,23 @@ import { ShowToast } from "./components/shared/Toast";
 import { SITE_CONFIG } from "./constants/constants";
 import { remixAuthBrowser } from "./libs/auth";
 import { ClientHintCheck } from "./libs/client-hints";
+import { getMeta } from "./libs/meta";
 import styleCssUrl from "./styles.css?url";
 
 export { loader } from "~/.server/loaders/root.loader";
-export { meta } from "~/libs/meta-tags/root.meta";
+
+export const meta: MetaFunction<RoutesLoaderData> = ({ data }) => {
+  if (!data) {
+    return [{ title: `404 Not Found | ${SITE_CONFIG.title}` }];
+  }
+
+  return getMeta({
+    title: SITE_CONFIG.title,
+    description: SITE_CONFIG.description,
+    siteUrl: data.requestInfo.origin,
+    image: SITE_CONFIG.ogImage,
+  });
+};
 
 export const links: LinksFunction = () => {
   return [
@@ -132,8 +145,6 @@ function AppWithProvider({ children, session }: AppWithProviderProps) {
 
 export default function App() {
   const { session, toast } = useLoaderData<RoutesLoaderData>();
-
-  console.log("session", session);
 
   return (
     <Document>

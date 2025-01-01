@@ -1,5 +1,7 @@
 import type { MetaDescriptor } from "@remix-run/node";
 
+import { SITE_CONFIG } from "~/constants/constants";
+
 type CustomMetaArgs = {
   title: string;
   description?: string;
@@ -21,9 +23,10 @@ export const getMeta = ({
     { property: "og:title", content: title },
     { property: "og:description", content: description },
     { property: "og:image", content: image },
-    { name: "twitter:card", content: "summary_large_image" },
-    { name: "twitter:creator", content: "@Lalossol" },
-    { name: "twitter:site", content: "@Lalossol" },
+    { property: "og:type", content: SITE_CONFIG.ogType },
+    { name: "twitter:card", content: SITE_CONFIG.twitterCard },
+    { name: "twitter:creator", content: SITE_CONFIG.creator },
+    { name: "twitter:site", content: SITE_CONFIG.creator },
     { name: "twitter:title", content: title },
     { name: "twitter:description", content: description },
     { name: "twitter:image", content: image },

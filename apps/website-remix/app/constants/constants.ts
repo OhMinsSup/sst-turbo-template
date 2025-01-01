@@ -24,11 +24,15 @@ export const PAGE_ENDPOINTS = {
 } as const;
 
 export const SITE_CONFIG = {
-  title: "RemixBase",
-  shotTitle: "RemixBase",
-  keywords: ["Remix", "React", "Framework", "Admin", "Template"],
-  description: "RemixBase is a Remix Framework Admin Template",
+  title: "TemplateBase",
+  shotTitle: "TemplateBase",
+  keywords: ["Remix", "Database", "Data", "Analysts", "Developers"],
+  description:
+    "TemplateBase is a No-code database platform for building web applications.",
   ogImage: "/images/og.jpg",
+  ogType: "website",
+  twitterCard: "summary_large_image",
+  creator: "@Lalossol",
   favicon: "/favicon.ico",
   favicon32x32: "/images/favicon-32x32.png",
   favicon16x16: "/images/favicon-16x16.png",
