@@ -45,6 +45,7 @@
     "remix-utils": "^8.0.0",
     "stable-hash": "^0.0.4",
     "tsyringe": "^4.8.0",
+    "ufo": "^1.5.4",
     "zod": "catalog:",
     "zustand": "catalog:"
   },

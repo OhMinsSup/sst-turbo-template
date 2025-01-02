@@ -96,7 +96,7 @@ export class AuthService {
       // Identity 찾기
       const identity = await this.identityService.findIdentityByIdAndProvider(
         user.id,
-        Provider.EMAIL,
+        input.provider,
         tx,
       );
 

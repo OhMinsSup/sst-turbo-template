@@ -1,99 +1,49 @@
-import type { BaseBreadcrumbItem } from "./breadcrumb.utils";
+import { invariant } from "@epic-web/invariant";
+
+import type { BreadcrumbItem } from "./breadcrumb.types";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-export const breadcrumb = new Map<RegExp, BaseBreadcrumbItem[]>([
-  [
-    /^\/dashboard\/?$/,
-    [
+export const breadcrumbs: BreadcrumbItem[] = [
+  {
+    title: "대시보드",
+    pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
+    type: "DASHBOARD",
+    children: [
       {
-        title: "대시보드",
-        isLast: true,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-      },
-    ],
-  ],
-  [
-    /^\/dashboard\/account\/(me|tokens|security|audit)\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: false,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
+        title: "계정",
+        type: "PREFERENCES",
         children: [
           {
-            title: "계정",
-            isLast: false,
-            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.SETTING,
-            pathnameRegex: /^\/dashboard\/setting\/?$/,
-            type: "PREFERENCES",
-            children: [
-              {
-                title: "환경설정",
-                isLast: true,
-                pathname: PAGE_ENDPOINTS.PROTECTED.PREFERENCES.ME,
-                pathnameRegex: /^\/dashboard\/account\/me\/?$/,
-                type: "ACCOUNT",
-              },
-            ],
+            title: "환경설정",
+            pathname: PAGE_ENDPOINTS.PROTECTED.PREFERENCES.ME,
+            type: "ACCOUNT",
+          },
+        ],
+      },
+      {
+        title: "워크스페이스",
+        type: "WORKSPACE",
+        children: [
+          {
+            title: "홈",
+            pathname: (params) => {
+              invariant(params?.workspaceId, "workspaceId is required");
+              return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(params.workspaceId);
+            },
+            type: "HOME",
+          },
+          {
+            title: "테이블",
+            pathname: (params) => {
+              invariant(params?.workspaceId, "workspaceId is required");
+              return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.EDITOR.ROOT(
+                params.workspaceId,
+              );
+            },
+            type: "TABLE",
           },
         ],
       },
     ],
-  ],
-  [
-    /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/(editor)\/?$/,
-    [
-      {
-        title: "대시보드",
-        isLast: false,
-        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-        pathnameRegex: /^\/dashboard\/?$/,
-        type: "DASHBOARD",
-        children: [
-          {
-            title: "워크스페이스",
-            isLast: false,
-            pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
-            pathnameRegex: /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
-            type: "WORKSPACE",
-            children: [
-              {
-                title: "홈",
-                isLast: true,
-                pathname: (params) => {
-                  if (params?.workspaceId) {
-                    return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(
-                      params.workspaceId,
-                    );
-                  }
-                  throw new Error("workspaceId is required");
-                },
-                pathnameRegex: /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/?$/,
-                type: "HOME",
-              },
-              {
-                title: "테이블",
-                isLast: true,
-                pathname: (params) => {
-                  if (params?.workspaceId) {
-                    return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.EDITOR.ROOT(
-                      params.workspaceId,
-                    );
-                  }
-                  throw new Error("workspaceId is required");
-                },
-                pathnameRegex:
-                  /^\/dashboard\/workspaces\/[a-zA-Z0-9]+\/editor\/?$/,
-                type: "TABLE",
-              },
-            ],
-          },
-        ],
-      },
-    ],
-  ],
-]);
+  },
+];

@@ -373,6 +373,9 @@ importers:
       tsyringe:
         specifier: ^4.8.0
         version: 4.8.0
+      ufo:
+        specifier: ^1.5.4
+        version: 1.5.4
       zod:
         specifier: 'catalog:'
         version: 3.23.8

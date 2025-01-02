@@ -1,117 +1,72 @@
-import { useMemo, useReducer } from "react";
+import { createContext, useContext, useMemo, useRef } from "react";
 import { useLocation, useParams } from "@remix-run/react";
+import { createStore, useStore } from "zustand";
 
-import { createContext } from "@template/ui/lib";
 import { isEmpty } from "@template/utils/assertion";
 
-import type {
-  BaseBreadcrumbItem,
-  GetBreadcrumbParams,
-} from "./breadcrumb.utils";
+import type { BreadcrumbItem, GetBreadcrumbParams } from "./breadcrumb.types";
+import { breadcrumbs } from "./breadcrumb.data";
 import * as breadcrumb from "./breadcrumb.utils";
 
-enum Action {
-  INITIALIZE = "INITIALIZE",
+interface BreadcrumbProps {
+  breadcrumbs: BreadcrumbItem[];
 }
 
-interface InitializeAction {
-  type: Action.INITIALIZE;
+interface BreadcrumbState extends BreadcrumbProps {
+  getBreadcrumbs: (args: GetBreadcrumbParams) => BreadcrumbItem[];
+  getBreadcrumb: (args: GetBreadcrumbParams) => BreadcrumbItem | undefined;
 }
 
-type ActionType = InitializeAction;
-
-interface BreadcrumbState {
-  breadcrumb: Map<RegExp, BaseBreadcrumbItem[]>;
-}
-
-const initialState: BreadcrumbState = {
-  breadcrumb: new Map<RegExp, BaseBreadcrumbItem[]>(),
+export const createBreadcrumbStore = (initProps?: Partial<BreadcrumbProps>) => {
+  const DEFAULT_PROPS: BreadcrumbProps = {
+    breadcrumbs,
+  };
+  return createStore<BreadcrumbState>()((_, get) => ({
+    ...DEFAULT_PROPS,
+    ...initProps,
+    getBreadcrumbs: (args) =>
+      breadcrumb.findBreadcrumbPathList(
+        get().breadcrumbs,
+        args.pathname,
+        args.params,
+      ),
+    getBreadcrumb: (args) =>
+      breadcrumb.findBreadcrumbPath(
+        get().breadcrumbs,
+        args.pathname,
+        args.params,
+      ),
+  }));
 };
 
-interface BreadcrumbContext extends BreadcrumbState {
-  initialize: () => void;
-  getDeepBreadcrumbs: (args: GetBreadcrumbParams) => BaseBreadcrumbItem[];
-  getBreadcrumbs: (
-    args: Omit<GetBreadcrumbParams, "params">,
-  ) => BaseBreadcrumbItem[];
-  getFlatBreadcrumbs: (args: GetBreadcrumbParams) => BaseBreadcrumbItem[];
-  getBreadcrumb: (args: GetBreadcrumbParams) => BaseBreadcrumbItem | undefined;
-  dispatch: React.Dispatch<ActionType>;
-}
+type BreadcrumbStore = ReturnType<typeof createBreadcrumbStore>;
 
-const [Provider, useBreadcrumbProvider] = createContext<BreadcrumbContext>({
-  name: "useBreadcrumbProvider",
-  errorMessage: 'useBreadcrumbProvider: "context" is undefined.',
-  defaultValue: initialState,
-});
+export const BreadcrumbContext = createContext<BreadcrumbStore | null>(null);
 
-function reducer(state = initialState, action: ActionType): BreadcrumbState {
-  switch (action.type) {
-    case Action.INITIALIZE: {
-      return initialState;
-    }
-    default:
-      return state;
+type BreadcrumbProviderProps = React.PropsWithChildren<BreadcrumbProps>;
+
+function BreadcrumbProvider({ children, ...props }: BreadcrumbProviderProps) {
+  const storeRef = useRef<BreadcrumbStore>();
+  if (!storeRef.current) {
+    storeRef.current = createBreadcrumbStore(props);
   }
+  return (
+    <BreadcrumbContext.Provider value={storeRef.current}>
+      {children}
+    </BreadcrumbContext.Provider>
+  );
 }
 
-interface Props {
-  children: React.ReactNode;
-}
-
-function hydrateBreadcrumb(initialState: BreadcrumbState) {
-  initialState.breadcrumb = breadcrumb.initializeBreadcrumb(
-    initialState.breadcrumb,
-  );
-  return {
-    ...initialState,
-  };
-}
-
-function BreadcrumbProvider({ children }: Props) {
-  const [state, dispatch] = useReducer(
-    reducer,
-    hydrateBreadcrumb(initialState),
-  );
-
-  const initialize = () => dispatch({ type: Action.INITIALIZE });
-
-  const getDeepBreadcrumbs = (args: GetBreadcrumbParams) => {
-    return breadcrumb.getDeepBreadcrumbs(args);
-  };
-
-  const getBreadcrumbs = (args: Omit<GetBreadcrumbParams, "params">) => {
-    return breadcrumb.getBreadcrumbs(args);
-  };
-
-  const getFlatBreadcrumbs = (args: GetBreadcrumbParams) => {
-    return breadcrumb.getFlatBreadcrumbs(args);
-  };
-
-  const getBreadcrumb = (args: GetBreadcrumbParams) => {
-    return breadcrumb.getBreadcrumb(args);
-  };
-
-  const actions = useMemo(
-    () => ({
-      ...state,
-      dispatch,
-      getBreadcrumb,
-      getBreadcrumbs,
-      getDeepBreadcrumbs,
-      getFlatBreadcrumbs,
-      initialize,
-    }),
-    [state],
-  );
-
-  return <Provider value={actions}>{children}</Provider>;
+function useBreadcrumbContext<T>(selector: (state: BreadcrumbState) => T): T {
+  const store = useContext(BreadcrumbContext);
+  if (!store) throw new Error("Missing BreadcrumbContext.Provider in the tree");
+  return useStore(store, selector);
 }
 
 export function useBreadcrumbs() {
   const params = useParams();
   const location = useLocation();
-  const { getBreadcrumbs } = useBreadcrumbProvider();
+  const getBreadcrumbs = useBreadcrumbContext((state) => state.getBreadcrumbs);
 
   const safyParams = useMemo(() => {
     return isEmpty(params) ? undefined : params;
@@ -120,28 +75,26 @@ export function useBreadcrumbs() {
   const items = useMemo(() => {
     return getBreadcrumbs({
       pathname: location.pathname,
+      params: safyParams,
     });
-  }, [location.pathname, getBreadcrumbs]);
+  }, [location.pathname, getBreadcrumbs, safyParams]);
 
   return {
     items,
-    searchParams: safyParams,
+    pathname: location.pathname,
+    params: safyParams,
   };
 }
 
 export function useBreadcrumb() {
-  const location = useLocation();
-  const { searchParams } = useBreadcrumbs();
-  const { getFlatBreadcrumbs } = useBreadcrumbProvider();
-
-  const flatItems = useMemo(() => {
-    return getFlatBreadcrumbs({
-      pathname: location.pathname,
-      params: searchParams,
+  const { params, pathname } = useBreadcrumbs();
+  const getBreadcrumb = useBreadcrumbContext((state) => state.getBreadcrumb);
+  return useMemo(() => {
+    return getBreadcrumb({
+      pathname,
+      params,
     });
-  }, [searchParams, location.pathname, getFlatBreadcrumbs]);
-
-  return useMemo(() => flatItems.at(-1), [flatItems]);
+  }, [params, pathname, getBreadcrumb]);
 }
 
-export { useBreadcrumbProvider, BreadcrumbProvider };
+export { useBreadcrumbContext, BreadcrumbProvider };

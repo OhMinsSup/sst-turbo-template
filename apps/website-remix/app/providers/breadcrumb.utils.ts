@@ -1,125 +1,86 @@
 import type { Params } from "@remix-run/react";
+import { isEqual } from "ufo";
 
 import { isFunction } from "@template/utils/assertion";
 
-import { breadcrumb } from "./breadcrumb.data";
+import type { BreadcrumbItem } from "./breadcrumb.types";
+import { breadcrumbs } from "./breadcrumb.data";
 
-export interface BaseBreadcrumbItem {
+interface BreadcrumbResult {
   title: string;
-  isLast: boolean;
-  description?: string;
-  pathname: string | ((params?: Readonly<Params<string>>) => string);
-  pathnameRegex?: RegExp | ((params?: Readonly<Params<string>>) => RegExp);
-  children?: BaseBreadcrumbItem[];
-  type:
-    | "DASHBOARD"
-    | "WORKSPACE"
-    | "PREFERENCES"
-    | "ACCOUNT"
-    | "TABLE"
-    | "HOME";
+  type: BreadcrumbItem["type"];
+  pathname?: string;
 }
 
-export interface GetBreadcrumbParams {
-  pathname: string;
-  params?: Readonly<Params<string>>;
-}
-
-function recursiveMatch(
-  items: BaseBreadcrumbItem[],
-  pathname: string,
+export function findBreadcrumbPathList(
+  items: BreadcrumbItem[],
+  targetPathname: string,
   params?: Readonly<Params<string>>,
-): BaseBreadcrumbItem[] {
-  for (const item of items) {
-    console.log(item);
+): BreadcrumbResult[] {
+  // 경로를 저장할 스택
+  const stack: BreadcrumbResult[] = [];
 
-    if (isFunction(item.pathnameRegex)) {
-      if (item.pathnameRegex(params).test(pathname)) {
-        if (item.children) {
-          return recursiveMatch(item.children, pathname);
+  function search(currentItems: BreadcrumbItem[]): boolean {
+    // 이진 탐색을 위해 items를 pathname 기준으로 정렬
+    const sortedItems = [...currentItems].sort((a, b) => {
+      const aPath = isFunction(a.pathname)
+        ? a.pathname(params)
+        : (a.pathname ?? "");
+
+      const bPath = isFunction(b.pathname)
+        ? b.pathname(params)
+        : (b.pathname ?? "");
+
+      return aPath.localeCompare(bPath);
+    });
+
+    for (const item of sortedItems) {
+      const currentPathname = isFunction(item.pathname)
+        ? item.pathname(params)
+        : item.pathname;
+
+      // 현재 아이템을 스택에 추가
+      stack.push({
+        title: item.title,
+        type: item.type,
+        pathname: currentPathname,
+      });
+
+      // 현재 아이템이 타겟과 일치하는 경우
+      if (
+        currentPathname &&
+        isEqual(currentPathname, targetPathname, { trailingSlash: true })
+      ) {
+        return true;
+      }
+
+      // 자식 노드가 있는 경우 재귀적으로 검색
+      if (item.children && item.children.length > 0) {
+        if (search(item.children)) {
+          return true;
         }
-        return [item];
-      } else if (item.children) {
-        return recursiveMatch(item.children, pathname);
       }
-      return [item];
-    } else if (item.pathnameRegex instanceof RegExp) {
-      if (item.pathnameRegex.test(pathname)) {
-        if (item.children) {
-          return recursiveMatch(item.children, pathname);
-        }
-        return [item];
-      } else if (item.children) {
-        return recursiveMatch(item.children, pathname);
-      }
-      return [item];
-    } else if (isFunction(item.pathname)) {
-      if (item.pathname(params) === pathname) {
-        if (item.children) {
-          return recursiveMatch(item.children, pathname);
-        }
-        return [item];
-      }
-    } else if (item.pathname === pathname) {
-      if (item.children) {
-        return recursiveMatch(item.children, pathname);
-      }
-      return [item];
+
+      // 일치하지 않으면 스택에서 제거
+      stack.pop();
     }
-    return [item];
+
+    return false;
   }
 
-  return [];
+  search(items);
+  return stack;
 }
 
-export function getDeepBreadcrumbs({
-  pathname,
-  params,
-}: GetBreadcrumbParams): BaseBreadcrumbItem[] {
-  for (const [regex, items] of breadcrumb) {
-    if (regex.test(pathname)) {
-      return recursiveMatch(items, pathname, params);
-    }
-  }
-
-  return [];
+export function findBreadcrumbPath(
+  items: BreadcrumbItem[],
+  targetPathname: string,
+  params?: Readonly<Params<string>>,
+): BreadcrumbResult | undefined {
+  const result = findBreadcrumbPathList(items, targetPathname, params);
+  return result.at(-1);
 }
 
-export function getBreadcrumbs({
-  pathname,
-}: Omit<GetBreadcrumbParams, "params">) {
-  for (const [regex, items] of breadcrumb) {
-    if (regex.test(pathname)) {
-      return items;
-    }
-  }
-
-  return [];
-}
-
-export function getBreadcrumb({ pathname, params }: GetBreadcrumbParams) {
-  const items = getDeepBreadcrumbs({ pathname, params });
-  return items.at(-1);
-}
-
-export function getFlatBreadcrumbs({ pathname, params }: GetBreadcrumbParams) {
-  const items = getDeepBreadcrumbs({ pathname, params });
-
-  console.log(items);
-
-  const flatItems: BaseBreadcrumbItem[] = [];
-  for (const item of items) {
-    flatItems.push(item);
-    if (item.children) {
-      flatItems.push(...getFlatBreadcrumbs({ pathname, params }));
-    }
-  }
-  return flatItems;
-}
-
-export function initializeBreadcrumb(value: Map<RegExp, BaseBreadcrumbItem[]>) {
-  for (const [regex, items] of value) {
-    breadcrumb.set(regex, items);
-  }
-  return breadcrumb;
+export function initializeBreadcrumb(_: BreadcrumbItem[]): BreadcrumbItem[] {
+  return breadcrumbs;
 }

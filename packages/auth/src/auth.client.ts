@@ -1049,7 +1049,6 @@ export class AuthClient {
 
       // 세션을 로드합니다.
       const maybeSession = await getItemAsync(this.storage, this.storageKey);
-      this.debug(debugName, "[logging!!!!]", maybeSession);
       if (!isNullOrUndefined(maybeSession)) {
         // 세션이 유효한지 확인합니다.
         if (this._isValidSession(maybeSession)) {

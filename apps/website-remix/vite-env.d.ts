@@ -92,6 +92,7 @@
     export const npm_package_scripts_start: string;
     export const npm_package_scripts_build: string;
     export const npm_config_node_linker: string;
+    export const npm_package_dependencies_ufo: string;
     export const npm_package_dependencies__template_api: string;
     export const VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     export const XPC_FLAGS: string;

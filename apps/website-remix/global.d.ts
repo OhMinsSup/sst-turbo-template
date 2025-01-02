@@ -87,6 +87,7 @@
     readonly npm_package_scripts_start: string;
     readonly npm_package_scripts_build: string;
     readonly npm_config_node_linker: string;
+    readonly npm_package_dependencies_ufo: string;
     readonly npm_package_dependencies__template_api: string;
     readonly VSCODE_GIT_ASKPASS_EXTRA_ARGS: string;
     readonly XPC_FLAGS: string;
