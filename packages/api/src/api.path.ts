@@ -1,8 +1,4 @@
-import type {
-  HeadersOptions,
-  InitParam,
-  MaybeOptionalInit,
-} from "openapi-fetch";
+import type { MaybeOptionalInit } from "openapi-fetch";
 import type {
   HttpMethod,
   MediaType,

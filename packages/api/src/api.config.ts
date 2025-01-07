@@ -1,8 +1,4 @@
-import type {
-  HeadersOptions,
-  InitParam,
-  MaybeOptionalInit,
-} from "openapi-fetch";
+import type { HeadersOptions, MaybeOptionalInit } from "openapi-fetch";
 import type {
   HttpMethod,
   MediaType,
@@ -12,7 +8,6 @@ import type {
 import {
   DefaultFetchOptions,
   DefaultOpenApiPaths,
-  ExpandedFetchOptions,
   Fetch,
 } from "@template/api-fetch";
 import { isNullOrUndefined } from "@template/utils/assertion";
@@ -220,9 +215,7 @@ export class ApiConfig<
    * @param {*} params
    * @returns {this}
    */
-  setParams<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    params: NonNullable<Init>["params"],
-  ): this {
+  setParams(params: NonNullable<Init>["params"]): this {
     this.params = params;
     return this;
   }
@@ -232,9 +225,7 @@ export class ApiConfig<
    * @param {*} body
    * @returns {this}
    */
-  setBody<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    body: NonNullable<Init>["body"],
-  ): this {
+  setBody(body: NonNullable<Init>["body"]): this {
     this.body = body;
     return this;
   }
@@ -254,7 +245,7 @@ export class ApiConfig<
    * @param {*} querySerializer
    * @returns {this}
    */
-  setQuerySerializer<Init extends MaybeOptionalInit<Paths[Path], Method>>(
+  setQuerySerializer(
     querySerializer: NonNullable<Init>["querySerializer"],
   ): this {
     this.querySerializer = querySerializer;

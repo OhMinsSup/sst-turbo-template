@@ -10,7 +10,6 @@ import type {
   DefaultOpenApiPaths,
   Fetch,
   FetchOptions,
-  FetchRequestInit,
 } from "@template/api-fetch";
 import { createFetch } from "@template/api-fetch";
 
@@ -64,13 +63,6 @@ export class ApiBuilder<
     this.path = options.path;
     this.method = options.method;
     this.options = options.options;
-  }
-
-  private _makeRequestInit(): FetchRequestInit<Paths, Method, Path> {
-    return {
-      path: this.path,
-      method: this.method,
-    };
   }
 
   then<
