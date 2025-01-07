@@ -1,4 +1,9 @@
 import type {
+  HeadersOptions,
+  InitParam,
+  MaybeOptionalInit,
+} from "openapi-fetch";
+import type {
   HttpMethod,
   MediaType,
   PathsWithMethod,
@@ -42,10 +47,11 @@ export class ApiPath<
    * @param {Path} path
    * @returns {ApiConfig<Paths, Method, Path>}
    */
-  path<Path extends PathsWithMethod<Paths, Method>>(
-    path: Path,
-  ): ApiConfig<Paths, Method, Path, Media> {
-    return new ApiConfig<Paths, Method, Path, Media>({
+  path<
+    Path extends PathsWithMethod<Paths, Method>,
+    Init extends MaybeOptionalInit<Paths[Path], Method>,
+  >(path: Path): ApiConfig<Paths, Method, Path, Init, Media> {
+    return new ApiConfig<Paths, Method, Path, Init, Media>({
       client: this.client,
       method: this.method,
       path,

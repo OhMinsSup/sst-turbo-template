@@ -10,19 +10,21 @@ import type {
 } from "openapi-typescript-helpers";
 
 import {
+  DefaultFetchOptions,
   DefaultOpenApiPaths,
   ExpandedFetchOptions,
   Fetch,
 } from "@template/api-fetch";
 import { isNullOrUndefined } from "@template/utils/assertion";
 
-import type { ApiConfigOptions } from "./types";
+import type { ApiConfigOptions, SetRetryOptions } from "./types";
 import { ApiBuilder } from "./api.builder";
 
 export class ApiConfig<
   Paths extends DefaultOpenApiPaths,
   Method extends HttpMethod,
   Path extends PathsWithMethod<Paths, Method>,
+  Init extends MaybeOptionalInit<Paths[Path], Method>,
   Media extends MediaType = MediaType,
 > {
   /**
@@ -65,45 +67,37 @@ export class ApiConfig<
    * @memberof ApiConfig
    * @instance
    * @protected
-   * @property {NonNullable<InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]>["bodySerializer"];?} bodySerializer
+   * @property {*} bodySerializer
    * @description API 요청을 보낼 때 사용할 body serializer
    */
-  protected bodySerializer?: NonNullable<
-    InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]
-  >["bodySerializer"];
+  protected bodySerializer?: NonNullable<Init>["bodySerializer"];
 
   /**
    * @memberof ApiConfig
    * @instance
    * @protected
-   * @property {NonNullable<InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]>["querySerializer"]?} querySerializer
+   * @property {*} querySerializer
    * @description API 요청을 보낼 때 사용할 query serializer
    */
-  protected querySerializer?: NonNullable<
-    InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]
-  >["querySerializer"];
+  protected querySerializer?: NonNullable<Init>["querySerializer"];
 
   /**
    * @memberof ApiConfig
    * @instance
    * @protected
-   * @property {NonNullable<InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]>["params"];?} params
+   * @property {*} params
    * @description API 요청을 보낼 때 사용할 params
    */
-  protected params?: NonNullable<
-    InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]
-  >["params"];
+  protected params?: NonNullable<Init>["params"];
 
   /**
    * @memberof ApiConfig
    * @instance
    * @protected
-   * @property {NonNullable<InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]>["body"];?} body
+   * @property {*} body
    * @description API 요청을 보낼 때 사용할 body
    */
-  protected body?: NonNullable<
-    InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]
-  >["body"];
+  protected body?: NonNullable<Init>["body"];
 
   /**
    * @memberof ApiConfig
@@ -223,11 +217,11 @@ export class ApiConfig<
 
   /**
    * @description API 요청을 보낼 때 사용할 Params를 설정합니다.
-   * @param {NonNullable<InitParam<Init>[0]>["params"]} params
+   * @param {*} params
    * @returns {this}
    */
   setParams<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    params: NonNullable<InitParam<Init>[0]>["params"],
+    params: NonNullable<Init>["params"],
   ): this {
     this.params = params;
     return this;
@@ -235,11 +229,11 @@ export class ApiConfig<
 
   /**
    * @description API 요청을 보낼 때 사용할 body를 설정합니다.
-   * @param {NonNullable<InitParam<Init>[0]>["body"]} body
+   * @param {*} body
    * @returns {this}
    */
   setBody<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    body: NonNullable<InitParam<Init>[0]>["body"],
+    body: NonNullable<Init>["body"],
   ): this {
     this.body = body;
     return this;
@@ -247,23 +241,21 @@ export class ApiConfig<
 
   /**
    * @description API 요청을 보낼 때 사용할 BodySerializer를 설정합니다.
-   * @param {NonNullable<InitParam<Init>[0]>["bodySerializer"]} bodySerializer
+   * @param {*} bodySerializer
    * @returns {this}
    */
-  setBodySerializer<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    bodySerializer: NonNullable<InitParam<Init>[0]>["bodySerializer"],
-  ): this {
+  setBodySerializer(bodySerializer: NonNullable<Init>["bodySerializer"]): this {
     this.bodySerializer = bodySerializer;
     return this;
   }
 
   /**
    * @description API 요청을 보낼 때 사용할 querySerializer를 설정합니다.
-   * @param {NonNullable<InitParam<Init>[0]>["querySerializer"]} querySerializer
+   * @param {*} querySerializer
    * @returns {this}
    */
   setQuerySerializer<Init extends MaybeOptionalInit<Paths[Path], Method>>(
-    querySerializer: NonNullable<InitParam<Init>[0]>["querySerializer"],
+    querySerializer: NonNullable<Init>["querySerializer"],
   ): this {
     this.querySerializer = querySerializer;
     return this;
@@ -271,15 +263,10 @@ export class ApiConfig<
 
   /**
    * @description API 요청이 실패했을 때 재시도할 횟수를 설정합니다.
-   * @param {{ retry: number | false; retryStatusCodes?: number[]; retryDelay?: number; }} parmas
+   * @param {SetRetryOptions} parmas
    * @returns {this}
    */
-  setRetry(parmas: {
-    retry?: number | false;
-    maxRetries?: number;
-    retryStatusCodes?: number[];
-    retryDelay?: number;
-  }): this {
+  setRetry(parmas: SetRetryOptions): this {
     this.retry = parmas.retry;
     this.maxRetries = parmas.maxRetries;
     this.retryStatusCodes = parmas.retryStatusCodes;
@@ -311,13 +298,7 @@ export class ApiConfig<
    * @description 해당 함수를 요청하면 PromiseLike 객체를 반환합니다.
    * @returns {ApiBuilder<Paths, Method, Path, Init, Media>}
    */
-  fetch<Init extends MaybeOptionalInit<Paths[Path], Method>>(): ApiBuilder<
-    Paths,
-    Method,
-    Path,
-    Init,
-    Media
-  > {
+  fetch(): ApiBuilder<Paths, Method, Path, Init, Media> {
     return new ApiBuilder<Paths, Method, Path, Init, Media>({
       client: this.client,
       path: this.path,
@@ -329,20 +310,18 @@ export class ApiConfig<
     });
   }
 
-  private _makeRequestInit<
-    Init extends MaybeOptionalInit<Paths[Path], Method>,
-  >(): Init {
+  private _makeRequestInit() {
     return {
       headers: this.headers,
       signal: this.signal,
       bodySerializer: this.bodySerializer,
       querySerializer: this.querySerializer,
-      ...(this.params && { params: this.params }),
-      ...(this.body && { body: this.body }),
+      body: this.body,
+      params: this.params,
     } as unknown as Init;
   }
 
-  private _makeExpandedFetchOptions(): ExpandedFetchOptions {
+  private _makeExpandedFetchOptions(): DefaultFetchOptions {
     return {
       retry: this.retry,
       maxRetries: this.maxRetries,

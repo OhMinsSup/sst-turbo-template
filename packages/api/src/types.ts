@@ -49,3 +49,10 @@ export interface ApiBuilderOptions<
   path: Path;
   options: FetchOptions<Paths, Method, Path, Init>;
 }
+
+export interface SetRetryOptions {
+  retry?: number | false;
+  maxRetries?: number;
+  retryStatusCodes?: number[];
+  retryDelay?: number;
+}
