@@ -8,7 +8,7 @@ export class AuthError extends BaseError {
    * before a response is received will not have one present. In that
    * case {@link #status} will also be undefined.
    */
-  code?: AuthErrorCode;
+  errorCode?: AuthErrorCode;
 
   /** HTTP status code that caused the error. */
   statusCode?: number;
@@ -21,17 +21,19 @@ export class AuthError extends BaseError {
       cause?: unknown;
     } = {},
   ) {
-    // @ts-nocheck - https://v8.dev/features/error-cause
     super(message, opts);
   }
 
-  toJSON(): Pick<AuthError, "message" | "statusCode" | "code" | "data"> {
-    const obj: Pick<AuthError, "message" | "statusCode" | "code" | "data"> = {
+  toJSON(): Pick<AuthError, "message" | "statusCode" | "errorCode" | "data"> {
+    const obj: Pick<
+      AuthError,
+      "message" | "statusCode" | "errorCode" | "data"
+    > = {
       message: this.message,
     };
 
-    if (this.code != undefined) {
-      obj.code = this.code;
+    if (this.errorCode != undefined) {
+      obj.errorCode = this.errorCode;
     }
 
     if (this.statusCode != undefined) {
@@ -50,7 +52,7 @@ export function createAuthError(
   input:
     | string
     | (Partial<AuthError> & {
-        code?: AuthErrorCode | string;
+        errorCode?: AuthErrorCode | string;
         statusCode?: number;
       }),
 ) {
@@ -82,8 +84,8 @@ export function createAuthError(
     }
   }
 
-  if (input.code) {
-    err.code = input.code;
+  if (input.errorCode) {
+    err.errorCode = input.errorCode;
   }
 
   if (input.statusCode) {

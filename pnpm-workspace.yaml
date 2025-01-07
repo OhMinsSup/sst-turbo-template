@@ -41,3 +41,6 @@ catalogs:
   lodash:
     lodash-es: ^4.17.21
     "@types/lodash-es": "^4.17.12"
+  openapi:
+    "openapi-fetch": "^0.13.0"
+    "openapi-typescript-helpers": "^0.0.15"

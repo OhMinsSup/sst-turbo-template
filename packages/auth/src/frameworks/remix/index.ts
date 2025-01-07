@@ -2,7 +2,6 @@ import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 
 import { createApiClient } from "@template/api";
 
-import type { AuthClientType } from "../..";
 import type { GetAllCookies, SetAllCookies } from "../../storages/cookie/types";
 import type { AuthClientOptions } from "../../types";
 import {
@@ -96,28 +95,6 @@ export const remixAuth = (options: RemixAuthOptions) => {
         remixAuthCtx,
         ...params,
       });
-    },
-    wapperHandler: <Params extends LoaderFunctionArgs | ActionFunctionArgs>(
-      params: Params,
-    ) => {
-      return async <Result>(
-        callback: (
-          args: Params & {
-            authClient: AuthClientType;
-            headers: Request["headers"];
-          },
-        ) => Result | Promise<Result>,
-      ): Promise<Result> => {
-        const result = callback({
-          ...params,
-          ...requestHandler({
-            remixAuthCtx,
-            ...params,
-          }),
-        });
-
-        return Promise.resolve(result);
-      };
     },
     getContext: () => remixAuthCtx,
   };

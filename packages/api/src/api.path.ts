@@ -1,22 +1,27 @@
-import type { Client } from "openapi-fetch";
 import type {
   HttpMethod,
   MediaType,
   PathsWithMethod,
 } from "openapi-typescript-helpers";
 
+import type { DefaultOpenApiPaths, Fetch } from "@template/api-fetch";
+
 import type { ApiPathOptions } from "./types";
 import { ApiConfig } from "./api.config";
 
-export class ApiPath<Paths extends {}, Method extends HttpMethod> {
+export class ApiPath<
+  Paths extends DefaultOpenApiPaths,
+  Method extends HttpMethod,
+  Media extends MediaType = MediaType,
+> {
   /**
    * @memberof ApiPath
    * @instance
    * @protected
-   * @property {Client<Paths>} client
+   * @property {Fetch<Paths, Media>} client
    * @description openapi-fetch의 Client 인스턴스
    */
-  protected client: Client<Paths, MediaType>;
+  protected client: Fetch<Paths, Media>;
 
   /**
    * @memberof ApiPath
@@ -27,7 +32,7 @@ export class ApiPath<Paths extends {}, Method extends HttpMethod> {
    */
   protected method: Method;
 
-  constructor(options: ApiPathOptions<Paths, Method>) {
+  constructor(options: ApiPathOptions<Paths, Method, Media>) {
     this.client = options.client;
     this.method = options.method;
   }
@@ -39,8 +44,8 @@ export class ApiPath<Paths extends {}, Method extends HttpMethod> {
    */
   path<Path extends PathsWithMethod<Paths, Method>>(
     path: Path,
-  ): ApiConfig<Paths, Method, Path> {
-    return new ApiConfig<Paths, Method, Path>({
+  ): ApiConfig<Paths, Method, Path, Media> {
+    return new ApiConfig<Paths, Method, Path, Media>({
       client: this.client,
       method: this.method,
       path,

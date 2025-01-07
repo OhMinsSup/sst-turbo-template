@@ -61,7 +61,6 @@ export class AuthClient {
    * @memberof AuthClient
    * @protected
    * @description 디버그 메시지를 출력할지 여부
-   * @type {boolean} - logDebugMessages
    */
   protected logDebugMessages = false;
   /**
@@ -112,7 +111,6 @@ export class AuthClient {
    * @memberof AuthClient
    * @protected
    * @description 서버 사이드에서 세션에 접근 할 때 보안상 문제가 발생 할 수 있는 부분을 노출하기 위한 플래그
-   * @type {boolean} - suppressGetSessionWarning
    */
   protected suppressGetSessionWarning = false;
 
@@ -166,7 +164,6 @@ export class AuthClient {
    * @memberof AuthClient
    * @protected
    * @description 잠금 획득 여부
-   * @type {boolean} - lockAcquired
    */
   protected lockAcquired = false;
   /**
@@ -282,7 +279,7 @@ export class AuthClient {
 
       return {
         error: createAuthError({
-          code: "unknown_error",
+          errorCode: "unknown_error",
           message: "Unexpected error during initialization",
         }),
       };
@@ -293,47 +290,99 @@ export class AuthClient {
   }
 
   /**
-   * @description 세션 정보를 새로운 유저 정보로 업데이트합니다.
-   * @param {User} updateUser - 업데이트할 유저 정보
+   * @memberof AuthClient
+   * @description 회원가입
+   * @param {SignUpBody} body - 회원가입 정보
    */
-  async updateSession(updateUser: User): Promise<LoadSession> {
+  async signUp(body: SignUpBody): Promise<SignUpResponse> {
+    const { response } = await this.api
+      .method("post")
+      .path("/api/v1/auth/signUp")
+      .setBody(body)
+      .fetch();
+
+    if (response?.data) {
+      const session = this._makeSession(response.data.data);
+      await this._saveSession(session);
+      await this._notifyAllSubscribers("SIGNED_IN", session);
+      return { data: response.data, session, error: response.error };
+    }
+
+    return { data: response?.data, session: undefined, error: response?.error };
+  }
+
+  /**
+   * @memberof AuthClient
+   * @description 로그인
+   * @param {SignInBody} body - 로그인 정보
+   */
+  async signIn(body: SignInBody): Promise<SignInResponse> {
+    const { response } = await this.api
+      .method("post")
+      .path("/api/v1/auth/signIn")
+      .setBody(body)
+      .fetch();
+
+    if (response?.data) {
+      // 세션 객체 생성
+      const session = this._makeSession(response.data.data);
+      // 세션 객체 스토리지에 저장
+      await this._saveSession(session);
+      // 로그인에 대한 이벤트 등록
+      await this._notifyAllSubscribers("SIGNED_IN", session);
+      return { data: response.data, session, error: response.error };
+    }
+
+    return { data: response?.data, session: undefined, error: response?.error };
+  }
+
+  /**
+   * @memberof AuthClient
+   * @description 로그아웃
+   */
+  async signOut(): Promise<SignOutResponse> {
     if (this.initializePromise) {
       await this.initializePromise;
     }
 
-    return await this._acquireLock(-1, () => {
-      return this._useSession(async (result) => {
-        const { session, error } = result;
-        if (error && isAuthError(error)) {
-          throw error;
+    return await this._acquireLock(-1, async () => {
+      return await this._signOut();
+    });
+  }
+
+  /**
+   * @memberof AuthClient
+   * @private
+   * @description 로그아웃
+   */
+  private async _signOut(): Promise<SignOutResponse> {
+    return await this._useSession(async (result) => {
+      const { session, error: sessionError } = result;
+      if (sessionError) {
+        return { error: sessionError };
+      }
+
+      const accessToken = session?.access_token;
+      let error: SignOutError | undefined;
+      // 토큰이 있다면 로그아웃 요청
+      if (accessToken) {
+        const result = await this.api
+          .method("post")
+          .path("/api/v1/auth/logout")
+          .setAuthorization(accessToken)
+          .fetch();
+
+        if (result.error) {
+          error = result.error as unknown as SignOutError;
         }
+      }
 
-        // 세션이 없다면, 에러를 발생시킵니다.
-        if (!session?.access_token) {
-          return {
-            session: undefined,
-            error: createAuthError({
-              message: "AuthSessionMissingError",
-              statusCode: HttpStatusCode.BAD_REQUEST,
-              code: "invalid_token",
-            }),
-          };
-        }
+      // 실패해도 세션 삭제
+      await this._removeSession();
+      // 로그아웃에 대한 이벤트 등록
+      await this._notifyAllSubscribers("SIGNED_OUT", undefined);
 
-        // 세션 객체를 업데이트합니다.
-        const updatedSession: Session = {
-          ...session,
-          user: updateUser,
-        };
-
-        await this._saveSession(updatedSession);
-        await this._notifyAllSubscribers("SESSION_UPDATED", updatedSession);
-
-        return {
-          session: updatedSession,
-          error: undefined,
-        };
-      });
+      return { error };
     });
   }
 
@@ -350,53 +399,6 @@ export class AuthClient {
     return await this._acquireLock(-1, () => {
       return this._useSession(async (result) => result);
     });
-  }
-
-  /**
-   * @memberof AuthClient
-   * @description 회원가입
-   * @param {SignUpBody} body - 회원가입 정보
-   */
-  async signUp(body: SignUpBody): Promise<SignUpResponse> {
-    const { data, error } = await this.api
-      .method("post")
-      .path("/api/v1/auth/signUp")
-      .setBody(body)
-      .run();
-
-    if (data?.data) {
-      const session = this._makeSession(data.data);
-      await this._saveSession(session);
-      await this._notifyAllSubscribers("SIGNED_IN", session);
-      return { data, session, error };
-    }
-
-    return { data, session: undefined, error };
-  }
-
-  /**
-   * @memberof AuthClient
-   * @description 로그인
-   * @param {SignInBody} body - 로그인 정보
-   */
-  async signIn(body: SignInBody): Promise<SignInResponse> {
-    const { data, error } = await this.api
-      .method("post")
-      .path("/api/v1/auth/signIn")
-      .setBody(body)
-      .run();
-
-    if (data?.data) {
-      // 세션 객체 생성
-      const session = this._makeSession(data.data);
-      // 세션 객체 스토리지에 저장
-      await this._saveSession(session);
-      // 로그인에 대한 이벤트 등록
-      await this._notifyAllSubscribers("SIGNED_IN", session);
-      return { data, session, error: undefined };
-    }
-
-    return { data, session: undefined, error };
   }
 
   /**
@@ -423,20 +425,6 @@ export class AuthClient {
 
   /**
    * @memberof AuthClient
-   * @description 로그아웃
-   */
-  async signOut(): Promise<SignOutResponse> {
-    if (this.initializePromise) {
-      await this.initializePromise;
-    }
-
-    return await this._acquireLock(-1, async () => {
-      return await this._signOut();
-    });
-  }
-
-  /**
-   * @memberof AuthClient
    * @private
    * @description 토큰을 통해서 유저 정보 가져오기
    * @param {string?} jwt - JWT 토큰
@@ -446,20 +434,20 @@ export class AuthClient {
     try {
       // 토큰이 존재한다면, 토큰을 이용해서 유저 정보를 가져옵니다.
       if (jwt) {
-        const { data, error } = await this.api
+        const { response } = await this.api
           .method("get")
           .path("/api/v1/users/me")
           .setAuthorization(jwt)
-          .run();
+          .fetch();
 
-        if (data?.data) {
+        if (response?.data) {
           return {
-            user: data.data,
-            error: undefined,
+            user: response.data.data,
+            error: response.error,
           };
         }
 
-        return { user: undefined, error };
+        return { user: undefined, error: response?.error };
       }
 
       // 유저 정보를 가져오기 위해 세션을 이용합니다.
@@ -475,28 +463,28 @@ export class AuthClient {
             error: createAuthError({
               message: "AuthSessionMissingError",
               statusCode: HttpStatusCode.BAD_REQUEST,
-              code: "invalid_token",
+              errorCode: "invalid_token",
             }),
           };
         }
 
         // 유저 정보를 가져옵니다.
-        const { data, error } = await this.api
+        const { response } = await this.api
           .method("get")
           .path("/api/v1/users/me")
           .setAuthorization(result.session.access_token)
-          .run();
+          .fetch();
 
-        if (data?.data) {
+        if (response?.data) {
           return {
-            user: data.data,
-            error: undefined,
+            user: response.data.data,
+            error: response.error,
           };
         }
 
         return {
           user: undefined,
-          error,
+          error: response?.error,
         };
       });
     } catch (error) {
@@ -511,6 +499,59 @@ export class AuthClient {
 
       throw error;
     }
+  }
+
+  async updateUser() {}
+
+  private async _updateUser() {}
+
+  async refreshSession() {}
+
+  private async _refreshSession() {}
+
+  /**
+   * @description 세션 정보를 새로운 유저 정보로 업데이트합니다.
+   * @param {User} updateUser - 업데이트할 유저 정보
+   */
+  async updateSession(updateUser: User): Promise<LoadSession> {
+    if (this.initializePromise) {
+      await this.initializePromise;
+    }
+
+    return await this._acquireLock(-1, () => {
+      return this._useSession(async (result) => {
+        const { session, error } = result;
+        if (error && isAuthError(error)) {
+          throw error;
+        }
+
+        // 세션이 없다면, 에러를 발생시킵니다.
+        if (!session?.access_token) {
+          return {
+            session: undefined,
+            error: createAuthError({
+              message: "AuthSessionMissingError",
+              statusCode: HttpStatusCode.BAD_REQUEST,
+              errorCode: "invalid_token",
+            }),
+          };
+        }
+
+        // 세션 객체를 업데이트합니다.
+        const updatedSession: Session = {
+          ...session,
+          user: updateUser,
+        };
+
+        await this._saveSession(updatedSession);
+        await this._notifyAllSubscribers("SESSION_UPDATED", updatedSession);
+
+        return {
+          session: updatedSession,
+          error: undefined,
+        };
+      });
+    });
   }
 
   /**
@@ -661,42 +702,6 @@ export class AuthClient {
   /**
    * @memberof AuthClient
    * @private
-   * @description 로그아웃
-   */
-  private async _signOut(): Promise<SignOutResponse> {
-    return await this._useSession(async (result) => {
-      const { session, error: sessionError } = result;
-      if (sessionError) {
-        return { error: sessionError };
-      }
-
-      const accessToken = session?.access_token;
-      let error: SignOutError | undefined;
-      // 토큰이 있다면 로그아웃 요청
-      if (accessToken) {
-        const result = await this.api
-          .method("post")
-          .path("/api/v1/auth/logout")
-          .setAuthorization(accessToken)
-          .run();
-
-        if (result.error) {
-          error = result.error;
-        }
-      }
-
-      // 실패해도 세션 삭제
-      await this._removeSession();
-      // 로그아웃에 대한 이벤트 등록
-      await this._notifyAllSubscribers("SIGNED_OUT", undefined);
-
-      return { error };
-    });
-  }
-
-  /**
-   * @memberof AuthClient
-   * @private
    * @description 세션을 복구하고 갱신합니다.
    * @returns {Promise<void>}
    */
@@ -774,7 +779,7 @@ export class AuthClient {
       throw createAuthError({
         message: "AuthSessionMissingError",
         statusCode: HttpStatusCode.BAD_REQUEST,
-        code: "invalid_token",
+        errorCode: "invalid_token",
       });
     }
 
@@ -798,7 +803,7 @@ export class AuthClient {
         throw createAuthError({
           message: "AuthSessionMissingError",
           statusCode: HttpStatusCode.BAD_REQUEST,
-          code: "session_not_found",
+          errorCode: "session_not_found",
         });
       }
 
@@ -846,7 +851,7 @@ export class AuthClient {
     refreshToken: string,
   ): Promise<TokenResponse> {
     // 토근 갱신 요청
-    const { data, error } = await this.api
+    const { response } = await this.api
       .method("post")
       .path("/api/v1/auth/token")
       .setBody({
@@ -857,17 +862,17 @@ export class AuthClient {
           grantType: "refresh_token",
         },
       })
-      .run();
+      .fetch();
 
-    if (data?.data) {
-      const session = this._makeSession(data.data);
-      return { data: data, session, error: undefined };
+    if (response?.data?.data) {
+      const session = this._makeSession(response.data.data);
+      return { data: response.data, session, error: response.error };
     }
 
     return {
       data: undefined,
       session: undefined,
-      error,
+      error: response?.error,
     };
   }
 
@@ -905,7 +910,6 @@ export class AuthClient {
     ) => void | Promise<void>,
   ): { data: { subscription: Subscription } } {
     const debugName = "[#onAuthStateChange()] ==>";
-    this.debug(debugName, "begin");
 
     // 고유한 ID를 생성합니다.
     const id: string = uuid();
@@ -927,7 +931,6 @@ export class AuthClient {
 
     // 세션 변경 콜백 함수를 저장합니다.
     this.stateChangeEmitters.set(id, subscription);
-
     (async () => {
       // 세션 변경 콜백 함수를 등록하면서, 초기 세션을 발생시킵니다.
       if (this.initializePromise) {
@@ -1052,11 +1055,9 @@ export class AuthClient {
       if (!isNullOrUndefined(maybeSession)) {
         // 세션이 유효한지 확인합니다.
         if (this._isValidSession(maybeSession)) {
-          this.debug(debugName, "session is valid", maybeSession);
           currentSession = maybeSession;
         } else {
           // 세션이 유효하지 않다면, 세션을 삭제합니다.
-          this.debug(debugName, "session is not valid", maybeSession);
           await this._removeSession();
         }
       }
@@ -1411,7 +1412,7 @@ export class AuthClient {
     });
   }
 
-  protected debug(...args: unknown[]) {
+  private debug(...args: unknown[]) {
     if (this.logDebugMessages) {
       console.debug(
         `[Debug message][${isBrowser() ? "client" : "server"}] `,
@@ -1421,7 +1422,7 @@ export class AuthClient {
     return this;
   }
 
-  protected error(...args: unknown[]) {
+  private error(...args: unknown[]) {
     console.error(
       `[Error message][${isBrowser() ? "client" : "server"}] `,
       ...args,
@@ -1429,7 +1430,7 @@ export class AuthClient {
     return this;
   }
 
-  protected warn(...args: unknown[]) {
+  private warn(...args: unknown[]) {
     console.warn(
       `[Warning message][${isBrowser() ? "client" : "server"}] `,
       ...args,

@@ -1,5 +1,4 @@
 import type {
-  Client,
   HeadersOptions,
   InitParam,
   MaybeOptionalInit,
@@ -10,24 +9,30 @@ import type {
   PathsWithMethod,
 } from "openapi-typescript-helpers";
 
+import {
+  DefaultOpenApiPaths,
+  ExpandedFetchOptions,
+  Fetch,
+} from "@template/api-fetch";
 import { isNullOrUndefined } from "@template/utils/assertion";
 
 import type { ApiConfigOptions } from "./types";
 import { ApiBuilder } from "./api.builder";
 
 export class ApiConfig<
-  Paths extends Record<string, Record<HttpMethod, {}>>,
+  Paths extends DefaultOpenApiPaths,
   Method extends HttpMethod,
   Path extends PathsWithMethod<Paths, Method>,
+  Media extends MediaType = MediaType,
 > {
   /**
    * @memberof ApiConfig
    * @instance
    * @protected
-   * @property {Client<Paths>} client
+   * @property {Fetch<Paths, Media>} client
    * @description openapi-fetch의 Client 인스턴스
    */
-  protected client: Client<Paths, MediaType>;
+  protected client: Fetch<Paths, Media>;
 
   /**
    * @memberof ApiConfig
@@ -100,7 +105,62 @@ export class ApiConfig<
     InitParam<MaybeOptionalInit<Paths[Path], Method>>[0]
   >["body"];
 
-  constructor(options: ApiConfigOptions<Paths, Method, Path>) {
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {number | false?} retry
+   * @description API 요청이 실패했을 때 재시도할 횟수
+   */
+  protected retry?: number | false;
+
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {number?} maxRetries
+   * @description API 요청이 실패했을 때 재시도할 최대 횟수
+   * @default 5
+   */
+  protected maxRetries?: number;
+
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {number[]?} retryStatusCodes
+   * @description API 요청이 실패했을 때 재시도할 상태 코드
+   */
+  protected retryStatusCodes?: number[];
+
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {(number | ((retries: number) => number))?} retryDelay
+   * @description API 요청이 실패했을 때 재시도할 때 대기할 시간
+   */
+  protected retryDelay?: number | ((retries: number) => number);
+
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {number?} timeout
+   * @description API 요청이 실패했을 때 타임아웃
+   */
+  protected timeout?: number;
+
+  /**
+   * @memberof ApiConfig
+   * @instance
+   * @protected
+   * @property {AbortSignal?} signal
+   * @description API 요청이 실패했을 때 사용할 signal
+   */
+  protected signal?: AbortSignal;
+
+  constructor(options: ApiConfigOptions<Paths, Method, Path, Media>) {
     this.client = options.client;
     this.path = options.path;
     this.method = options.method;
@@ -210,27 +270,85 @@ export class ApiConfig<
   }
 
   /**
-   * @description 해당 함수를 요청하면 PromiseLike 객체를 반환합니다.
-   * @returns {ApiBuilder<Paths, Method, Path, Init>}
+   * @description API 요청이 실패했을 때 재시도할 횟수를 설정합니다.
+   * @param {{ retry: number | false; retryStatusCodes?: number[]; retryDelay?: number; }} parmas
+   * @returns {this}
    */
-  run<Init extends MaybeOptionalInit<Paths[Path], Method>>(): ApiBuilder<
+  setRetry(parmas: {
+    retry?: number | false;
+    maxRetries?: number;
+    retryStatusCodes?: number[];
+    retryDelay?: number;
+  }): this {
+    this.retry = parmas.retry;
+    this.maxRetries = parmas.maxRetries;
+    this.retryStatusCodes = parmas.retryStatusCodes;
+    this.retryDelay = parmas.retryDelay;
+    return this;
+  }
+
+  /**
+   * @description API 요청이 실패했을 때 타임아웃을 설정합니다.
+   * @param {number} timeout
+   * @returns {this}
+   */
+  setTimeout(timeout: number): this {
+    this.timeout = timeout;
+    return this;
+  }
+
+  /**
+   * @description API 요청이 실패했을 때 사용할 signal을 설정합니다.
+   * @param {AbortSignal} signal
+   * @returns {this}
+   */
+  setSignal(signal: AbortSignal): this {
+    this.signal = signal;
+    return this;
+  }
+
+  /**
+   * @description 해당 함수를 요청하면 PromiseLike 객체를 반환합니다.
+   * @returns {ApiBuilder<Paths, Method, Path, Init, Media>}
+   */
+  fetch<Init extends MaybeOptionalInit<Paths[Path], Method>>(): ApiBuilder<
     Paths,
     Method,
     Path,
-    Init
+    Init,
+    Media
   > {
-    return new ApiBuilder<Paths, Method, Path, Init>({
+    return new ApiBuilder<Paths, Method, Path, Init, Media>({
       client: this.client,
       path: this.path,
       method: this.method,
-      // @ts-expect-error init is not assignable to type 'InitParam<Init>'
-      requestInit: {
-        headers: this.headers,
-        body: this.body,
-        bodySerializer: this.bodySerializer,
-        querySerializer: this.querySerializer,
-        params: this.params,
+      options: {
+        ...this._makeRequestInit(),
+        ...this._makeExpandedFetchOptions(),
       },
     });
+  }
+
+  private _makeRequestInit<
+    Init extends MaybeOptionalInit<Paths[Path], Method>,
+  >(): Init {
+    return {
+      headers: this.headers,
+      signal: this.signal,
+      bodySerializer: this.bodySerializer,
+      querySerializer: this.querySerializer,
+      ...(this.params && { params: this.params }),
+      ...(this.body && { body: this.body }),
+    } as unknown as Init;
+  }
+
+  private _makeExpandedFetchOptions(): ExpandedFetchOptions {
+    return {
+      retry: this.retry,
+      maxRetries: this.maxRetries,
+      retryStatusCodes: this.retryStatusCodes,
+      retryDelay: this.retryDelay,
+      timeout: this.timeout,
+    };
   }
 }

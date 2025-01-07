@@ -1,6 +1,6 @@
 import type { ApiClient } from "@template/api";
 import type { components, paths } from "@template/api-types";
-import type { AuthError } from "@template/common";
+import type { AuthError, BaseError, HttpError } from "@template/common";
 
 export interface AuthClientOptions {
   logDebugMessages?: boolean;
@@ -172,7 +172,7 @@ export type SignInError =
 export interface SignInResponse {
   data: SignInData;
   session: Session | undefined;
-  error: SignInError;
+  error: SignInError | HttpError | BaseError;
 }
 
 export type SignUpBody =
@@ -190,7 +190,7 @@ export type SignUpError =
 export interface SignUpResponse {
   data: SignUpData;
   session: Session | undefined;
-  error: SignUpError;
+  error: SignUpError | HttpError | BaseError;
 }
 
 export type TokenData =
@@ -205,7 +205,7 @@ export type TokenError =
 export interface TokenResponse {
   data: TokenData;
   session: Session | undefined;
-  error: TokenError;
+  error: TokenError | HttpError | BaseError;
 }
 
 export type MeError =
@@ -218,7 +218,7 @@ export type MeData =
 
 export interface MeResponse {
   data: MeData;
-  error: MeError;
+  error: MeError | HttpError | BaseError;
 }
 
 export type SignOutError =
@@ -230,5 +230,5 @@ export type SignOutData =
   | undefined;
 
 export interface SignOutResponse {
-  error: SignOutError | AuthError | undefined;
+  error: SignOutError | AuthError | HttpError | BaseError | undefined;
 }

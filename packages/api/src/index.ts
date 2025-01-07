@@ -1,4 +1,6 @@
-import type { paths } from "@template/api-types";
+import type { MediaType } from "openapi-typescript-helpers";
+
+import type { DefaultOpenApiPaths } from "@template/api-fetch";
 
 import type { ApiClientOptions } from "./types";
 import { ApiClient } from "./api.client";
@@ -8,10 +10,13 @@ import { ApiClient } from "./api.client";
  * @param {ApiClientOptions<Paths>} options
  * @returns {ApiClient<Paths>}
  */
-const createApiClient = <Paths extends paths>(
+const createApiClient = <
+  Paths extends DefaultOpenApiPaths,
+  Media extends MediaType = MediaType,
+>(
   options?: ApiClientOptions<Paths>,
-): ApiClient<Paths> => {
-  return new ApiClient<Paths>(options);
+): ApiClient<Paths, Media> => {
+  return new ApiClient<Paths, Media>(options);
 };
 
 export { createApiClient, ApiClient };

@@ -67,6 +67,13 @@ catalogs:
     lodash-es:
       specifier: ^4.17.21
       version: 4.17.21
+  openapi:
+    openapi-fetch:
+      specifier: ^0.13.0
+      version: 0.13.0
+    openapi-typescript-helpers:
+      specifier: ^0.0.15
+      version: 0.0.15
   prisma5:
     '@prisma/client':
       specifier: 6.0.0
@@ -434,6 +441,9 @@ importers:
 
   packages/api:
     dependencies:
+      '@template/api-fetch':
+        specifier: workspace:*
+        version: link:../api-fetch
       '@template/common':
         specifier: workspace:*
         version: link:../common
@@ -441,7 +451,7 @@ importers:
         specifier: workspace:*
         version: link:../utils
       openapi-fetch:
-        specifier: ^0.13.0
+        specifier: catalog:openapi
         version: 0.13.0
     devDependencies:
       '@template/api-types':
@@ -463,7 +473,50 @@ importers:
         specifier: 'catalog:'
         version: 9.9.1(jiti@1.21.6)
       openapi-typescript-helpers:
-        specifier: ^0.0.15
+        specifier: catalog:openapi
+        version: 0.0.15
+      prettier:
+        specifier: 'catalog:'
+        version: 3.3.3
+      tsup:
+        specifier: 'catalog:'
+        version: 8.2.4(@swc/core@1.7.23(@swc/helpers@0.5.13))(jiti@1.21.6)(postcss@8.4.49)(tsx@4.19.0)(typescript@5.7.2)(yaml@2.5.0)
+      typescript:
+        specifier: 'catalog:'
+        version: 5.7.2
+
+  packages/api-fetch:
+    dependencies:
+      '@template/common':
+        specifier: workspace:*
+        version: link:../common
+      '@template/utils':
+        specifier: workspace:*
+        version: link:../utils
+      openapi-fetch:
+        specifier: catalog:openapi
+        version: 0.13.0
+    devDependencies:
+      '@template/api-types':
+        specifier: workspace:*
+        version: link:../api-types
+      '@template/db':
+        specifier: workspace:*
+        version: link:../db
+      '@template/eslint-config':
+        specifier: workspace:*
+        version: link:../../tooling/eslint
+      '@template/prettier-config':
+        specifier: workspace:*
+        version: link:../../tooling/prettier
+      '@template/tsconfig':
+        specifier: workspace:*
+        version: link:../../tooling/typescript
+      eslint:
+        specifier: 'catalog:'
+        version: 9.9.1(jiti@1.21.6)
+      openapi-typescript-helpers:
+        specifier: catalog:openapi
         version: 0.0.15
       prettier:
         specifier: 'catalog:'

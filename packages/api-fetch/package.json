@@ -1,5 +1,5 @@
 {
-  "name": "@template/api",
+  "name": "@template/api-fetch",
   "version": "0.0.1",
   "private": true,
   "license": "MIT",
@@ -30,7 +30,6 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "@template/api-fetch": "workspace:*",
     "@template/common": "workspace:*",
     "@template/utils": "workspace:*",
     "openapi-fetch": "catalog:openapi"

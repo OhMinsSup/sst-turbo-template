@@ -17,6 +17,7 @@ import { useBreadcrumbs } from "~/providers/breadcrumb.provider";
 
 export default function DashboardHeader() {
   const { items, params } = useBreadcrumbs();
+  console.log(items);
   return (
     <header className="mr-4 flex h-16 shrink-0 items-center justify-between gap-2 transition-[width,height] ease-linear group-has-[[data-collapsible=icon]]/sidebar-wrapper:h-12 md:border-b-[1px]">
       <div className="flex items-center gap-2 px-4">

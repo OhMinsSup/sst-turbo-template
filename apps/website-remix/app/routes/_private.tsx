@@ -1,6 +1,7 @@
 import { Outlet, useNavigation } from "@remix-run/react";
 
-import { DashboardLayout } from "~/components/shared/DashboardLayout";
+import { SidebarProvider } from "@template/ui/components/sidebar";
+
 import { OverlayLoading } from "~/components/shared/OverlayLoading";
 import { BreadcrumbProvider } from "~/providers/breadcrumb.provider";
 
@@ -20,10 +21,12 @@ export default function Routes() {
 
   return (
     <BreadcrumbProvider>
-      <DashboardLayout>
-        <Outlet />
-        <OverlayLoading isLoading={isActionRedirect || isNavigating} />
-      </DashboardLayout>
+      <div className="relative bg-background">
+        <SidebarProvider>
+          <Outlet />
+          <OverlayLoading isLoading={isActionRedirect || isNavigating} />
+        </SidebarProvider>
+      </div>
     </BreadcrumbProvider>
   );
 }

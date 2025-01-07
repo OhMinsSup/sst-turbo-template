@@ -4,14 +4,18 @@ export class BaseError<DataT = unknown> extends Error {
   unhandled = false;
   data?: DataT;
   cause?: unknown;
+  code?: number;
 
-  constructor(message: string, opts: { cause?: unknown } = {}) {
-    // @ts-nocheck - https://v8.dev/features/error-cause
+  constructor(message: string, opts: { cause?: unknown; code?: number } = {}) {
     super(message, opts);
 
     // Polyfill cause for other runtimes
     if (opts.cause && !this.cause) {
       this.cause = opts.cause;
+    }
+
+    if (opts.code) {
+      this.code = opts.code;
     }
   }
 
@@ -69,6 +73,10 @@ export function createBaseError<DataT = unknown>(
 
   if (input.unhandled !== undefined) {
     err.unhandled = input.unhandled;
+  }
+
+  if (input.code !== undefined) {
+    err.code = input.code;
   }
 
   return err;

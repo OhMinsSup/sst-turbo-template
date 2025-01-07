@@ -48,12 +48,30 @@ export class WorkspaceService {
     const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
-    const { data, error } = await api
+    const { response } = await api
       .method("post")
       .path("/api/v1/workspaces")
       .setBody(body)
       .setAuthorization(session.access_token)
-      .run();
+      .fetch();
+
+    if (!response) {
+      return {
+        data: {
+          success: false,
+          error: null,
+          submitId: undefined,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: defaultToastErrorMessage("Failed to create workspace"),
+      } as const;
+    }
+
+    const { data, error } = response;
 
     if (error) {
       const { statusCode, error: innerError } = error;
@@ -126,7 +144,7 @@ export class WorkspaceService {
     const dtoInstance = await dto.transform(args.request, formData);
     const body = dtoInstance.json();
 
-    const { data, error } = await api
+    const { response } = await api
       .method("patch")
       .path("/api/v1/workspaces/{id}/favorite")
       .setBody(body)
@@ -136,7 +154,24 @@ export class WorkspaceService {
         },
       })
       .setAuthorization(session.access_token)
-      .run();
+      .fetch();
+
+    if (!response) {
+      return {
+        data: {
+          success: false,
+          error: null,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: defaultToastErrorMessage("Failed to favorite workspace"),
+      } as const;
+    }
+
+    const { data, error } = response;
 
     if (error) {
       const { error: innerError } = error;
@@ -187,16 +222,16 @@ export class WorkspaceService {
     const dto = new WorkspaceListQueryDto(isDeleted);
     const query = dto.transform(args.request).json();
 
-    const { data, error } = await api
+    const { response } = await api
       .method("get")
       .path(isDeleted ? "/api/v1/workspaces/deleted" : "/api/v1/workspaces")
       .setAuthorization(session.access_token)
       .setParams({
         query,
       })
-      .run();
+      .fetch();
 
-    if (error) {
+    if (!response || response.error) {
       return {
         data: {
           success: false,
@@ -211,6 +246,8 @@ export class WorkspaceService {
         toastMessage: null,
       };
     }
+
+    const { data } = response;
 
     return {
       data: {
@@ -254,7 +291,7 @@ export class WorkspaceService {
     const dto = new WorkspaceDeleteDto();
     const dtoInstance = await dto.transform(args.request, formData);
 
-    const { data, error } = await api
+    const { response } = await api
       .method("delete")
       .path("/api/v1/workspaces/{id}")
       .setParams({
@@ -263,7 +300,24 @@ export class WorkspaceService {
         },
       })
       .setAuthorization(session.access_token)
-      .run();
+      .fetch();
+
+    if (!response) {
+      return {
+        data: {
+          success: false,
+          error: null,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        toastMessage: defaultToastErrorMessage("Failed to delete workspace"),
+      } as const;
+    }
+
+    const { data, error } = response;
 
     if (error) {
       const { error: innerError } = error;
@@ -314,7 +368,7 @@ export class WorkspaceService {
     const dto = new WorkspaceDeleteDto();
     const dtoInstance = await dto.transform(args.request, formData);
 
-    const { data, error } = await api
+    const { response } = await api
       .method("patch")
       .path("/api/v1/workspaces/{id}/restore")
       .setParams({
@@ -323,7 +377,24 @@ export class WorkspaceService {
         },
       })
       .setAuthorization(session.access_token)
-      .run();
+      .fetch();
+
+    if (!response) {
+      return {
+        data: {
+          success: false,
+          error: null,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        toastMessage: defaultToastErrorMessage("Failed to restore workspace"),
+      } as const;
+    }
+
+    const { data, error } = response;
 
     if (error) {
       const { error: innerError } = error;

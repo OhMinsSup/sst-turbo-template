@@ -1,7 +1,12 @@
 import { ActionFunctionArgs } from "@remix-run/node";
 import { container, inject, injectable, singleton } from "tsyringe";
 
-import { HttpStatusCode } from "@template/common";
+import {
+  HttpStatusCode,
+  isAuthError,
+  isBaseError,
+  isHttpError,
+} from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
@@ -44,14 +49,48 @@ export class UserService {
     const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
-    const { data, error } = await api
+    const { response } = await api
       .method("patch")
       .path("/api/v1/users")
       .setBody(body)
       .setAuthorization(session.access_token)
-      .run();
+      .fetch();
 
-    if (error) {
+    if (!response) {
+      return {
+        data: {
+          success: false,
+          error: null,
+          submitId: undefined,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: defaultToastErrorMessage(
+          "Failed to update user information.",
+        ),
+      } as const;
+    }
+
+    if (response.error) {
+      const error = response.error;
+      if (isAuthError(error) || isBaseError(error) || isHttpError(error)) {
+        return {
+          data: {
+            success: false,
+            error: null,
+            submitId: undefined,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          requestBody: body,
+          toastMessage: defaultToastErrorMessage(error.message),
+        } as const;
+      }
       const { statusCode, error: innerError } = error;
       switch (statusCode) {
         case HttpStatusCode.BAD_REQUEST: {
@@ -87,13 +126,15 @@ export class UserService {
       }
     }
 
+    const user = response.data.data;
+
     // 세션 정보를 업데이트합니다.
-    await this.authMiddleware.updateSession(authtication.authClient, data.data);
+    await this.authMiddleware.updateSession(authtication.authClient, user);
 
     return {
       data: {
         success: true,
-        user: data.data,
+        user,
         submitId,
       },
       requestInfo: {

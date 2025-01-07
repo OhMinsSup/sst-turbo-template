@@ -1,31 +1,36 @@
-import type {
-  Client,
-  FetchResponse,
-  InitParam,
-  MaybeOptionalInit,
-} from "openapi-fetch";
+import type { MaybeOptionalInit } from "openapi-fetch";
 import type {
   HttpMethod,
   MediaType,
   PathsWithMethod,
 } from "openapi-typescript-helpers";
 
+import type {
+  ApiFetchContext,
+  DefaultOpenApiPaths,
+  Fetch,
+  FetchOptions,
+  FetchRequestInit,
+} from "@template/api-fetch";
+import { createFetch } from "@template/api-fetch";
+
 import type { ApiBuilderOptions } from "./types";
 
 export class ApiBuilder<
-  Paths extends Record<string, Record<HttpMethod, {}>>,
+  Paths extends DefaultOpenApiPaths,
   Method extends HttpMethod,
   Path extends PathsWithMethod<Paths, Method>,
   Init extends MaybeOptionalInit<Paths[Path], Method>,
+  Media extends MediaType = MediaType,
 > {
   /**
    * @memberof ApiBuilder
    * @instance
    * @protected
-   * @property {Client<Paths, MediaType>} client
+   * @property {Fetch<Paths, Media>} client
    * @description openapi-fetch의 Client 인스턴스
    */
-  protected client: Client<Paths, MediaType>;
+  protected client: Fetch<Paths, Media>;
 
   /**
    * @memberof ApiBuilder
@@ -49,39 +54,48 @@ export class ApiBuilder<
    * @memberof ApiBuilder
    * @instance
    * @protected
-   * @property {InitParam<Init>?} requestInit
-   * @description API 요청을 보낼 때 사용할 request init
+   * @property {FetchOptions} options
+   * @description API 요청을 보낼 때 사용할 options
    */
-  protected requestInit?: InitParam<Init>;
+  protected options: FetchOptions<Paths, Method, Path, Init>;
 
-  constructor(options: ApiBuilderOptions<Paths, Method, Path, Init>) {
+  constructor(options: ApiBuilderOptions<Paths, Method, Path, Init, Media>) {
     this.client = options.client;
     this.path = options.path;
     this.method = options.method;
-    this.requestInit = options.requestInit;
+    this.options = options.options;
+  }
+
+  private _makeRequestInit(): FetchRequestInit<Paths, Method, Path> {
+    return {
+      path: this.path,
+      method: this.method,
+    };
   }
 
   then<
-    TResult1 = FetchResponse<Paths[Path][Method], Init, MediaType>,
+    TResult1 = ApiFetchContext<Paths, Method, Path, Init, Media>,
     TResult2 = never,
   >(
     onfulfilled?:
       | ((
-          value: FetchResponse<Paths[Path][Method], Init, MediaType>,
+          value: ApiFetchContext<Paths, Method, Path, Init, Media>,
         ) => TResult1 | PromiseLike<TResult1>)
       | undefined
       | null,
     onrejected?: // eslint-disable-next-line @typescript-eslint/no-explicit-any
     ((reason: any) => TResult2 | PromiseLike<TResult2>) | undefined | null,
   ): PromiseLike<TResult1 | TResult2> {
-    const fnKey = this.method.toUpperCase() as keyof Omit<
-      Client<Paths, MediaType>,
-      "use" | "eject"
-    >;
-    const fetcher = this.client[fnKey];
+    const fetchClient = createFetch<Paths, Media>({
+      client: this.client,
+    });
 
-    // @ts-expect-error - openapi-fetch에서는 메소드마다 다른 함수를 호출해야하는데 통일하기 위해 이렇게 작성했습니다.
-    return fetcher(this.path, this.requestInit)
+    const request = {
+      path: this.path,
+      method: this.method,
+    };
+
+    return fetchClient<Method, Path, Init>(request, this.options)
       .then(onfulfilled, onrejected)
       .catch(onrejected);
   }
