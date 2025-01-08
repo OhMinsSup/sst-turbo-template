@@ -5,14 +5,10 @@ import type {
   MaybeOptionalInit,
 } from "openapi-fetch";
 import type {
-  ErrorResponse,
   HttpMethod,
   MediaType,
   PathsWithMethod,
-  ResponseObjectMap,
 } from "openapi-typescript-helpers";
-
-import type { BaseError, HttpError } from "@template/common";
 
 // eslint-disable-next-line @typescript-eslint/no-explicit-any
 export type DefaultOpenApiPaths = Record<string, any>;
@@ -78,7 +74,5 @@ export interface ApiFetchContext<
   options: GlobalFetchOptions;
   init: NonNullable<Init>;
   response?: FetchResponse<Paths[Path][Method], Init, Media>;
-  error?:
-    | HttpError<ErrorResponse<ResponseObjectMap<Paths[Path][Method]>, Media>>
-    | BaseError;
+  error?: Error;
 }

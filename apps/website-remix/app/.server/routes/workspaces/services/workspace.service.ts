@@ -1,4 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
+import { invariant } from "@epic-web/invariant";
 import { container, inject, injectable, singleton } from "tsyringe";
 
 import { HttpStatusCode } from "@template/common";
@@ -48,14 +49,68 @@ export class WorkspaceService {
     const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
-    const { response } = await api
-      .method("post")
-      .path("/api/v1/workspaces")
-      .setBody(body)
-      .setAuthorization(session.access_token)
-      .fetch();
+    try {
+      const { response } = await api
+        .method("post")
+        .path("/api/v1/workspaces")
+        .setBody(body)
+        .setAuthorization(session.access_token)
+        .fetch();
 
-    if (!response) {
+      invariant(response, "response is required");
+
+      const { data, error } = response;
+
+      if (error) {
+        const { statusCode, error: innerError } = error;
+        switch (statusCode) {
+          case HttpStatusCode.BAD_REQUEST: {
+            return {
+              data: {
+                success: false,
+                error: toValidationErrorFormat(error),
+                submitId: undefined,
+              },
+              requestInfo: {
+                headers: authtication.headers,
+                request: args.request,
+              },
+              requestBody: body,
+              toastMessage: null,
+            } as const;
+          }
+          default: {
+            return {
+              data: {
+                success: false,
+                error: null,
+                submitId: undefined,
+              },
+              requestInfo: {
+                headers: authtication.headers,
+                request: args.request,
+              },
+              requestBody: body,
+              toastMessage: defaultToastErrorMessage(innerError.message),
+            } as const;
+          }
+        }
+      }
+
+      return {
+        data: {
+          success: true,
+          workspace: data.data,
+          submitId,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: null,
+      } as const;
+    } catch {
       return {
         data: {
           success: false,
@@ -67,61 +122,11 @@ export class WorkspaceService {
           request: args.request,
         },
         requestBody: body,
-        toastMessage: defaultToastErrorMessage("Failed to create workspace"),
+        toastMessage: defaultToastErrorMessage(
+          "워크스페이스를 생성하는 중에 오류가 발생했습니다.",
+        ),
       } as const;
     }
-
-    const { data, error } = response;
-
-    if (error) {
-      const { statusCode, error: innerError } = error;
-      switch (statusCode) {
-        case HttpStatusCode.BAD_REQUEST: {
-          return {
-            data: {
-              success: false,
-              error: toValidationErrorFormat(error),
-              submitId: undefined,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        default: {
-          return {
-            data: {
-              success: false,
-              error: null,
-              submitId: undefined,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: defaultToastErrorMessage(innerError.message),
-          } as const;
-        }
-      }
-    }
-
-    return {
-      data: {
-        success: true,
-        workspace: data.data,
-        submitId,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: body,
-      toastMessage: null,
-    } as const;
   }
 
   /**
@@ -144,19 +149,51 @@ export class WorkspaceService {
     const dtoInstance = await dto.transform(args.request, formData);
     const body = dtoInstance.json();
 
-    const { response } = await api
-      .method("patch")
-      .path("/api/v1/workspaces/{id}/favorite")
-      .setBody(body)
-      .setParams({
-        path: {
-          id: dtoInstance.id,
-        },
-      })
-      .setAuthorization(session.access_token)
-      .fetch();
+    try {
+      const { response } = await api
+        .method("patch")
+        .path("/api/v1/workspaces/{id}/favorite")
+        .setBody(body)
+        .setParams({
+          path: {
+            id: dtoInstance.id,
+          },
+        })
+        .setAuthorization(session.access_token)
+        .fetch();
 
-    if (!response) {
+      invariant(response, "response is required");
+
+      const { data, error } = response;
+      if (error) {
+        const { error: innerError } = error;
+        return {
+          data: {
+            success: false,
+            error: null,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          requestBody: body,
+          toastMessage: defaultToastErrorMessage(innerError.message),
+        } as const;
+      }
+
+      return {
+        data: {
+          success: true,
+          workspace: data.data,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: null,
+      } as const;
+    } catch {
       return {
         data: {
           success: false,
@@ -167,40 +204,11 @@ export class WorkspaceService {
           request: args.request,
         },
         requestBody: body,
-        toastMessage: defaultToastErrorMessage("Failed to favorite workspace"),
+        toastMessage: defaultToastErrorMessage(
+          "즐겨찾기를 변경하는 중에 오류가 발생했습니다.",
+        ),
       } as const;
     }
-
-    const { data, error } = response;
-
-    if (error) {
-      const { error: innerError } = error;
-      return {
-        data: {
-          success: false,
-          error: null,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: body,
-        toastMessage: defaultToastErrorMessage(innerError.message),
-      } as const;
-    }
-
-    return {
-      data: {
-        success: true,
-        workspace: data.data,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: body,
-      toastMessage: null,
-    } as const;
   }
 
   /**
@@ -222,16 +230,37 @@ export class WorkspaceService {
     const dto = new WorkspaceListQueryDto(isDeleted);
     const query = dto.transform(args.request).json();
 
-    const { response } = await api
-      .method("get")
-      .path(isDeleted ? "/api/v1/workspaces/deleted" : "/api/v1/workspaces")
-      .setAuthorization(session.access_token)
-      .setParams({
-        query,
-      })
-      .fetch();
+    try {
+      const { response } = await api
+        .method("get")
+        .path(isDeleted ? "/api/v1/workspaces/deleted" : "/api/v1/workspaces")
+        .setAuthorization(session.access_token)
+        .setParams({
+          query,
+        })
+        .fetch();
 
-    if (!response || response.error) {
+      invariant(response, "response is required");
+
+      // 에러가 존재하면 에러를 반환합니다.
+      invariant(!response.error, "response.error is required");
+
+      const { data } = response;
+
+      return {
+        data: {
+          success: true,
+          ...data.data,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        requestQuery: query,
+        toastMessage: null,
+      } as const;
+    } catch {
       return {
         data: {
           success: false,
@@ -244,24 +273,8 @@ export class WorkspaceService {
         requestBody: null,
         requestQuery: query,
         toastMessage: null,
-      };
+      } as const;
     }
-
-    const { data } = response;
-
-    return {
-      data: {
-        success: true,
-        ...data.data,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: null,
-      requestQuery: query,
-      toastMessage: null,
-    };
   }
 
   /**
@@ -269,7 +282,7 @@ export class WorkspaceService {
    * @param {LoaderFunctionArgs} args
    */
   async findAllByDeleted(args: LoaderFunctionArgs) {
-    return this.findAll(args, true);
+    return await this.findAll(args, true);
   }
 
   /**
@@ -291,18 +304,50 @@ export class WorkspaceService {
     const dto = new WorkspaceDeleteDto();
     const dtoInstance = await dto.transform(args.request, formData);
 
-    const { response } = await api
-      .method("delete")
-      .path("/api/v1/workspaces/{id}")
-      .setParams({
-        path: {
-          id: dtoInstance.id,
-        },
-      })
-      .setAuthorization(session.access_token)
-      .fetch();
+    try {
+      const { response } = await api
+        .method("delete")
+        .path("/api/v1/workspaces/{id}")
+        .setParams({
+          path: {
+            id: dtoInstance.id,
+          },
+        })
+        .setAuthorization(session.access_token)
+        .fetch();
 
-    if (!response) {
+      invariant(response, "response is required");
+
+      const { data, error } = response;
+      if (error) {
+        const { error: innerError } = error;
+        return {
+          data: {
+            success: false,
+            error,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          requestBody: null,
+          toastMessage: defaultToastErrorMessage(innerError.message),
+        } as const;
+      }
+
+      return {
+        data: {
+          success: true,
+          workspace: data.data,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        toastMessage: null,
+      };
+    } catch {
       return {
         data: {
           success: false,
@@ -313,40 +358,11 @@ export class WorkspaceService {
           request: args.request,
         },
         requestBody: null,
-        toastMessage: defaultToastErrorMessage("Failed to delete workspace"),
+        toastMessage: defaultToastErrorMessage(
+          "워크스페이스를 삭제하는 중에 오류가 발생했습니다.",
+        ),
       } as const;
     }
-
-    const { data, error } = response;
-
-    if (error) {
-      const { error: innerError } = error;
-      return {
-        data: {
-          success: false,
-          error,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: null,
-        toastMessage: defaultToastErrorMessage(innerError.message),
-      } as const;
-    }
-
-    return {
-      data: {
-        success: true,
-        workspace: data.data,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: null,
-      toastMessage: null,
-    };
   }
 
   /**
@@ -368,18 +384,50 @@ export class WorkspaceService {
     const dto = new WorkspaceDeleteDto();
     const dtoInstance = await dto.transform(args.request, formData);
 
-    const { response } = await api
-      .method("patch")
-      .path("/api/v1/workspaces/{id}/restore")
-      .setParams({
-        path: {
-          id: dtoInstance.id,
-        },
-      })
-      .setAuthorization(session.access_token)
-      .fetch();
+    try {
+      const { response } = await api
+        .method("patch")
+        .path("/api/v1/workspaces/{id}/restore")
+        .setParams({
+          path: {
+            id: dtoInstance.id,
+          },
+        })
+        .setAuthorization(session.access_token)
+        .fetch();
 
-    if (!response) {
+      invariant(response, "response is required");
+
+      const { data, error } = response;
+      if (error) {
+        const { error: innerError } = error;
+        return {
+          data: {
+            success: false,
+            error,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          requestBody: null,
+          toastMessage: defaultToastErrorMessage(innerError.message),
+        } as const;
+      }
+
+      return {
+        data: {
+          success: true,
+          workspace: data.data,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: null,
+        toastMessage: null,
+      };
+    } catch {
       return {
         data: {
           success: false,
@@ -390,40 +438,11 @@ export class WorkspaceService {
           request: args.request,
         },
         requestBody: null,
-        toastMessage: defaultToastErrorMessage("Failed to restore workspace"),
+        toastMessage: defaultToastErrorMessage(
+          "워크스페이스를 복구하는 중에 오류가 발생했습니다.",
+        ),
       } as const;
     }
-
-    const { data, error } = response;
-
-    if (error) {
-      const { error: innerError } = error;
-      return {
-        data: {
-          success: false,
-          error,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: null,
-        toastMessage: defaultToastErrorMessage(innerError.message),
-      } as const;
-    }
-
-    return {
-      data: {
-        success: true,
-        workspace: data.data,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: null,
-      toastMessage: null,
-    };
   }
 }
 

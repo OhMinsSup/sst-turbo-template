@@ -1,13 +1,7 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { container, injectable, singleton } from "tsyringe";
 
-import {
-  HttpResultCode,
-  HttpStatusCode,
-  isAuthError,
-  isBaseError,
-  isHttpError,
-} from "@template/common";
+import { HttpResultCode, HttpStatusCode, isAuthError } from "@template/common";
 
 import { SignInDto } from "~/.server/routes/auth/dto/signIn.dto";
 import { SignUpDto } from "~/.server/routes/auth/dto/signUp.dto";
@@ -28,22 +22,24 @@ export class AuthService {
     const authtication = auth.handler(args);
 
     const { data, error, session } = await authtication.authClient.signIn(body);
+    if (isAuthError(error)) {
+      return {
+        data: {
+          success: false,
+          error: null,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: defaultToastErrorMessage(
+          "로그인에 실패하였습니다. 다시 시도해주세요.",
+        ),
+      } as const;
+    }
 
     if (error) {
-      if (isAuthError(error) || isBaseError(error) || isHttpError(error)) {
-        return {
-          data: {
-            success: false,
-            error: null,
-          },
-          requestInfo: {
-            headers: authtication.headers,
-            request: args.request,
-          },
-          requestBody: body,
-          toastMessage: defaultToastErrorMessage(error.message),
-        } as const;
-      }
       const { statusCode, resultCode, error: innerError } = error;
       switch (statusCode) {
         case HttpStatusCode.NOT_FOUND: {
@@ -119,22 +115,24 @@ export class AuthService {
     const authtication = auth.handler(args);
 
     const { data, error, session } = await authtication.authClient.signUp(body);
+    if (isAuthError(error)) {
+      return {
+        data: {
+          success: false,
+          error: null,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: defaultToastErrorMessage(
+          "회원가입에 실패하였습니다. 다시 시도해주세요.",
+        ),
+      } as const;
+    }
 
     if (error) {
-      if (isAuthError(error) || isBaseError(error) || isHttpError(error)) {
-        return {
-          data: {
-            success: false,
-            error: null,
-          },
-          requestInfo: {
-            headers: authtication.headers,
-            request: args.request,
-          },
-          requestBody: body,
-          toastMessage: defaultToastErrorMessage(error.message),
-        } as const;
-      }
       const { statusCode, error: innerError } = error;
       switch (statusCode) {
         case HttpStatusCode.NOT_FOUND: {
@@ -223,20 +221,6 @@ export class AuthService {
     }
 
     if (error) {
-      if (isAuthError(error) || isBaseError(error) || isHttpError(error)) {
-        return {
-          data: {
-            success: false,
-            error,
-          },
-          requestInfo: {
-            headers: authtication.headers,
-            request: args.request,
-          },
-          requestBody: null,
-          toastMessage: defaultToastErrorMessage(error.message),
-        } as const;
-      }
       const { statusCode, error: innerError } = error;
       switch (statusCode) {
         case HttpStatusCode.NOT_FOUND: {

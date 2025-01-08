@@ -4,14 +4,8 @@ import type {
   MediaType,
   PathsWithMethod,
 } from "openapi-typescript-helpers";
-import createClient from "openapi-fetch";
 
-import {
-  createBaseError,
-  createHttpError,
-  isBaseError,
-  isHttpError,
-} from "@template/common";
+import { createBaseError } from "@template/common";
 
 import type {
   ApiFetchContext,
@@ -22,8 +16,10 @@ import type {
 } from "./types";
 import { polyfillGlobalThis } from "./polyfills";
 import {
+  getClient,
   isPayloadMethod,
   mergedFetchOptions,
+  networkErrorStatusCodes,
   retryStatusCodes,
   selectedFetchMehtod,
   sleep,
@@ -36,10 +32,10 @@ export function createFetch<
   Paths extends DefaultOpenApiPaths,
   Media extends MediaType = MediaType,
 >(globalOptions: GlobalApiFetchOptions<Paths, Media> = {}) {
-  const { AbortController = globalThis.AbortController } = globalOptions;
+  const { AbortController = globalThis.AbortController, defaults } =
+    globalOptions;
 
-  const client =
-    globalOptions.client ?? createClient<Paths, Media>(globalOptions.defaults);
+  const client = getClient<Paths, Media>(globalOptions);
 
   async function onError<
     Method extends HttpMethod,
@@ -48,6 +44,19 @@ export function createFetch<
   >(
     context: ApiFetchContext<Paths, Method, Path, Init, Media>,
   ): Promise<ApiFetchContext<Paths, Method, Path, Init, Media>> {
+    if (
+      context.response &&
+      networkErrorStatusCodes.has(context.response.response.status)
+    ) {
+      const error = createBaseError({
+        message: "[FetchError]: A network error occurred",
+        name: "FetchError",
+        data: context,
+      });
+      context.error = error;
+      throw error;
+    }
+
     // Is Abort
     // If it is an active abort, it will not retry automatically.
     // https://developer.mozilla.org/en-US/docs/Web/API/DOMException#error_names
@@ -59,7 +68,7 @@ export function createFetch<
 
     // Retry
     if (context.options.retry !== false && !isAbort) {
-      let retries;
+      let retries: number;
       if (typeof context.options.retry === "number") {
         retries = context.options.retry;
       } else {
@@ -68,11 +77,7 @@ export function createFetch<
 
       const responseCode = context.response?.response.status ?? 500;
 
-      if (
-        retries > 0 &&
-        (retryStatusCodes.has(responseCode) ||
-          (context.error && context.error.name === "FetchError"))
-      ) {
+      if (retries > 0 && retryStatusCodes.has(responseCode)) {
         const maxRetries = context.options.maxRetries ?? 5;
         let retryDelay = context.options.retryDelay ?? 1000;
         if (typeof retryDelay === "function") {
@@ -100,23 +105,22 @@ export function createFetch<
   ): Promise<ApiFetchContext<Paths, Method, Path, Init, Media>> {
     const context: ApiFetchContext<Paths, Method, Path, Init, Media> = {
       request,
-      ...mergedFetchOptions<Paths, Method, Path, Init>(
-        options,
-        globalOptions.defaults,
-      ),
+      ...mergedFetchOptions<Paths, Method, Path, Init>(options, defaults),
     };
 
     let abortTimeout: NodeJS.Timeout | undefined;
-    if (!context.options.signal && context.options.timeout) {
+    if (!context.init.signal && context.options.timeout) {
       const controller = new AbortController();
       abortTimeout = setTimeout(() => {
         const error = createBaseError({
           message: "[TimeoutError]: The operation was aborted due to timeout",
           name: "TimeoutError",
           code: 23, // DOMException.TIMEOUT_ERR
+          data: context,
         });
         controller.abort(error);
       }, context.options.timeout);
+
       context.init.signal = controller.signal;
     }
 
@@ -126,30 +130,24 @@ export function createFetch<
     );
 
     try {
-      const response = await fetchClient(context.request.path, context.init);
-      context.response = response;
-      if (response.error) {
-        throw createHttpError({
-          message: "[FetchError]: Failed to fetch the resource",
-          name: "FetchError",
-          status: response.response.status,
-          statusText: response.response.statusText,
-          data: response.error,
-        });
-      }
-    } catch (error) {
-      if (isHttpError(error) || isBaseError(error)) {
-        context.error = error;
-      }
-      return await onError(context);
+      context.response = await fetchClient(context.request.path, context.init);
+    } catch (e) {
+      context.error = e as Error;
+      const error = createBaseError({
+        message: "[FetchError]: A fetch error occurred",
+        name: "FetchError",
+        data: context,
+      });
+      throw error;
     } finally {
       if (abortTimeout) {
         clearTimeout(abortTimeout);
       }
     }
 
+    const error = context.response.error;
     const status = context.response.response.status;
-    if (status >= 400 && status < 600) {
+    if (error && status >= 400 && status < 600) {
       return await onError(context);
     }
 

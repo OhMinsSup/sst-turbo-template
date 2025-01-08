@@ -4,12 +4,13 @@ import type {
   MediaType,
   PathsWithMethod,
 } from "openapi-typescript-helpers";
-import { mergeHeaders } from "openapi-fetch";
+import createClient, { mergeHeaders } from "openapi-fetch";
 
 import type {
   DefaultOpenApiPaths,
   Fetch,
   FetchOptions,
+  GlobalApiFetchOptions,
   GlobalFetchOptions,
 } from "./types";
 
@@ -101,8 +102,13 @@ export function mergedFetchOptions<
   };
 }
 
-export function isRetryableStatusCode(status: number): boolean {
-  return retryStatusCodes.has(status);
+export function getClient<
+  Paths extends DefaultOpenApiPaths,
+  Media extends MediaType = MediaType,
+>(globalOptions?: GlobalApiFetchOptions<Paths, Media>) {
+  return (
+    globalOptions?.client ?? createClient<Paths, Media>(globalOptions?.defaults)
+  );
 }
 
 export function selectedFetchMehtod<

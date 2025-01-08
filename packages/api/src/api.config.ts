@@ -5,7 +5,7 @@ import type {
   PathsWithMethod,
 } from "openapi-typescript-helpers";
 
-import {
+import type {
   DefaultFetchOptions,
   DefaultOpenApiPaths,
   Fetch,

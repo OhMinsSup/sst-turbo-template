@@ -1,12 +1,8 @@
 import { ActionFunctionArgs } from "@remix-run/node";
+import { invariant } from "@epic-web/invariant";
 import { container, inject, injectable, singleton } from "tsyringe";
 
-import {
-  HttpStatusCode,
-  isAuthError,
-  isBaseError,
-  isHttpError,
-} from "@template/common";
+import { HttpStatusCode } from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
@@ -49,14 +45,71 @@ export class UserService {
     const body = (await dto.transform(args.request, formData)).json();
     const submitId = dto.submitId();
 
-    const { response } = await api
-      .method("patch")
-      .path("/api/v1/users")
-      .setBody(body)
-      .setAuthorization(session.access_token)
-      .fetch();
+    try {
+      const { response } = await api
+        .method("patch")
+        .path("/api/v1/users")
+        .setBody(body)
+        .setAuthorization(session.access_token)
+        .fetch();
 
-    if (!response) {
+      invariant(response, "response is required");
+
+      if (response.error) {
+        const { statusCode, error: innerError } = response.error;
+        switch (statusCode) {
+          case HttpStatusCode.BAD_REQUEST: {
+            return {
+              data: {
+                success: false,
+                error: toValidationErrorFormat(response.error),
+                submitId: undefined,
+              },
+              requestInfo: {
+                headers: authtication.headers,
+                request: args.request,
+              },
+              requestBody: body,
+              toastMessage: null,
+            } as const;
+          }
+          default: {
+            return {
+              data: {
+                success: false,
+                error: null,
+                submitId: undefined,
+              },
+              requestInfo: {
+                headers: authtication.headers,
+                request: args.request,
+              },
+              requestBody: body,
+              toastMessage: defaultToastErrorMessage(innerError.message),
+            } as const;
+          }
+        }
+      }
+
+      const user = response.data.data;
+
+      // 세션 정보를 업데이트합니다.
+      await this.authMiddleware.updateSession(authtication.authClient, user);
+
+      return {
+        data: {
+          success: true,
+          user,
+          submitId,
+        },
+        requestInfo: {
+          headers: authtication.headers,
+          request: args.request,
+        },
+        requestBody: body,
+        toastMessage: null,
+      } as const;
+    } catch {
       return {
         data: {
           success: false,
@@ -69,81 +122,10 @@ export class UserService {
         },
         requestBody: body,
         toastMessage: defaultToastErrorMessage(
-          "Failed to update user information.",
+          "유저 정보를 업데이트하는 중에 오류가 발생했습니다.",
         ),
       } as const;
     }
-
-    if (response.error) {
-      const error = response.error;
-      if (isAuthError(error) || isBaseError(error) || isHttpError(error)) {
-        return {
-          data: {
-            success: false,
-            error: null,
-            submitId: undefined,
-          },
-          requestInfo: {
-            headers: authtication.headers,
-            request: args.request,
-          },
-          requestBody: body,
-          toastMessage: defaultToastErrorMessage(error.message),
-        } as const;
-      }
-      const { statusCode, error: innerError } = error;
-      switch (statusCode) {
-        case HttpStatusCode.BAD_REQUEST: {
-          return {
-            data: {
-              success: false,
-              error: toValidationErrorFormat(error),
-              submitId: undefined,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        default: {
-          return {
-            data: {
-              success: false,
-              error: null,
-              submitId: undefined,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: defaultToastErrorMessage(innerError.message),
-          } as const;
-        }
-      }
-    }
-
-    const user = response.data.data;
-
-    // 세션 정보를 업데이트합니다.
-    await this.authMiddleware.updateSession(authtication.authClient, user);
-
-    return {
-      data: {
-        success: true,
-        user,
-        submitId,
-      },
-      requestInfo: {
-        headers: authtication.headers,
-        request: args.request,
-      },
-      requestBody: body,
-      toastMessage: null,
-    } as const;
   }
 }
 

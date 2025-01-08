@@ -26,16 +26,6 @@
         "default": "./dist/assertion.cjs"
       }
     },
-    "./jwt": {
-      "import": {
-        "types": "./dist/jwt.d.ts",
-        "default": "./dist/jwt.js"
-      },
-      "require": {
-        "types": "./dist/jwt.d.cts",
-        "default": "./dist/jwt.cjs"
-      }
-    },
     "./request": {
       "import": {
         "types": "./dist/request.d.ts",
@@ -60,8 +50,7 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "date-fns": "catalog:",
-    "jose": "^5.8.0"
+    "date-fns": "catalog:"
   },
   "devDependencies": {
     "@template/eslint-config": "workspace:*",
