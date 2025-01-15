@@ -1,4 +1,3 @@
-import type { AuthError } from "@template/common";
 import { createAuthError, isAuthError } from "@template/common";
 import {
   isBrowser,
@@ -18,17 +17,23 @@ import type {
   LoadSession,
   LockFunc,
   MakeSessionParams,
+  RefreshSession,
+  RefreshSessionBody,
   Session,
   SignInBody,
+  SignInError,
   SignInResponse,
-  SignOutError,
   SignOutResponse,
   SignUpBody,
+  SignUpError,
   SignUpResponse,
   Subscription,
   SupportedStorage,
+  TokenError,
   TokenResponse,
-  User,
+  UpdateUserBody,
+  UserMeError,
+  UserUpdateError,
 } from "./types";
 import { localStorageAdapter } from "./adapters/local";
 import { memoryLocalStorageAdapter } from "./adapters/memory";
@@ -303,27 +308,49 @@ export class AuthClient {
         .setBody(body)
         .fetch();
 
-      if (response?.data) {
-        const session = this._makeSession(response.data.data);
+      if (!response) {
+        return {
+          data: undefined,
+          session: undefined,
+          error: createAuthError<undefined>({
+            name: "AuthApiError",
+            message: "Response is empty",
+            errorCode: "unexpected_failure",
+          }),
+        };
+      }
+
+      const { data, error } = response;
+
+      if (data) {
+        // 세션 객체 생성
+        const session = this._makeSession(data.data);
+        // 세션 객체 스토리지에 저장
         await this._saveSession(session);
-        await this._notifyAllSubscribers("SIGNED_IN", session);
+        // 회원가입에 대한 이벤트 등록
+        await this._notifyAllSubscribers("SIGNED_UP", session);
         return { data: response.data, session, error: undefined };
       }
 
       return {
-        data: response?.data,
+        data: undefined,
         session: undefined,
-        error: response?.error,
+        error: createAuthError<SignUpError>({
+          name: "AuthApiError",
+          message: "Failed to sign up",
+          errorCode: "validation_failed",
+          data: error,
+        }),
       };
     } catch (e) {
+      this.error("[#signUp()] ==> ", e);
       return {
         data: undefined,
         session: undefined,
-        error: createAuthError({
+        error: createAuthError<undefined>({
           name: "AuthApiError",
           message: "Failed to sign up",
           errorCode: "unknown_error",
-          data: e,
         }),
       };
     }
@@ -342,9 +369,23 @@ export class AuthClient {
         .setBody(body)
         .fetch();
 
-      if (response?.data) {
+      if (!response) {
+        return {
+          data: undefined,
+          session: undefined,
+          error: createAuthError<undefined>({
+            name: "AuthApiError",
+            message: "Response is empty",
+            errorCode: "unexpected_failure",
+          }),
+        };
+      }
+
+      const { data, error } = response;
+
+      if (data) {
         // 세션 객체 생성
-        const session = this._makeSession(response.data.data);
+        const session = this._makeSession(data.data);
         // 세션 객체 스토리지에 저장
         await this._saveSession(session);
         // 로그인에 대한 이벤트 등록
@@ -353,19 +394,23 @@ export class AuthClient {
       }
 
       return {
-        data: response?.data,
+        data: undefined,
         session: undefined,
-        error: response?.error,
+        error: createAuthError<SignInError>({
+          name: "AuthApiError",
+          message: "Failed to sign in",
+          errorCode: "validation_failed",
+          data: error,
+        }),
       };
-    } catch (error) {
+    } catch {
       return {
         data: undefined,
         session: undefined,
-        error: createAuthError({
+        error: createAuthError<undefined>({
           name: "AuthApiError",
           message: "Failed to sign in",
           errorCode: "unknown_error",
-          data: error,
         }),
       };
     }
@@ -374,31 +419,28 @@ export class AuthClient {
   /**
    * @memberof AuthClient
    * @description 로그아웃
+   * @returns {Promise<SignOutResponse>}
    */
   async signOut(): Promise<SignOutResponse> {
     if (this.initializePromise) {
       await this.initializePromise;
     }
 
-    return await this._acquireLock(-1, async () => {
-      return await this._signOut();
-    });
+    return await this._acquireLock(-1, async () => await this._signOut());
   }
 
   /**
    * @memberof AuthClient
    * @private
    * @description 로그아웃
+   * @returns {Promise<SignOutResponse>}
    */
   private async _signOut(): Promise<SignOutResponse> {
     return await this._useSession(async (result) => {
-      const { session, error: sessionError } = result;
-      if (sessionError) {
-        return { error: sessionError };
-      }
+      const { session, error } = result;
+      if (error) return { error };
 
       const accessToken = session?.access_token;
-      let error: SignOutError | AuthError | undefined;
       // 토큰이 있다면 로그아웃 요청
       if (accessToken) {
         try {
@@ -408,14 +450,48 @@ export class AuthClient {
             .setAuthorization(accessToken)
             .fetch();
 
-          error = response?.error;
-        } catch (e) {
-          error = createAuthError({
-            name: "AuthApiError",
-            message: "Failed to sign out",
-            errorCode: "unknown_error",
-            data: e,
-          });
+          if (!response) {
+            return {
+              data: undefined,
+              session: undefined,
+              error: createAuthError<undefined>({
+                name: "AuthApiError",
+                message: "Response is empty",
+                errorCode: "unexpected_failure",
+              }),
+            };
+          }
+
+          const { data, error } = response;
+
+          if (data) {
+            // 실패해도 세션이 존재하면 삭제
+            await this._removeSession();
+            // 로그아웃에 대한 이벤트 등록
+            await this._notifyAllSubscribers("SIGNED_OUT", undefined);
+            return { error: undefined };
+          }
+
+          // 사용자가 더 이상 존재하지 않을 수 있으므로 404를 예외
+          // 유효하지 않거나 만료된 JWT는 현재 세션을 로그아웃해야 하므로 401를 예외
+          if (![400, 401, 403].includes(error.statusCode)) {
+            return {
+              error: createAuthError<SignInError>({
+                name: "AuthApiError",
+                message: "Failed to sign out",
+                errorCode: "validation_failed",
+                data: error,
+              }),
+            };
+          }
+        } catch {
+          return {
+            error: createAuthError<undefined>({
+              name: "AuthApiError",
+              message: "Failed to sign out",
+              errorCode: "unknown_error",
+            }),
+          };
         }
       }
 
@@ -424,7 +500,7 @@ export class AuthClient {
       // 로그아웃에 대한 이벤트 등록
       await this._notifyAllSubscribers("SIGNED_OUT", undefined);
 
-      return { error };
+      return { error: undefined };
     });
   }
 
@@ -438,9 +514,10 @@ export class AuthClient {
       await this.initializePromise;
     }
 
-    return await this._acquireLock(-1, () => {
-      return this._useSession(async (result) => result);
-    });
+    return await this._acquireLock(
+      -1,
+      async () => await this._useSession(async (result) => result),
+    );
   }
 
   /**
@@ -458,11 +535,7 @@ export class AuthClient {
       await this.initializePromise;
     }
 
-    const result = await this._acquireLock(-1, async () => {
-      return await this._getUser();
-    });
-
-    return result;
+    return await this._acquireLock(-1, async () => await this._getUser());
   }
 
   /**
@@ -483,22 +556,42 @@ export class AuthClient {
             .setAuthorization(jwt)
             .fetch();
 
-          if (response?.data) {
+          if (!response) {
             return {
-              user: response.data.data,
+              user: undefined,
+              error: createAuthError<undefined>({
+                name: "AuthApiError",
+                message: "Response is empty",
+                errorCode: "unexpected_failure",
+              }),
+            };
+          }
+
+          const { data, error } = response;
+
+          if (data) {
+            return {
+              user: data.data,
               error: undefined,
             };
           }
 
-          return { user: undefined, error: response?.error };
-        } catch (e) {
           return {
             user: undefined,
-            error: createAuthError({
+            error: createAuthError<UserMeError>({
+              name: "AuthApiError",
+              message: "Failed to get user",
+              errorCode: "validation_failed",
+              data: error,
+            }),
+          };
+        } catch {
+          return {
+            user: undefined,
+            error: createAuthError<undefined>({
               name: "AuthApiError",
               message: "Failed to get user",
               errorCode: "unknown_error",
-              data: e,
             }),
           };
         }
@@ -506,48 +599,67 @@ export class AuthClient {
 
       // 유저 정보를 가져오기 위해 세션을 이용합니다.
       return await this._useSession(async (result) => {
-        if (result.error && isAuthError(result.error)) {
-          throw result.error;
-        }
-
-        // 세션이 없다면, 에러를 발생시킵니다.
-        if (!result.session?.access_token) {
-          return {
-            user: undefined,
-            error: createAuthError({
-              name: "AuthSessionMissingError",
-              message: "Session not found",
-              errorCode: "invalid_token",
-            }),
-          };
-        }
-
         try {
+          const { session, error } = result;
+          if (error && isAuthError(error)) {
+            throw error;
+          }
+
+          // 세션이 없다면, 에러를 발생시킵니다.
+          if (!session) {
+            return {
+              user: undefined,
+              error: createAuthError<undefined>({
+                name: "AuthSessionMissingError",
+                message: "Session not found",
+                errorCode: "session_not_found",
+              }),
+            };
+          }
+
           // 유저 정보를 가져옵니다.
           const { response } = await this.api
             .method("get")
             .path("/api/v1/users/me")
-            .setAuthorization(result.session.access_token)
+            .setAuthorization(session.access_token)
             .fetch();
 
-          if (response?.data) {
+          if (!response) {
             return {
-              user: response.data.data,
+              user: undefined,
+              error: createAuthError<undefined>({
+                name: "AuthApiError",
+                message: "Response is empty",
+                errorCode: "unexpected_failure",
+              }),
+            };
+          }
+
+          const { data, error: e } = response;
+
+          if (data) {
+            return {
+              user: data.data,
               error: undefined,
             };
           }
 
           return {
             user: undefined,
-            error: response?.error,
+            error: createAuthError<UserMeError>({
+              name: "AuthApiError",
+              message: "Failed to get user",
+              errorCode: "validation_failed",
+              data: e,
+            }),
           };
-        } catch (e) {
+        } catch {
           return {
             user: undefined,
-            error: createAuthError({
+            error: createAuthError<undefined>({
               name: "AuthApiError",
+              message: "Failed to get user",
               errorCode: "unknown_error",
-              data: e,
             }),
           };
         }
@@ -565,57 +677,168 @@ export class AuthClient {
     }
   }
 
-  async updateUser() {}
-
-  private async _updateUser() {}
-
-  async refreshSession() {}
-
-  private async _refreshSession() {}
-
   /**
-   * @description 세션 정보를 새로운 유저 정보로 업데이트합니다.
-   * @param {User} updateUser - 업데이트할 유저 정보
+   * @memberof AuthClient
+   * @description 유저 정보 업데이트
+   * @param {UpdateUserBody} body - 업데이트할 유저 정보
+   * @returns {Promise<GetUserResponse>}
    */
-  async updateSession(updateUser: User): Promise<LoadSession> {
+  async updateUser(body: UpdateUserBody): Promise<GetUserResponse> {
     if (this.initializePromise) {
       await this.initializePromise;
     }
 
-    return await this._acquireLock(-1, () => {
-      return this._useSession(async (result) => {
+    return await this._acquireLock(
+      -1,
+      async () => await this._updateUser(body),
+    );
+  }
+
+  /**
+   * @memberof AuthClient
+   * @private
+   * @description 유저 정보 업데이트
+   * @param {UpdateUserBody} body - 업데이트할 유저 정보
+   * @returns {Promise<GetUserResponse>}
+   */
+  private async _updateUser(body: UpdateUserBody): Promise<GetUserResponse> {
+    return await this._useSession(async (result) => {
+      try {
         const { session, error } = result;
         if (error && isAuthError(error)) {
           throw error;
         }
 
         // 세션이 없다면, 에러를 발생시킵니다.
-        if (!session?.access_token) {
+        if (!session) {
           return {
             session: undefined,
-            error: createAuthError({
+            error: createAuthError<undefined>({
               name: "AuthSessionMissingError",
               message: "Session not found",
-              errorCode: "invalid_token",
+              errorCode: "session_not_found",
             }),
           };
         }
 
-        // 세션 객체를 업데이트합니다.
-        const updatedSession: Session = {
-          ...session,
-          user: updateUser,
-        };
+        const { response } = await this.api
+          .method("patch")
+          .path("/api/v1/users")
+          .setAuthorization(session.access_token)
+          .setBody(body)
+          .fetch();
 
-        await this._saveSession(updatedSession);
-        await this._notifyAllSubscribers("SESSION_UPDATED", updatedSession);
+        if (!response) {
+          return {
+            user: undefined,
+            error: createAuthError<undefined>({
+              name: "AuthApiError",
+              message: "Response is empty",
+              errorCode: "unexpected_failure",
+            }),
+          };
+        }
+
+        const { data, error: e } = response;
+
+        if (data) {
+          session.user = data.data;
+          await this._saveSession(session);
+          await this._notifyAllSubscribers("USER_UPDATED", session);
+          return {
+            user: data.data,
+            error: undefined,
+          };
+        }
 
         return {
-          session: updatedSession,
-          error: undefined,
+          user: undefined,
+          error: createAuthError<UserUpdateError>({
+            name: "AuthApiError",
+            message: "Failed to update user",
+            errorCode: "validation_failed",
+            data: e,
+          }),
         };
-      });
+      } catch {
+        return {
+          user: undefined,
+          error: createAuthError<undefined>({
+            name: "AuthApiError",
+            message: "Failed to update user",
+            errorCode: "unknown_error",
+          }),
+        };
+      }
     });
+  }
+
+  /**
+   * @memberof AuthClient
+   * @description 세션을 갱신합니다.
+   * @param {RefreshSessionBody} currentSession - 현재 세션
+   * @returns {Promise<RefreshSession>}
+   */
+  async refreshSession(
+    currentSession?: RefreshSessionBody,
+  ): Promise<RefreshSession> {
+    await this.initializePromise;
+
+    return await this._acquireLock(
+      -1,
+      async () => await this._refreshSession(currentSession),
+    );
+  }
+
+  /**
+   * @memberof AuthClient
+   * @private
+   * @description 세션을 갱신합니다.
+   * @param {RefreshSessionBody} currentSession - 현재 세션
+   * @returns {Promise<LoadSession>}
+   */
+  private async _refreshSession(
+    currentSession?: RefreshSessionBody,
+  ): Promise<RefreshSession> {
+    try {
+      return await this._useSession(async (result) => {
+        if (!currentSession) {
+          const { session, error } = result;
+          if (error && isAuthError(error)) {
+            throw error;
+          }
+
+          currentSession = session ?? undefined;
+        }
+
+        if (!currentSession?.refresh_token) {
+          throw createAuthError<undefined>({
+            name: "AuthSessionMissingError",
+            message: "Session not found",
+            errorCode: "session_not_found",
+          });
+        }
+
+        const { session, error } = await this._callRefreshToken(
+          currentSession.refresh_token,
+        );
+        if (error) {
+          return { user: undefined, session: undefined, error };
+        }
+
+        return { user: session.user, session, error: undefined };
+      });
+    } catch (e) {
+      if (isAuthError<TokenError | undefined>(e)) {
+        return { user: undefined, session: undefined, error: e };
+      }
+
+      throw createAuthError<undefined>({
+        name: "AuthApiError",
+        message: "Failed to refresh session",
+        errorCode: "unknown_error",
+      });
+    }
   }
 
   /**
@@ -840,7 +1063,7 @@ export class AuthClient {
   ): Promise<CallRefreshTokenResult> {
     // 갱신 토큰이 없다면, 에러를 발생시킵니다.
     if (!refreshToken) {
-      throw createAuthError({
+      throw createAuthError<undefined>({
         name: "AuthSessionMissingError",
         message: "Refresh token not found",
         errorCode: "invalid_token",
@@ -862,12 +1085,14 @@ export class AuthClient {
       this.refreshingDeferred = new Deferred<CallRefreshTokenResult>();
 
       // 세션 객체를 갱신합니다.
-      const { session } = await this._refreshAccessToken(refreshToken);
+      const { session, error } = await this._refreshAccessToken(refreshToken);
+
       if (!session) {
-        throw createAuthError({
+        throw createAuthError<TokenError>({
           name: "AuthSessionMissingError",
           message: "Session not found",
           errorCode: "session_not_found",
+          data: error.data,
         });
       }
 
@@ -881,10 +1106,10 @@ export class AuthClient {
       this.refreshingDeferred.resolve(result);
 
       return result;
-    } catch (error) {
-      this.error(debugName, error);
-      if (isAuthError(error)) {
-        const result = { session: undefined, error };
+    } catch (e) {
+      this.error(debugName, e);
+      if (isAuthError(e)) {
+        const result = { session: undefined, error: e };
 
         // 스토리지 세션을 삭제합니다.
         await this._removeSession();
@@ -895,9 +1120,15 @@ export class AuthClient {
         return result;
       }
 
+      const nextError = createAuthError<undefined>({
+        name: "AuthApiError",
+        message: "Failed to refresh token",
+        errorCode: "unknown_error",
+      });
+
       // 토큰 갱신 요청이 실패한 경우 reject를 호출합니다.
-      this.refreshingDeferred?.reject(error);
-      throw error;
+      this.refreshingDeferred?.reject(nextError);
+      throw nextError;
     } finally {
       // 모든 작업이 완료되면, Deferred 객체를 초기화합니다.
       this.refreshingDeferred = null;
@@ -929,25 +1160,43 @@ export class AuthClient {
         })
         .fetch();
 
-      if (response?.data?.data) {
-        const session = this._makeSession(response.data.data);
-        return { data: response.data, session, error: undefined };
+      if (!response) {
+        return {
+          data: undefined,
+          session: undefined,
+          error: createAuthError<undefined>({
+            name: "AuthApiError",
+            message: "Response is empty",
+            errorCode: "unexpected_failure",
+          }),
+        };
+      }
+
+      const { data, error } = response;
+
+      if (data?.data) {
+        const session = this._makeSession(data.data);
+        return { data, session, error: undefined };
       }
 
       return {
         data: undefined,
         session: undefined,
-        error: response?.error,
+        error: createAuthError<TokenError>({
+          name: "AuthApiError",
+          message: "Failed to refresh token",
+          errorCode: "validation_failed",
+          data: error,
+        }),
       };
-    } catch (e) {
+    } catch {
       return {
         data: undefined,
         session: undefined,
-        error: createAuthError({
+        error: createAuthError<undefined>({
           name: "AuthApiError",
           message: "Failed to refresh token",
           errorCode: "unknown_error",
-          data: e,
         }),
       };
     }

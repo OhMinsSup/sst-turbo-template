@@ -1,8 +1,8 @@
 import { ActionFunctionArgs } from "@remix-run/node";
-import { invariant } from "@epic-web/invariant";
 import { container, inject, injectable, singleton } from "tsyringe";
 
-import { HttpStatusCode } from "@template/common";
+import { UserUpdateError } from "@template/auth";
+import { AuthError, HttpStatusCode, isAuthError } from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
@@ -12,7 +12,6 @@ import {
   defaultToastErrorMessage,
   invariantSession,
 } from "~/.server/utils/shared";
-import { api } from "~/libs/api";
 import { toValidationErrorFormat } from "~/libs/error";
 
 @singleton()
@@ -46,67 +45,27 @@ export class UserService {
     const submitId = dto.submitId();
 
     try {
-      const { response } = await api
-        .method("patch")
-        .path("/api/v1/users")
-        .setBody(body)
-        .setAuthorization(session.access_token)
-        .fetch();
-
-      invariant(response, "response is required");
-
-      if (response.error) {
-        const { statusCode, error: innerError } = response.error;
-        switch (statusCode) {
-          case HttpStatusCode.BAD_REQUEST: {
-            return {
-              data: {
-                success: false,
-                error: toValidationErrorFormat(response.error),
-                submitId: undefined,
-              },
-              requestInfo: {
-                headers: authtication.headers,
-                request: args.request,
-              },
-              requestBody: body,
-              toastMessage: null,
-            } as const;
-          }
-          default: {
-            return {
-              data: {
-                success: false,
-                error: null,
-                submitId: undefined,
-              },
-              requestInfo: {
-                headers: authtication.headers,
-                request: args.request,
-              },
-              requestBody: body,
-              toastMessage: defaultToastErrorMessage(innerError.message),
-            } as const;
-          }
-        }
+      const { error } = await authtication.authClient.updateUser(body);
+      if (isAuthError<UserUpdateError>(error)) {
+        return this._updateUserError({ e: error, args, authtication });
       }
 
-      const user = response.data.data;
-
       // 세션 정보를 업데이트합니다.
-      await this.authMiddleware.updateSession(authtication.authClient, user);
+      const { user: newUser } = await this.authMiddleware.refreshSession(
+        authtication.authClient,
+        session.refresh_token,
+      );
 
       return {
         data: {
           success: true,
-          user,
+          user: newUser,
           submitId,
         },
         requestInfo: {
           headers: authtication.headers,
           request: args.request,
         },
-        requestBody: body,
         toastMessage: null,
       } as const;
     } catch {
@@ -120,11 +79,71 @@ export class UserService {
           headers: authtication.headers,
           request: args.request,
         },
-        requestBody: body,
         toastMessage: defaultToastErrorMessage(
           "유저 정보를 업데이트하는 중에 오류가 발생했습니다.",
         ),
       } as const;
+    }
+  }
+
+  private _updateUserError<E = unknown>({
+    e,
+    args,
+    authtication,
+  }: {
+    e: AuthError<E>;
+    args: ActionFunctionArgs;
+    authtication: ReturnType<typeof auth.handler>;
+  }) {
+    const error = e.toJSON();
+    const defaultErrorToast = {
+      data: {
+        success: false,
+        error: null,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      toastMessage: defaultToastErrorMessage(
+        "유저 정보를 업데이트하는 중에 오류가 발생했습니다.",
+      ),
+    } as const;
+
+    const { statusCode, errorCode } = error;
+
+    if (errorCode !== "validation_failed") {
+      return defaultErrorToast;
+    }
+
+    const errorData = error.data as UserUpdateError | undefined;
+    if (!errorData) {
+      return defaultErrorToast;
+    }
+
+    switch (statusCode) {
+      case HttpStatusCode.BAD_REQUEST: {
+        const validateError = toValidationErrorFormat(errorData);
+
+        if (!validateError) {
+          return defaultErrorToast;
+        }
+
+        return {
+          data: {
+            success: false,
+            error: validateError,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          toastMessage: null,
+        } as const;
+      }
+      default: {
+        return defaultErrorToast;
+      }
     }
   }
 }

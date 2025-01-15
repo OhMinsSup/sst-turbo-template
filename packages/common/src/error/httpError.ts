@@ -95,7 +95,9 @@ export function createHttpError<DataT = unknown>(
 }
 
 export function isHttpError<DataT = unknown>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   input: any,
 ): input is HttpError<DataT> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return input?.constructor?.__http_error__ === true;
 }

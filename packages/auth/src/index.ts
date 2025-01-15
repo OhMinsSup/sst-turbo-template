@@ -1,4 +1,14 @@
-import type { AuthClientOptions, Session, User } from "./types";
+import type {
+  AuthClientOptions,
+  Session,
+  SignInError,
+  SignOutError,
+  SignUpError,
+  TokenError,
+  User,
+  UserMeError,
+  UserUpdateError,
+} from "./types";
 import { AuthClient } from "./auth.client";
 
 const createAuthClient = (options: AuthClientOptions) => {
@@ -14,4 +24,10 @@ export {
   type AuthClientType,
   type Session,
   type User,
+  type SignInError,
+  type SignUpError,
+  type SignOutError,
+  type UserUpdateError,
+  type UserMeError,
+  type TokenError,
 };

@@ -1,7 +1,7 @@
 import type { AuthErrorCode } from "../constants";
 import { BaseError } from "./baseError";
 
-export class AuthError extends BaseError {
+export class AuthError<DataT = unknown> extends BaseError {
   /**
    * Error code associated with the error. Most errors coming from
    * HTTP responses will have a code, though some errors that occur
@@ -24,9 +24,12 @@ export class AuthError extends BaseError {
     super(message, opts);
   }
 
-  toJSON(): Pick<AuthError, "message" | "statusCode" | "errorCode" | "data"> {
+  toJSON(): Pick<
+    AuthError<DataT>,
+    "message" | "statusCode" | "errorCode" | "data"
+  > {
     const obj: Pick<
-      AuthError,
+      AuthError<DataT>,
       "message" | "statusCode" | "errorCode" | "data"
     > = {
       message: this.message,
@@ -48,23 +51,24 @@ export class AuthError extends BaseError {
   }
 }
 
-export function createAuthError(
+export function createAuthError<DataT = unknown>(
   input:
     | string
-    | (Partial<AuthError> & {
+    | (Partial<AuthError<DataT>> & {
+        // eslint-disable-next-line @typescript-eslint/no-redundant-type-constituents
         errorCode?: AuthErrorCode | string;
         statusCode?: number;
       }),
 ) {
   if (typeof input === "string") {
-    return new AuthError(input);
+    return new AuthError<DataT>(input);
   }
 
-  if (isAuthError(input)) {
+  if (isAuthError<DataT>(input)) {
     return input;
   }
 
-  const err = new AuthError(input.message ?? "AuthError", {
+  const err = new AuthError<DataT>(input.message ?? "AuthError", {
     cause: input.cause || input,
   });
 
@@ -107,6 +111,10 @@ export function createAuthError(
   return err;
 }
 
-export function isAuthError(input: any): input is AuthError {
+export function isAuthError<DataT = unknown>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
+  input: any,
+): input is AuthError<DataT> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return input?.constructor?.__auth_error__ === true;
 }

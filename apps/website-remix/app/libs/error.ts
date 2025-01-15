@@ -40,7 +40,7 @@ export function toErrorFormat(
  */
 export function toValidationErrorFormat(
   error: HttpErrorData,
-): ReturnErrorFormat {
+): ReturnErrorFormat | undefined {
   if ("validationErrorInfo" in error.error) {
     const { validationErrorInfo } = error.error;
     return Object.fromEntries(
@@ -53,25 +53,7 @@ export function toValidationErrorFormat(
     );
   }
 
-  console.log(
-    "Unable to get validation error info for error",
-    error,
-    Object.entries(error).map(([key, value]) => [
-      key,
-      {
-        message: value.toString(),
-      },
-    ]),
-  );
-
-  return Object.fromEntries(
-    Object.entries(error).map(([key, value]) => [
-      key,
-      {
-        message: value.toString(),
-      },
-    ]),
-  );
+  return undefined;
 }
 
 /**

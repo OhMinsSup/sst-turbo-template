@@ -83,7 +83,9 @@ export function createBaseError<DataT = unknown>(
 }
 
 export function isBaseError<DataT = unknown>(
+  // eslint-disable-next-line @typescript-eslint/no-explicit-any
   input: any,
 ): input is BaseError<DataT> {
+  // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
   return input?.constructor?.__base_error__ === true;
 }

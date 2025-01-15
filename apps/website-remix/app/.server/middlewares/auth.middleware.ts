@@ -68,10 +68,10 @@ export class AuthMiddleware {
   /**
    * @description 세션 정보를 업데이트합니다.
    * @param {AuthClient} client
-   * @param {User} user
+   * @param {string} refreshToken
    */
-  async updateSession(client: AuthClient, user: User) {
-    return await client.updateSession(user);
+  async refreshSession(client: AuthClient, refreshToken: string) {
+    return await client.refreshSession({ refresh_token: refreshToken });
   }
 
   /**

@@ -133,12 +133,11 @@ export function createFetch<
       context.response = await fetchClient(context.request.path, context.init);
     } catch (e) {
       context.error = e as Error;
-      const error = createBaseError({
+      throw createBaseError({
         message: "[FetchError]: A fetch error occurred",
         name: "FetchError",
         data: context,
       });
-      throw error;
     } finally {
       if (abortTimeout) {
         clearTimeout(abortTimeout);

@@ -1,7 +1,13 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
 import { container, injectable, singleton } from "tsyringe";
 
-import { HttpResultCode, HttpStatusCode, isAuthError } from "@template/common";
+import type { SignInError, SignOutError, SignUpError } from "@template/auth";
+import {
+  AuthError,
+  HttpResultCode,
+  HttpStatusCode,
+  isAuthError,
+} from "@template/common";
 
 import { SignInDto } from "~/.server/routes/auth/dto/signIn.dto";
 import { SignUpDto } from "~/.server/routes/auth/dto/signUp.dto";
@@ -22,72 +28,8 @@ export class AuthService {
     const authtication = auth.handler(args);
 
     const { data, error, session } = await authtication.authClient.signIn(body);
-    if (isAuthError(error)) {
-      return {
-        data: {
-          success: false,
-          error: null,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: body,
-        toastMessage: defaultToastErrorMessage(
-          "로그인에 실패하였습니다. 다시 시도해주세요.",
-        ),
-      } as const;
-    }
-
-    if (error) {
-      const { statusCode, resultCode, error: innerError } = error;
-      switch (statusCode) {
-        case HttpStatusCode.NOT_FOUND: {
-          return {
-            data: {
-              success: false,
-              error: toErrorFormat("email", error),
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        case HttpStatusCode.BAD_REQUEST: {
-          return {
-            data: {
-              success: false,
-              error:
-                resultCode === HttpResultCode.INCORRECT_PASSWORD
-                  ? toErrorFormat("password", error)
-                  : toValidationErrorFormat(error),
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        default: {
-          return {
-            data: {
-              success: false,
-              error: null,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: defaultToastErrorMessage(innerError.message),
-          } as const;
-        }
-      }
+    if (isAuthError<SignInError>(error)) {
+      return this._signInError({ e: error, args, authtication });
     }
 
     return {
@@ -100,7 +42,6 @@ export class AuthService {
         headers: authtication.headers,
         request: args.request,
       },
-      requestBody: body,
       toastMessage: null,
     } as const;
   }
@@ -115,69 +56,8 @@ export class AuthService {
     const authtication = auth.handler(args);
 
     const { data, error, session } = await authtication.authClient.signUp(body);
-    if (isAuthError(error)) {
-      return {
-        data: {
-          success: false,
-          error: null,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: body,
-        toastMessage: defaultToastErrorMessage(
-          "회원가입에 실패하였습니다. 다시 시도해주세요.",
-        ),
-      } as const;
-    }
-
-    if (error) {
-      const { statusCode, error: innerError } = error;
-      switch (statusCode) {
-        case HttpStatusCode.NOT_FOUND: {
-          return {
-            data: {
-              success: false,
-              error: toErrorFormat("email", error),
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        case HttpStatusCode.BAD_REQUEST: {
-          return {
-            data: {
-              success: false,
-              error: toValidationErrorFormat(error),
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: null,
-          } as const;
-        }
-        default: {
-          return {
-            data: {
-              success: false,
-              error: null,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: body,
-            toastMessage: defaultToastErrorMessage(innerError.message),
-          } as const;
-        }
-      }
+    if (isAuthError<SignUpError>(error)) {
+      return this._signUpError({ e: error, args, authtication });
     }
 
     return {
@@ -190,7 +70,6 @@ export class AuthService {
         headers: authtication.headers,
         request: args.request,
       },
-      requestBody: body,
       toastMessage: null,
     } as const;
   }
@@ -203,86 +82,8 @@ export class AuthService {
     const authtication = auth.handler(args);
 
     const { error } = await authtication.authClient.signOut();
-    if (isAuthError(error)) {
-      return {
-        data: {
-          success: false,
-          error,
-        },
-        requestInfo: {
-          headers: authtication.headers,
-          request: args.request,
-        },
-        requestBody: null,
-        toastMessage: defaultToastErrorMessage(
-          "세션 정보가 없거나 토큰이 유효하지 않습니다.",
-        ),
-      } as const;
-    }
-
-    if (error) {
-      const { statusCode, error: innerError } = error;
-      switch (statusCode) {
-        case HttpStatusCode.NOT_FOUND: {
-          return {
-            data: {
-              success: false,
-              error,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: null,
-            toastMessage: defaultToastErrorMessage("유저가 존재하지 않습니다."),
-          } as const;
-        }
-        case HttpStatusCode.BAD_REQUEST: {
-          return {
-            data: {
-              success: false,
-              error,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: null,
-            toastMessage:
-              defaultToastErrorMessage("토큰값이 유효하지 않습니다."),
-          } as const;
-        }
-        case HttpStatusCode.UNAUTHORIZED: {
-          return {
-            data: {
-              success: false,
-              error,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: null,
-            toastMessage: defaultToastErrorMessage(
-              "세션 정보가 없거나 토큰이 유효하지 않습니다.",
-            ),
-          } as const;
-        }
-        default: {
-          return {
-            data: {
-              success: false,
-              error,
-            },
-            requestInfo: {
-              headers: authtication.headers,
-              request: args.request,
-            },
-            requestBody: null,
-            toastMessage: defaultToastErrorMessage(innerError.message),
-          } as const;
-        }
-      }
+    if (isAuthError<SignOutError>(error)) {
+      return this._signOutError({ e: error, args, authtication });
     }
 
     return {
@@ -293,8 +94,184 @@ export class AuthService {
         headers: authtication.headers,
         request: args.request,
       },
-      requestBody: null,
       toastMessage: null,
+    } as const;
+  }
+
+  private _signInError<E = unknown>({
+    e,
+    args,
+    authtication,
+  }: {
+    e: AuthError<E>;
+    args: ActionFunctionArgs;
+    authtication: ReturnType<typeof auth.handler>;
+  }) {
+    const error = e.toJSON();
+    const defaultErrorToast = {
+      data: {
+        success: false,
+        error: null,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      toastMessage: defaultToastErrorMessage(
+        "로그인에 실패하였습니다. 다시 시도해주세요.",
+      ),
+    } as const;
+
+    const { statusCode, errorCode } = error;
+
+    if (errorCode !== "validation_failed") {
+      return defaultErrorToast;
+    }
+
+    const errorData = error.data as SignInError | undefined;
+    if (!errorData) {
+      return defaultErrorToast;
+    }
+
+    switch (statusCode) {
+      case HttpStatusCode.NOT_FOUND: {
+        return {
+          data: {
+            success: false,
+            error: toErrorFormat("email", errorData),
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          toastMessage: null,
+        } as const;
+      }
+      case HttpStatusCode.BAD_REQUEST: {
+        const isIncorretPassword =
+          errorData.resultCode === HttpResultCode.INCORRECT_PASSWORD;
+
+        const validateError = isIncorretPassword
+          ? toErrorFormat("password", errorData)
+          : toValidationErrorFormat(errorData);
+
+        if (!validateError) {
+          return defaultErrorToast;
+        }
+
+        return {
+          data: {
+            success: false,
+            error: validateError,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          toastMessage: null,
+        } as const;
+      }
+      default: {
+        return defaultErrorToast;
+      }
+    }
+  }
+
+  private _signUpError<E = unknown>({
+    e,
+    args,
+    authtication,
+  }: {
+    e: AuthError<E>;
+    args: ActionFunctionArgs;
+    authtication: ReturnType<typeof auth.handler>;
+  }) {
+    const error = e.toJSON();
+    const defaultErrorToast = {
+      data: {
+        success: false,
+        error: null,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      toastMessage: defaultToastErrorMessage(
+        "회원가입에 실패하였습니다. 다시 시도해주세요.",
+      ),
+    } as const;
+
+    const { statusCode, errorCode } = error;
+
+    if (errorCode !== "validation_failed") {
+      return defaultErrorToast;
+    }
+
+    const errorData = error.data as SignUpError | undefined;
+    if (!errorData) {
+      return defaultErrorToast;
+    }
+
+    switch (statusCode) {
+      case HttpStatusCode.NOT_FOUND: {
+        return {
+          data: {
+            success: false,
+            error: toErrorFormat("email", errorData),
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          toastMessage: null,
+        } as const;
+      }
+      case HttpStatusCode.BAD_REQUEST: {
+        const validateError = toValidationErrorFormat(errorData);
+
+        if (!validateError) {
+          return defaultErrorToast;
+        }
+
+        return {
+          data: {
+            success: false,
+            error: validateError,
+          },
+          requestInfo: {
+            headers: authtication.headers,
+            request: args.request,
+          },
+          toastMessage: null,
+        } as const;
+      }
+      default: {
+        return defaultErrorToast;
+      }
+    }
+  }
+
+  private _signOutError<E = unknown>({
+    e: _,
+    args,
+    authtication,
+  }: {
+    e: AuthError<E>;
+    args: ActionFunctionArgs;
+    authtication: ReturnType<typeof auth.handler>;
+  }) {
+    return {
+      data: {
+        success: false,
+        error: null,
+      },
+      requestInfo: {
+        headers: authtication.headers,
+        request: args.request,
+      },
+      toastMessage: defaultToastErrorMessage(
+        "로그아웃에 실패하였습니다. 다시 시도해주세요.",
+      ),
     } as const;
   }
 }
