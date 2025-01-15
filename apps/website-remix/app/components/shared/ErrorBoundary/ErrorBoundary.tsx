@@ -39,7 +39,10 @@ export default function ErrorBoundary({
   const params = useParams();
 
   if (typeof document !== "undefined") {
-    console.error(error);
+    console.error(
+      "An error occurred in a route, but the error boundary is disabled in the browser environment. This error will be rethrown to the browser.",
+      error,
+    );
   }
 
   return (

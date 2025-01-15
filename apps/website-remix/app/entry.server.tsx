@@ -81,7 +81,10 @@ function handleBotRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            console.error(
+              "An error was encountered while rendering the Remix shell:",
+              error,
+            );
           }
         },
         nonce: "secretnoncevalue",
@@ -134,7 +137,10 @@ function handleBrowserRequest(
           // errors encountered during initial shell rendering since they'll
           // reject and get logged in handleDocumentRequest.
           if (shellRendered) {
-            console.error(error);
+            console.error(
+              "An error was encountered while rendering the Remix shell:",
+              error,
+            );
           }
         },
       },

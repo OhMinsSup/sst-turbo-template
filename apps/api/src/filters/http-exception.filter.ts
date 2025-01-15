@@ -26,8 +26,6 @@ export class HttpExceptionFilter implements ExceptionFilter {
     let resultCode: HttpResultCode;
     let error: HttpExceptionResponseDto;
 
-    console.error(exception);
-
     // 많은 요청이 들어왔을 때
     if (exception instanceof ThrottlerException) {
       statusCode = HttpStatus.TOO_MANY_REQUESTS;

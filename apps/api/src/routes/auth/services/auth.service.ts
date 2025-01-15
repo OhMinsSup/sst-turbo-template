@@ -79,7 +79,7 @@ export class AuthService {
     const user = await this.usersService.isDuplicatedEmail(input.email);
 
     if (!user) {
-      throw new BadRequestException(OpenApiAuthErrorDefine.notFoundUser);
+      throw new NotFoundException(OpenApiAuthErrorDefine.notFoundUser);
     }
 
     const compare = await this.passwordServie.compare(

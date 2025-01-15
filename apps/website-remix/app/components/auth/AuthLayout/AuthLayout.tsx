@@ -38,10 +38,9 @@ export default function AuthLayout({ children }: AuthLayoutProps) {
               </div>
 
               <p className="pb-1 text-2xl font-medium text-[#878787]">
-                {SITE_CONFIG.title}은 <br />
-                Remix를 사용하여 <br />
-                어드민 구조를 쉽게 만들기 위해 <br />
-                제작되었습니다.
+                실시간 데이터베이스, 인증, 파일 저장 및 관리자 대시보드가
+                <br />
+                포함된 오픈 소스 백엔드
               </p>
 
               <div className="pointer-events-auto mb-6 mt-6 flex flex-col">

@@ -41,9 +41,9 @@ export const PAGE_ENDPOINTS = {
 export const SITE_CONFIG = {
   title: "TemplateBase",
   shotTitle: "TemplateBase",
-  keywords: ["Remix", "Database", "Data", "Analysts", "Developers"],
+  keywords: ["Database", "Authentication", "File Storage", "Admin Dashboard"],
   description:
-    "TemplateBase is a No-code database platform for building web applications.",
+    "실시간 데이터베이스, 인증, 파일 저장 및 관리자 대시보드가 포함된 오픈 소스 백엔드",
   ogImage: "/images/og.jpg",
   ogType: "website",
   twitterCard: "summary_large_image",

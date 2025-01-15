@@ -6,7 +6,7 @@ export type HttpErrorData =
 
 type ToErrorFormat = HttpErrorData;
 
-type ReturnErrorFormat = Record<
+export type ReturnErrorFormat = Record<
   string,
   {
     message: string;

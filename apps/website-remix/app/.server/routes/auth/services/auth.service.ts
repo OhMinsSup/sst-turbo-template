@@ -13,7 +13,11 @@ import { SignInDto } from "~/.server/routes/auth/dto/signIn.dto";
 import { SignUpDto } from "~/.server/routes/auth/dto/signUp.dto";
 import { auth } from "~/.server/utils/auth";
 import { defaultToastErrorMessage } from "~/.server/utils/shared";
-import { toErrorFormat, toValidationErrorFormat } from "~/libs/error";
+import {
+  ReturnErrorFormat,
+  toErrorFormat,
+  toValidationErrorFormat,
+} from "~/libs/error";
 
 @injectable()
 @singleton()
@@ -122,7 +126,7 @@ export class AuthService {
       ),
     } as const;
 
-    const { statusCode, errorCode } = error;
+    const { errorCode } = error;
 
     if (errorCode !== "validation_failed") {
       return defaultErrorToast;
@@ -133,7 +137,7 @@ export class AuthService {
       return defaultErrorToast;
     }
 
-    switch (statusCode) {
+    switch (errorData.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
         return {
           data: {
@@ -201,7 +205,7 @@ export class AuthService {
       ),
     } as const;
 
-    const { statusCode, errorCode } = error;
+    const { errorCode } = error;
 
     if (errorCode !== "validation_failed") {
       return defaultErrorToast;
@@ -212,7 +216,7 @@ export class AuthService {
       return defaultErrorToast;
     }
 
-    switch (statusCode) {
+    switch (errorData.statusCode) {
       case HttpStatusCode.NOT_FOUND: {
         return {
           data: {
@@ -227,7 +231,14 @@ export class AuthService {
         } as const;
       }
       case HttpStatusCode.BAD_REQUEST: {
-        const validateError = toValidationErrorFormat(errorData);
+        const isEmailAlreadyExist =
+          errorData.resultCode === HttpResultCode.NOT_EXIST_EMAIL;
+        let validateError: ReturnErrorFormat | undefined = undefined;
+        if (isEmailAlreadyExist) {
+          validateError = toErrorFormat("email", errorData);
+        } else {
+          validateError = toValidationErrorFormat(errorData);
+        }
 
         if (!validateError) {
           return defaultErrorToast;

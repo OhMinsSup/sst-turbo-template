@@ -35,7 +35,6 @@ async function bootstrap() {
       transform: true,
       transformOptions: { enableImplicitConversion: true },
       exceptionFactory: (validationErrors: ValidationError[] = []) => {
-        console.log(validationErrors);
         return new CustomValidationError(validationErrors);
       },
     }),
