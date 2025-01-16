@@ -18,6 +18,7 @@ export function subscribeToDeviceChange(
   const schemaMatch = window.matchMedia("(max-width: 768px)");
   function handleThemeChange() {
     const value = schemaMatch.matches ? "mobile" : "desktop";
+    console.log("Device change", value);
     document.cookie = `${cookieName}=${value}; Max-Age=31536000; Path=/`;
     subscriber(value);
   }

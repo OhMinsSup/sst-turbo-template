@@ -18,7 +18,7 @@ export function useMediaQuery(query: string, serverFallback: boolean): boolean {
   const getServerSnapshot = useMemoizedFn(() => serverFallback);
 
   const [getSnapshot, subscribe] = useMemo(() => {
-    if (!isBrowser) {
+    if (!isBrowser()) {
       return [
         getServerSnapshot,
         () => () => {

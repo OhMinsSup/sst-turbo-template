@@ -24,8 +24,8 @@ export default function Routes() {
       <div className="relative bg-background">
         <SidebarProvider>
           <Outlet />
-          <OverlayLoading isLoading={isActionRedirect || isNavigating} />
         </SidebarProvider>
+        <OverlayLoading isLoading={isActionRedirect || isNavigating} />
       </div>
     </BreadcrumbProvider>
   );

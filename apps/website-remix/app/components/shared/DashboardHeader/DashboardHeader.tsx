@@ -35,9 +35,7 @@ export default function DashboardHeader() {
                   <React.Fragment key={`breadcrumb:last:${index}`}>
                     <BreadcrumbSeparator className="hidden md:block" />
                     <BreadcrumbItem>
-                      <BreadcrumbItem>
-                        <BreadcrumbPage>{item.title}</BreadcrumbPage>
-                      </BreadcrumbItem>
+                      <BreadcrumbPage>{item.title}</BreadcrumbPage>
                     </BreadcrumbItem>
                   </React.Fragment>
                 );

@@ -74,6 +74,7 @@ function Document({ children }: Props) {
   const {
     requestInfo: { userPrefs },
   } = useLoaderData<RoutesLoaderData>();
+
   return (
     <html
       lang="kr"
