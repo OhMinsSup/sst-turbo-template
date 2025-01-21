@@ -8,6 +8,7 @@ import {
   invariantToastError,
   invariantUnsupportedMethod,
 } from "~/.server/utils/shared";
+import { FindAllOptions } from "../dto/workspace-list-query.dto";
 
 @singleton()
 @injectable()
@@ -37,19 +38,48 @@ export class WorkspaceController {
    * @description 워크스페이스 리스트 조회 (single fetch)
    * @param {LoaderFunctionArgs} args
    */
-  async findAll(args: LoaderFunctionArgs) {
-    const response = await this.workspaceService.findAll(args);
+  async findAll(args: LoaderFunctionArgs, options?: FindAllOptions) {
+    const response = await this.workspaceService.findAll(args, options);
     return data(response.data, {
       headers: response.requestInfo.headers,
     });
   }
 
   /**
+   * @description 즐겨찾기한 워크스페이스 리스트 조회 (single fetch)
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllByFavorite(args: LoaderFunctionArgs) {
+    const response = await this.workspaceService.findAll(args, {
+      isFavorite: true,
+    });
+    return data(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
+   * @description 즐겨찾기한 워크스페이스 리스트 조회 (json fetch)
+   * @param {LoaderFunctionArgs} args
+   */
+  async findAllByFavoriteToJson(args: LoaderFunctionArgs) {
+    const response = await this.workspaceService.findAll(args, {
+      isFavorite: true,
+    });
+    return Response.json(response.data, {
+      headers: response.requestInfo.headers,
+    });
+  }
+
+  /**
    * @description 삭제된 워크스페이스 리스트 조회 (single fetch)
+   * @deprecated
    * @param {LoaderFunctionArgs} args
    */
   async findAllByDeleted(args: LoaderFunctionArgs) {
-    const response = await this.workspaceService.findAllByDeleted(args);
+    const response = await this.workspaceService.findAll(args, {
+      isDeleted: true,
+    });
     return data(response.data, {
       headers: response.requestInfo.headers,
     });
@@ -71,7 +101,9 @@ export class WorkspaceController {
    * @param {LoaderFunctionArgs} args
    */
   async findAllByDeletedToJson(args: LoaderFunctionArgs) {
-    const response = await this.workspaceService.findAllByDeleted(args);
+    const response = await this.workspaceService.findAll(args, {
+      isDeleted: true,
+    });
     return Response.json(response.data, {
       headers: response.requestInfo.headers,
     });

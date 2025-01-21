@@ -11,7 +11,8 @@ interface BaseBreadcrumbItem {
     | "PREFERENCES"
     | "ACCOUNT"
     | "TABLE"
-    | "HOME";
+    | "HOME"
+    | "FAVORITE";
 }
 
 export type BreadcrumbItem = BaseBreadcrumbItem;

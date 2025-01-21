@@ -1,4 +1,4 @@
-import React from "react";
+import { startTransition } from "react";
 import { useSearchParams } from "@remix-run/react";
 
 import { Badge } from "@template/ui/components/badge";
@@ -108,13 +108,23 @@ export function PopoverFacetedFilter() {
                   <CommandItem
                     key={option.value}
                     onSelect={() => {
-                      const newSearchParams = new URLSearchParams(searchParams);
-                      if (isSelected) {
-                        newSearchParams.delete(option.searchKey, option.value);
-                      } else {
-                        newSearchParams.append(option.searchKey, option.value);
-                      }
-                      setSearchParams(newSearchParams);
+                      startTransition(() => {
+                        const newSearchParams = new URLSearchParams(
+                          searchParams,
+                        );
+                        if (isSelected) {
+                          newSearchParams.delete(
+                            option.searchKey,
+                            option.value,
+                          );
+                        } else {
+                          newSearchParams.append(
+                            option.searchKey,
+                            option.value,
+                          );
+                        }
+                        setSearchParams(newSearchParams);
+                      });
                     }}
                   >
                     <div
@@ -138,7 +148,9 @@ export function PopoverFacetedFilter() {
                 <CommandGroup>
                   <CommandItem
                     onSelect={() => {
-                      setSearchParams(new URLSearchParams());
+                      startTransition(() => {
+                        setSearchParams(new URLSearchParams());
+                      });
                     }}
                     className="justify-center text-center"
                   >

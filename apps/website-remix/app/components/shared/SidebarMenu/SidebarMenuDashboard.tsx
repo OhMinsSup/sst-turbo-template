@@ -36,6 +36,21 @@ export default function SidebarMenuDashboard() {
               <span className="w-full">워크스페이스</span>
             </Link>
           </SidebarMenuButton>
+          <SidebarMenuButton tooltip={"즐겨찾기"} asChild>
+            <Link
+              to={PAGE_ENDPOINTS.PROTECTED.DASHBOARD.FAVORITES}
+              viewTransition
+              className={cn(
+                location.pathname ===
+                  PAGE_ENDPOINTS.PROTECTED.DASHBOARD.FAVORITES
+                  ? "bg-accent text-accent-foreground"
+                  : undefined,
+              )}
+            >
+              <Icons.Star />
+              <span className="w-full">즐겨찾기</span>
+            </Link>
+          </SidebarMenuButton>
         </SidebarMenuItem>
       </SidebarMenuNav>
       <SidebarSeparator className="bg-muted" />

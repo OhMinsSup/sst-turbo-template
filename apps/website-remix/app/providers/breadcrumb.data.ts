@@ -1,5 +1,3 @@
-import { invariant } from "@epic-web/invariant";
-
 import type { BreadcrumbItem } from "./breadcrumb.types";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
@@ -9,6 +7,11 @@ export const breadcrumbs: BreadcrumbItem[] = [
     pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT,
     type: "DASHBOARD",
     children: [
+      {
+        title: "즐겨찾기",
+        type: "FAVORITE",
+        pathname: PAGE_ENDPOINTS.PROTECTED.DASHBOARD.FAVORITES,
+      },
       {
         title: "계정",
         type: "PREFERENCES",
@@ -27,17 +30,17 @@ export const breadcrumbs: BreadcrumbItem[] = [
           {
             title: "홈",
             pathname: (params) => {
-              invariant(params?.workspaceId, "workspaceId is required");
-              return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(params.workspaceId);
+              const workspaceId = params?.workspaceId ?? "null";
+              return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(workspaceId);
             },
             type: "HOME",
           },
           {
             title: "테이블",
             pathname: (params) => {
-              invariant(params?.workspaceId, "workspaceId is required");
+              const workspaceId = params?.workspaceId ?? "null";
               return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.EDITOR.ROOT(
-                params.workspaceId,
+                workspaceId,
               );
             },
             type: "TABLE",

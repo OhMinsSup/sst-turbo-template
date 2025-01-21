@@ -5,16 +5,16 @@ import type { components } from "@template/api-types";
 import { Skeleton } from "@template/ui/components/skeleton";
 
 import { ButtonFavorite } from "~/components/dashboard/DashboardCard/components/ButtonFavorite";
-// import { ButtonTrash } from "~/components/dashboard/DashboardCard/components/ButtonTrash";
+import { ButtonTrash } from "~/components/dashboard/DashboardCard/components/ButtonTrash";
 import { Icons } from "~/components/icons";
 import { PAGE_ENDPOINTS } from "~/constants/constants";
 
-interface WorkspaceCardProps {
+interface DashboardCardProps {
   item: components["schemas"]["WorkspaceEntity"];
   style?: React.CSSProperties;
 }
 
-export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
+function DashboardCard({ item, style }: DashboardCardProps) {
   return (
     <Link
       to={PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(item.id)}
@@ -28,7 +28,7 @@ export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
           </div>
           <div className="flex items-center space-x-2">
             <ButtonFavorite id={item.id} isFavorite={item.isFavorite} />
-            {/* <ButtonTrash id={item.id} /> */}
+            <ButtonTrash id={item.id} />
           </div>
         </div>
         <div>
@@ -42,7 +42,7 @@ export default function WorkspaceCard({ item, style }: WorkspaceCardProps) {
   );
 }
 
-WorkspaceCard.Skeleton = () => (
+DashboardCard.Skeleton = () => (
   <a href="/">
     <div className="rounded-lg border p-4 hover:shadow-md">
       <div className="mb-8 flex items-center justify-between">
@@ -63,4 +63,4 @@ WorkspaceCard.Skeleton = () => (
   </a>
 );
 
-WorkspaceCard.displayName = "WorkspaceCard";
+export default DashboardCard;

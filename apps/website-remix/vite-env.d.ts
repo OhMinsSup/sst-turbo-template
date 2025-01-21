@@ -52,7 +52,6 @@
     export const NVM_DIR: string;
     export const USER: string;
     export const npm_package_devDependencies__types_react: string;
-    export const npm_package_dependencies__tanstack_react_virtual: string;
     export const COMMAND_MODE: string;
     export const PNPM_SCRIPT_SRC_DIR: string;
     export const npm_package_devDependencies_vite_tsconfig_paths: string;
@@ -66,6 +65,7 @@
     export const npm_package_dependencies_react_error_boundary: string;
     export const npm_config_frozen_lockfile: string;
     export const npm_package_devDependencies__types_react_dom: string;
+    export const npm_package_dependencies_uncrypto: string;
     export const npm_package_devDependencies__remix_run_dev: string;
     export const npm_package_dependencies__template_api_types: string;
     export const npm_package_dependencies__remix_run_react: string;
@@ -89,6 +89,7 @@
     export const npm_package_devDependencies__template_eslint_config: string;
     export const npm_package_name: string;
     export const LANG: string;
+    export const npm_package_dependencies_masonic: string;
     export const npm_package_scripts_start: string;
     export const npm_package_scripts_build: string;
     export const npm_config_node_linker: string;
@@ -98,7 +99,6 @@
     export const XPC_FLAGS: string;
     export const npm_package_devDependencies__types_lodash_es: string;
     export const npm_package_dependencies__tanstack_react_query: string;
-    export const npm_package_dependencies_stable_hash: string;
     export const XPC_SERVICE_NAME: string;
     export const npm_package_devDependencies_autoprefixer: string;
     export const VSCODE_INJECTION: string;

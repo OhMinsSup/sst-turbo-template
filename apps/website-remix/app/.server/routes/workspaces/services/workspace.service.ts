@@ -9,7 +9,10 @@ import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
 import { WorkspaceCreateDto } from "~/.server/routes/workspaces/dto/workspace-create.dto";
 import { WorkspaceDeleteDto } from "~/.server/routes/workspaces/dto/workspace-delete.dto";
 import { WorkspaceFavoriteDto } from "~/.server/routes/workspaces/dto/workspace-favorite.dto";
-import { WorkspaceListQueryDto } from "~/.server/routes/workspaces/dto/workspace-list-query.dto";
+import {
+  FindAllOptions,
+  WorkspaceListQueryDto,
+} from "~/.server/routes/workspaces/dto/workspace-list-query.dto";
 import { auth } from "~/.server/utils/auth";
 import {
   defaultListData,
@@ -214,9 +217,9 @@ export class WorkspaceService {
   /**
    * @description 워크스페이스 목록 조회
    * @param {LoaderFunctionArgs} args
-   * @param {boolean} isDeleted
+   * @param {FindAllOptions} options
    */
-  async findAll(args: LoaderFunctionArgs, isDeleted = false) {
+  async findAll(args: LoaderFunctionArgs, options: FindAllOptions = {}) {
     const authtication = auth.handler(args);
     const { session } = await this.authMiddleware.getSession(
       authtication.authClient,
@@ -227,13 +230,17 @@ export class WorkspaceService {
       headers: authtication.headers,
     });
 
-    const dto = new WorkspaceListQueryDto(isDeleted);
+    const dto = new WorkspaceListQueryDto(options);
     const query = dto.transform(args.request).json();
 
     try {
       const { response } = await api
         .method("get")
-        .path(isDeleted ? "/api/v1/workspaces/deleted" : "/api/v1/workspaces")
+        .path(
+          options.isDeleted
+            ? "/api/v1/workspaces/deleted"
+            : "/api/v1/workspaces",
+        )
         .setAuthorization(session.access_token)
         .setParams({
           query,
@@ -275,14 +282,6 @@ export class WorkspaceService {
         toastMessage: null,
       } as const;
     }
-  }
-
-  /**
-   * @description 삭제된 워크스페이스 목록 조회
-   * @param {LoaderFunctionArgs} args
-   */
-  async findAllByDeleted(args: LoaderFunctionArgs) {
-    return await this.findAll(args, true);
   }
 
   /**

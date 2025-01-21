@@ -9,13 +9,8 @@ export const PAGE_ENDPOINTS = {
   PROTECTED: {
     DASHBOARD: {
       ROOT: "/dashboard",
+      FAVORITES: "/dashboard/favorites",
       RESET_PASSWORD: "/dashboard/reset-password",
-      // DEPRECATED
-      TRASH: "/dashboard/trash",
-      SETTING: "/dashboard/setting/account",
-      NOTIFICATIONS: "/dashboard/setting/notifications",
-      INTEGRATION: "/dashboard/setting/integration",
-      SYSTEM: "/dashboard/setting/system",
     },
     PREFERENCES: {
       ME: "/dashboard/account/me",

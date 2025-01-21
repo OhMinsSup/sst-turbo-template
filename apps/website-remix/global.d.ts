@@ -47,7 +47,6 @@
     readonly NVM_DIR: string;
     readonly USER: string;
     readonly npm_package_devDependencies__types_react: string;
-    readonly npm_package_dependencies__tanstack_react_virtual: string;
     readonly COMMAND_MODE: string;
     readonly PNPM_SCRIPT_SRC_DIR: string;
     readonly npm_package_devDependencies_vite_tsconfig_paths: string;
@@ -61,6 +60,7 @@
     readonly npm_package_dependencies_react_error_boundary: string;
     readonly npm_config_frozen_lockfile: string;
     readonly npm_package_devDependencies__types_react_dom: string;
+    readonly npm_package_dependencies_uncrypto: string;
     readonly npm_package_devDependencies__remix_run_dev: string;
     readonly npm_package_dependencies__template_api_types: string;
     readonly npm_package_dependencies__remix_run_react: string;
@@ -84,6 +84,7 @@
     readonly npm_package_devDependencies__template_eslint_config: string;
     readonly npm_package_name: string;
     readonly LANG: string;
+    readonly npm_package_dependencies_masonic: string;
     readonly npm_package_scripts_start: string;
     readonly npm_package_scripts_build: string;
     readonly npm_config_node_linker: string;
@@ -93,7 +94,6 @@
     readonly XPC_FLAGS: string;
     readonly npm_package_devDependencies__types_lodash_es: string;
     readonly npm_package_dependencies__tanstack_react_query: string;
-    readonly npm_package_dependencies_stable_hash: string;
     readonly XPC_SERVICE_NAME: string;
     readonly npm_package_devDependencies_autoprefixer: string;
     readonly VSCODE_INJECTION: string;

@@ -1,4 +1,10 @@
 import type { paths } from "@template/api-types";
+import { isBoolean, isTrusted } from "@template/utils/assertion";
+
+export interface FindAllOptions {
+  isDeleted?: boolean;
+  isFavorite?: boolean;
+}
 
 export type Query = paths["/api/v1/workspaces"]["get"]["parameters"]["query"];
 
@@ -8,9 +14,11 @@ export type DeletedQuery =
 export class WorkspaceListQueryDto {
   query?: Query;
   isDeleted?: boolean;
+  isFavorite?: boolean;
 
-  constructor(isDeleted = false) {
+  constructor({ isDeleted = false, isFavorite }: FindAllOptions = {}) {
     this.isDeleted = isDeleted;
+    this.isFavorite = isFavorite;
   }
 
   transform(request: Request) {
@@ -34,7 +42,11 @@ export class WorkspaceListQueryDto {
         sortOrder: (url.searchParams.get("sortOrder") ?? "desc") as
           | "asc"
           | "desc",
-        favorites: url.searchParams.getAll("favorites"),
+        favorites: isBoolean(this.isFavorite)
+          ? isTrusted(this.isFavorite)
+            ? ["true"]
+            : []
+          : url.searchParams.getAll("favorites"),
       };
     }
 

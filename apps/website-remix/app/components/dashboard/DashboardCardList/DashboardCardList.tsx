@@ -1,7 +1,8 @@
-import { useCallback, useMemo } from "react";
+/* eslint-disable @typescript-eslint/no-unnecessary-condition */
+import type { LoadMoreItemsCallback, RenderComponentProps } from "masonic";
+import React, { useCallback, useMemo } from "react";
 import { useLoaderData, useSearchParams } from "@remix-run/react";
-
-import { VirtualizedMasonryGrid } from "@template/ui/virtualized-masonry-grid";
+import { Masonry, useInfiniteLoader } from "masonic";
 
 import type { RoutesLoaderDataValue } from "~/.server/api/loaders/workspaces.loader";
 import type { RoutesLoaderData } from "~/.server/loaders/_private._dashboard.dashboard._index.loader";
@@ -9,66 +10,107 @@ import { DashboardCard } from "~/components/dashboard/DashboardCard";
 import { Icons } from "~/components/icons";
 import { useInfinitWorkspaceQuery } from "~/libs/queries/workspace.queries";
 
-function transformData(page: RoutesLoaderDataValue) {
-  return page.list.map((item) => ({
-    ...item,
-    height: 158,
-    width: 490,
-  }));
+type Item = RoutesLoaderDataValue["list"][0];
+
+const MasonryCard: React.ComponentType<RenderComponentProps<Item>> = React.memo(
+  ({ data, width }) => {
+    const style = useMemo(() => {
+      return {
+        width,
+      } as React.CSSProperties;
+    }, [width]);
+    return <DashboardCard style={style} item={data} />;
+  },
+);
+
+interface DashboardCardListProps {
+  favorite?: boolean;
 }
 
-export default function DashboardCardList() {
+export default function DashboardCardList({
+  favorite,
+}: DashboardCardListProps) {
   const initialData = useLoaderData<RoutesLoaderData>();
+
   const [searchParams] = useSearchParams();
 
-  const searchParamsObj = useMemo(() => {
-    const _searchParams = new URLSearchParams(searchParams);
-    return Object.fromEntries(_searchParams.entries());
-  }, [searchParams]);
+  const query = useMemo(() => {
+    const defaultQuery = {
+      favorite: favorite ? "true" : undefined,
+    };
+    const nextQuery = Object.fromEntries(
+      new URLSearchParams(searchParams).entries(),
+    );
+    return {
+      ...defaultQuery,
+      ...nextQuery,
+    } as Record<string, string>;
+  }, [searchParams, favorite]);
 
-  const { data, hasNextPage, isFetchingNextPage, fetchNextPage, isError } =
-    useInfinitWorkspaceQuery({
-      initialData,
-      query: searchParamsObj,
-    });
+  const {
+    data,
+    fetchNextPage,
+    hasNextPage,
+    isFetchingNextPage,
+    isError,
+    isStale,
+  } = useInfinitWorkspaceQuery({
+    initialData,
+    query,
+  });
 
-  const flatData = useMemo(
-    // eslint-disable-next-line @typescript-eslint/no-unnecessary-condition
-    () => data.pages?.flatMap(transformData) ?? [],
+  const flatItems = useMemo(
+    () => data.pages.flatMap((page) => page.list.map((item) => item)) ?? [],
     [data],
   );
-  const totalDBRowCount = data.pages.at(0)?.totalCount ?? 0;
-  const totalFetched = flatData.length;
+
+  const totalDBRowCount = useMemo(
+    () => data.pages.at(0)?.totalCount ?? 0,
+    [data],
+  );
+  const totalFetched = useMemo(() => flatItems.length, [flatItems]);
 
   const hasMore = useMemo(
     () => totalFetched < totalDBRowCount && hasNextPage && !isFetchingNextPage,
     [totalFetched, totalDBRowCount, hasNextPage, isFetchingNextPage],
   );
 
-  const endReached = useCallback(async () => {
-    await fetchNextPage();
-  }, [fetchNextPage]);
+  const fetchNextPageIfPossible = useCallback(
+    async <Item,>(_: number, __: number, ___: Item[]) => {
+      if (hasMore) {
+        await fetchNextPage();
+      }
+    },
+    [fetchNextPage, hasMore],
+  );
+
+  const maybeLoadMore = useInfiniteLoader<Item, LoadMoreItemsCallback<Item>>(
+    fetchNextPageIfPossible,
+    {
+      isItemLoaded: (index, items) => {
+        return !!items.at(index);
+      },
+    },
+  );
+
+  if (isStale) {
+    return null;
+  }
 
   if (isError) {
-    return <div>Error</div>;
+    return null;
   }
 
   return (
-    <>
-      <VirtualizedMasonryGrid
-        items={flatData}
-        hasNextPage={hasMore}
-        endReached={endReached}
-        loadingComponent={<DashboardCardList.Loading />}
-      >
-        {(item) => (
-          <DashboardCard
-            key={`workspace:${item.id}`}
-            item={item as unknown as RoutesLoaderDataValue["list"][0]}
-          />
-        )}
-      </VirtualizedMasonryGrid>
-    </>
+    <Masonry
+      items={flatItems}
+      columnGutter={12}
+      columnWidth={400}
+      overscanBy={5}
+      maxColumnCount={3}
+      onRender={maybeLoadMore}
+      render={MasonryCard}
+    />
   );
 }
 

@@ -14,7 +14,7 @@ export default function DashboardTitle({
   const item = useBreadcrumb();
 
   return (
-    <div className="h-full flex-1 flex-col space-y-8 p-6 md:flex">
+    <div className="h-full flex-1 flex-col space-y-8 md:flex md:p-6">
       <>
         {noDisplayTitle ? null : (
           <>

@@ -1,5 +1,5 @@
-import React, { useCallback, useEffect, useMemo } from "react";
-import { useFetcher, useSearchParams } from "@remix-run/react";
+import React, { useCallback, useEffect } from "react";
+import { useFetcher } from "@remix-run/react";
 import { useQueryClient } from "@tanstack/react-query";
 
 import type { components } from "@template/api-types";
@@ -16,12 +16,6 @@ interface ButtonTrashProps {
 
 export function ButtonTrash({ id }: ButtonTrashProps) {
   const fetcher = useFetcher<RoutesActionData<"favoriteWorkspace">>();
-  const [searchParams] = useSearchParams();
-
-  const searchParamsObj = useMemo(() => {
-    const _searchParams = new URLSearchParams(searchParams);
-    return Object.fromEntries(_searchParams.entries());
-  }, [searchParams]);
 
   const queryClient = useQueryClient();
 
@@ -43,11 +37,11 @@ export function ButtonTrash({ id }: ButtonTrashProps) {
       const nextWorkspace = fetcher.data.workspace;
       if (nextWorkspace.id === id) {
         await queryClient.invalidateQueries({
-          queryKey: queryWorkspaceKeys.list(searchParamsObj),
+          queryKey: queryWorkspaceKeys.all,
         });
       }
     }
-  }, [fetcher.data, id, queryClient, searchParamsObj]);
+  }, [fetcher.data, id, queryClient]);
 
   useEffect(() => {
     // eslint-disable-next-line @typescript-eslint/no-floating-promises

@@ -64,7 +64,9 @@ export function EditWorkspaceForm({ open, setOpen }: EditWorkspaceFormProps) {
     if (input.description) {
       formData.append("description", input.description);
     }
-    fetcher.submit(formData);
+    fetcher.submit(formData, {
+      method: "post",
+    });
   });
 
   const onSussessSubmit = useCallback(async () => {
