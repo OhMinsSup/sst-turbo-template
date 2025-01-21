@@ -5,7 +5,6 @@ import {
   SidebarMenuButton,
   SidebarMenuItem,
   SidebarSeparator,
-  useSidebar,
 } from "@template/ui/components/sidebar";
 import { cn } from "@template/ui/lib";
 
@@ -22,13 +21,24 @@ export default function SidebarMenuWorkspace({
   workspaceId,
 }: SidebarMenuWorkspaceProps) {
   const location = useLocation();
-  const { state } = useSidebar();
-  console.log(state);
+
   return (
     <>
       <SidebarMenuNav>
-        <SidebarMenuButton tooltip={"대시보드"} asChild>
-          <Icons.Database />
+        <SidebarMenuButton tooltip={"홈"} asChild>
+          <Link
+            to={PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(workspaceId)}
+            viewTransition
+            className={cn(
+              location.pathname ===
+                PAGE_ENDPOINTS.PROTECTED.WORKSPACE.ID(workspaceId)
+                ? "bg-accent text-accent-foreground"
+                : undefined,
+            )}
+          >
+            <Icons.House />
+            <span>홈</span>
+          </Link>
         </SidebarMenuButton>
       </SidebarMenuNav>
       <SidebarSeparator className="bg-muted" />
