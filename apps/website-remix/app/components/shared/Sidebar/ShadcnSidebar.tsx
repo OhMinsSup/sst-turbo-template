@@ -1,5 +1,4 @@
 import React from "react";
-import { VisuallyHidden } from "@radix-ui/react-visually-hidden";
 
 import {
   Sheet,
@@ -9,6 +8,7 @@ import {
   SheetTitle,
 } from "@template/ui/components/sheet";
 import { useSidebar } from "@template/ui/components/sidebar";
+import { VisuallyHidden } from "@template/ui/components/visually-hidden";
 import { cn } from "@template/ui/lib";
 
 export const Sidebar = React.forwardRef<

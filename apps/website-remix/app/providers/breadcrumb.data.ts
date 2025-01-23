@@ -36,7 +36,7 @@ export const breadcrumbs: BreadcrumbItem[] = [
             type: "HOME",
           },
           {
-            title: "테이블",
+            title: "테이블 편집기",
             pathname: (params) => {
               const workspaceId = params?.workspaceId ?? "null";
               return PAGE_ENDPOINTS.PROTECTED.WORKSPACE.EDITOR.ROOT(

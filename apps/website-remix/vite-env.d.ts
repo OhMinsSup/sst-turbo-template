@@ -42,6 +42,7 @@
     export const TERM_PROGRAM_VERSION: string;
     export const npm_package_scripts_dev: string;
     export const ZDOTDIR: string;
+    export const CURSOR_TRACE_ID: string;
     export const ORIGINAL_XDG_CURRENT_DESKTOP: string;
     export const MallocNanoZone: string;
     export const npm_config_registry: string;

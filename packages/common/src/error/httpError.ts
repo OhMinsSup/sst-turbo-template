@@ -1,7 +1,7 @@
 import { HttpStatusCode } from "../constants/httpStatusCode";
 import { BaseError } from "./baseError";
 
-export class HttpError<DataT = unknown> extends BaseError {
+export class HttpError<DataT = unknown> extends BaseError<DataT> {
   static __http_error__ = true;
   statusCode = HttpStatusCode.INTERNAL_SERVER_ERROR;
   fatal = false;

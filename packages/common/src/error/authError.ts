@@ -1,7 +1,7 @@
 import type { AuthErrorCode } from "../constants";
 import { BaseError } from "./baseError";
 
-export class AuthError<DataT = unknown> extends BaseError {
+export class AuthError<DataT = unknown> extends BaseError<DataT> {
   /**
    * Error code associated with the error. Most errors coming from
    * HTTP responses will have a code, though some errors that occur

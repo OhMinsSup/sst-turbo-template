@@ -13,6 +13,7 @@ export default function Routes() {
   return (
     <Sidebar
       noDisplayTitle
+      noPadding
       to={PAGE_ENDPOINTS.PROTECTED.DASHBOARD.ROOT}
       menu={<SidebarMenuWorkspace workspaceId={workspaceId} />}
       dashboardTitle={<WorkspaceHeader />}

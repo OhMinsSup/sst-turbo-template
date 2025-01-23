@@ -37,6 +37,7 @@
     readonly TERM_PROGRAM_VERSION: string;
     readonly npm_package_scripts_dev: string;
     readonly ZDOTDIR: string;
+    readonly CURSOR_TRACE_ID: string;
     readonly ORIGINAL_XDG_CURRENT_DESKTOP: string;
     readonly MallocNanoZone: string;
     readonly npm_config_registry: string;

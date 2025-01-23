@@ -1,20 +1,28 @@
 import React from "react";
 
+import { cn } from "@template/ui/lib";
+
 import { useBreadcrumb } from "~/providers/breadcrumb.provider";
 
 export interface DashboardTitleProps {
   children: React.ReactNode;
+  noPadding?: boolean;
   noDisplayTitle?: boolean;
 }
 
 export default function DashboardTitle({
   children,
   noDisplayTitle,
+  noPadding,
 }: DashboardTitleProps) {
   const item = useBreadcrumb();
 
   return (
-    <div className="h-full flex-1 flex-col space-y-8 md:flex md:p-6">
+    <div
+      className={cn("h-full flex-1 flex-col space-y-8 md:flex", {
+        "md:p-6": !noPadding,
+      })}
+    >
       <>
         {noDisplayTitle ? null : (
           <>
