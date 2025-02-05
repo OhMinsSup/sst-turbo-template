@@ -1,14 +1,13 @@
 import type { LoaderFunctionArgs } from "@remix-run/node";
 import { container, inject, injectable, singleton } from "tsyringe";
 
-import { combineHeaders, getRequestInfo } from "@template/utils/request";
-
 import type { Theme } from "~/.server/utils/theme";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
 import { auth } from "~/.server/utils/auth";
 import { getTheme } from "~/.server/utils/theme";
 import { getToast } from "~/.server/utils/toast";
 import { getHints } from "~/libs/client-hints";
+import { combineHeaders, getRequestInfo } from "~/libs/request";
 
 export interface RequestInfo {
   hints: Record<string, string>;

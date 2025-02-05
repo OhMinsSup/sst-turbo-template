@@ -1,7 +1,7 @@
 import { Injectable } from "@nestjs/common";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { isEqual } from "lodash-es";
 
-import { HttpResultCode } from "@template/common";
 import { Prisma } from "@template/db";
 import {
   getExternalUserSelector,
@@ -39,7 +39,7 @@ export class UsersService {
    */
   getMe(user: UserExternalPayload) {
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data: user,
     };
   }
@@ -93,7 +93,7 @@ export class UsersService {
     });
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data: updateUser,
     };
   }

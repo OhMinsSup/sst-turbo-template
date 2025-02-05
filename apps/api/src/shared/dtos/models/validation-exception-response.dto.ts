@@ -1,8 +1,7 @@
 import { HttpException, HttpStatus, ValidationError } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { HttpErrorNameEnum } from "@veloss/constants/http";
 import { Exclude, Expose } from "class-transformer";
-
-import { HttpErrorNameEnum } from "@template/common";
 
 @Exclude()
 export class ValidationExceptionResponseDto {

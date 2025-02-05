@@ -1,13 +1,9 @@
 import type { ActionFunctionArgs } from "@remix-run/node";
+import { HttpResultCode, HttpStatusCode } from "@veloss/constants/http";
+import { AuthError, isAuthError } from "@veloss/error";
 import { container, injectable, singleton } from "tsyringe";
 
 import type { SignInError, SignOutError, SignUpError } from "@template/auth";
-import {
-  AuthError,
-  HttpResultCode,
-  HttpStatusCode,
-  isAuthError,
-} from "@template/common";
 
 import { SignInDto } from "~/.server/routes/auth/dto/signIn.dto";
 import { SignUpDto } from "~/.server/routes/auth/dto/signUp.dto";

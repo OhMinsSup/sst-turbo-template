@@ -1,7 +1,6 @@
+import { isBrowser } from "@veloss/assertion";
+import { toDate } from "date-fns";
 import { randomUUID } from "uncrypto";
-
-import { isBrowser } from "@template/utils/assertion";
-import { toDate } from "@template/utils/date";
 
 import type { SupportedStorage } from "../types";
 

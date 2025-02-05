@@ -1,7 +1,6 @@
 import type { Params } from "@remix-run/react";
+import { isFunction } from "@veloss/assertion";
 import { isEqual } from "ufo";
-
-import { isFunction } from "@template/utils/assertion";
 
 import type { BreadcrumbItem } from "./breadcrumb.types";
 import { breadcrumbs } from "./breadcrumb.data";

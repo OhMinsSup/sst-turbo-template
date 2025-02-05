@@ -1,24 +1,24 @@
 import type { ApiResponseOptions } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common";
 import { getSchemaPath } from "@nestjs/swagger";
-import { OpenApiAuthErrorDefine } from "src/routes/auth/open-api";
-import { HttpErrorDto } from "src/shared/dtos/models/http-error.dto";
-import { ValidationErrorDto } from "src/shared/dtos/models/validation-error.dto";
-import { UserResponseDto } from "src/shared/dtos/response/users/user-response.dto";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 
-import { HttpResultCode } from "@template/common";
+import { OpenApiAuthErrorDefine } from "../../../routes/auth/open-api";
+import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
+import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
+import { UserResponseDto } from "../../../shared/dtos/response/users/user-response.dto";
 
 export const OpenApiUserErrorDefine = {
   updateValidation: {
     exampleDescription: "요청 데이터 검증 오류",
     message: "요청 데이터 검증 오류",
-    resultCode: HttpResultCode.INVALID_REQUEST,
+    resultCode: HttpResultCodeEnum.INVALID_REQUEST,
     statusCode: HttpStatus.BAD_REQUEST,
     example: {
       ["검증 오류"]: {
         value: {
           statusCode: HttpStatus.BAD_REQUEST,
-          resultCode: HttpResultCode.INVALID_REQUEST,
+          resultCode: HttpResultCodeEnum.INVALID_REQUEST,
           error: {
             error: "ValidationError",
             message: "요청 데이터 검증 오류",
@@ -62,13 +62,13 @@ export const OpenApiUserSuccessDefine = {
   me: {
     exampleDescription: "로그인 사용자 정보",
     message: "사용자 정보를 성공적으로 가져왔습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             id: "",
             email: "",

@@ -8,10 +8,9 @@ import {
 } from "@nestjs/common";
 import { Reflector } from "@nestjs/core";
 import { JwtService } from "@nestjs/jwt";
+import { TokenEnum } from "@veloss/constants/auth";
 import { Request } from "express";
 import { Observable } from "rxjs";
-
-import { TokenType } from "@template/common";
 
 import type { JwtPayload } from "../routes/auth/services/auth.service";
 import { OpenApiAuthErrorDefine } from "../routes/auth/open-api";
@@ -61,7 +60,7 @@ export class JwtAuthGuard implements CanActivate {
       );
     }
 
-    const tokenString = authorization.split(`${TokenType.Bearer} `).at(-1);
+    const tokenString = authorization.split(`${TokenEnum.Bearer} `).at(-1);
     if (!tokenString) {
       throw new UnauthorizedException(
         OpenApiAuthErrorDefine.invalidAuthorizationHeader,

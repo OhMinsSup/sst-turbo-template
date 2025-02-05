@@ -60,7 +60,7 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "@template/common": "workspace:*",
+    "@veloss/constants": "^0.0.2",
     "zod": "catalog:"
   },
   "devDependencies": {

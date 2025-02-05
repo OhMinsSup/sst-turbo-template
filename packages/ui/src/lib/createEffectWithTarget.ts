@@ -2,8 +2,7 @@
 
 import type { DependencyList, EffectCallback } from "react";
 import { useEffect, useLayoutEffect, useRef } from "react";
-
-import { isBrowser } from "@template/utils/assertion";
+import { isBrowser } from "@veloss/assertion";
 
 import type { BasicTarget } from "./dom";
 import { useUnmount } from "../hooks/useUnmount";

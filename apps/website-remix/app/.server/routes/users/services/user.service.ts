@@ -1,8 +1,9 @@
 import { ActionFunctionArgs } from "@remix-run/node";
+import { HttpStatusCode } from "@veloss/constants/http";
+import { AuthError, isAuthError } from "@veloss/error/auth";
 import { container, inject, injectable, singleton } from "tsyringe";
 
 import { UserUpdateError } from "@template/auth";
-import { AuthError, HttpStatusCode, isAuthError } from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";

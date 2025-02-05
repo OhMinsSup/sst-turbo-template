@@ -7,9 +7,8 @@ import {
   Logger,
 } from "@nestjs/common";
 import { ThrottlerException } from "@nestjs/throttler";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { Request, Response } from "express";
-
-import { HttpResultCode } from "@template/common";
 
 import { HttpExceptionResponseDto } from "../shared/dtos/models/http-exception-response.dto";
 import { CustomValidationError } from "../shared/dtos/models/validation-exception-response.dto";
@@ -23,7 +22,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
     const request = ctx.getRequest<Request>();
 
     let statusCode: number;
-    let resultCode: HttpResultCode;
+    let resultCode: HttpResultCodeEnum;
     let error: HttpExceptionResponseDto;
 
     // 많은 요청이 들어왔을 때
@@ -32,7 +31,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       const throttler = {
         message: "ThrottlerException: Too Many Requests",
       };
-      resultCode = HttpResultCode.TOO_MANY_REQUESTS;
+      resultCode = HttpResultCodeEnum.TOO_MANY_REQUESTS;
       error = {
         message: throttler.message,
         error: ThrottlerException.name,
@@ -41,13 +40,13 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode = exception.getStatus();
       const getError = exception.getResponse();
       const objError = getError as HttpExceptionResponseDto;
-      resultCode = HttpResultCode.INVALID_REQUEST;
+      resultCode = HttpResultCodeEnum.INVALID_REQUEST;
       error = Object.assign({}, objError);
     } else if (exception instanceof HttpException) {
       statusCode = exception.getStatus();
       const getError = exception.getResponse();
       if (typeof getError === "string") {
-        resultCode = HttpResultCode.FAIL;
+        resultCode = HttpResultCodeEnum.FAIL;
         error = {
           error: exception.name,
           message: getError,
@@ -55,7 +54,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       } else {
         // 에러 코드화를 진행할 부분
         const objError = getError as Record<string, string | number>;
-        resultCode = objError.resultCode as unknown as HttpResultCode;
+        resultCode = objError.resultCode as unknown as HttpResultCodeEnum;
         error = {
           error: exception.name,
           message: objError.message as string,
@@ -65,7 +64,7 @@ export class HttpExceptionFilter implements ExceptionFilter {
       statusCode = HttpStatus.INTERNAL_SERVER_ERROR;
       const errorResponse = {
         statusCode,
-        resultCode: HttpResultCode.FAIL,
+        resultCode: HttpResultCodeEnum.FAIL,
         error: {
           error: "Internal server error",
           message: "서버에러 관리자한테 문의 주세요",

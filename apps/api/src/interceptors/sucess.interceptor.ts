@@ -4,10 +4,9 @@ import {
   Injectable,
   NestInterceptor,
 } from "@nestjs/common";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { Response } from "express";
 import { map, Observable } from "rxjs";
-
-import { HttpResultCode } from "@template/common";
 
 @Injectable()
 export class SuccessInterceptor implements NestInterceptor {
@@ -24,7 +23,7 @@ export class SuccessInterceptor implements NestInterceptor {
         if ("code" in data) {
           return { statusCode, resultCode: data.code, data: data.data };
         }
-        return { statusCode, resultCode: HttpResultCode.OK, data };
+        return { statusCode, resultCode: HttpResultCodeEnum.OK, data };
       }),
     );
   }

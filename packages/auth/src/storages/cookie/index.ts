@@ -1,6 +1,5 @@
+import { isBrowser, isNullOrUndefined } from "@veloss/assertion";
 import { parse, serialize } from "cookie";
-
-import { isBrowser, isNullOrUndefined } from "@template/utils/assertion";
 
 import type {
   CookieMethodsBrowser,
@@ -355,7 +354,7 @@ export function createStorageFromOptions(
         setItems[key] = value;
         delete removedItems[key];
       },
-      // eslint-disable-next-line @typescript-eslint/require-await
+
       removeItem: async (key: string) => {
         // Intentionally not applying the storage when the key is the PKCE code
         // verifier, as usually right after it's removed other items are set,

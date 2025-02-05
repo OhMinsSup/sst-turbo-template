@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useMemo, useRef } from "react";
-
-import { isFunction } from "@template/utils/assertion";
+import { isFunction } from "@veloss/assertion";
 
 import type { BasicTarget } from "../../../lib";
 import type {

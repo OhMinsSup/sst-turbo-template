@@ -1,11 +1,11 @@
 import { Injectable, NotFoundException } from "@nestjs/common";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { isEqual, toFinite } from "lodash-es";
-import { SortOrder } from "src/types/sort-order";
 
 import type { UserExternalPayload } from "@template/db/selectors";
-import { HttpResultCode } from "@template/common";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
+import { SortOrder } from "../../../types/sort-order";
 import { CreateWorkspaceDto } from "../dto/create-workspace.dto";
 import { ListDeletedWorkspaceDto } from "../dto/list-deleted-workspace.dto";
 import { ListWorkspaceDto } from "../dto/list-workspace.dto";
@@ -26,7 +26,7 @@ export class WorkspacesService {
       data: { ...body, userId: user.id },
     });
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }
@@ -97,7 +97,7 @@ export class WorkspacesService {
     const nextPage = limit ? (hasNextPage ? pageNo + 1 : null) : null;
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data: {
         totalCount,
         list,
@@ -139,7 +139,7 @@ export class WorkspacesService {
     }
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }
@@ -184,7 +184,7 @@ export class WorkspacesService {
     });
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }
@@ -201,7 +201,7 @@ export class WorkspacesService {
     });
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }
@@ -218,7 +218,7 @@ export class WorkspacesService {
     });
 
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }
@@ -235,7 +235,7 @@ export class WorkspacesService {
       data: { isFavorite },
     });
     return {
-      code: HttpResultCode.OK,
+      code: HttpResultCodeEnum.OK,
       data,
     };
   }

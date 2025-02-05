@@ -3,8 +3,7 @@
 /* eslint-disable @typescript-eslint/no-unsafe-function-type */
 /* eslint-disable @typescript-eslint/no-explicit-any */
 import type { ApiPropertyOptions } from "@nestjs/swagger";
-
-import { isFunction } from "@template/utils/assertion";
+import { isFunction } from "@veloss/assertion";
 
 // 스웨거 메타데이터 키
 const DECORATORS_PREFIX = "swagger";

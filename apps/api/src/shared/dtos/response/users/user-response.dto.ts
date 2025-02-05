@@ -1,8 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { Expose, Type } from "class-transformer";
-
-import { HttpResultCode } from "@template/common";
 
 import { UserEntity } from "../../../../routes/users/entities/user.entity";
 
@@ -12,7 +11,7 @@ export class UserResponseDto {
   readonly statusCode: number;
 
   @ApiProperty({
-    enum: HttpResultCode,
+    enum: HttpResultCodeEnum,
     description: "결과 코드",
   })
   @Expose()

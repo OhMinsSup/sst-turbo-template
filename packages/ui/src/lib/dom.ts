@@ -1,4 +1,4 @@
-import { isBrowser } from "@template/utils/assertion";
+import { isBrowser } from "@veloss/assertion";
 
 type TargetValue<T> = T | undefined | null;
 

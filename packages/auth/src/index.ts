@@ -9,7 +9,7 @@ import type {
   UserMeError,
   UserUpdateError,
 } from "./types";
-import { AuthClient } from "./auth.client";
+import { AuthClient } from "./auth";
 
 const createAuthClient = (options: AuthClientOptions) => {
   return new AuthClient(options);

@@ -1,7 +1,5 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 
-import { createApiClient } from "@template/api";
-
 import type { GetAllCookies, SetAllCookies } from "../../storages/cookie/types";
 import type { AuthClientOptions } from "../../types";
 import {
@@ -20,14 +18,10 @@ interface AuthCookie {
 
 interface RemixAuthOptions {
   debug?: AuthClientOptions["logDebugMessages"];
-  baseURL: string;
-  api?: AuthClientOptions["api"];
+  api: AuthClientOptions["api"];
 }
 
-interface AuthContext {
-  baseURL: string;
-  debug?: AuthClientOptions["logDebugMessages"];
-  api: AuthClientOptions["api"];
+interface AuthContext extends RemixAuthOptions {
   authCookies: AuthCookie;
 }
 
@@ -52,10 +46,7 @@ export const getContext = (options: RemixAuthOptions): AuthContext => {
 
   const ctx: AuthContext = {
     ...options,
-    baseURL: options.baseURL,
     debug: options.debug ?? false,
-    // @ts-expect-error - We know this is defined
-    api: options.api ?? createApiClient({ baseUrl: options.baseURL }),
     authCookies,
   };
 

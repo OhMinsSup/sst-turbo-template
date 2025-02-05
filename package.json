@@ -40,7 +40,7 @@
   "prettier": "@template/prettier-config",
   "devDependencies": {
     "@template/prettier-config": "workspace:*",
-    "@turbo/gen": "^2.1.1",
+    "@turbo/gen": "^2.3.3",
     "dotenv-cli": "^7.4.2",
     "prettier": "catalog:",
     "turbo": "^2.3.3",

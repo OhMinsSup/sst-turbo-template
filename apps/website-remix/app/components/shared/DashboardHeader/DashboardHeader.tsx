@@ -1,5 +1,6 @@
 import React from "react";
 import { Link } from "@remix-run/react";
+import { isFunction } from "@veloss/assertion";
 
 import {
   Breadcrumb,
@@ -11,7 +12,6 @@ import {
 } from "@template/ui/components/breadcrumb";
 import { Separator } from "@template/ui/components/separator";
 import { SidebarTrigger } from "@template/ui/components/sidebar";
-import { isFunction } from "@template/utils/assertion";
 
 import { useBreadcrumbs } from "~/providers/breadcrumb.provider";
 

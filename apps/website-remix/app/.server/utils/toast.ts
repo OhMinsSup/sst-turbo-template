@@ -2,10 +2,9 @@ import { createCookieSessionStorage, redirect } from "@remix-run/node";
 import { createId as cuid } from "@paralleldrive/cuid2";
 import { z } from "zod";
 
-import { combineHeaders } from "@template/utils/request";
-
 import { privateConfig } from "~/config/config.private";
 import { SESSION_DATA_KEY } from "~/constants/constants";
+import { combineHeaders } from "~/libs/request";
 
 export const toastKey = "toast";
 

@@ -1,6 +1,6 @@
 import { Injectable } from "@nestjs/common";
+import { ProviderEnum } from "@veloss/constants/auth";
 
-import { Provider } from "@template/common";
 import { Prisma } from "@template/db";
 import { getIdentityWithoutUserIdSelector } from "@template/db/selectors";
 
@@ -8,7 +8,7 @@ import { PrismaService } from "../../../integrations/prisma/prisma.service";
 
 interface CreateNewIdentityParams {
   userId: string;
-  provider: Provider;
+  provider: ProviderEnum;
   identityData: Record<string, string>;
 }
 

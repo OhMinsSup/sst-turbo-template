@@ -1,6 +1,5 @@
+import { Provider } from "@veloss/constants/auth";
 import * as z from "zod";
-
-import { Provider } from "@template/common";
 
 export const signInSchema = z.object({
   email: z.string().email("올바른 이메일 형식이 아닙니다."),

@@ -1,9 +1,8 @@
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { Expose, Type } from "class-transformer";
 import { IsArray, IsNumber } from "class-validator";
-
-import { HttpResultCode } from "@template/common";
 
 import { WorkspaceEntity } from "../../../../routes/workspaces/entities/workspace.entity";
 import { PageInfoDto } from "../../models/list.dto";
@@ -42,7 +41,7 @@ export class WorkspaceListResponseDto {
   readonly statusCode: number;
 
   @ApiProperty({
-    enum: HttpResultCode,
+    enum: HttpResultCodeEnum,
     description: "결과 코드",
   })
   @Expose()

@@ -1,6 +1,7 @@
-import type { ApiClient } from "@template/api";
+import type { AuthError } from "@veloss/error/auth";
+import type { OpenApiClient } from "@veloss/openapi-builder";
+
 import type { components, paths } from "@template/api-types";
-import type { AuthError } from "@template/common";
 
 export interface AuthClientOptions {
   logDebugMessages?: boolean;
@@ -9,7 +10,7 @@ export interface AuthClientOptions {
   persistSession?: boolean;
   autoRefreshToken?: boolean;
   storageKey?: string;
-  api: ApiClient<paths>;
+  api: OpenApiClient<paths>;
 }
 
 type AnyFunction = (...args: any[]) => any;
@@ -92,7 +93,7 @@ export type CallRefreshTokenResult =
     }
   | {
       session: undefined;
-      error: AuthError;
+      error: AuthError<TokenError>;
     };
 
 export type AuthChangeEvent =

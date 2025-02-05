@@ -1,6 +1,5 @@
 import { useCallback, useEffect, useRef } from "react";
-
-import { isFunction, isNumber } from "@template/utils/assertion";
+import { isFunction, isNumber } from "@veloss/assertion";
 
 import type { BasicTarget } from "../../../lib";
 import type { GridColumnsConfig, Viewport } from "../context/masonry";

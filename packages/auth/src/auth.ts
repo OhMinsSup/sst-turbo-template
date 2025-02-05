@@ -1,11 +1,11 @@
-import { createAuthError, isAuthError } from "@template/common";
 import {
   isBrowser,
   isNullOrUndefined,
   isPromiseLike,
-  isTrusted,
-} from "@template/utils/assertion";
-import { addSeconds, isBefore } from "@template/utils/date";
+  isTruthy,
+} from "@veloss/assertion";
+import { createAuthError, isAuthError } from "@veloss/error/auth";
+import { addSeconds, isBefore } from "date-fns";
 
 import type {
   AuthChangeEvent,
@@ -193,7 +193,7 @@ export class AuthClient {
     this.api = options.api;
     this.persistSession = options.persistSession ?? true;
     this.storageKey = options.storageKey ?? STORAGE_KEY;
-    this.autoRefreshToken = isTrusted(options.autoRefreshToken);
+    this.autoRefreshToken = isTruthy(options.autoRefreshToken);
 
     if (options.lock) {
       this.lock = options.lock;
@@ -302,7 +302,7 @@ export class AuthClient {
    */
   async signUp(body: SignUpBody): Promise<SignUpResponse> {
     try {
-      const { response } = await this.api
+      const response = await this.api
         .method("post")
         .path("/api/v1/auth/signUp")
         .setBody(body)
@@ -363,7 +363,7 @@ export class AuthClient {
    */
   async signIn(body: SignInBody): Promise<SignInResponse> {
     try {
-      const { response } = await this.api
+      const response = await this.api
         .method("post")
         .path("/api/v1/auth/signIn")
         .setBody(body)
@@ -444,7 +444,7 @@ export class AuthClient {
       // 토큰이 있다면 로그아웃 요청
       if (accessToken) {
         try {
-          const { response } = await this.api
+          const response = await this.api
             .method("post")
             .path("/api/v1/auth/logout")
             .setAuthorization(accessToken)
@@ -550,7 +550,7 @@ export class AuthClient {
       // 토큰이 존재한다면, 토큰을 이용해서 유저 정보를 가져옵니다.
       if (jwt) {
         try {
-          const { response } = await this.api
+          const response = await this.api
             .method("get")
             .path("/api/v1/users/me")
             .setAuthorization(jwt)
@@ -618,7 +618,7 @@ export class AuthClient {
           }
 
           // 유저 정보를 가져옵니다.
-          const { response } = await this.api
+          const response = await this.api
             .method("get")
             .path("/api/v1/users/me")
             .setAuthorization(session.access_token)
@@ -665,7 +665,7 @@ export class AuthClient {
         }
       });
     } catch (error) {
-      if (isAuthError(error)) {
+      if (isAuthError<TokenError | undefined>(error)) {
         if (error.name === "AuthSessionMissingError") {
           await this._removeSession();
           await this._notifyAllSubscribers("SIGNED_OUT", undefined);
@@ -721,7 +721,7 @@ export class AuthClient {
           };
         }
 
-        const { response } = await this.api
+        const response = await this.api
           .method("patch")
           .path("/api/v1/users")
           .setAuthorization(session.access_token)
@@ -1108,7 +1108,7 @@ export class AuthClient {
       return result;
     } catch (e) {
       this.error(debugName, e);
-      if (isAuthError(e)) {
+      if (isAuthError<TokenError>(e)) {
         const result = { session: undefined, error: e };
 
         // 스토리지 세션을 삭제합니다.
@@ -1147,7 +1147,7 @@ export class AuthClient {
   ): Promise<TokenResponse> {
     try {
       // 토근 갱신 요청
-      const { response } = await this.api
+      const response = await this.api
         .method("post")
         .path("/api/v1/auth/token")
         .setBody({

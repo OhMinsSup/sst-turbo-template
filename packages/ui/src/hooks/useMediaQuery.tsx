@@ -1,6 +1,5 @@
 import { useMemo, useSyncExternalStore } from "react";
-
-import { isBrowser } from "@template/utils/assertion";
+import { isBrowser } from "@veloss/assertion";
 
 import { useMemoizedFn } from "./useMemoizedFn";
 

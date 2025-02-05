@@ -1,13 +1,13 @@
 import { Injectable } from "@nestjs/common";
+import { RoleEnum } from "@veloss/constants/auth";
 
-import { Role } from "@template/common";
 import { Prisma } from "@template/db";
 
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
 
 interface CreateRoleParams {
   name: string;
-  symbol: Role;
+  symbol: RoleEnum;
   description?: string;
 }
 
@@ -17,11 +17,11 @@ export class RoleService {
 
   /**
    * @description Role 가져오기
-   * @param {Role} role
+   * @param {RoleEnum} role
    * @param {Prisma.TransactionClient?} tx
    */
   async findRole(
-    role: Role,
+    role: RoleEnum,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     const ctx = tx ? tx.role : this.prismaService.role;
@@ -34,11 +34,11 @@ export class RoleService {
 
   /**
    * @description Role 가져오기, 없으면 에러 발생
-   * @param {Role} role
+   * @param {RoleEnum} role
    * @param {Prisma.TransactionClient?} tx
    */
   async findRoleOnThrowError(
-    role: Role,
+    role: RoleEnum,
     tx: Prisma.TransactionClient | undefined = undefined,
   ) {
     const ctx = tx ? tx.role : this.prismaService.role;

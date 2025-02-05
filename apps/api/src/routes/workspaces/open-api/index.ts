@@ -1,8 +1,7 @@
 import type { ApiResponseOptions } from "@nestjs/swagger";
 import { HttpStatus } from "@nestjs/common";
 import { getSchemaPath } from "@nestjs/swagger";
-
-import { HttpErrorNameEnum, HttpResultCode } from "@template/common";
+import { HttpErrorNameEnum, HttpResultCodeEnum } from "@veloss/constants/http";
 
 import { HttpErrorDto } from "../../../shared/dtos/models/http-error.dto";
 import { ValidationErrorDto } from "../../../shared/dtos/models/validation-error.dto";
@@ -15,13 +14,13 @@ export const OpenApiWorkspaceErrorDefine = {
   workspaceNotFound: {
     exampleDescription: "워크스페이스를 찾을 수 없습니다.",
     message: "워크스페이스를 찾을 수 없습니다.",
-    resultCode: HttpResultCode.FAIL,
+    resultCode: HttpResultCodeEnum.FAIL,
     statusCode: HttpStatus.NOT_FOUND,
     example: {
       ["워크스페이스 없음"]: {
         value: {
           statusCode: HttpStatus.NOT_FOUND,
-          resultCode: HttpResultCode.FAIL,
+          resultCode: HttpResultCodeEnum.FAIL,
           error: {
             error: HttpErrorNameEnum.NotFoundException,
             message: "이미 가입된 이메일입니다. 다시 시도해 주세요.",
@@ -40,13 +39,13 @@ export const OpenApiWorkspaceErrorDefine = {
       ],
       description: ["워크스페이스 설명은 100자 이하여야 합니다."],
     },
-    resultCode: HttpResultCode.INVALID_REQUEST,
+    resultCode: HttpResultCodeEnum.INVALID_REQUEST,
     statusCode: HttpStatus.BAD_REQUEST,
     example: {
       ["검증 오류"]: {
         value: {
           statusCode: HttpStatus.BAD_REQUEST,
-          resultCode: HttpResultCode.INVALID_REQUEST,
+          resultCode: HttpResultCodeEnum.INVALID_REQUEST,
           error: {
             error: "ValidationError",
             message: "요청 데이터 검증 오류",
@@ -68,13 +67,13 @@ export const OpenApiWorkspaceErrorDefine = {
     message: {
       isFavorite: ["즐겨찾기 여부는 불리언이어야 합니다."],
     },
-    resultCode: HttpResultCode.INVALID_REQUEST,
+    resultCode: HttpResultCodeEnum.INVALID_REQUEST,
     statusCode: HttpStatus.BAD_REQUEST,
     example: {
       ["검증 오류"]: {
         value: {
           statusCode: HttpStatus.BAD_REQUEST,
-          resultCode: HttpResultCode.INVALID_REQUEST,
+          resultCode: HttpResultCodeEnum.INVALID_REQUEST,
           error: {
             error: "ValidationError",
             message: "요청 데이터 검증 오류",
@@ -96,13 +95,13 @@ export const OpenApiWorkspaceErrorDefine = {
       ],
       description: ["워크스페이스 설명은 100자 이하여야 합니다."],
     },
-    resultCode: HttpResultCode.INVALID_REQUEST,
+    resultCode: HttpResultCodeEnum.INVALID_REQUEST,
     statusCode: HttpStatus.BAD_REQUEST,
     example: {
       ["검증 오류"]: {
         value: {
           statusCode: HttpStatus.BAD_REQUEST,
-          resultCode: HttpResultCode.INVALID_REQUEST,
+          resultCode: HttpResultCodeEnum.INVALID_REQUEST,
           error: {
             error: "ValidationError",
             message: "요청 데이터 검증 오류",
@@ -204,13 +203,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   findAll: {
     exampleDescription: "워크스페이스 목록",
     message: "워크스페이스 목록을 성공적으로 가져왔습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             totalCount: 0,
             list: [
@@ -239,13 +238,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   findOne: {
     exampleDescription: "워크스페이스 단건 조회",
     message: "워크스페이스 단건 조회를 성공적으로 가져왔습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             id: "",
             title: "",
@@ -263,13 +262,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   create: {
     exampleDescription: "워크스페이스 생성",
     message: "워크스페이스를 성공적으로 생성했습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             id: "",
             title: "",
@@ -287,13 +286,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   favorite: {
     exampleDescription: "즐겨찾기 설정",
     message: "즐겨찾기 설정을 성공적으로 변경했습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             id: "",
             title: "",
@@ -311,13 +310,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   delete: {
     exampleDescription: "워크스페이스 삭제",
     message: "워크스페이스를 성공적으로 삭제했습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: true,
         },
       },
@@ -326,13 +325,13 @@ export const OpenApiWorkspaceSuccessDefine = {
   restore: {
     exampleDescription: "워크스페이스 복구",
     message: "워크스페이스를 성공적으로 복구했습니다.",
-    resultCode: HttpResultCode.OK,
+    resultCode: HttpResultCodeEnum.OK,
     statusCode: HttpStatus.OK,
     example: {
       ["응답 성공"]: {
         value: {
           statusCode: HttpStatus.OK,
-          resultCode: HttpResultCode.OK,
+          resultCode: HttpResultCodeEnum.OK,
           data: {
             id: "",
             title: "",

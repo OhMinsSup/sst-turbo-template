@@ -1,8 +1,8 @@
+import type { KeyOfMethod } from "@veloss/constants/http";
 import { redirect } from "@remix-run/node";
 
 import type { components } from "@template/api-types";
 import type { AuthClient, Session, User } from "@template/auth";
-import type { Method } from "@template/common";
 
 import type { ToastInput } from "~/.server/utils/toast";
 import { redirectWithToast } from "~/.server/utils/toast";
@@ -58,10 +58,10 @@ export function defaultToastErrorMessage(message: string) {
 /**
  * @description 메소드 타입을 대문자로 변환 후 "Method" 타입으로 반환합니다.
  * @param {Request} request
- * @returns {Method}
+ * @returns {KeyOfMethod}
  */
-export const getTypeSafeMethod = (request: Request): Method => {
-  return request.method.toLocaleUpperCase() as Method;
+export const getTypeSafeMethod = (request: Request): KeyOfMethod => {
+  return request.method.toLocaleUpperCase() as KeyOfMethod;
 };
 
 interface InvariantParams {

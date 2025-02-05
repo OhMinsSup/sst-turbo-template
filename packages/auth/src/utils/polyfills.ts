@@ -14,7 +14,6 @@ export function polyfillGlobalThis() {
       configurable: true,
     });
     // @ts-expect-error 'Allow access to magic'
-    // eslint-disable-next-line @typescript-eslint/no-unsafe-member-access
     __magic__.globalThis = __magic__;
     // @ts-expect-error 'Allow access to magic'
     delete Object.prototype.__magic__;

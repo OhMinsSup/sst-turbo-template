@@ -1,6 +1,5 @@
 import React, { useEffect, useRef } from "react";
-
-import { isFunction } from "@template/utils/assertion";
+import { isFunction } from "@veloss/assertion";
 
 import type { GridColumnsConfig } from "./context/masonry";
 import type { GridItem } from "./hooks/useVirtualizedMasonryLayout";

@@ -1,8 +1,7 @@
 import type { ActionFunctionArgs, LoaderFunctionArgs } from "@remix-run/node";
 import { invariant } from "@epic-web/invariant";
+import { HttpStatusCode } from "@veloss/constants/http";
 import { container, inject, injectable, singleton } from "tsyringe";
-
-import { HttpStatusCode } from "@template/common";
 
 import { CacheService } from "~/.server/cache/cache.service";
 import { AuthMiddleware } from "~/.server/middlewares/auth.middleware";
@@ -53,7 +52,7 @@ export class WorkspaceService {
     const submitId = dto.submitId();
 
     try {
-      const { response } = await api
+      const response = await api
         .method("post")
         .path("/api/v1/workspaces")
         .setBody(body)
@@ -153,7 +152,7 @@ export class WorkspaceService {
     const body = dtoInstance.json();
 
     try {
-      const { response } = await api
+      const response = await api
         .method("patch")
         .path("/api/v1/workspaces/{id}/favorite")
         .setBody(body)
@@ -234,7 +233,7 @@ export class WorkspaceService {
     const query = dto.transform(args.request).json();
 
     try {
-      const { response } = await api
+      const response = await api
         .method("get")
         .path(
           options.isDeleted
@@ -304,7 +303,7 @@ export class WorkspaceService {
     const dtoInstance = await dto.transform(args.request, formData);
 
     try {
-      const { response } = await api
+      const response = await api
         .method("delete")
         .path("/api/v1/workspaces/{id}")
         .setParams({
@@ -384,7 +383,7 @@ export class WorkspaceService {
     const dtoInstance = await dto.transform(args.request, formData);
 
     try {
-      const { response } = await api
+      const response = await api
         .method("patch")
         .path("/api/v1/workspaces/{id}/restore")
         .setParams({

@@ -1,5 +1,6 @@
+import { isBoolean, isTruthy } from "@veloss/assertion";
+
 import type { paths } from "@template/api-types";
-import { isBoolean, isTrusted } from "@template/utils/assertion";
 
 export interface FindAllOptions {
   isDeleted?: boolean;
@@ -43,7 +44,7 @@ export class WorkspaceListQueryDto {
           | "asc"
           | "desc",
         favorites: isBoolean(this.isFavorite)
-          ? isTrusted(this.isFavorite)
+          ? isTruthy(this.isFavorite)
             ? ["true"]
             : []
           : url.searchParams.getAll("favorites"),

@@ -60,10 +60,11 @@
   },
   "prettier": "@template/prettier-config",
   "dependencies": {
-    "@template/api": "workspace:*",
-    "@template/common": "workspace:*",
-    "@template/utils": "workspace:*",
+    "@veloss/assertion": "^0.0.5",
+    "@veloss/error": "^0.0.5",
+    "@veloss/openapi-builder": "^0.0.6",
     "cookie": "^0.6.0",
+    "date-fns": "catalog:",
     "jose": "^5.9.6",
     "uncrypto": "catalog:"
   },

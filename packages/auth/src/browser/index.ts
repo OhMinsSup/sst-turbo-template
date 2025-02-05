@@ -1,4 +1,4 @@
-import { isBrowser } from "@template/utils/assertion";
+import { isBrowser } from "@veloss/assertion";
 
 import type { AuthClientType } from "..";
 import type {

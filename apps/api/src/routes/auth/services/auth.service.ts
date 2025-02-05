@@ -10,11 +10,12 @@ import {
   UnauthorizedException,
 } from "@nestjs/common";
 import { REQUEST } from "@nestjs/core";
+import { ProviderEnum, RoleEnum, TokenEnum } from "@veloss/constants/auth";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
+import { isAfter } from "date-fns";
 
 import type { UserExternalPayload } from "@template/db/selectors";
-import { HttpResultCode, Provider, Role, TokenType } from "@template/common";
 import { Prisma, RefreshToken, Session } from "@template/db";
-import { isAfter } from "@template/utils/date";
 
 import { LoggerService } from "../../../integrations/logger/logger.service";
 import { PrismaService } from "../../../integrations/prisma/prisma.service";
@@ -34,7 +35,7 @@ import { TokenService } from "./token.service";
 export interface JwtPayload {
   sub: string;
   email: string;
-  role: Role;
+  role: RoleEnum;
   sessionId: string;
   iat: number;
   exp: number;
@@ -60,7 +61,7 @@ export class AuthService {
    */
   async signIn(input: SignInDTO) {
     switch (input.provider) {
-      case Provider.PASSWORD: {
+      case ProviderEnum.PASSWORD: {
         return await this._signInWithPassword(input);
       }
       default: {
@@ -123,10 +124,10 @@ export class AuthService {
       }
 
       return {
-        code: HttpResultCode.OK,
+        code: HttpResultCodeEnum.OK,
         data: {
           token: token.token,
-          tokenType: TokenType.Bearer,
+          tokenType: TokenEnum.Bearer,
           expiresIn: token.expiresIn,
           expiresAt: token.expiresAt,
           refreshToken: token.refreshToken,
@@ -142,7 +143,7 @@ export class AuthService {
    */
   async signUp(input: SignUpDTO) {
     switch (input.provider) {
-      case Provider.PASSWORD: {
+      case ProviderEnum.PASSWORD: {
         return await this._signUpWithPassword(input);
       }
       default: {
@@ -182,7 +183,7 @@ export class AuthService {
           tx,
         );
 
-        const role = await this.roleService.findRole(Role.USER, tx);
+        const role = await this.roleService.findRole(RoleEnum.USER, tx);
         if (!role) {
           // Role이 없는 경우
           throw new NotFoundException(OpenApiAuthErrorDefine.roleNotFound);
@@ -194,7 +195,7 @@ export class AuthService {
         // Identity 찾기
         let identity = await this.identityService.findIdentityByIdAndProvider(
           user.id,
-          Provider.EMAIL,
+          ProviderEnum.EMAIL,
           tx,
         );
 
@@ -203,7 +204,7 @@ export class AuthService {
           identity = await this.identityService.createNewIdentity(
             {
               userId: user.id,
-              provider: Provider.EMAIL,
+              provider: ProviderEnum.EMAIL,
               identityData: {
                 sub: user.id,
                 email: user.email,
@@ -247,10 +248,10 @@ export class AuthService {
         }
 
         return {
-          code: HttpResultCode.OK,
+          code: HttpResultCodeEnum.OK,
           data: {
             token: token.token,
-            tokenType: TokenType.Bearer,
+            tokenType: TokenEnum.Bearer,
             expiresIn: token.expiresIn,
             expiresAt: token.expiresAt,
             refreshToken: token.refreshToken,
@@ -388,10 +389,10 @@ export class AuthService {
           );
 
           return {
-            code: HttpResultCode.OK,
+            code: HttpResultCodeEnum.OK,
             data: {
               token: newToken.token,
-              tokenType: TokenType.Bearer,
+              tokenType: TokenEnum.Bearer,
               expiresIn: newToken.expiresIn,
               expiresAt: newToken.expiresAt,
               refreshToken: issuedToken.token,
@@ -424,7 +425,7 @@ export class AuthService {
         },
       });
       return {
-        code: HttpResultCode.OK,
+        code: HttpResultCodeEnum.OK,
         data: true,
       };
     });

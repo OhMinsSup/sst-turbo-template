@@ -1,8 +1,7 @@
 import { HttpStatus } from "@nestjs/common";
 import { ApiProperty } from "@nestjs/swagger";
+import { HttpResultCodeEnum } from "@veloss/constants/http";
 import { Exclude, Expose, Type } from "class-transformer";
-
-import { HttpResultCode } from "@template/common";
 
 import { HttpExceptionResponseDto } from "./http-exception-response.dto";
 
@@ -13,11 +12,11 @@ export class HttpErrorDto {
   readonly statusCode: HttpStatus;
 
   @ApiProperty({
-    enum: HttpResultCode,
+    enum: HttpResultCodeEnum,
     description: "결과 코드",
   })
   @Expose()
-  readonly resultCode: HttpResultCode;
+  readonly resultCode: HttpResultCodeEnum;
 
   @ApiProperty({
     type: () => HttpExceptionResponseDto,
